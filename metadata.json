@@ -1,0 +1,6 @@
+{
+  "name": "Hostel 1998: Spirit Labyrinth (Prolog Prototype)",
+  "description": "A text-based Prolog narrative horror prototype set in a traditional Myanmar university hostel with paired truth testing, symbolic riddle decoding, composure tracking, and plunit test suites.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
