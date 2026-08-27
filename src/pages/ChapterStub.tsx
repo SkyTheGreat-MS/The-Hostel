@@ -76,7 +76,7 @@ export const ChapterStub: React.FC<ChapterStubProps> = ({
             <div className="text-xs font-mono text-amber-500/80 tracking-widest uppercase">
               {tagline}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-serif font-black text-stone-100">
+            <h2 className="text-3xl sm:text-4xl font-bebas font-bold text-stone-100 tracking-wider">
               {subtitle}
             </h2>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-stone-900 border border-stone-700 text-stone-400 text-xs font-mono">

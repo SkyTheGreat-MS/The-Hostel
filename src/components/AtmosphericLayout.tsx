@@ -173,7 +173,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-bold tracking-wider font-serif text-stone-200 group-hover:text-amber-200 transition-colors">
+                <span className="text-sm sm:text-base font-bold tracking-widest font-bebas text-stone-200 group-hover:text-amber-200 transition-colors">
                   {headerTitle}
                 </span>
                 <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/60 text-amber-300">

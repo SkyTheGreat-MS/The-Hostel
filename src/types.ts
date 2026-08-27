@@ -1,4 +1,16 @@
-export type MCId = 'thazin' | 'min_khant' | 'htet' | 'aye_aye' | 'kyaw_swar' | 'su_su';
+export type MCId =
+  | 'moe_stheinkha'
+  | 'ye_yint_hein'
+  | 'may_jewel'
+  | 'yin_min_htike'
+  | 'hsu_myat_shein'
+  | 'mona'
+  | 'thazin'
+  | 'min_khant'
+  | 'htet'
+  | 'aye_aye'
+  | 'kyaw_swar'
+  | 'su_su';
 
 export type TriggerType = 'supernatural_direct' | 'physical_threat' | 'betrayal';
 
@@ -59,6 +71,9 @@ export interface VictimRiddle {
 }
 
 export interface GameState {
+  chapter: number;
+  explorationCount: number;
+  shadowEventTriggered?: boolean;
   timeRemaining: number;
   playerComposure: number;
   mamaMayGrief: number;

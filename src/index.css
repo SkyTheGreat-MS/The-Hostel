@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  --font-bebas: 'Bebas Neue', 'Impact', sans-serif;
+  --font-horror: 'Bebas Neue', 'Impact', sans-serif;
+  --font-serif: 'Bebas Neue', 'Impact', sans-serif;
+}
+
+@layer utilities {
+  .font-bebas {
+    font-family: 'Bebas Neue', 'Impact', sans-serif;
+  }
+}

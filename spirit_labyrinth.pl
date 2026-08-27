@@ -19,6 +19,8 @@
     pair_trusted_fact/2,
 
     % State & Knowledge Facts (Inspectable over HTTP/JSON API)
+    chapter/1,
+    exploration_count/1,
     time_remaining/1,
     player_composure/1,
     mama_may_grief/1,
@@ -77,6 +79,8 @@
    DYNAMIC STATE DECLARATIONS
    ========================================================================== */
 
+:- dynamic chapter/1.                % Active chapter number (default: 1)
+:- dynamic exploration_count/1.      % Number of wander choices in Chapter 1 (default: 0)
 :- dynamic time_remaining/1.          % Turns left before 2026 anchor fades (default: 20)
 :- dynamic player_composure/1.        % Composure percentage (0-100, default: 100)
 :- dynamic mama_may_grief/1.          % Grief level (0-100, default: 50)
@@ -185,6 +189,10 @@ clue_data(antique_locket, dorm_room_4b,
     'Silver Filigree Locket',
     'Concealed behind loose teak baseboard. Contains a photo of Sandar holding an infant: "For Aunt Sandar, from Aye Aye\'s mother, July 1998." (Secret connection to 2026 friend Aye Aye).').
 
+clue_data(glitch_body_glimpse, common_hall,
+    'Glitching Spectral Silhouette',
+    'A fleeting manifestation of Mama May\'s restless spirit glitching between 1998 and 2026 before dissolving into mist near the corridor.').
+
 % Semantic relationships
 clue_points_to(diary_page, ko_zaw_hates_pink).
 clue_points_to(pink_shirt, killer_wore_pink).
@@ -192,6 +200,7 @@ clue_points_to(caesar_chest, sandar_bribed_to_seal_well).
 clue_points_to(broken_rosary, red_herring_no_payoff).
 clue_points_to(room_4b_log, sandar_braided_hair).
 clue_points_to(antique_locket, aye_aye_kin_of_killer).
+clue_points_to(glitch_body_glimpse, shadow_event_manifestation).
 
 /* ==========================================================================
    THE GUARDIAN'S PAIRED HINTS (IDENTIFY + DECODE SYSTEM, PART 1)
@@ -262,6 +271,8 @@ decode_options(body_location, [
 %% reset_game
 %  Initializes all state variables for a clean playthrough.
 reset_game :-
+    retractall(chapter(_)),
+    retractall(exploration_count(_)),
     retractall(time_remaining(_)),
     retractall(player_composure(_)),
     retractall(mama_may_grief(_)),
@@ -279,6 +290,8 @@ reset_game :-
     retractall(rite_performed(_)),
     retractall(final_accusation(_, _, _)),
     retractall(ending_reached(_)),
+    assertz(chapter(1)),
+    assertz(exploration_count(0)),
     assertz(time_remaining(20)),
     assertz(player_composure(100)),
     assertz(mama_may_grief(50)),
@@ -447,7 +460,32 @@ resolve_ending(Ending) :-
    ========================================================================== */
 
 %% explore(+LocationId)
-%  Investigates a room in the 1998 hostel, consumes turns, and finds clues.
+%  In Chapter 1, exploring is a fixed narrative sequence.
+%  After 3 exploration choices, triggers the shadow event and updates to Chapter 2.
+explore(LocationId) :-
+    chapter(1), !,
+    hostel_location(LocationId, LocName, _, _),
+    format('~n[CHAPTER 1 WANDER] Exploring ~w...~n', [LocName]),
+    consume_turn(1),
+    ( exploration_count(Count) -> true ; Count = 0 ),
+    NewCount is Count + 1,
+    retractall(exploration_count(_)),
+    assertz(exploration_count(NewCount)),
+    ( NewCount >= 3 ->
+        format('~n*** SHADOW EVENT TRIGGERED ***~n', []),
+        format('A distorted spectral silhouette flickers at the edge of the corridor!~n', []),
+        ( discovered_clue(glitch_body_glimpse) -> true
+        ; assertz(discovered_clue(glitch_body_glimpse)),
+          format('  * DISCOVERED: Glitching Spectral Silhouette~n', [])
+        ),
+        retractall(chapter(_)),
+        assertz(chapter(2)),
+        format('State updated to Chapter 2: The Guardian Labyrinth Unlocked.~n', [])
+    ; format('You wander the desolate corridors of August 1998 (~w/3 wander actions).~n', [NewCount])
+    ).
+
+%% explore(+LocationId)
+%  In Chapter 2+, standard full investigation searches rooms and finds clues.
 explore(LocationId) :-
     hostel_location(LocationId, LocName, _, TurnCost),
     format('~n[INVESTIGATION] Searching ~w (Cost: ~w turns)...~n', [LocName, TurnCost]),
@@ -491,6 +529,8 @@ accuse(Killer, Cause, Location) :-
 %  Serializes the current in-memory Prolog state into a structured key-value dict
 %  for consumption by local HTTP/JSON APIs and TypeScript bindings.
 get_game_state(State) :-
+    ( chapter(Chap)         -> true ; Chap = 1 ),
+    ( exploration_count(EC) -> true ; EC = 0 ),
     ( time_remaining(T)     -> true ; T = 20 ),
     ( player_composure(C)   -> true ; C = 100 ),
     ( mama_may_grief(G)     -> true ; G = 50 ),
@@ -507,6 +547,8 @@ get_game_state(State) :-
     findall(Top-Mean, trusted_fact(Top, Mean), TFacts),
     findall(Top-Mean, misread_fact(Top, Mean), MFacts),
     State = state{
+        chapter: Chap,
+        exploration_count: EC,
         time_remaining: T,
         player_composure: C,
         mama_may_grief: G,
@@ -655,6 +697,20 @@ test(ending_misunderstood_due_to_misread_riddle) :-
     assertz(rite_performed(yes)),
     resolve_ending(Ending),
     assertion(Ending == misunderstood).
+
+test(chapter_1_exploration_shadow_event_transition) :-
+    reset_game,
+    assertion(chapter(1)),
+    assertion(exploration_count(0)),
+    explore(dorm_room_4b),
+    assertion(chapter(1)),
+    assertion(exploration_count(1)),
+    explore(common_hall),
+    assertion(chapter(1)),
+    assertion(exploration_count(2)),
+    explore(courtyard_shrine),
+    assertion(chapter(2)),
+    assertion(discovered_clue(glitch_body_glimpse)).
 
 :- end_tests(spirit_labyrinth).
 

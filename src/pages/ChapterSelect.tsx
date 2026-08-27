@@ -138,7 +138,7 @@ export const ChapterSelect: React.FC = () => {
                     NEW CHAPTER UNLOCKED
                   </span>
                 </div>
-                <p className="text-sm font-serif font-medium text-stone-200">
+                <p className="text-sm font-sans font-medium text-stone-200">
                   Chapter {justUnlockedChapter} is now unlocked! The spirit guides your steps deeper into 1998.
                 </p>
               </div>
@@ -162,7 +162,7 @@ export const ChapterSelect: React.FC = () => {
               Hostel Archive • Select Investigation Phase
             </span>
           </div>
-          <h2 className="text-2xl sm:text-4xl font-serif font-black tracking-wide text-stone-100 drop-shadow-md">
+          <h2 className="text-3xl sm:text-5xl font-bebas font-black tracking-wider text-stone-100 drop-shadow-md">
             CHAPTER SHOWCASE
           </h2>
           <p className="text-xs sm:text-sm text-stone-400 font-sans mt-1 max-w-2xl">
@@ -241,7 +241,7 @@ export const ChapterSelect: React.FC = () => {
               )}
 
               {/* Watermark Roman numeral */}
-              <div className="absolute right-6 -bottom-6 select-none pointer-events-none text-8xl font-serif font-black text-stone-800/20 group-hover:text-amber-500/10 transition-colors">
+              <div className="absolute right-6 -bottom-6 select-none pointer-events-none text-8xl font-bebas font-black text-stone-800/20 group-hover:text-amber-500/10 transition-colors">
                 {chap.number === 1 ? 'I' : chap.number === 2 ? 'II' : 'III'}
               </div>
 
@@ -273,7 +273,7 @@ export const ChapterSelect: React.FC = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-100 group-hover:text-amber-200 transition-colors flex items-center gap-3">
+                    <h3 className="text-2xl sm:text-3xl font-bebas font-bold text-stone-100 group-hover:text-amber-200 transition-colors flex items-center gap-3 tracking-wider">
                       {chap.subtitle}
                     </h3>
                     <div className="text-[11px] font-mono uppercase tracking-widest text-amber-600/90 font-medium mt-0.5">
@@ -306,7 +306,7 @@ export const ChapterSelect: React.FC = () => {
                       type="button"
                       tabIndex={-1}
                       onClick={() => handleCardClick(chap, unlocked)}
-                      className={`flex items-center gap-2 px-5 py-3 rounded-lg font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md ${
+                      className={`flex items-center gap-2 px-5 py-3 rounded-lg font-bebas text-base tracking-wider uppercase transition-all shadow-md ${
                         isCompleted
                           ? 'bg-stone-900 border border-stone-700 text-stone-200 group-hover:bg-amber-900/60 group-hover:border-amber-500 group-hover:text-amber-100'
                           : 'bg-amber-700 hover:bg-amber-600 text-stone-950 border border-amber-400 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]'
@@ -373,9 +373,9 @@ export const ChapterSelect: React.FC = () => {
             >
               <div className="flex items-center gap-3 text-rose-400 mb-3">
                 <AlertTriangle className="w-6 h-6" />
-                <h4 className="text-lg font-serif font-bold">Reset Chapter Progress?</h4>
+                <h4 className="text-xl font-bebas font-bold tracking-wider">Reset Chapter Progress?</h4>
               </div>
-              <p className="text-xs text-stone-400 leading-relaxed mb-6">
+              <p className="text-xs text-stone-400 leading-relaxed mb-6 font-sans">
                 This will lock Chapter 2 and Chapter 3 again, requiring you to play through Chapter 1 to unlock them.
               </p>
               <div className="flex items-center justify-end gap-3 font-mono text-xs">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
+import { HostelRitualScene } from './HostelRitualScene';
 import {
   Volume2,
   VolumeX,
@@ -20,6 +21,8 @@ import {
   Clock,
   Shield,
   Eye,
+  Upload,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 export interface MainMenuProps {
@@ -60,8 +63,13 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(sound.getMuted());
   const [activeModal, setActiveModal] = useState<'none' | 'help' | 'settings' | 'exit' | 'scene_picker'>('none');
-  const [selectedScene, setSelectedScene] = useState<'hallway' | 'seance' | 'chapter3' | 'custom'>('hallway');
-  const [customBgUrl, setCustomBgUrl] = useState<string>('');
+  const [customBgUrl, setCustomBgUrl] = useState<string>(() => {
+    return localStorage.getItem('sl_custom_bg') || '';
+  });
+  const [selectedScene, setSelectedScene] = useState<'circle_ritual' | 'hallway' | 'seance' | 'chapter3' | 'custom'>(() => {
+    const saved = localStorage.getItem('sl_custom_bg');
+    return saved ? 'custom' : 'circle_ritual';
+  });
   const [rainEnabled, setRainEnabled] = useState<boolean>(showRain);
   const [grainEnabled, setGrainEnabled] = useState<boolean>(true);
   const [scanlinesEnabled, setScanlinesEnabled] = useState<boolean>(true);
@@ -196,6 +204,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           className={`w-full h-full object-cover select-none pointer-events-none transition-all duration-700 ${getColorGradeClass()}`}
         />
       );
+    }
+
+    if (selectedScene === 'circle_ritual') {
+      return <HostelRitualScene colorGradeClass={getColorGradeClass()} />;
     }
 
     if (selectedScene === 'custom' && customBgUrl) {
@@ -762,13 +774,15 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <Layers className="w-3.5 h-3.5 text-amber-500" />
               <span className="hidden sm:inline">Scene:</span>
               <span className="text-stone-200 uppercase font-semibold">
-                {selectedScene === 'hallway'
+                {selectedScene === 'circle_ritual'
+                  ? 'Séance Circle (Art)'
+                  : selectedScene === 'hallway'
                   ? 'UIT Pathway 326'
                   : selectedScene === 'seance'
                   ? 'Séance Table'
                   : selectedScene === 'chapter3'
                   ? 'Chapter 3 Well'
-                  : 'Custom'}
+                  : 'Custom JPG'}
               </span>
             </button>
 
@@ -819,7 +833,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <p className="text-xs sm:text-sm font-mono tracking-widest text-stone-400 font-medium uppercase">
                 {subtitle}
               </p>
-              <span className="text-xs text-amber-500/70 font-serif hidden md:inline">
+              <span className="text-xs text-amber-500/70 font-sans hidden md:inline">
                 (ဝိညာဉ်ဝင်္ကပါ)
               </span>
             </div>
@@ -958,7 +972,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 <div className="flex items-center gap-2.5">
                   <FileText className="w-5 h-5 text-amber-400" />
                   <div>
-                    <h2 className="text-xl font-bold font-serif text-amber-200">
+                    <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200">
                       Investigative Field Guide & Spirit Rules
                     </h2>
                     <p className="text-xs text-stone-400 font-mono">
@@ -1058,7 +1072,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <div className="flex items-center justify-between border-b border-stone-800 pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
                   <SettingsIcon className="w-5 h-5 text-amber-400" />
-                  <h2 className="text-xl font-bold font-serif text-amber-200">Atmospheric Settings</h2>
+                  <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200">Atmospheric Settings</h2>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
@@ -1191,7 +1205,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 <div className="flex items-center gap-2.5">
                   <Layers className="w-5 h-5 text-amber-400" />
                   <div>
-                    <h2 className="text-xl font-bold font-serif text-amber-200">Pluggable Scene Backgrounds</h2>
+                    <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200">Pluggable Scene Backgrounds</h2>
                     <p className="text-xs text-stone-400 font-mono">
                       Switch backdrop scenes to test modularity
                     </p>
@@ -1209,6 +1223,27 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <div className="space-y-3 text-xs mb-4">
                 <button
                   onClick={() => {
+                    setSelectedScene('circle_ritual');
+                    setActiveModal('none');
+                    sound.playChime(true);
+                  }}
+                  className={`w-full p-3 rounded-lg border text-left flex items-start justify-between transition-all ${
+                    selectedScene === 'circle_ritual'
+                      ? 'border-amber-500 bg-amber-950/40 text-amber-200'
+                      : 'border-stone-800 bg-stone-950/60 hover:border-stone-700 text-stone-300'
+                  }`}
+                >
+                  <div>
+                    <span className="font-bold text-sm block">1. 1998 Abandoned Hostel Séance Circle (Uploaded Art)</span>
+                    <p className="text-[11px] text-stone-400 mt-0.5">
+                      6 Burmese students joined in a circle, hands touching, glowing purple occult runes &amp; talismanic energy.
+                    </p>
+                  </div>
+                  {selectedScene === 'circle_ritual' && <span className="text-amber-400 font-bold">Active</span>}
+                </button>
+
+                <button
+                  onClick={() => {
                     setSelectedScene('hallway');
                     setActiveModal('none');
                     sound.playChime(true);
@@ -1220,7 +1255,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   }`}
                 >
                   <div>
-                    <span className="font-bold text-sm block">1. UIT Pathway 326 (Uploaded Art)</span>
+                    <span className="font-bold text-sm block">2. UIT Pathway 326</span>
                     <p className="text-[11px] text-stone-400 mt-0.5">
                       Symmetrical timber truss roof, clerestory windows, exposed brick, Room 326 warm lamp, weeds, jungle portal.
                     </p>
@@ -1241,7 +1276,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   }`}
                 >
                   <div>
-                    <span className="font-bold text-sm block">2. Dim Séance Room (Table & Ouija Board)</span>
+                    <span className="font-bold text-sm block">3. Dim Séance Room (Table &amp; Ouija Board)</span>
                     <p className="text-[11px] text-stone-400 mt-0.5">
                       Low teak altar table, warped Burmese alphabet board, shattered glass shards, single guttering candle.
                     </p>
@@ -1262,7 +1297,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   }`}
                 >
                   <div>
-                    <span className="font-bold text-sm block">3. Chapter 3 Title Card ("The Sealed Dried Well")</span>
+                    <span className="font-bold text-sm block">4. Chapter 3 Title Card ("The Sealed Dried Well")</span>
                     <p className="text-[11px] text-stone-400 mt-0.5">
                       Courtyard Nat Shrine, moonlight over old mango tree, iron-sealed well.
                     </p>
@@ -1270,21 +1305,78 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   {selectedScene === 'chapter3' && <span className="text-amber-400 font-bold">Active</span>}
                 </button>
 
-                {/* Custom Image URL Option */}
-                <div className="p-3 bg-stone-950/60 rounded-lg border border-stone-800">
-                  <span className="font-bold text-stone-200 block mb-1">4. Custom Image URL / Path</span>
+                {/* Custom Image Upload & URL Option */}
+                <div className="p-3 bg-stone-950/60 rounded-lg border border-stone-800 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-stone-200 block text-xs">5. Custom JPG / Image File</span>
+                    {selectedScene === 'custom' && customBgUrl && (
+                      <span className="text-amber-400 font-bold text-xs">Active Custom JPG</span>
+                    )}
+                  </div>
+
+                  {/* Direct File Picker (JPG/PNG/WebP) */}
+                  <div className="flex items-center gap-2">
+                    <label className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-amber-900/40 hover:bg-amber-800/50 border border-amber-600/60 text-amber-200 rounded text-xs font-semibold cursor-pointer transition-all">
+                      <Upload className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Upload Local JPG / Image File</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/jpg"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string;
+                              if (result) {
+                                setCustomBgUrl(result);
+                                setSelectedScene('custom');
+                                try {
+                                  localStorage.setItem('sl_custom_bg', result);
+                                } catch {
+                                  // In case localStorage quota exceeded
+                                }
+                                setActiveModal('none');
+                                sound.playChime(true);
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    {customBgUrl && (
+                      <button
+                        onClick={() => {
+                          setCustomBgUrl('');
+                          localStorage.removeItem('sl_custom_bg');
+                          setSelectedScene('circle_ritual');
+                          sound.playMenuSelect();
+                        }}
+                        className="px-2.5 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-400 hover:text-stone-200 rounded text-xs transition-colors"
+                        title="Clear custom image"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* URL Input Alternative */}
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="https://example.com/horror-bg.jpg or /path"
-                      value={customBgUrl}
+                      placeholder="Or paste JPG image URL..."
+                      value={customBgUrl.startsWith('data:') ? '(Local file loaded)' : customBgUrl}
                       onChange={(e) => setCustomBgUrl(e.target.value)}
                       className="flex-1 bg-stone-900 border border-stone-700 rounded px-2.5 py-1.5 text-xs text-stone-200 outline-none font-mono"
                     />
                     <button
                       onClick={() => {
-                        if (customBgUrl) {
+                        if (customBgUrl && !customBgUrl.startsWith('data:')) {
                           setSelectedScene('custom');
+                          localStorage.setItem('sl_custom_bg', customBgUrl);
                           setActiveModal('none');
                           sound.playChime(true);
                         }
@@ -1330,10 +1422,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-rose-950/80 border border-rose-800 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6 text-rose-500" />
               </div>
-              <h2 className="text-xl font-bold font-serif text-rose-200 mb-2">
+              <h2 className="text-2xl font-bold font-bebas tracking-wide text-rose-200 mb-2">
                 Sever Spirit Connection?
               </h2>
-              <p className="text-xs text-stone-400 mb-6 leading-relaxed">
+              <p className="text-xs text-stone-400 mb-6 leading-relaxed font-sans">
                 Leaving now will dissolve your 2026 anchor link. Any unverified clues in the 1998 hostel labyrinth will be lost to the monsoon shadows.
               </p>
               <div className="flex gap-3 justify-center">

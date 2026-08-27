@@ -9,6 +9,9 @@ import { CHARACTERS, GUARDIAN_PAIRS, VICTIM_RIDDLES, CLUES, LOCATIONS } from './
 
 export function createInitialState(selectedMC: MCId = 'thazin'): GameState {
   return {
+    chapter: 1,
+    explorationCount: 0,
+    shadowEventTriggered: false,
     timeRemaining: 20,
     playerComposure: 100,
     mamaMayGrief: 50,
@@ -92,6 +95,42 @@ export function modifyGrief(state: GameState, amount: number): GameState {
 
 export function exploreLocation(state: GameState, locationId: string): GameState {
   const loc = LOCATIONS.find((l) => l.id === locationId);
+
+  // Chapter 1: Fixed narrative exploration sequence
+  if (state.chapter === 1) {
+    let nextState = consumeTurn(state, 1);
+    const newCount = (state.explorationCount || 0) + 1;
+    const isShadowTrigger = newCount >= 3;
+
+    if (isShadowTrigger) {
+      nextState = {
+        ...nextState,
+        chapter: 2,
+        explorationCount: newCount,
+        shadowEventTriggered: true,
+        discoveredClues: Array.from(new Set([...nextState.discoveredClues, 'glitch_body_glimpse'])),
+        historyLog: [
+          ...nextState.historyLog,
+          `Exploring ${loc ? loc.name : locationId}... A horrifying distortion ripples across the corridor. A glitching spectral silhouette manifests and vanishes, leaving a temporal residue. (Chapter 1 Complete — Chapter 2 Unlocked!)`,
+        ],
+      };
+      nextState = applyComposureDamage(nextState, 10, 'supernatural_direct');
+    } else {
+      nextState = {
+        ...nextState,
+        explorationCount: newCount,
+        historyLog: [
+          ...nextState.historyLog,
+          `Wandered through ${loc ? loc.name : locationId}. The air is freezing and the silence is deafening (${newCount}/3 explorations).`,
+        ],
+      };
+      nextState = applyComposureDamage(nextState, 4, 'supernatural_direct');
+    }
+
+    return nextState;
+  }
+
+  // Chapter 2+: Standard full investigation
   const cost = loc ? loc.turnCost : 2;
   let nextState = consumeTurn(state, cost);
   if (nextState.gameOver) return nextState;

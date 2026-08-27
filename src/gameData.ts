@@ -8,8 +8,75 @@ import {
 
 export const CHARACTERS: MCCharacter[] = [
   {
+    id: 'moe_stheinkha',
+    name: 'Moe Stheinkha',
+    archetype: 'Skeptic',
+    description: 'Analytical and rational mind; resists physical intimidation, but highly vulnerable to occult anomalies.',
+    multipliers: {
+      supernatural_direct: 1.5,
+      physical_threat: 0.8,
+      betrayal: 1.0,
+    },
+  },
+  {
+    id: 'ye_yint_hein',
+    name: 'Ye Yint Hein',
+    archetype: 'Daredevil',
+    description: 'Audacious and quick to act; shrugs off physical threats but easily unhinged in eerie isolation.',
+    multipliers: {
+      supernatural_direct: 1.2,
+      physical_threat: 0.7,
+      betrayal: 1.1,
+    },
+  },
+  {
+    id: 'may_jewel',
+    name: 'May Jewel',
+    archetype: 'Intuitive',
+    description: 'Spiritually attuned medium who detects hidden vibrations and whispers; suffers severe mental strain.',
+    multipliers: {
+      supernatural_direct: 0.7,
+      physical_threat: 1.4,
+      betrayal: 1.2,
+    },
+  },
+  {
+    id: 'yin_min_htike',
+    name: 'Yin Min Htike',
+    archetype: 'Archivist',
+    description: 'Expert on historical ledgers, ciphers, and discrepancies; physically frail when under violent pressure.',
+    multipliers: {
+      supernatural_direct: 0.9,
+      physical_threat: 1.4,
+      betrayal: 0.8,
+    },
+  },
+  {
+    id: 'hsu_myat_shein',
+    name: 'Hsu Myat Shein',
+    archetype: 'Kin-Bound',
+    description: 'Deeply empathetic; unknowingly linked by bloodline to the tragic events of August 1998.',
+    multipliers: {
+      supernatural_direct: 1.4,
+      physical_threat: 1.2,
+      betrayal: 1.5,
+    },
+  },
+  {
+    id: 'mona',
+    name: 'Mona',
+    archetype: 'Protector',
+    description: 'Steadfast shield of the circle; resists brute force, but psychologically crushed by betrayal.',
+    multipliers: {
+      supernatural_direct: 1.0,
+      physical_threat: 0.6,
+      betrayal: 1.5,
+    },
+  },
+  // Legacy aliases for backward compatibility with existing tests and Prolog mirrors
+  {
     id: 'thazin',
-    name: 'Thazin',
+    name: 'Thazin (Moe Stheinkha)',
     archetype: 'Skeptic',
     description: 'Calculates probability; struggles when confronted by direct supernatural phenomena.',
     multipliers: {
@@ -20,7 +87,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'min_khant',
-    name: 'Min Khant',
+    name: 'Min Khant (Mona)',
     archetype: 'Protector',
     description: 'Steadfast against physical danger; deeply hurt by betrayal and broken oaths.',
     multipliers: {
@@ -31,7 +98,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'htet',
-    name: 'Htet',
+    name: 'Htet (Yin Min Htike)',
     archetype: 'Archivist',
     description: 'Keen eye for documents, ledgers, and ciphers; physically frail under strain.',
     multipliers: {
@@ -42,7 +109,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'aye_aye',
-    name: 'Aye Aye',
+    name: 'Aye Aye (Hsu Myat Shein)',
     archetype: 'Kin-Bound',
     description: 'Deeply attuned to emotional resonance; secretly carries maternal ties to 1998.',
     multipliers: {
@@ -53,7 +120,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'kyaw_swar',
-    name: 'Kyaw Swar',
+    name: 'Kyaw Swar (Ye Yint Hein)',
     archetype: 'Daredevil',
     description: 'Bold and impulsive; quick to take action but easily unhinged by quiet isolation.',
     multipliers: {
@@ -64,7 +131,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'su_su',
-    name: 'Su Su',
+    name: 'Su Su (May Jewel)',
     archetype: 'Intuitive',
     description: 'Spiritually receptive medium; hears whispers clearly but suffers heavy mental fatigue.',
     multipliers: {
@@ -157,6 +224,14 @@ export const CLUES: Clue[] = [
     details:
       'Concealed behind loose teak baseboard in Room 4B. Contains a photograph of Sandar holding an infant: "For Aunt Sandar, from Aye Aye\'s mother, July 1998." (Secret connection to 2026 friend Aye Aye).',
     pointsTo: 'aye_aye_is_sandars_niece',
+  },
+  {
+    id: 'glitch_body_glimpse',
+    locationId: 'common_hall',
+    title: 'Glitching Spectral Silhouette',
+    details:
+      "A fleeting manifestation of Mama May's restless spirit glitching between 1998 and 2026 before dissolving into mist near the corridor.",
+    pointsTo: 'shadow_event_manifestation',
   },
 ];
 

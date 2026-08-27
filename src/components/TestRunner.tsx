@@ -4,6 +4,7 @@ import {
   applyComposureDamage,
   consumeTurn,
   modifyGrief,
+  exploreLocation,
   deduceGuardianPair,
   decodeRiddle,
   resolveEnding,
@@ -321,6 +322,38 @@ export const TestRunner: React.FC = () => {
           'Fixture: misread_fact(cause_of_death, poisoned)',
           `resolve_ending/1 returned: ${ending}`,
         ],
+      });
+    }
+
+    // Test 12: chapter_1_exploration_shadow_event_transition
+    {
+      const start = performance.now();
+      let state = createInitialState('thazin');
+      const trace: string[] = [`Initial: chapter=${state.chapter}, explorationCount=${state.explorationCount}`];
+      
+      const step1 = state.chapter === 1 && state.explorationCount === 0;
+      state = exploreLocation(state, 'dorm_room_4b');
+      trace.push(`Explore 1 (dorm_room_4b): chapter=${state.chapter}, explorationCount=${state.explorationCount}`);
+      const step2 = state.chapter === 1 && state.explorationCount === 1;
+
+      state = exploreLocation(state, 'common_hall');
+      trace.push(`Explore 2 (common_hall): chapter=${state.chapter}, explorationCount=${state.explorationCount}`);
+      const step3 = state.chapter === 1 && state.explorationCount === 2;
+
+      state = exploreLocation(state, 'courtyard_shrine');
+      trace.push(`Explore 3 (courtyard_shrine): chapter=${state.chapter}, explorationCount=${state.explorationCount}, clue=${state.discoveredClues.join(',')}`);
+      const step4 = state.chapter === 2 && state.discoveredClues.includes('glitch_body_glimpse');
+
+      const passed = step1 && step2 && step3 && step4;
+      testList.push({
+        id: 'test_chapter_transition',
+        name: 'test(chapter_1_exploration_shadow_event_transition)',
+        category: 'Discrete Chapter Engine',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: '3 exploration actions in Chapter 1 trigger shadow event, assert glitch_body_glimpse, and advance to Chapter 2',
+        actual: `Final: chapter=${state.chapter}, explorationCount=${state.explorationCount}, hasClue=${state.discoveredClues.includes('glitch_body_glimpse')}`,
+        trace,
       });
     }
 
