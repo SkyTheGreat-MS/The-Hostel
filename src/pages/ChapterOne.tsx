@@ -7,7 +7,7 @@ export const ChapterOne: React.FC = () => {
     <AtmosphericLayout
       headerTitle="THE SPIRIT'S LABYRINTH"
       headerSubtitle="CHAPTER 1 : BLIND START (1998)"
-      backgroundImage="/assets/chapter_1.jpg"
+      backgroundImage="/assets/uni_room_chp1_bg1.jpg"
       chapterNumber={1}
       backTo="/chapters"
       backLabel="Chapters"

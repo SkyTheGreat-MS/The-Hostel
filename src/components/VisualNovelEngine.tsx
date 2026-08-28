@@ -1,143 +1,312 @@
 import React, { useState, useEffect } from 'react';
-import { GameState, MCId } from '../types';
-import { createInitialState } from '../prologEngine';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { useGameProgress } from '../context/GameProgressContext';
 import { sound } from '../audioEngine';
-import { LilyBorder } from './LilyBorder';
+import { MCId, MCCharacter } from '../types';
+import { CHARACTERS } from '../gameData';
 import { InkPortrait } from './InkPortrait';
 import { CharacterSelectScreen } from './CharacterSelectScreen';
-import { ExplorationMenu } from './ExplorationMenu';
 import { PauseModal } from './PauseModal';
-import { ChevronRight, Volume2, VolumeX, Pause } from 'lucide-react';
+import {
+  Volume2,
+  VolumeX,
+  Pause,
+  Sparkles,
+  Play,
+  Key,
+  ArrowRight,
+} from 'lucide-react';
 
-interface DialogueLine {
+export type ChapterPhase = 1 | 2 | 3;
+
+interface DialogueStep {
   id: number;
-  scene: 1 | 2;
+  phase: ChapterPhase;
   speaker: string;
-  speakerId: MCId | 'mama_may' | 'guardian_nat';
+  characterId: string;
   pos: 'left' | 'right';
   text: string;
-  isBreak?: boolean;
+  isClimax?: boolean;
+  isPlayerLine?: boolean;
+  soundCue?: 'hover' | 'select' | 'paper' | 'damage' | 'drone' | 'break';
 }
 
-const DIALOGUE_SCRIPT: DialogueLine[] = [
-  // Scene 1: The 2026 Seance Room
+const CHAPTER_1_SCRIPT: DialogueStep[] = [
+  // ==========================================
+  // PHASE 1: THE DISCUSSION ABOUT THE GAME
+  // ==========================================
   {
     id: 1,
-    scene: 1,
+    phase: 1,
     speaker: 'May Jewel',
-    speakerId: 'may_jewel',
+    characterId: 'may_jewel',
     pos: 'left',
-    text: 'I found this old ritual recorded in a 1998 hostel notebook... They called it the Mirror-Well Pact.',
+    text: 'Look at what I found tucked behind the dormitory archive shelf... A 1998 student notebook detailing an occult seance: The Mirror-Well Pact.',
+    soundCue: 'paper',
   },
   {
     id: 2,
-    scene: 1,
+    phase: 1,
     speaker: 'Ye Yint Hein',
-    speakerId: 'ye_yint_hein',
+    characterId: 'ye_yint_hein',
     pos: 'right',
-    text: "Who's going to scream first? It's just an old superstition from the previous generation.",
+    text: "A 90s ghost game? Who's going to scream first? It's just an old superstition the seniors invented to frighten freshmen.",
+    soundCue: 'hover',
   },
   {
     id: 3,
-    scene: 1,
+    phase: 1,
     speaker: 'Moe Stheinkha',
-    speakerId: 'moe_stheinkha',
+    characterId: 'moe_stheinkha',
     pos: 'left',
-    text: 'Keep the candle centered. If the flame flickers toward the east, the guardian spirit is already in the room.',
+    text: 'Keep your voice down, Ye Yint. The caretaker specifically warned everyone never to trespass into this abandoned wing after midnight.',
   },
   {
     id: 4,
-    scene: 1,
-    speaker: 'Yin Min Htike',
-    speakerId: 'yin_min_htike',
+    phase: 1,
+    speaker: 'Hsu Myat Shein',
+    characterId: 'hsu_myat_shein',
     pos: 'right',
-    text: 'Look at this floor plan from August 1998... Pathway 326 was sealed off right after a girl named Mama May disappeared.',
+    text: 'My grandmother warned me about this building... She said a senior named Mama May vanished here in August 1998, and her spirit never left.',
   },
   {
     id: 5,
-    scene: 1,
-    speaker: 'Hsu Myat Shein',
-    speakerId: 'hsu_myat_shein',
+    phase: 1,
+    speaker: 'Yin Min Htike',
+    characterId: 'yin_min_htike',
     pos: 'left',
-    text: 'My grandmother told me never to speak that name inside this building. Something bad happened here.',
+    text: 'Look at this floorplan from the university registrar. Pathway 326 was walled off immediately after her disappearance. They claimed it was structural instability.',
+    soundCue: 'paper',
   },
   {
     id: 6,
-    scene: 1,
+    phase: 1,
     speaker: 'Mona',
-    speakerId: 'mona',
+    characterId: 'mona',
     pos: 'right',
-    text: "Enough ghost stories. If we're doing this, let's place our hands on the glass together.",
+    text: "If you're all terrified, we can pack up our bags right now. But if we want the truth of what happened in 1998, we follow the ritual rules.",
   },
-
-  // Scene 2: The Chant & The Supernatural Shift
   {
     id: 7,
-    scene: 2,
+    phase: 1,
     speaker: 'May Jewel',
-    speakerId: 'may_jewel',
+    characterId: 'may_jewel',
     pos: 'left',
-    text: 'Spirits of 1998... Guardian of the four directions... We seek the truth of the sealed corridor...',
+    text: 'Gather close around the table. Here is the letter board and the tea glass. Everyone place the tip of your index finger on the rim of the glass.',
   },
   {
     id: 8,
-    scene: 2,
+    phase: 1,
     speaker: 'Ye Yint Hein',
-    speakerId: 'ye_yint_hein',
+    characterId: 'ye_yint_hein',
     pos: 'right',
-    text: 'Wait... do you feel that? The temperature in this room just dropped like ice.',
+    text: "Done. My finger is on it. Let's see if this 'guardian spirit' really exists.",
   },
   {
     id: 9,
-    scene: 2,
+    phase: 1,
     speaker: 'Moe Stheinkha',
-    speakerId: 'moe_stheinkha',
+    characterId: 'moe_stheinkha',
     pos: 'left',
-    text: "The candle flame—it turned blue! Don't break the circle!",
+    text: 'Remember the cardinal rule: whatever happens, do NOT break the circle or lift your finger until the spirit dismisses us.',
+    soundCue: 'select',
   },
+
+  // ==========================================
+  // PHASE 2: PLAYING THE GAME & THINGS GO WRONG
+  // ==========================================
   {
     id: 10,
-    scene: 2,
-    speaker: 'Yin Min Htike',
-    speakerId: 'yin_min_htike',
-    pos: 'right',
-    text: "The glass... it's moving on its own! It's spelling M - A - M - A...",
+    phase: 2,
+    speaker: 'May Jewel',
+    characterId: 'may_jewel',
+    pos: 'left',
+    text: 'Spirits of August 1998... Restless soul of the hostel corridor... If you dwell within these walls, answer our call and make your presence known.',
+    soundCue: 'drone',
   },
   {
     id: 11,
-    scene: 2,
+    phase: 2,
     speaker: 'Hsu Myat Shein',
-    speakerId: 'hsu_myat_shein',
-    pos: 'left',
-    text: "Someone is whispering behind my neck... 'Who took my breath away?'",
+    characterId: 'hsu_myat_shein',
+    pos: 'right',
+    text: 'Wait... did someone open the window? My breath is turning to mist... The air in this room suddenly dropped like ice.',
   },
   {
     id: 12,
-    scene: 2,
-    speaker: 'Mona',
-    speakerId: 'mona',
+    phase: 2,
+    speaker: 'Moe Stheinkha',
+    characterId: 'moe_stheinkha',
+    pos: 'left',
+    text: "Look at the red candle! The flame is trembling violently... and it's turning deep indigo blue! Don't move!",
+  },
+  {
+    id: 13,
+    phase: 2,
+    speaker: 'Ye Yint Hein',
+    characterId: 'ye_yint_hein',
     pos: 'right',
-    text: 'The glass is vibrating violently! PULL YOUR HANDS BACK—',
-    isBreak: true,
+    text: "Hey, cut it out! Which one of you is pushing the glass? Don't mess around, stop pulling it!",
+  },
+  {
+    id: 14,
+    phase: 2,
+    speaker: 'Yin Min Htike',
+    characterId: 'yin_min_htike',
+    pos: 'left',
+    text: "Nobody is pushing it! Look at our knuckles, we're barely touching the rim! The glass is gliding across the paper on its own!",
+  },
+  {
+    id: 15,
+    phase: 2,
+    speaker: 'Mona',
+    characterId: 'mona',
+    pos: 'right',
+    text: 'It is spelling out letters... M... A... M... A... It is spelling Mama May!',
+  },
+  {
+    id: 16,
+    phase: 2,
+    speaker: 'Hsu Myat Shein',
+    characterId: 'hsu_myat_shein',
+    pos: 'right',
+    text: "A cold breath just whispered across the back of my neck... 'Why did you leave me in the dark?'",
+  },
+  {
+    id: 17,
+    phase: 2,
+    speaker: 'Moe Stheinkha',
+    characterId: 'moe_stheinkha',
+    pos: 'left',
+    text: 'Listen! Outside the wooden door... Heavy, wet barefoot steps dragging across the corridor floorboards!',
+  },
+  {
+    id: 18,
+    phase: 2,
+    speaker: 'Ye Yint Hein',
+    characterId: 'ye_yint_hein',
+    pos: 'right',
+    text: 'The glass is vibrating violently! It is spinning in circles! PULL YOUR HANDS AWAY!',
+  },
+  {
+    id: 19,
+    phase: 2,
+    speaker: 'May Jewel',
+    characterId: 'may_jewel',
+    pos: 'left',
+    text: 'NO! KEEP YOUR HANDS ON THE GLASS—IF THE VESSEL SHATTERS THE VEIL OPENS—',
+    isClimax: true,
+    soundCue: 'break',
+  },
+
+  // ==========================================
+  // PHASE 3: WANDERING 1998 & THE ENCOUNTER
+  // ==========================================
+  {
+    id: 20,
+    phase: 3,
+    speaker: 'Player',
+    characterId: 'player',
+    pos: 'left',
+    isPlayerLine: true,
+    text: 'Ugh... My head is throbbing... What happened? Where did everyone go?!',
+    soundCue: 'paper',
+  },
+  {
+    id: 21,
+    phase: 3,
+    speaker: 'Player',
+    characterId: 'player',
+    pos: 'left',
+    isPlayerLine: true,
+    text: 'The room looks different... The modern fluorescent bulbs are gone, replaced by a flickering kerosene lantern. On the wall, the calendar reads: AUGUST 1998.',
+  },
+  {
+    id: 22,
+    phase: 3,
+    speaker: 'Player',
+    characterId: 'player',
+    pos: 'left',
+    isPlayerLine: true,
+    text: 'The glass shattered on the table, but the door is swinging wide open into the hallway. Pathway 326 is not walled off... I am truly back in 1998.',
+  },
+  {
+    id: 23,
+    phase: 3,
+    speaker: 'Mama May (1998)',
+    characterId: 'mama_may',
+    pos: 'right',
+    text: 'You heard my cry through the shattered vessel... After twenty-eight years, someone finally stepped into my memory.',
+    soundCue: 'drone',
+  },
+  {
+    id: 24,
+    phase: 3,
+    speaker: 'Player',
+    characterId: 'player',
+    pos: 'left',
+    isPlayerLine: true,
+    text: 'Mama May?! You are the student from the missing archives! What happened to you in this hostel?',
+  },
+  {
+    id: 25,
+    phase: 3,
+    speaker: 'Mama May (1998)',
+    characterId: 'mama_may',
+    pos: 'right',
+    text: 'They told the school I fled the city... But the caretaker was paid five thousand kyats to seal me beneath the dried courtyard well. Look beneath the floorboard.',
+  },
+  {
+    id: 26,
+    phase: 3,
+    speaker: 'Player',
+    characterId: 'player',
+    pos: 'left',
+    isPlayerLine: true,
+    text: 'An iron box! Inside is the caretaker’s private ledger and a heavy brass well key labeled: CHAPTER 2.',
+    soundCue: 'select',
+  },
+  {
+    id: 27,
+    phase: 3,
+    speaker: 'Mama May (1998)',
+    characterId: 'mama_may',
+    pos: 'right',
+    text: 'Take the key and the ledger. The truth of the ritual begins in the courtyard. Go... and find who took my breath away.',
+    soundCue: 'drone',
   },
 ];
 
-type EngineState = 'dialogue' | 'breaking' | 'character_select' | 'exploration';
-
 export const VisualNovelEngine: React.FC = () => {
-  const [engineState, setEngineState] = useState<EngineState>('dialogue');
+  const navigate = useNavigate();
+  const { completeChapter } = useGameProgress();
+
   const [currentLineIndex, setCurrentLineIndex] = useState<number>(0);
   const [displayedText, setDisplayedText] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(true);
-  const [gameState, setGameState] = useState<GameState>(() => createInitialState('moe_stheinkha'));
   const [isMuted, setIsMuted] = useState<boolean>(() => sound.getMuted());
   const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
+  const [isShattering, setIsShattering] = useState<boolean>(false);
+  const [showCharacterSelect, setShowCharacterSelect] = useState<boolean>(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<MCCharacter>(CHARACTERS[0]);
+  const [isChapterFinished, setIsChapterFinished] = useState<boolean>(false);
 
-  const currentLine = DIALOGUE_SCRIPT[currentLineIndex] || DIALOGUE_SCRIPT[0];
+  const currentLine = CHAPTER_1_SCRIPT[currentLineIndex] || CHAPTER_1_SCRIPT[0];
+  const currentPhase = currentLine.phase;
+
+  // Resolve dynamic speaker name & character ID for player lines
+  const activeSpeakerName = currentLine.isPlayerLine
+    ? selectedCharacter.name
+    : currentLine.speaker;
+
+  const activeCharacterId = currentLine.isPlayerLine
+    ? selectedCharacter.id
+    : currentLine.characterId;
 
   // Typewriter effect
   useEffect(() => {
-    if (engineState !== 'dialogue') return;
+    if (showCharacterSelect || isShattering || isChapterFinished) return;
 
     let charIndex = 0;
     setIsTyping(true);
@@ -151,12 +320,21 @@ export const VisualNovelEngine: React.FC = () => {
         setIsTyping(false);
         clearInterval(interval);
       }
-    }, 22);
+    }, 20);
+
+    // Audio cue trigger per step
+    if (currentLine.soundCue) {
+      if (currentLine.soundCue === 'paper') sound.playPaperRustle();
+      else if (currentLine.soundCue === 'select') sound.playMenuSelect();
+      else if (currentLine.soundCue === 'hover') sound.playMenuHover();
+      else if (currentLine.soundCue === 'drone') sound.playDramaticSting();
+      else if (currentLine.soundCue === 'break') sound.playGlassBreak();
+    }
 
     return () => clearInterval(interval);
-  }, [currentLineIndex, engineState]);
+  }, [currentLineIndex, showCharacterSelect, isShattering, isChapterFinished]);
 
-  // Keyboard navigation
+  // Keyboard navigation: Enter / Space to advance, Esc to pause
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -165,214 +343,314 @@ export const VisualNovelEngine: React.FC = () => {
         return;
       }
 
-      if (isPauseOpen) return;
+      if (isPauseOpen || isShattering || showCharacterSelect || isChapterFinished) return;
 
-      if (engineState === 'dialogue') {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          advanceDialogue();
-        }
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        advanceDialogue();
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentLineIndex, isTyping, engineState, isPauseOpen]);
-
-  // Handle the climax break trigger
-  const handleBreak = () => {
-    setEngineState('breaking');
-    sound.playGlassBreak();
-
-    // After shatter shockwave, transition to character select
-    setTimeout(() => {
-      setEngineState('character_select');
-    }, 850);
-  };
+  }, [currentLineIndex, isTyping, isPauseOpen, isShattering, showCharacterSelect, isChapterFinished]);
 
   // Advance dialogue or skip typewriter
   const advanceDialogue = () => {
     if (isTyping) {
-      // Instantly finish line
       setDisplayedText(currentLine.text);
       setIsTyping(false);
       return;
     }
 
-    sound.playPaperRustle();
-
-    if (currentLine.isBreak || currentLineIndex >= DIALOGUE_SCRIPT.length - 1) {
-      handleBreak();
-    } else {
-      setCurrentLineIndex((prev) => prev + 1);
+    // If at the climax of Phase 2 (Line 19), trigger shatter shockwave and transition to character selection
+    if (currentLine.isClimax) {
+      triggerShatterTransition();
+      return;
     }
+
+    // If reached end of script in Phase 3
+    if (currentLineIndex >= CHAPTER_1_SCRIPT.length - 1) {
+      finishChapter();
+      return;
+    }
+
+    setCurrentLineIndex((prev) => prev + 1);
   };
 
-  // Handle investigator chosen
+  // Shatter shockwave & blackout transition -> Character Select
+  const triggerShatterTransition = () => {
+    setIsShattering(true);
+    sound.playGlassBreak();
+
+    setTimeout(() => {
+      setIsShattering(false);
+      setShowCharacterSelect(true);
+    }, 1400);
+  };
+
+  // Called when the player selects their investigator
   const handleCharacterSelected = (characterId: MCId) => {
-    const initial = createInitialState(characterId);
-    setGameState(initial);
-    setEngineState('exploration');
+    const chosen = CHARACTERS.find((c) => c.id === characterId) || CHARACTERS[0];
+    setSelectedCharacter(chosen);
+    setShowCharacterSelect(false);
+    // Proceed to Phase 3 (Line index 19 is Step 20)
+    setCurrentLineIndex(19);
+  };
+
+  // Finish Chapter 1 & Unlock Chapter 2
+  const finishChapter = () => {
+    completeChapter(1);
+    sound.playSuccessTune();
+    setIsChapterFinished(true);
   };
 
   // Restart Chapter 1
   const handleRestartChapter = () => {
     setCurrentLineIndex(0);
-    setGameState(createInitialState('moe_stheinkha'));
-    setEngineState('dialogue');
+    setShowCharacterSelect(false);
+    setIsChapterFinished(false);
+    setIsPauseOpen(false);
+    sound.playPaperRustle();
   };
 
-  // Toggle audio mute
   const toggleMute = () => {
     const nextMuted = sound.toggleMute();
     setIsMuted(nextMuted);
   };
 
   return (
-    <div className="relative w-full h-full min-h-[640px] flex flex-col justify-between overflow-hidden bg-neutral-950 select-none">
-      {/* 1998 Monsoon & Burmese Graphic Novel Background Texture */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-neutral-950/90 to-neutral-950 pointer-events-none z-0" />
-      <div className="absolute inset-0 bg-[radial-gradient(#991b1b_1px,transparent_1px)] [background-size:16px_16px] opacity-15 pointer-events-none z-0" />
+    <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between overflow-hidden select-none">
+      {/* Dynamic Phase Ambient Tint Overlay over uni_room_chp1_bg1 */}
+      <div
+        className={`absolute inset-0 pointer-events-none transition-colors duration-1000 z-0 ${
+          currentPhase === 1
+            ? 'bg-stone-950/40 bg-gradient-to-t from-stone-950/90 via-transparent to-black/30'
+            : currentPhase === 2
+            ? 'bg-red-950/30 bg-gradient-to-t from-black via-red-950/30 to-black/40'
+            : 'bg-black/50 bg-gradient-to-t from-black via-stone-950/70 to-black/50'
+        }`}
+      />
 
-      {/* Breaking / Glass Shatter Shockwave Effect */}
-      {engineState === 'breaking' && (
-        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center animate-pulse">
-          <div className="text-center space-y-4">
-            <div className="text-4xl md:text-6xl font-bebas font-black text-red-600 tracking-widest animate-bounce">
-              <span className="inline-block scale-125">⚡</span> CRACK! <span className="inline-block scale-125">⚡</span>
-            </div>
-            <p className="text-sm font-mono text-neutral-400 uppercase tracking-widest">
-              The offering glass shatters into dark 1998 fragments...
-            </p>
+      {/* Glass Shatter & Blackout Shockwave Effect */}
+      {isShattering && (
+        <div className="absolute inset-0 z-50 bg-black flex flex-col items-center justify-center animate-pulse p-6 text-center">
+          <div
+            className="text-5xl md:text-7xl font-black text-rose-600 tracking-widest drop-shadow-[0_0_35px_rgba(225,29,72,0.8)]"
+            style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+          >
+            ⚡ THE VEIL SHATTERS ⚡
           </div>
+          <p className="text-stone-300 font-mono text-xs md:text-sm mt-4 tracking-widest uppercase">
+            The offering vessel fractures... Blackout into August 1998...
+          </p>
         </div>
       )}
 
-      {/* Top Navigation / Status Header with Fixed Pause Button */}
-      <div className="relative w-full p-4 flex items-center justify-between z-20">
-        <div className="flex items-center gap-3">
-          <div className="px-3 py-1 bg-red-950/90 border border-red-900 rounded-md text-xs font-bebas tracking-wider text-amber-200 shadow-md">
-            <span>CHAPTER 1 : BLIND START (1998)</span>
+      {/* Character Selection Screen (Displayed After Shatter Blackout) */}
+      <AnimatePresence>
+        {showCharacterSelect && (
+          <div className="absolute inset-0 z-40 bg-stone-950/95 flex flex-col">
+            <CharacterSelectScreen onSelectCharacter={handleCharacterSelected} />
           </div>
-          {engineState === 'dialogue' && (
-            <span className="text-xs font-mono text-neutral-400 hidden sm:inline">
-              Scene {currentLine.scene} / 2 • Seance Ritual
+        )}
+      </AnimatePresence>
+
+      {/* Top Header Status Bar */}
+      <div className="relative w-full p-4 sm:p-6 flex items-center justify-between z-20">
+        <div className="flex items-center gap-3">
+          {/* Phase Badge */}
+          <div className="px-3.5 py-1.5 bg-stone-950/90 border border-amber-500/80 rounded-lg text-xs font-mono font-bold tracking-wider text-amber-300 shadow-xl flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+            <span className="uppercase">
+              Phase {currentPhase} / 3 : {currentPhase === 1 ? 'The Discussion' : currentPhase === 2 ? 'The Seance' : '1998 Temporal Echo'}
+            </span>
+          </div>
+
+          {currentPhase === 3 && (
+            <span className="text-xs font-mono text-amber-400 bg-amber-950/60 border border-amber-700/60 px-2.5 py-1 rounded-md hidden sm:inline font-semibold">
+              Playing as: {selectedCharacter.name}
             </span>
           )}
+
+          <span className="text-xs font-mono text-stone-400 hidden md:inline">
+            Step {currentLineIndex + 1} of {CHAPTER_1_SCRIPT.length}
+          </span>
         </div>
 
-        {/* Action Controls: Audio + Pause Button */}
+        {/* Audio & Pause Controls */}
         <div className="flex items-center gap-2">
           <button
-            id="vn-mute-btn"
             onClick={toggleMute}
-            className="p-2 rounded-lg bg-neutral-900/80 border border-red-950 text-neutral-300 hover:text-amber-200 transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-stone-950/80 border border-stone-800 text-stone-300 hover:text-amber-300 hover:border-amber-600 transition-all cursor-pointer shadow-md"
             title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
 
           <button
-            id="vn-pause-btn"
             onClick={() => {
-              sound.playPaperRustle();
               setIsPauseOpen(true);
+              sound.playPaperRustle();
             }}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-red-950/90 hover:bg-red-900 border border-red-800 text-amber-200 font-bebas text-sm tracking-widest shadow-md transition-all active:scale-95 cursor-pointer"
-            title="Pause Investigation (ESC)"
+            className="p-2 rounded-lg bg-stone-950/80 border border-stone-800 text-stone-300 hover:text-amber-300 hover:border-amber-600 transition-all cursor-pointer shadow-md"
+            title="Pause Menu [ESC]"
           >
-            <Pause className="w-3.5 h-3.5 text-amber-300" />
-            <span>PAUSE</span>
+            <Pause className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Visual Novel Dialogue View */}
-      {engineState === 'dialogue' && (
-        <div className="relative flex-1 flex flex-col justify-end p-4 md:p-8 z-10">
-          {/* Character Portraits Container (Left & Right Slots) */}
-          <div className="relative w-full max-w-5xl mx-auto flex items-end justify-between px-4 md:px-12 h-64 md:h-80 pointer-events-none">
-            {/* Left Slot */}
-            <div className="relative h-full flex items-end">
-              <InkPortrait
-                characterId={currentLine.pos === 'left' ? currentLine.speakerId : 'moe_stheinkha'}
-                speakerName={currentLine.pos === 'left' ? currentLine.speaker : undefined}
-                isSpeaking={currentLine.pos === 'left'}
-                position="left"
-                size="lg"
-              />
-            </div>
-
-            {/* Right Slot */}
-            <div className="relative h-full flex items-end">
-              <InkPortrait
-                characterId={currentLine.pos === 'right' ? currentLine.speakerId : 'ye_yint_hein'}
-                speakerName={currentLine.pos === 'right' ? currentLine.speaker : undefined}
-                isSpeaking={currentLine.pos === 'right'}
-                position="right"
-                size="lg"
-              />
-            </div>
-          </div>
-
-          {/* Bottom-Anchored Dialogue Box with Lily of the Valley Border */}
-          <div
-            id="vn-dialogue-box"
-            onClick={advanceDialogue}
-            className="w-full max-w-4xl mx-auto cursor-pointer transition-transform active:scale-[0.99] group mt-2"
-          >
-            <LilyBorder className="w-full bg-red-950/95 border-2 border-red-900/90 rounded-2xl p-5 md:p-7 shadow-2xl backdrop-blur-md">
-              {/* Speaker Name Tag */}
-              <div className="inline-block px-3.5 py-1 bg-neutral-950 border border-red-800 rounded-md text-sm md:text-base font-bebas text-amber-300 tracking-widest mb-2 shadow">
-                {currentLine.speaker}
-              </div>
-
-              {/* Dialogue Text */}
-              <div className="min-h-[54px] md:min-h-[64px]">
-                <p className="text-base md:text-lg font-sans text-neutral-100 leading-relaxed tracking-wide">
-                  {displayedText}
-                  {isTyping && <span className="inline-block w-2 h-4 ml-1 bg-amber-400 animate-pulse" />}
-                </p>
-              </div>
-
-              {/* Footer Advance Prompt */}
-              <div className="mt-3 pt-2 border-t border-red-900/60 flex items-center justify-between text-[11px] font-mono text-neutral-400">
-                <span className="text-red-400/90 font-sans">မြန်မာ လျှို့ဝှက်ဆန်းကြယ် • အခန်း ၁</span>
-                <div className="flex items-center gap-1.5 text-amber-300/80 group-hover:text-amber-200">
-                  <span className="font-bebas tracking-wider text-xs">[PRESS ENTER / CLICK TO ADVANCE]</span>
-                  <ChevronRight className="w-3.5 h-3.5 animate-bounce-x" />
-                </div>
-              </div>
-            </LilyBorder>
-          </div>
-        </div>
-      )}
-
-      {/* Character Selection View */}
-      {engineState === 'character_select' && (
-        <div className="relative flex-1 z-10">
-          <CharacterSelectScreen onSelectCharacter={handleCharacterSelected} />
-        </div>
-      )}
-
-      {/* Exploration Menu View (Restricted Chapter 1 Flow) */}
-      {engineState === 'exploration' && (
-        <div className="relative flex-1 z-10">
-          <ExplorationMenu
-            gameState={gameState}
-            setGameState={setGameState}
-            onRestart={() => setEngineState('character_select')}
-            onOpenPause={() => setIsPauseOpen(true)}
+      {/* Character Portraits Area (Left & Right Slots) */}
+      <div className="relative w-full max-w-5xl mx-auto flex items-end justify-between px-4 sm:px-12 h-60 sm:h-72 md:h-80 pointer-events-none z-10">
+        {/* Left Slot Character (Player in Phase 3) */}
+        <div className="relative h-full flex items-end">
+          <InkPortrait
+            characterId={currentLine.pos === 'left' ? activeCharacterId : currentPhase === 3 ? selectedCharacter.id : 'may_jewel'}
+            speakerName={currentLine.pos === 'left' ? activeSpeakerName : currentPhase === 3 ? selectedCharacter.name : undefined}
+            isSpeaking={currentLine.pos === 'left'}
+            position="left"
+            size="lg"
           />
         </div>
-      )}
 
-      {/* Pause Modal Overlay */}
+        {/* Right Slot Character (Mama May in Phase 3) */}
+        <div className="relative h-full flex items-end">
+          <InkPortrait
+            characterId={currentLine.pos === 'right' ? activeCharacterId : currentPhase === 3 ? 'mama_may' : 'hsu_myat_shein'}
+            speakerName={currentLine.pos === 'right' ? activeSpeakerName : currentPhase === 3 ? 'Mama May (1998)' : undefined}
+            isSpeaking={currentLine.pos === 'right'}
+            position="right"
+            size="lg"
+          />
+        </div>
+      </div>
+
+      {/* Thematic Dialogue Box Area */}
+      <div className="relative w-full max-w-4xl mx-auto px-4 pb-4 sm:pb-8 z-20">
+        <div
+          onClick={advanceDialogue}
+          className="w-full relative rounded-2xl bg-stone-950/90 backdrop-blur-xl border-2 border-amber-900/60 p-5 sm:p-7 shadow-2xl transition-all duration-200 cursor-pointer hover:border-amber-600/80 group ring-1 ring-black/80"
+        >
+          {/* Subtle Vintage Wood/Lacquer Corner Accents */}
+          <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-amber-500/60 pointer-events-none" />
+          <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-amber-500/60 pointer-events-none" />
+          <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-amber-500/60 pointer-events-none" />
+          <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-amber-500/60 pointer-events-none" />
+
+          {/* Speaker Name Header */}
+          <div className="flex items-center justify-between mb-3 border-b border-stone-800/80 pb-2">
+            <div className="flex items-center gap-2">
+              <span
+                className="text-xl sm:text-2xl font-black tracking-wider uppercase text-amber-400 drop-shadow"
+                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+              >
+                {activeSpeakerName}
+              </span>
+              <span className="text-[10px] font-mono tracking-widest text-stone-400 uppercase hidden sm:inline">
+                [{currentPhase === 3 ? '1998 TEMPORAL DISPLACEMENT' : '1998 HOSTEL INVESTIGATION'}]
+              </span>
+            </div>
+
+            <span className="text-[11px] font-mono text-amber-500/80">
+              {isTyping ? 'Typing...' : 'Ready'}
+            </span>
+          </div>
+
+          {/* Dialogue Text Body with Smooth Typewriter Effect */}
+          <p className="text-stone-100 font-sans text-sm sm:text-base md:text-lg leading-relaxed min-h-[56px] sm:min-h-[64px] tracking-wide select-text">
+            {displayedText}
+            {isTyping && <span className="inline-block w-2 h-4 bg-amber-400 ml-1 animate-pulse" />}
+          </p>
+
+          {/* Click to Advance Hint */}
+          <div className="mt-4 flex items-center justify-between text-xs font-mono text-stone-400 border-t border-stone-800/60 pt-2">
+            <span className="text-[11px] text-stone-400">
+              Press <span className="text-amber-400 font-bold">[ENTER]</span> or <span className="text-amber-400 font-bold">[SPACE]</span>
+            </span>
+
+            <div className="flex items-center gap-1 text-amber-400 group-hover:translate-x-1 transition-transform">
+              <span className="font-semibold">{currentLine.isClimax ? 'TRIGGER CLIMAX' : 'CONTINUE'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Chapter 1 Complete Modal with Chapter 2 Unlock Trigger */}
+      <AnimatePresence>
+        {isChapterFinished && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-lg rounded-2xl bg-stone-950 border-2 border-amber-500 p-6 sm:p-8 shadow-[0_0_50px_rgba(245,158,11,0.4)] text-center"
+            >
+              {/* Header Icon */}
+              <div className="w-16 h-16 rounded-full bg-amber-950/80 border-2 border-amber-500 mx-auto flex items-center justify-center mb-4 text-amber-400 shadow-xl">
+                <Key className="w-8 h-8" />
+              </div>
+
+              {/* Title & Archival Stamp */}
+              <span className="text-xs font-mono font-bold tracking-widest text-amber-500 uppercase">
+                INVESTIGATION MILESTONE
+              </span>
+              <h3
+                className="text-3xl sm:text-4xl font-black text-stone-100 tracking-wider uppercase mt-1 mb-1"
+                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+              >
+                CHAPTER 1 COMPLETED
+              </h3>
+              <p className="text-amber-400 font-mono text-xs mb-2 font-bold">
+                INVESTIGATOR: {selectedCharacter.name.toUpperCase()} ({selectedCharacter.archetype.toUpperCase()})
+              </p>
+              <p className="text-stone-300 text-xs sm:text-sm font-mono mb-6 leading-relaxed">
+                You survived the temporal breach, uncovered the Caretaker’s 1998 Bribe Ledger, and retrieved the Courtyard Dried Well Key.
+              </p>
+
+              {/* Unlock Announcement Box */}
+              <div className="p-4 rounded-xl bg-amber-950/50 border border-amber-600/80 flex items-center justify-center gap-3 text-amber-200 text-sm font-mono mb-6">
+                <Sparkles className="w-5 h-5 text-amber-400 animate-spin" />
+                <span className="font-bold">CHAPTER 2: UNDERSTANDING IS NOW UNLOCKED!</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    navigate('/chapters/2');
+                  }}
+                  className="flex-1 py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  <span>ENTER CHAPTER 2</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    navigate('/chapters');
+                  }}
+                  className="py-3 px-5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
+                >
+                  CHAPTER SELECT
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Pause Modal */}
       <PauseModal
         isOpen={isPauseOpen}
         onClose={() => setIsPauseOpen(false)}
-        onRestartChapter={handleRestartChapter}
-        chapterNumber={1}
-        chapterTitle="Blind Start"
+        onRestart={handleRestartChapter}
+        onQuit={() => navigate('/chapters')}
       />
     </div>
   );

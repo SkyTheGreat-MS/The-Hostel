@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { AtmosphericLayout } from '../components/AtmosphericLayout';
@@ -50,7 +50,6 @@ export const ChapterSelect: React.FC = () => {
   const navigate = useNavigate();
   const [selectedChapter, setSelectedChapter] = useState<number>(1);
   const [lockedNotice, setLockedNotice] = useState<string | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-focus on highest available chapter on load
   useEffect(() => {
@@ -74,16 +73,6 @@ export const ChapterSelect: React.FC = () => {
     }
   }, [justUnlockedChapter, clearJustUnlocked]);
 
-  // Scroll to selected chapter card in container
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const card = scrollContainerRef.current.querySelector(`#chapter-card-${selectedChapter}`) as HTMLElement | null;
-      if (card && typeof card.scrollIntoView === 'function') {
-        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
-    }
-  }, [selectedChapter]);
-
   // Handle entering chapter
   const handleSelectChapter = (chapterNum: number) => {
     const unlocked = isChapterUnlocked(chapterNum);
@@ -103,7 +92,7 @@ export const ChapterSelect: React.FC = () => {
     }
   };
 
-  // Keyboard navigation: Left/Right to scroll & select, Enter to play
+  // Keyboard navigation: Left/Right to select, 1-3 to jump, Enter to play
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
@@ -114,6 +103,10 @@ export const ChapterSelect: React.FC = () => {
         e.preventDefault();
         sound.playMenuHover();
         setSelectedChapter((prev) => Math.min(3, prev + 1));
+      } else if (['1', '2', '3'].includes(e.key)) {
+        const num = parseInt(e.key, 10);
+        sound.playMenuHover();
+        setSelectedChapter(num);
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         handleSelectChapter(selectedChapter);
@@ -145,7 +138,7 @@ export const ChapterSelect: React.FC = () => {
             CHAPTER SELECTION
           </h2>
           <p className="text-xs font-mono text-stone-400 mt-1 tracking-wider">
-            [←/→] Scroll &bull; [ENTER] Play
+            [←/→] Select &bull; [ENTER] Play
           </p>
         </div>
 
@@ -170,18 +163,18 @@ export const ChapterSelect: React.FC = () => {
           )}
         </AnimatePresence>
 
-        {/* Center Scrollable Chapter Carousel */}
-        <div className="relative w-full max-w-5xl flex items-center justify-center px-4 sm:px-12">
-          {/* Scroll Left Button */}
+        {/* Center Chapter Cards Container (Fully Visible, No Cutting Off) */}
+        <div className="relative w-full max-w-5xl flex items-center justify-center px-3 sm:px-10">
+          {/* Previous Arrow Button */}
           <button
             onClick={() => {
               sound.playMenuHover();
               setSelectedChapter((prev) => Math.max(1, prev - 1));
             }}
             disabled={selectedChapter === 1}
-            className={`hidden sm:flex absolute left-0 z-20 w-11 h-11 items-center justify-center rounded-full bg-stone-950/80 border border-stone-800 transition-all ${
+            className={`flex absolute left-0 sm:-left-3 lg:-left-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-stone-950/85 border border-stone-800 transition-all ${
               selectedChapter === 1
-                ? 'opacity-30 cursor-not-allowed text-stone-600'
+                ? 'opacity-20 cursor-not-allowed text-stone-600'
                 : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
             }`}
             aria-label="Previous Chapter"
@@ -189,11 +182,8 @@ export const ChapterSelect: React.FC = () => {
             <ChevronLeft className="w-6 h-6" />
           </button>
 
-          {/* Cards Container with Scroll Snapping in Center */}
-          <div
-            ref={scrollContainerRef}
-            className="w-full flex items-center justify-center gap-4 sm:gap-8 overflow-x-auto py-6 px-2 scroll-smooth no-scrollbar"
-          >
+          {/* Cards Showcase: All 3 visible side-by-side on sm+, 1 card on mobile */}
+          <div className="w-full flex items-center justify-center gap-3 sm:gap-4 md:gap-6 py-6">
             {CHAPTERS.map((chap) => {
               const unlocked = isChapterUnlocked(chap.number);
               const isCompleted = highestChapterCompleted >= chap.number;
@@ -212,17 +202,19 @@ export const ChapterSelect: React.FC = () => {
                     }
                   }}
                   whileHover={{ y: -4 }}
-                  className={`relative flex-shrink-0 w-64 sm:w-80 h-96 sm:h-[420px] rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden border ${
+                  className={`relative flex-1 max-w-[280px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[310px] h-[390px] sm:h-[420px] rounded-2xl p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden border ${
                     isSelected
                       ? unlocked
-                        ? 'bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 border-amber-500 shadow-[0_0_35px_rgba(245,158,11,0.3)] scale-105 z-10'
-                        : 'bg-gradient-to-b from-stone-950/95 to-black/95 border-stone-700 shadow-2xl scale-105 z-10'
-                      : 'bg-stone-950/80 border-stone-800/80 opacity-70 hover:opacity-90 hover:border-stone-700 scale-95'
+                        ? 'flex bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 border-amber-500 shadow-[0_0_35px_rgba(245,158,11,0.35)] scale-105 z-20 ring-1 ring-amber-500/50'
+                        : 'flex bg-gradient-to-b from-stone-950/95 to-black/95 border-stone-700 shadow-2xl scale-105 z-20 ring-1 ring-stone-600/40'
+                      : 'hidden sm:flex bg-stone-950/85 border-stone-800/80 opacity-75 hover:opacity-95 hover:border-stone-700 scale-95'
                   }`}
                 >
                   {/* Subtle Background Watermark Roman Numeral */}
-                  <div className="absolute right-4 -bottom-6 text-9xl font-black text-stone-800/20 select-none pointer-events-none"
-                       style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}>
+                  <div
+                    className="absolute right-4 -bottom-6 text-9xl font-black text-stone-800/20 select-none pointer-events-none"
+                    style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                  >
                     {chap.number === 1 ? 'I' : chap.number === 2 ? 'II' : 'III'}
                   </div>
 
@@ -295,16 +287,16 @@ export const ChapterSelect: React.FC = () => {
             })}
           </div>
 
-          {/* Scroll Right Button */}
+          {/* Next Arrow Button */}
           <button
             onClick={() => {
               sound.playMenuHover();
               setSelectedChapter((prev) => Math.min(3, prev + 1));
             }}
             disabled={selectedChapter === 3}
-            className={`hidden sm:flex absolute right-0 z-20 w-11 h-11 items-center justify-center rounded-full bg-stone-950/80 border border-stone-800 transition-all ${
+            className={`flex absolute right-0 sm:-right-3 lg:-right-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-stone-950/85 border border-stone-800 transition-all ${
               selectedChapter === 3
-                ? 'opacity-30 cursor-not-allowed text-stone-600'
+                ? 'opacity-20 cursor-not-allowed text-stone-600'
                 : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
             }`}
             aria-label="Next Chapter"
