@@ -49,7 +49,8 @@ export const ChapterStub: React.FC<ChapterStubProps> = ({
       headerSubtitle={`CHAPTER ${chapterNumber} • STUB INTERFACE`}
       backTo="/chapters"
       backLabel="Chapter Select"
-      scene={chapterNumber === 3 ? 'seance' : 'hallway'}
+      backgroundImage={`/assets/chapter_${chapterNumber}.jpg`}
+      chapterNumber={chapterNumber}
       colorGrade={chapterNumber === 3 ? 'guttering_wax' : 'monsoon_green'}
     >
       <div className="flex-1 flex flex-col items-center justify-center py-8">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
+import { getAssetBackground, DEFAULT_BACKGROUND_JPG } from '../utils/assets';
 import {
   Volume2,
   VolumeX,
@@ -18,7 +19,11 @@ export interface AtmosphericLayoutProps {
   showBackNav?: boolean;
   backTo?: string;
   backLabel?: string;
+  /** Simple JPG background path (e.g. '/assets/main_menu.jpg', '/assets/chapter_1.jpg') */
+  backgroundImage?: string;
+  /** Deprecated legacy prop preserved for backward compatibility */
   scene?: 'hallway' | 'seance' | 'chapter3';
+  chapterNumber?: number;
   colorGrade?: 'monsoon_green' | 'guttering_wax' | 'archive_1998';
 }
 
@@ -30,11 +35,16 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
   showBackNav = true,
   backTo = '/chapters',
   backLabel = 'Back to Chapters',
-  scene = 'hallway',
+  backgroundImage,
+  scene,
+  chapterNumber,
   colorGrade = 'monsoon_green',
 }) => {
   const [isMuted, setIsMuted] = useState<boolean>(sound.getMuted());
   const navigate = useNavigate();
+
+  // Determine effective background path
+  const effectiveBg = backgroundImage || (chapterNumber ? `/assets/chapter_${chapterNumber}.jpg` : '/assets/main_menu.jpg');
 
   const toggleSound = () => {
     const nextMuted = !isMuted;
@@ -56,72 +66,18 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
   return (
     <div className="relative w-full min-h-screen bg-[#050b09] text-stone-200 overflow-x-hidden font-sans selection:bg-amber-900/60 selection:text-amber-100 flex flex-col">
-      {/* 1. Background Atmosphere Canvas */}
+      {/* 1. Background Atmosphere Image from Assets */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {scene === 'seance' ? (
-          <div className={`w-full h-full bg-[#080705] relative overflow-hidden ${getColorGradeClass()}`}>
-            <svg className="w-full h-full absolute inset-0" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <radialGradient id="cand-bloom" cx="42%" cy="58%" r="45%">
-                  <stop offset="0%" stopColor="#fef08a" stopOpacity="0.35" />
-                  <stop offset="25%" stopColor="#f97316" stopOpacity="0.18" />
-                  <stop offset="60%" stopColor="#7c2d12" stopOpacity="0.06" />
-                  <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-                </radialGradient>
-                <linearGradient id="tbl-wood" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#291a10" />
-                  <stop offset="50%" stopColor="#190f09" />
-                  <stop offset="100%" stopColor="#0c0704" />
-                </linearGradient>
-              </defs>
-              <rect width="1920" height="1080" fill="#0a0806" />
-              <circle cx="800" cy="620" r="600" fill="url(#cand-bloom)" />
-              <polygon points="280,680 1640,680 1850,1080 70,1080" fill="url(#tbl-wood)" />
-              <line x1="280" y1="680" x2="1640" y2="680" stroke="#78350f" strokeWidth="4" opacity="0.6" />
-            </svg>
-          </div>
-        ) : (
-          /* UIT Pathway 326 Corridor */
-          <div className={`w-full h-full bg-[#050b09] relative overflow-hidden ${getColorGradeClass()}`}>
-            <svg className="w-full h-full absolute inset-0 opacity-60" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-              <defs>
-                <linearGradient id="lay-floor-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0b1714" />
-                  <stop offset="45%" stopColor="#122521" />
-                  <stop offset="85%" stopColor="#0e1d1a" />
-                  <stop offset="100%" stopColor="#050a08" />
-                </linearGradient>
-                <linearGradient id="lay-left-wall" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#162c26" />
-                  <stop offset="70%" stopColor="#11221d" />
-                  <stop offset="100%" stopColor="#091411" />
-                </linearGradient>
-                <linearGradient id="lay-right-wall" x1="1" y1="0" x2="0" y2="0">
-                  <stop offset="0%" stopColor="#183029" />
-                  <stop offset="70%" stopColor="#11221d" />
-                  <stop offset="100%" stopColor="#091411" />
-                </linearGradient>
-                <radialGradient id="lay-lantern-glow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.45" />
-                  <stop offset="30%" stopColor="#d97706" stopOpacity="0.25" />
-                  <stop offset="70%" stopColor="#92400e" stopOpacity="0.08" />
-                  <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-              {/* Floor */}
-              <polygon points="0,1080 1920,1080 1020,490 900,490" fill="url(#lay-floor-grad)" />
-              {/* Left & Right Walls */}
-              <polygon points="0,0 0,1080 900,490 900,240" fill="url(#lay-left-wall)" />
-              <polygon points="1920,0 1920,1080 1020,490 1020,240" fill="url(#lay-right-wall)" />
-              {/* Roof Truss */}
-              <polygon points="0,0 1920,0 1020,240 900,240" fill="#08100e" />
-              {/* End Door Portal */}
-              <polygon points="900,490 1020,490 1020,310 900,310" fill="#132a24" />
-              {/* Mid-right room warm glow */}
-              <circle cx="1220" cy="510" r="140" fill="url(#lay-lantern-glow)" />
-            </svg>
-          </div>
-        )}
+        <img
+          src={getAssetBackground(effectiveBg)}
+          alt="Atmospheric Background"
+          onError={(e) => {
+            e.currentTarget.src = DEFAULT_BACKGROUND_JPG;
+          }}
+          className={`w-full h-full object-cover select-none pointer-events-none transition-opacity duration-700 ${getColorGradeClass()}`}
+        />
+        {/* Cinematic vignette & shadow overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/75 pointer-events-none" />
       </div>
 
       {/* 2. Monsoon Rain Effect */}
