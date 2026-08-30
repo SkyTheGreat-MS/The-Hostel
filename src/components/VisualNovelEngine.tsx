@@ -9,6 +9,8 @@ import { InkPortrait } from './InkPortrait';
 import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
+import branchScaryBg from '@/assets/Branchscary.jpg';
+import seanceCircleBg from '@/assets/seancecircle.jpg';
 import {
   Volume2,
   VolumeX,
@@ -49,6 +51,7 @@ interface InitialDialogueStep {
   text: string;
   isClimax?: boolean;
   soundCue?: 'hover' | 'select' | 'paper' | 'damage' | 'drone' | 'break';
+  bgImage?: string;
 }
 
 const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
@@ -80,6 +83,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'Keep your voice down, Ye Yint. The caretaker specifically warned everyone never to trespass into this abandoned wing after midnight.',
+    bgImage: branchScaryBg,
   },
   {
     id: 4,
@@ -88,6 +92,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'My grandmother warned me about this building... She said a senior named Mama May vanished here in August 1998, and her spirit never left.',
+    bgImage: branchScaryBg,
   },
   {
     id: 5,
@@ -97,6 +102,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Look at this floorplan from the university registrar. Pathway 326 was walled off immediately after her disappearance. They claimed it was structural instability.',
     soundCue: 'paper',
+    bgImage: branchScaryBg,
   },
   {
     id: 6,
@@ -105,6 +111,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'mona',
     pos: 'right',
     text: "If you're all terrified, we can pack up our bags right now. But if we want the truth of what happened in 1998, we follow the ritual rules.",
+    bgImage: branchScaryBg,
   },
   {
     id: 7,
@@ -113,6 +120,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'may_jewel',
     pos: 'left',
     text: 'Gather close around the table. Here is the letter board and the tea glass. Everyone place the tip of your index finger on the rim of the glass.',
+    bgImage: branchScaryBg,
   },
   {
     id: 8,
@@ -121,6 +129,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: "Done. My finger is on it. Let's see if this 'guardian spirit' really exists.",
+    bgImage: seanceCircleBg,
   },
   {
     id: 9,
@@ -130,6 +139,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Remember the cardinal rule: whatever happens, do NOT break the circle or lift your finger until the spirit dismisses us.',
     soundCue: 'select',
+    bgImage: seanceCircleBg,
   },
 
   // ==========================================
@@ -143,6 +153,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Spirits of August 1998... Restless soul of the hostel corridor... If you dwell within these walls, answer our call and make your presence known.',
     soundCue: 'drone',
+    bgImage: seanceCircleBg,
   },
   {
     id: 11,
@@ -151,6 +162,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'Wait... did someone open the window? My breath is turning to mist... The air in this room suddenly dropped like ice.',
+    bgImage: seanceCircleBg,
   },
   {
     id: 12,
@@ -159,6 +171,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: "Look at the red candle! The flame is trembling violently... and it's turning deep indigo blue! Don't move!",
+    bgImage: seanceCircleBg,
   },
   {
     id: 13,
@@ -167,6 +180,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: "Hey, cut it out! Which one of you is pushing the glass? Don't mess around, stop pulling it!",
+    bgImage: seanceCircleBg,
   },
   {
     id: 14,
@@ -175,6 +189,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'yin_min_htike',
     pos: 'left',
     text: "Nobody is pushing it! Look at our knuckles, we're barely touching the rim! The glass is gliding across the paper on its own!",
+    bgImage: seanceCircleBg,
   },
   {
     id: 15,
@@ -183,6 +198,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'mona',
     pos: 'right',
     text: 'It is spelling out letters... M... A... M... A... It is spelling Mama May!',
+    bgImage: seanceCircleBg,
   },
   {
     id: 16,
@@ -191,6 +207,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: "A cold breath just whispered across the back of my neck... 'Why did you leave me in the dark?'",
+    bgImage: seanceCircleBg,
   },
   {
     id: 17,
@@ -199,6 +216,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'Listen! Outside the wooden door... Heavy, wet barefoot steps dragging across the corridor floorboards!',
+    bgImage: seanceCircleBg,
   },
   {
     id: 18,
@@ -207,6 +225,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: 'The glass is vibrating violently! It is spinning in circles! PULL YOUR HANDS AWAY!',
+    bgImage: seanceCircleBg,
   },
   {
     id: 19,
@@ -217,6 +236,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     text: 'NO! KEEP YOUR HANDS ON THE GLASS—IF THE VESSEL SHATTERS THE VEIL OPENS—',
     isClimax: true,
     soundCue: 'break',
+    bgImage: seanceCircleBg,
   },
 ];
 
@@ -1039,6 +1059,9 @@ export const VisualNovelEngine: React.FC = () => {
 
   // Resolve active background image
   const getActiveBackground = (): string => {
+    if (mode === 'phase1_2' && currentP12Line.bgImage) {
+      return currentP12Line.bgImage;
+    }
     if (mode === 'location_select') {
       return activeTierLocations[selectedLocationIdx]?.bgImage || '/assets/uni_room_chp1_bg1.jpg';
     }
@@ -1062,8 +1085,8 @@ export const VisualNovelEngine: React.FC = () => {
 
   return (
     <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between overflow-hidden select-none">
-      {/* 1. Dynamic Background with Zoom-In Transition */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* 1. Single full-viewport scene background (opaque so nothing stacks behind it) */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-black">
         <img
           src={getActiveBackground()}
           alt="Scene Atmosphere"
@@ -1073,7 +1096,7 @@ export const VisualNovelEngine: React.FC = () => {
               : 'scale-100 filter brightness-90 contrast-105'
           }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/50 to-black/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
       </div>
 
       {/* 2. Supernatural Glitch Flicker Effect */}

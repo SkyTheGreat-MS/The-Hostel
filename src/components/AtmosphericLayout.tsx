@@ -21,6 +21,8 @@ export interface AtmosphericLayoutProps {
   backLabel?: string;
   /** Simple JPG background path (e.g. '/assets/main_menu.jpg', '/assets/chapter_1.jpg') */
   backgroundImage?: string;
+  /** Hide the page-level background when a child (e.g. the VN engine) owns the scene image. */
+  hideBackground?: boolean;
   /** Deprecated legacy prop preserved for backward compatibility */
   scene?: 'hallway' | 'seance' | 'chapter3';
   chapterNumber?: number;
@@ -36,6 +38,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
   backTo = '/chapters',
   backLabel = 'Back to Chapters',
   backgroundImage,
+  hideBackground = false,
   scene,
   chapterNumber,
   colorGrade = 'monsoon_green',
@@ -67,18 +70,20 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
   return (
     <div className="relative w-full min-h-screen bg-[#050b09] text-stone-200 overflow-x-hidden font-sans selection:bg-amber-900/60 selection:text-amber-100 flex flex-col">
       {/* 1. Background Atmosphere Image from Assets */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <img
-          src={getAssetBackground(effectiveBg)}
-          alt="Atmospheric Background"
-          onError={(e) => {
-            e.currentTarget.src = DEFAULT_BACKGROUND_JPG;
-          }}
-          className={`w-full h-full object-cover select-none pointer-events-none transition-opacity duration-700 ${getColorGradeClass()}`}
-        />
-        {/* Cinematic vignette & shadow overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/75 pointer-events-none" />
-      </div>
+      {!hideBackground && (
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <img
+            src={getAssetBackground(effectiveBg)}
+            alt="Atmospheric Background"
+            onError={(e) => {
+              e.currentTarget.src = DEFAULT_BACKGROUND_JPG;
+            }}
+            className={`w-full h-full object-cover select-none pointer-events-none transition-opacity duration-700 ${getColorGradeClass()}`}
+          />
+          {/* Cinematic vignette & shadow overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/75 pointer-events-none" />
+        </div>
+      )}
 
       {/* 2. Monsoon Rain Effect */}
       {showRain && (
