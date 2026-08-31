@@ -11,6 +11,7 @@ export const ChapterOne: React.FC = () => {
       chapterNumber={1}
       backTo="/chapters"
       backLabel="Chapters"
+      fullBleed={true}
     >
       <div className="w-full h-full flex-1 flex flex-col">
         <VisualNovelEngine />

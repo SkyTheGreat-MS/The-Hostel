@@ -1061,20 +1061,8 @@ export const VisualNovelEngine: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between overflow-hidden select-none">
-      {/* 1. Dynamic Background with Zoom-In Transition */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <img
-          src={getActiveBackground()}
-          alt="Scene Atmosphere"
-          className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
-            isZoomed
-              ? 'scale-125 filter brightness-[0.75] contrast-125'
-              : 'scale-100 filter brightness-90 contrast-105'
-          }`}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-950/95 via-stone-950/50 to-black/60 pointer-events-none" />
-      </div>
+    <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between overflow-hidden select-none bg-transparent">
+      {/* Dynamic Background is unified on the outermost AtmosphericLayout wrapper */}
 
       {/* 2. Supernatural Glitch Flicker Effect */}
       {currentStep.isGlitch && (
