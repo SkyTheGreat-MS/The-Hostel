@@ -27,6 +27,7 @@ export interface AtmosphericLayoutProps {
   scene?: 'hallway' | 'seance' | 'chapter3';
   chapterNumber?: number;
   colorGrade?: 'monsoon_green' | 'guttering_wax' | 'archive_1998';
+  fullBleed?: boolean;
 }
 
 export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
@@ -42,6 +43,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
   scene,
   chapterNumber,
   colorGrade = 'monsoon_green',
+  fullBleed = false,
 }) => {
   const [isMuted, setIsMuted] = useState<boolean>(sound.getMuted());
   const navigate = useNavigate();
@@ -175,7 +177,13 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
       </header>
 
       {/* 6. Main Content Area */}
-      <main className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col">
+      <main
+        className={`relative z-10 flex-1 w-full flex flex-col ${
+          fullBleed
+            ? 'h-full p-0 max-w-none'
+            : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8'
+        }`}
+      >
         {children}
       </main>
 
