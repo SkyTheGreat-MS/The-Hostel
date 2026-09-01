@@ -1,6 +1,10 @@
 import React from 'react';
-import hsuPortrait from '@/assets/hsu_myat_shein_1.jpg';
+import hmsPortrait from '@/assets/hms_1.png';
 import mjPortrait from '@/assets/mj_1.png';
+import mskPortrait from '@/assets/msk_1.png';
+import mtPortrait from '@/assets/mt_1.png';
+import ymhPortrait from '@/assets/ymh_1.png';
+import yyhPortrait from '@/assets/yyh_1.png';
 
 interface InkPortraitProps {
   characterId?: string;
@@ -21,23 +25,29 @@ export const InkPortrait: React.FC<InkPortraitProps> = ({
 }) => {
   const normalizedId = (characterId || '').toLowerCase();
 
-  // Determine whether to use hsu_myat_shein_1 or mj_1 across all six characters
-  // Toggle mapping:
-  // May Jewel -> MJ
-  // Hsu Myat Shein -> Hsu
-  // Moe Stheinkha -> MJ
-  // Ye Yint Hein -> Hsu
-  // Yin Min Htike -> MJ
-  // Mona -> Hsu
-  const isHsuType =
-    normalizedId.includes('hsu') ||
-    normalizedId.includes('ye') ||
-    normalizedId.includes('mona') ||
-    normalizedId.includes('aye');
+  // Per-character portrait mapping.
+  // YE YINT HEIN -> yyh, MOE STHEINKHA -> msk, HSU MYAT SHEIN -> hms,
+  // YIN MIN HTIKE -> ymh, MAY JEWEL -> mj, MONA -> mt.
+  // Legacy aliases from gameData are grouped with their base character.
+  const portraitByCharacter: Record<string, string> = {
+    ye_yint_hein: yyhPortrait,
+    kyaw_swar: yyhPortrait,
+    moe_stheinkha: mskPortrait,
+    thazin: mskPortrait,
+    hsu_myat_shein: hmsPortrait,
+    aye_aye: hmsPortrait,
+    yin_min_htike: ymhPortrait,
+    htet: ymhPortrait,
+    may_jewel: mjPortrait,
+    su_su: mjPortrait,
+    mona: mtPortrait,
+    min_khant: mtPortrait,
+    mama_may: mjPortrait,
+  };
 
   const isMamaMay = normalizedId.includes('mama');
 
-  const portraitSrc = isHsuType ? hsuPortrait : mjPortrait;
+  const portraitSrc = portraitByCharacter[normalizedId] || mjPortrait;
 
   // Sizing definitions
   const sizeClasses = {
