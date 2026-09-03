@@ -814,6 +814,17 @@ export const VisualNovelEngine: React.FC = () => {
 
   const currentStep = getCurrentTextPayload();
 
+  // Horizontal alignment of the current speaker relative to the dialogue box:
+  // 'left' | 'center' | 'right'
+  const speakerAlign: 'left' | 'center' | 'right' = ((): 'left' | 'center' | 'right' => {
+    if (mode === 'phase1_2') return currentP12Line.pos as 'left' | 'right';
+    if (mode === 'investigating_location' && activeInvestigatingLoc)
+      return activeInvestigatingLoc.lines[locLineIndex]?.speakerType === 'player'
+        ? 'left'
+        : 'right';
+    return 'left';
+  })();
+
   // Typewriter effect
   useEffect(() => {
     if (
@@ -1401,63 +1412,88 @@ export const VisualNovelEngine: React.FC = () => {
           <div className="relative w-full max-w-5xl mx-auto flex items-end justify-between px-4 sm:px-12 h-60 sm:h-72 md:h-80 pointer-events-none z-10">
             {/* Left Slot Character */}
             <div className="relative h-full flex items-end">
-              <InkPortrait
-                characterId={
-                  mode === 'phase1_2'
-                    ? currentP12Line.characterId
-                    : selectedCharacter.id
-                }
-                speakerName={
-                  mode === 'phase1_2'
-                    ? currentP12Line.pos === 'left' ? currentP12Line.speaker : undefined
-                    : selectedCharacter.name
-                }
-                isSpeaking={
-                  mode === 'phase1_2'
-                    ? currentP12Line.pos === 'left'
-                    : mode === 'investigating_location' && activeInvestigatingLoc
-                    ? activeInvestigatingLoc.lines[locLineIndex]?.speakerType === 'player'
-                    : true
-                }
-                position="left"
-                size="lg"
-              />
+              {mode === 'phase1_2' ? (
+                currentP12Line.pos === 'left' && (
+                  <InkPortrait
+                    characterId={currentP12Line.characterId}
+                    speakerName={currentP12Line.speaker}
+                    isSpeaking={true}
+                    position="left"
+                    size="lg"
+                  />
+                )
+              ) : (
+                <InkPortrait
+                  characterId={selectedCharacter.id}
+                  speakerName={selectedCharacter.name}
+                  isSpeaking={
+                    mode === 'investigating_location' && activeInvestigatingLoc
+                      ? activeInvestigatingLoc.lines[locLineIndex]?.speakerType === 'player'
+                      : true
+                  }
+                  position="left"
+                  size="lg"
+                />
+              )}
             </div>
 
             {/* Right Slot Character */}
             <div className="relative h-full flex items-end">
-              <InkPortrait
-                characterId={
-                  mode === 'phase1_2'
-                    ? currentP12Line.characterId
-                    : mode === 'investigating_location' &&
-                      activeInvestigatingLoc?.lines[locLineIndex]?.speakerType === 'mama_may'
-                    ? 'mama_may'
-                    : 'hsu_myat_shein'
-                }
-                speakerName={
-                  mode === 'phase1_2'
-                    ? currentP12Line.pos === 'right' ? currentP12Line.speaker : undefined
-                    : mode === 'investigating_location' &&
-                      activeInvestigatingLoc?.lines[locLineIndex]?.speakerType === 'mama_may'
-                    ? 'Mama May (1998)'
-                    : undefined
-                }
-                isSpeaking={
-                  mode === 'phase1_2'
-                    ? currentP12Line.pos === 'right'
-                    : mode === 'investigating_location' && activeInvestigatingLoc
-                    ? activeInvestigatingLoc.lines[locLineIndex]?.speakerType !== 'player'
-                    : false
-                }
-                position="right"
-                size="lg"
-              />
+              {mode === 'phase1_2' ? (
+                currentP12Line.pos === 'right' && (
+                  <InkPortrait
+                    characterId={currentP12Line.characterId}
+                    speakerName={currentP12Line.speaker}
+                    isSpeaking={true}
+                    position="right"
+                    size="lg"
+                  />
+                )
+              ) : (
+                <InkPortrait
+                  characterId={
+                    mode === 'investigating_location' &&
+                    activeInvestigatingLoc?.lines[locLineIndex]?.speakerType === 'mama_may'
+                      ? 'mama_may'
+                      : 'hsu_myat_shein'
+                  }
+                  speakerName={
+                    mode === 'investigating_location' &&
+                    activeInvestigatingLoc?.lines[locLineIndex]?.speakerType === 'mama_may'
+                      ? 'Mama May (1998)'
+                      : undefined
+                  }
+                  isSpeaking={
+                    mode === 'investigating_location' && activeInvestigatingLoc
+                      ? activeInvestigatingLoc.lines[locLineIndex]?.speakerType !== 'player'
+                      : false
+                  }
+                  position="right"
+                  size="lg"
+                />
+              )}
             </div>
           </div>
 
           {/* Thematic Dialogue Box Area with REWIND & ADVANCE Features */}
           <div className="relative w-full max-w-4xl mx-auto px-4 pb-4 sm:pb-8 z-20">
+            {/* Character Name Tab (attached to top edge, follows speaker position) */}
+            <div
+              className="absolute top-0 z-30 px-4 py-1.5 rounded-t-md rounded-b-sm border border-b-0 border-amber-600/80 bg-stone-900 shadow-md pointer-events-none select-none"
+              style={{
+                transform: 'translateY(-100%)',
+                ...(speakerAlign === 'left' && { left: '2rem' }),
+                ...(speakerAlign === 'center' && { left: '50%', transform: 'translate(-50%, -100%)' }),
+                ...(speakerAlign === 'right' && { right: '2rem' }),
+              }}
+            >
+              <span
+                className="text-sm sm:text-base font-black tracking-wider uppercase text-amber-400 whitespace-nowrap"
+                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+              >
+                {currentStep.speakerName}
+              </span>
+            </div>
             <div
               onClick={advanceDialogue}
               className="w-full relative rounded-2xl bg-stone-950/90 backdrop-blur-xl border-2 border-amber-900/60 p-5 sm:p-7 shadow-2xl transition-all duration-200 cursor-pointer hover:border-amber-600/80 group ring-1 ring-black/80"
@@ -1471,13 +1507,6 @@ export const VisualNovelEngine: React.FC = () => {
               {/* Speaker Name & Rewind Bar */}
               <div className="flex items-center justify-between mb-3 border-b border-stone-800/80 pb-2">
                 <div className="flex items-center gap-2">
-                  <span
-                    className="text-xl sm:text-2xl font-black tracking-wider uppercase text-amber-400 drop-shadow"
-                    style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                  >
-                    {currentStep.speakerName}
-                  </span>
-
                   <span className="text-[10px] font-mono tracking-widest text-stone-400 uppercase hidden sm:inline">
                     {mode === 'investigating_location' && activeInvestigatingLoc
                       ? `[${activeInvestigatingLoc.title.toUpperCase()}]`

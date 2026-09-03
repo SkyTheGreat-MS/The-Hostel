@@ -76,22 +76,6 @@ export const InkPortrait: React.FC<InkPortraitProps> = ({
           } ${isMamaMay ? 'filter hue-rotate-180 invert brightness-90 contrast-125' : ''}`}
         />
       </div>
-
-      {/* Speaker Tag Pill Beneath Portrait */}
-      {speakerName && (
-        <div
-          className={`absolute -bottom-3 z-30 px-3 py-1 rounded-md text-xs font-mono font-bold tracking-wider uppercase transition-all shadow-md whitespace-nowrap ${
-            isSpeaking
-              ? isMamaMay
-                ? 'bg-red-950 border border-red-600 text-red-200'
-                : 'bg-stone-900 border border-stone-700 text-amber-200'
-              : 'bg-stone-950/90 border border-stone-800 text-stone-400'
-          }`}
-          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '0.95rem' }}
-        >
-          {speakerName}
-        </div>
-      )}
     </div>
   );
 };
