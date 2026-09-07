@@ -45,17 +45,17 @@ export const ThoughtMonologueOverlay: React.FC<{
         exit={{ opacity: 0, y: 6 }}
         transition={{ duration: 0.2 }}
         onClick={onDismiss}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 w-[85%] max-w-xl pl-20 pr-6 sm:px-8 z-40 cursor-pointer select-none animate-fade-in"
+        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 w-full max-w-xl px-6 z-40 cursor-pointer select-none animate-fade-in"
       >
-        {/* Top Divider */}
+        {/* Top Thin Divider */}
         <div className="w-full h-px bg-gradient-to-r from-transparent via-[#4d6e5e]/60 to-transparent" />
 
-        {/* Centered Monologue Text */}
-        <p className="py-2.5 text-center font-mono italic text-xs sm:text-sm tracking-wide text-[#a3c2b2] drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] leading-relaxed">
+        {/* Centered Thought Text */}
+        <p className="py-2.5 px-4 text-center font-mono italic text-xs sm:text-sm tracking-wide text-[#a3c2b2] drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] leading-relaxed">
           — {cleanText} —
         </p>
 
-        {/* Bottom Divider */}
+        {/* Bottom Thin Divider */}
         <div className="w-full h-px bg-gradient-to-r from-transparent via-[#4d6e5e]/60 to-transparent" />
 
         <span className="block text-center text-[9px] font-mono text-[#4d6e5e]/60 mt-1 uppercase tracking-widest">

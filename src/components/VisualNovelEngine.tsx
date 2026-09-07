@@ -1338,6 +1338,11 @@ export const VisualNovelEngine: React.FC = () => {
     const chosen = CHARACTERS.find((c) => c.id === characterId) || CHARACTERS[0];
     setSelectedCharacter(chosen);
     setCurrentLineIndex(0);
+    setActiveInspectSubScene('main');
+    setIsZoomed(false);
+    setIsDoorInspectOpen(false);
+    setDoorRawTextShown(false);
+    setActiveMonologue(null);
     setMode('awakening');
   };
 
@@ -1405,7 +1410,10 @@ export const VisualNovelEngine: React.FC = () => {
     if (mode === 'phase1_2') {
       return currentP12Line?.bgImage || ROOM_4B_ASSETS.seance2026;
     }
-    if (mode === 'room_escape' || mode === 'awakening') {
+    if (mode === 'awakening') {
+      return ROOM_4B_ASSETS.main;
+    }
+    if (mode === 'room_escape') {
       if (activeInspectSubScene === 'desk') return ROOM_4B_ASSETS.desk;
       if (activeInspectSubScene === 'stool') return ROOM_4B_ASSETS.stool;
       if (activeInspectSubScene === 'wardrobe') return ROOM_4B_ASSETS.wardrobe;
@@ -1510,7 +1518,7 @@ export const VisualNovelEngine: React.FC = () => {
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-20 bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-40 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Phase Badge */}
           <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2">
@@ -1552,7 +1560,7 @@ export const VisualNovelEngine: React.FC = () => {
         </div>
 
         {/* Action Controls: Inventory Slots, Compass Dock, Notebook, Audio & Pause */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 z-50 pointer-events-auto">
           {/* HUD Inventory Bar */}
           {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
             <div className="flex items-center gap-1 bg-[#121815]/90 border border-[#2c3d34] p-1 rounded-xl shadow-inner">
@@ -1645,7 +1653,7 @@ export const VisualNovelEngine: React.FC = () => {
 
           <button
             onClick={toggleMute}
-            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md"
+            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto"
             title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -1656,7 +1664,7 @@ export const VisualNovelEngine: React.FC = () => {
               setIsPauseOpen(true);
               sound.playPaperRustle();
             }}
-            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md"
+            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto z-50"
             title="Pause Menu [ESC]"
           >
             <Pause className="w-4 h-4" />
@@ -1856,13 +1864,13 @@ export const VisualNovelEngine: React.FC = () => {
       )}
 
       {/* ======================================================== */}
-      {/* 6.5. MODE: ROOM 4B 2D POINT-AND-CLICK INVESTIGATION */}
+      {/* 6.5. MODE: ROOM 4B 2D POINT-AND-CLICK INVESTIGATION & AWAKENING HEADER */}
       {/* ======================================================== */}
-      {mode === 'room_escape' && (
+      {(mode === 'room_escape' || mode === 'awakening') && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Sub-scene Header Bar */}
           <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
-            {activeInspectSubScene !== 'main' ? (
+            {mode === 'room_escape' && activeInspectSubScene !== 'main' ? (
               <button
                 onClick={() => {
                   sound.playPaperRustle();
@@ -1881,7 +1889,7 @@ export const VisualNovelEngine: React.FC = () => {
             )}
 
             <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
-              {activeInspectSubScene === 'main'
+              {mode === 'awakening' || activeInspectSubScene === 'main'
                 ? 'ROOM 4B • DORMITORY ROOM'
                 : activeInspectSubScene === 'desk'
                 ? 'INSPECTING • STUDY DESK'
@@ -1928,8 +1936,10 @@ export const VisualNovelEngine: React.FC = () => {
             )}
           </AnimatePresence>
 
-          {/* Hotspot Layer strictly aligned inside same 16:9 container */}
-          <div className="absolute inset-0 z-20 pointer-events-auto">
+          {/* Hotspot & Sub-scene Interaction Layer (Active only during room_escape) */}
+          {mode === 'room_escape' && (
+            <>
+              <div className="absolute inset-0 z-20 pointer-events-auto">
             {/* SUB-SCENE 1: MAIN WIDE-ANGLE ROOM 4B (Exact Perspective Polygons) */}
             {activeInspectSubScene === 'main' && (
               <>
@@ -2308,6 +2318,8 @@ export const VisualNovelEngine: React.FC = () => {
                 </div>
               )}
             </AnimatePresence>
+          )}
+            </>
           )}
         </div>
       )}

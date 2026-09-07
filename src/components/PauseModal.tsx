@@ -1,20 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LilyBorder } from './LilyBorder';
 import { sound } from '../audioEngine';
-import {
-  Play,
-  RotateCcw,
-  LogOut,
-  Volume2,
-  VolumeX,
-  ShieldAlert,
-} from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw } from 'lucide-react';
 
-interface PauseModalProps {
+export interface PauseModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRestart?: () => void;
   onRestartChapter?: () => void;
+  onQuit?: () => void;
   chapterNumber?: number;
   chapterTitle?: string;
 }
@@ -22,136 +16,130 @@ interface PauseModalProps {
 export const PauseModal: React.FC<PauseModalProps> = ({
   isOpen,
   onClose,
+  onRestart,
   onRestartChapter,
-  chapterNumber = 1,
-  chapterTitle = 'Blind Start',
+  onQuit,
 }) => {
   const navigate = useNavigate();
-  const [isMuted, setIsMuted] = React.useState<boolean>(sound.getMuted());
+  const [isMuted, setIsMuted] = useState<boolean>(() => sound.getMuted());
+  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   if (!isOpen) return null;
-
-  const toggleSound = () => {
-    const nextMuted = sound.toggleMute();
-    setIsMuted(nextMuted);
-  };
-
-  const handleExitToMenu = () => {
-    sound.playPaperRustle();
-    onClose();
-    navigate('/');
-  };
-
-  const handleExitToChapters = () => {
-    sound.playPaperRustle();
-    onClose();
-    navigate('/chapters');
-  };
 
   const handleResume = () => {
     sound.playPaperRustle();
     onClose();
   };
 
+  const handleToggleAudio = () => {
+    const nextMuted = sound.toggleMute();
+    setIsMuted(nextMuted);
+  };
+
+  const handleReturnToMainMenu = () => {
+    sound.playPaperRustle();
+    onClose();
+    if (onQuit) {
+      onQuit();
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleRestartAction = onRestart || onRestartChapter;
+
   return (
     <div
       id="pause-modal-overlay"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 select-none animate-fade-in"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleResume();
+      }}
     >
-      <div className="w-full max-w-md">
-        <LilyBorder className="w-full bg-red-950/95 border-2 border-red-900/90 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
-          {/* Header */}
-          <div className="text-center pb-4 border-b border-red-900/60 mb-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/60 border border-red-800/80 rounded-full text-xs font-mono text-amber-300 mb-2">
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-              <span>INVESTIGATION PAUSED</span>
+      <div className="relative w-full max-w-md bg-[#121815] border border-[#2d4036] rounded-xl shadow-2xl p-6 flex flex-col items-center">
+        {/* Modal Content */}
+        <h2 className="font-mono text-lg text-[#c2d6cc] tracking-widest mb-6 uppercase">
+          Investigation Paused
+        </h2>
+
+        <div className="w-full space-y-3">
+          <button
+            onClick={handleResume}
+            className="w-full py-2.5 px-4 rounded bg-[#1e2a24] hover:bg-[#283830] border border-[#395043] text-[#c2d6cc] hover:text-[#6ee7b7] font-mono text-sm tracking-wider transition-all cursor-pointer shadow-md"
+          >
+            RESUME INVESTIGATION
+          </button>
+
+          <button
+            onClick={() => setShowSettings((prev) => !prev)}
+            className="w-full py-2.5 px-4 rounded bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-300 hover:text-[#c2d6cc] font-mono text-sm tracking-wider transition-all flex items-center justify-between cursor-pointer"
+          >
+            <span>AUDIO &amp; DISPLAY SETTINGS</span>
+            <div className="flex items-center gap-1.5 text-xs">
+              {isMuted ? (
+                <span className="text-rose-400 font-mono">[MUTED]</span>
+              ) : (
+                <span className="text-emerald-400 font-mono">[ACTIVE]</span>
+              )}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bebas font-black text-amber-100 tracking-wider">
-              THE SPIRIT&apos;S LABYRINTH
-            </h2>
-            <p className="text-xs font-mono text-red-300/80 mt-1">
-              Chapter {chapterNumber}: {chapterTitle} • August 1998
-            </p>
-          </div>
+          </button>
 
-          {/* Action Menu Buttons */}
-          <div className="space-y-3">
-            {/* Resume */}
-            <button
-              id="pause-resume-btn"
-              onClick={handleResume}
-              className="w-full py-3 px-4 bg-red-900/70 hover:bg-red-800/90 border border-red-700/80 rounded-xl text-amber-100 font-bebas text-lg tracking-widest flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] cursor-pointer"
-            >
-              <Play className="w-4 h-4 text-amber-300 fill-amber-300" />
-              <span>RESUME INVESTIGATION</span>
-            </button>
-
-            {/* Audio Toggle */}
-            <button
-              id="pause-audio-btn"
-              onClick={toggleSound}
-              className="w-full py-2.5 px-4 bg-black/60 hover:bg-black/80 border border-red-900/60 rounded-xl text-neutral-200 text-xs sm:text-sm flex items-center justify-between transition-all cursor-pointer"
-            >
-              <span className="font-sans text-neutral-300">Monsoon &amp; Spirit Audio</span>
-              <div className="flex items-center gap-2 text-amber-300">
-                {isMuted ? (
-                  <>
-                    <VolumeX className="w-4 h-4 text-red-400" />
-                    <span className="text-xs font-mono text-red-400">[MUTED]</span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-4 h-4 text-amber-400" />
-                    <span className="text-xs font-mono text-emerald-400">[ACTIVE]</span>
-                  </>
-                )}
+          {showSettings && (
+            <div className="p-3.5 rounded-lg bg-[#0e1411] border border-[#283930] space-y-2.5 text-xs font-mono text-[#c2d6cc]">
+              <div className="flex items-center justify-between">
+                <span>Ambient &amp; SFX Audio:</span>
+                <button
+                  onClick={handleToggleAudio}
+                  className="px-2.5 py-1 rounded bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] flex items-center gap-1.5 cursor-pointer transition-colors"
+                >
+                  {isMuted ? (
+                    <>
+                      <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Unmute</span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Mute</span>
+                    </>
+                  )}
+                </button>
               </div>
-            </button>
+              <div className="text-[10px] text-stone-400 pt-1 border-t border-[#1f2e26]">
+                Display: 16:9 Letterbox • 1998 Monsoon Atmosphere
+              </div>
+            </div>
+          )}
 
-            {/* Restart Chapter */}
-            {onRestartChapter && (
-              <button
-                id="pause-restart-btn"
-                onClick={() => {
-                  sound.playPaperRustle();
-                  onRestartChapter();
-                  onClose();
-                }}
-                className="w-full py-2.5 px-4 bg-black/60 hover:bg-black/80 border border-red-900/60 rounded-xl text-neutral-300 hover:text-amber-200 font-bebas tracking-wider text-base flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>RESTART CHAPTER 1</span>
-              </button>
-            )}
-
-            {/* Chapter Showcase */}
+          {handleRestartAction && (
             <button
-              id="pause-chapters-btn"
-              onClick={handleExitToChapters}
-              className="w-full py-2.5 px-4 bg-black/60 hover:bg-black/80 border border-red-900/60 rounded-xl text-neutral-300 hover:text-amber-200 font-bebas tracking-wider text-base flex items-center justify-center gap-2 transition-all cursor-pointer"
+              onClick={() => {
+                sound.playPaperRustle();
+                onClose();
+                handleRestartAction();
+              }}
+              className="w-full py-2 px-4 rounded bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-400 hover:text-stone-200 font-mono text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>CHAPTER SHOWCASE</span>
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>RESTART CHAPTER 1</span>
             </button>
+          )}
 
-            {/* Save & Exit to Menu */}
-            <button
-              id="pause-exit-btn"
-              onClick={handleExitToMenu}
-              className="w-full py-3 px-4 bg-neutral-950 hover:bg-neutral-900 border border-red-900/80 rounded-xl text-amber-200/90 font-bebas tracking-widest text-lg flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] cursor-pointer mt-2"
-            >
-              <LogOut className="w-4 h-4 text-red-400" />
-              <span>SAVE &amp; EXIT TO MAIN MENU</span>
-            </button>
-          </div>
+          <button
+            onClick={handleReturnToMainMenu}
+            className="w-full py-2.5 px-4 rounded bg-red-950/40 hover:bg-red-900/60 border border-red-900/50 text-red-300 font-mono text-sm tracking-wider transition-all cursor-pointer shadow-md"
+          >
+            RETURN TO TITLE
+          </button>
+        </div>
 
-          {/* Footer Note */}
-          <div className="mt-5 pt-3 border-t border-red-900/40 text-center">
-            <p className="text-[11px] font-mono text-neutral-400">
-              [ESC] or [RESUME] to return to the 1998 hostel
-            </p>
-          </div>
-        </LilyBorder>
+        <p className="text-[10px] font-mono text-[#4d6e5e] mt-5 uppercase tracking-widest">
+          Press [ESC] to resume
+        </p>
       </div>
     </div>
   );
 };
+
+export const PauseMenuModal = PauseModal;
+export default PauseModal;
