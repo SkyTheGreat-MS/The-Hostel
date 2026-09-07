@@ -4,7 +4,40 @@ import {
   Clue,
   GuardianPair,
   VictimRiddle,
+  Item,
 } from './types';
+
+export const ROOM_4B_ASSETS = {
+  main: '/assets/scenes/room_4b_main.jpg',
+  seance2026: '/assets/scenes/seance_room_4b_2026.jpg',
+  desk: '/assets/scenes/room_4b_desk_zoom.jpg',
+  stool: '/assets/scenes/room_4b_stool_compass.jpg',
+  wardrobe: '/assets/scenes/room_4b_wardrobe_bat.jpg',
+  calendar: '/assets/scenes/room_4b_calendar_zoom.jpg',
+  door: '/assets/scenes/room_4b_door_full.jpg',
+  compassHud: '/assets/ui/magnetic_compass.jpg',
+  compassZoom: '/assets/scenes/room_4b_compass_zoom.jpg',
+} as const;
+
+export const ITEMS: Record<string, Item> = {
+  bobby_pin: {
+    id: 'bobby_pin',
+    name: 'Bobby Pin',
+    description: 'A bent steel bobby pin found in a ceramic tray on the study desk.',
+  },
+  wooden_bat: {
+    id: 'wooden_bat',
+    name: 'Wooden Bat',
+    description: 'A heavy piece of detached teak timber found near the wardrobe.',
+  },
+  magnetic_compass: {
+    id: 'magnetic_compass',
+    name: 'Magnetic Compass',
+    description:
+      'An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.',
+    isSpecial: true,
+  },
+};
 
 export const CHARACTERS: MCCharacter[] = [
   {
@@ -232,6 +265,22 @@ export const CLUES: Clue[] = [
     details:
       "A fleeting manifestation of Mama May's restless spirit glitching between 1998 and 2026 before dissolving into mist near the corridor.",
     pointsTo: 'shadow_event_manifestation',
+  },
+  {
+    id: 'roster_slip_1998',
+    locationId: 'dorm_room_4b',
+    title: 'Cleaning Duty Log (Aug 1998)',
+    details:
+      'Cleaning Duty Log (Aug 1998) assigning Room 4B to students May and Sandar.',
+    pointsTo: 'room_4b_duty_log',
+  },
+  {
+    id: 'curfew_calendar_1998',
+    locationId: 'dorm_room_4b',
+    title: 'August 1998 Wall Calendar',
+    details:
+      'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
+    pointsTo: 'curfew_lockdown_aug14',
   },
 ];
 

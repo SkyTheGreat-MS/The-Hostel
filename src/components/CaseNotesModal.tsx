@@ -86,6 +86,22 @@ const MASTER_CLUES: Record<string, ClueData> = {
     description:
       'Fresh cement residue matching the masonry seal on the courtyard well. Proves construction materials were stored in the hostel basement.',
   },
+  roster_slip_1998: {
+    id: 'roster_slip_1998',
+    title: 'Cleaning Duty Log (Aug 1998)',
+    location: 'Room 4B (Desk)',
+    category: 'primary',
+    description:
+      'Cleaning Duty Log (Aug 1998) assigning Room 4B to students May and Sandar.',
+  },
+  curfew_calendar_1998: {
+    id: 'curfew_calendar_1998',
+    title: 'August 1998 Wall Calendar',
+    location: 'Room 4B (Wall)',
+    category: 'side',
+    description:
+      'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
+  },
 };
 
 export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({

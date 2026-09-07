@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameProgress } from '../context/GameProgressContext';
 import { sound } from '../audioEngine';
-import { MCId, MCCharacter } from '../types';
-import { CHARACTERS } from '../gameData';
+import { MCId, MCCharacter, Room4BSubScene } from '../types';
+import { CHARACTERS, ROOM_4B_ASSETS, ITEMS } from '../gameData';
 import { InkPortrait } from './InkPortrait';
 import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
-import branchScaryBg from '@/assets/Branchscary.jpg';
-import seanceCircleBg from '@/assets/seancecircle.jpg';
 import {
   Volume2,
   VolumeX,
@@ -30,6 +28,15 @@ import {
   AlertTriangle,
   Wind,
   Compass,
+  Hammer,
+  Shield,
+  Search,
+  X,
+  ArrowLeft,
+  Lock,
+  Unlock,
+  AlertCircle,
+  Radio,
 } from 'lucide-react';
 
 export type ChapterPhase = 1 | 2 | 3;
@@ -39,8 +46,154 @@ type EngineMode =
   | 'shattering'
   | 'character_select'
   | 'awakening'
+  | 'room_escape'
   | 'location_select'
   | 'investigating_location';
+
+export interface InteractiveHotspotProps {
+  id: string;
+  name: string;
+  // Optional SVG polygon points formatted as percentages: "x1,y1 x2,y2 x3,y3 ..."
+  polygonPoints?: string;
+  // Fallback box properties if no polygon is provided
+  x?: number; // e.g. 15 for left: 15%
+  y?: number; // e.g. 25 for top: 25%
+  width?: number; // e.g. 18 for width: 18%
+  height?: number; // e.g. 30 for height: 30%
+  shape?: 'rect' | 'circle';
+  rotation?: number; // e.g. 14 for rotate(14deg)
+  transformOrigin?: string; // e.g. 'bottom center'
+  clipPath?: string; // e.g. polygon(...)
+  overlaySrc?: string; // transparent PNG cutout if available
+  cursorTooltip?: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
+  id,
+  name,
+  polygonPoints,
+  x,
+  y,
+  width,
+  height,
+  shape = 'rect',
+  rotation,
+  transformOrigin = 'bottom center',
+  clipPath,
+  overlaySrc,
+  cursorTooltip,
+  onClick,
+  disabled = false,
+}) => {
+  if (disabled) return null;
+
+  // Mode A: Perspective-molded SVG Polygon (Tailored Shape)
+  if (polygonPoints) {
+    // Calculate approximate center for floating tooltip positioning
+    const coords = polygonPoints
+      .trim()
+      .split(/\s+/)
+      .map((pt) => {
+        const [px, py] = pt.split(',').map(Number);
+        return { x: px || 0, y: py || 0 };
+      });
+    const avgX = coords.reduce((acc, c) => acc + c.x, 0) / (coords.length || 1);
+    const minY = Math.min(...coords.map((c) => c.y));
+
+    return (
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none group" data-hotspot-id={id}>
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none select-none"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <g
+            className="group/poly pointer-events-auto cursor-pointer"
+            onClick={onClick}
+            onMouseEnter={() => sound.playMenuHover()}
+          >
+            {/* Invisible Hitbox + Hover Amber Perspective Glow */}
+            <polygon
+              points={polygonPoints}
+              className="fill-transparent stroke-transparent transition-all duration-200 group-hover:stroke-amber-400/90 group-hover:stroke-[0.8] group-hover:fill-amber-500/10 group-hover:filter group-hover:drop-shadow-[0_0_12px_rgba(245,158,11,0.7)]"
+            />
+            <title>{cursorTooltip || name}</title>
+          </g>
+        </svg>
+
+        {/* Hover label / tooltip anchored above polygon center */}
+        {cursorTooltip && (
+          <span
+            className="absolute px-2.5 py-1 rounded bg-stone-950/90 border border-stone-800 text-[10px] font-mono text-amber-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
+            style={{
+              left: `${avgX}%`,
+              top: `${minY}%`,
+            }}
+          >
+            {cursorTooltip}
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  // Mode B: Standard fallback bounding box
+  const containerStyle: React.CSSProperties = {
+    left: `${x ?? 0}%`,
+    top: `${y ?? 0}%`,
+    width: `${width ?? 0}%`,
+    height: `${height ?? 0}%`,
+    ...(rotation !== undefined ? { transform: `rotate(${rotation}deg)`, transformOrigin } : {}),
+    ...(clipPath ? { clipPath } : {}),
+  };
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => sound.playMenuHover()}
+      style={containerStyle}
+      className={`absolute z-20 cursor-pointer group select-none ${
+        shape === 'circle' ? 'rounded-full' : 'rounded-lg'
+      }`}
+      title={name}
+      aria-label={name}
+      data-hotspot-id={id}
+    >
+      {/* If transparent PNG overlay cutout provided */}
+      {overlaySrc ? (
+        <img
+          src={overlaySrc}
+          alt={name}
+          className="w-full h-full object-contain pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:filter group-hover:drop-shadow-[0_0_18px_rgba(245,158,11,0.85)]"
+        />
+      ) : (
+        /* Light aura / glow boundary — strictly hidden until cursor hovers */
+        <div
+          className={`w-full h-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.55)] ${
+            shape === 'circle' ? 'rounded-full' : 'rounded-lg'
+          }`}
+          style={clipPath ? { clipPath } : undefined}
+        />
+      )}
+
+      {/* Elegant minimalist tooltip that follows hover */}
+      {cursorTooltip && (
+        <span
+          className={`absolute left-1/2 px-2.5 py-1 rounded bg-stone-950/90 border border-stone-800 text-[10px] font-mono text-amber-300 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg z-30 ${
+            (y ?? 0) < 15 ? 'top-full mt-2' : 'bottom-full mb-2'
+          }`}
+          style={{
+            transform: rotation ? `translateX(-50%) rotate(-${rotation}deg)` : 'translateX(-50%)',
+          }}
+        >
+          {cursorTooltip}
+        </span>
+      )}
+    </div>
+  );
+};
 
 interface InitialDialogueStep {
   id: number;
@@ -66,6 +219,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Look at what I found tucked behind the dormitory archive shelf... A 1998 student notebook detailing an occult seance: The Mirror-Well Pact.',
     soundCue: 'paper',
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 2,
@@ -75,6 +229,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'right',
     text: "A 90s ghost game? Who's going to scream first? It's just an old superstition the seniors invented to frighten freshmen.",
     soundCue: 'hover',
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 3,
@@ -83,7 +238,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'Keep your voice down, Ye Yint. The caretaker specifically warned everyone never to trespass into this abandoned wing after midnight.',
-    bgImage: branchScaryBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 4,
@@ -92,7 +247,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'My grandmother warned me about this building... She said a senior named Mama May vanished here in August 1998, and her spirit never left.',
-    bgImage: branchScaryBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 5,
@@ -102,7 +257,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Look at this floorplan from the university registrar. Pathway 326 was walled off immediately after her disappearance. They claimed it was structural instability.',
     soundCue: 'paper',
-    bgImage: branchScaryBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 6,
@@ -111,7 +266,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'mona',
     pos: 'right',
     text: "If you're all terrified, we can pack up our bags right now. But if we want the truth of what happened in 1998, we follow the ritual rules.",
-    bgImage: branchScaryBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 7,
@@ -120,7 +275,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'may_jewel',
     pos: 'left',
     text: 'Gather close around the table. Here is the letter board and the tea glass. Everyone place the tip of your index finger on the rim of the glass.',
-    bgImage: branchScaryBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 8,
@@ -129,7 +284,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: "Done. My finger is on it. Let's see if this 'guardian spirit' really exists.",
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 9,
@@ -139,7 +294,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Remember the cardinal rule: whatever happens, do NOT break the circle or lift your finger until the spirit dismisses us.',
     soundCue: 'select',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
 
   // ==========================================
@@ -153,7 +308,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     pos: 'left',
     text: 'Spirits of August 1998... Restless soul of the hostel corridor... If you dwell within these walls, answer our call and make your presence known.',
     soundCue: 'drone',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 11,
@@ -162,7 +317,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'Wait... did someone open the window? My breath is turning to mist... The air in this room suddenly dropped like ice.',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 12,
@@ -171,7 +326,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: "Look at the red candle! The flame is trembling violently... and it's turning deep indigo blue! Don't move!",
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 13,
@@ -180,7 +335,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: "Hey, cut it out! Which one of you is pushing the glass? Don't mess around, stop pulling it!",
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 14,
@@ -189,7 +344,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'yin_min_htike',
     pos: 'left',
     text: "Nobody is pushing it! Look at our knuckles, we're barely touching the rim! The glass is gliding across the paper on its own!",
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 15,
@@ -198,7 +353,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'mona',
     pos: 'right',
     text: 'It is spelling out letters... M... A... M... A... It is spelling Mama May!',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 16,
@@ -207,7 +362,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: "A cold breath just whispered across the back of my neck... 'Why did you leave me in the dark?'",
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 17,
@@ -216,7 +371,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'Listen! Outside the wooden door... Heavy, wet barefoot steps dragging across the corridor floorboards!',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 18,
@@ -225,7 +380,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: 'The glass is vibrating violently! It is spinning in circles! PULL YOUR HANDS AWAY!',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
     id: 19,
@@ -236,7 +391,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     text: 'NO! KEEP YOUR HANDS ON THE GLASS—IF THE VESSEL SHATTERS THE VEIL OPENS—',
     isClimax: true,
     soundCue: 'break',
-    bgImage: seanceCircleBg,
+    bgImage: ROOM_4B_ASSETS.seance2026,
   },
 ];
 
@@ -676,6 +831,19 @@ export const VisualNovelEngine: React.FC = () => {
     discoveredClues,
     addDiscoveredClue,
     setChapter1TimeSeconds,
+    inventory,
+    addInventoryItem,
+    hasInventoryItem,
+    activeInspectSubScene,
+    setActiveInspectSubScene,
+    selectedInventoryItem,
+    setSelectedInventoryItem,
+    deskMugMoved,
+    setDeskMugMoved,
+    hasMagneticCompass,
+    setHasMagneticCompass,
+    doorSmashed,
+    setDoorSmashed,
   } = useGameProgress();
 
   const [mode, setMode] = useState<EngineMode>('phase1_2');
@@ -687,6 +855,15 @@ export const VisualNovelEngine: React.FC = () => {
   const [isNotesOpen, setIsNotesOpen] = useState<boolean>(false);
   const [selectedCharacter, setSelectedCharacter] = useState<MCCharacter>(CHARACTERS[0]);
   const [isChapterFinished, setIsChapterFinished] = useState<boolean>(false);
+
+  // Room 4B Point-and-Click States
+  const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' } | null>(null);
+  const [isScreenShaking, setIsScreenShaking] = useState<boolean>(false);
+  const [isCompassModalOpen, setIsCompassModalOpen] = useState<boolean>(false);
+  const [inspectingItem, setInspectingItem] = useState<string | null>(null);
+  const [doorRawTextShown, setDoorRawTextShown] = useState<boolean>(false);
+  const [isDoorTransitioning, setIsDoorTransitioning] = useState<boolean>(false);
+  const [isDoorInspectOpen, setIsDoorInspectOpen] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -700,7 +877,7 @@ export const VisualNovelEngine: React.FC = () => {
   // Reference for timer tracking
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 10-Minute Countdown Clock
+  // 10-Minute Countdown Clock (Runs continuously through Awakening, Room Escape, & Corridors)
   useEffect(() => {
     if (mode === 'shattering' || mode === 'character_select' || isChapterFinished) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -747,10 +924,21 @@ export const VisualNovelEngine: React.FC = () => {
     },
     {
       speaker: selectedCharacter.name,
-      text: 'I have been displaced into 1998! The door to the corridor is swinging wide open into the dark. I need to observe the air drafts and find my escape path...',
+      text: 'I have been displaced into August 1998! The heavy room door is locked tight from the outside. I need to search Room 4B and find a way out into the corridor...',
       soundCue: 'select' as const,
     },
   ];
+
+  // Auto-log curfew calendar when calendar sub-scene is inspected
+  useEffect(() => {
+    if (mode === 'room_escape' && activeInspectSubScene === 'calendar') {
+      if (!discoveredClues.includes('curfew_calendar_1998')) {
+        addDiscoveredClue('curfew_calendar_1998');
+        sound.playPaperRustle();
+      }
+    }
+  }, [mode, activeInspectSubScene, discoveredClues, addDiscoveredClue]);
+
 
   // Locations currently available in the active tier
   const activeTierLocations = ALL_TIERED_LOCATIONS[currentTier] || ALL_TIERED_LOCATIONS[1];
@@ -958,7 +1146,8 @@ export const VisualNovelEngine: React.FC = () => {
       setCurrentLineIndex((prev) => prev + 1);
     } else if (mode === 'awakening') {
       if (currentLineIndex >= AWAKENING_LINES.length - 1) {
-        setMode('location_select');
+        setMode('room_escape');
+        setActiveInspectSubScene('main');
         setIsZoomed(false);
         sound.playMenuSelect();
       } else {
@@ -1004,6 +1193,46 @@ export const VisualNovelEngine: React.FC = () => {
       } else {
         setLocLineIndex((prev) => prev + 1);
       }
+    }
+  };
+
+  // Door unlock execution (stealth vs brute force)
+  const executeUnlockDoor = (method: 'bobby_pin' | 'wooden_bat') => {
+    setIsDoorTransitioning(true);
+    if (method === 'bobby_pin') {
+      sound.playChime(true);
+      setRoomBanner({
+        text: `${selectedCharacter.name} gently guides the bent steel bobby pin into the keyway. The tumblers align silently... Click. The lock opens without a sound.`,
+        type: 'success',
+      });
+      setTimeout(() => {
+        setActiveInspectSubScene('main');
+        setIsDoorTransitioning(false);
+        setRoomBanner(null);
+        setMode('location_select');
+        setCurrentTier(1);
+        setSelectedLocationIdx(0);
+        sound.playMenuSelect();
+      }, 1600);
+    } else {
+      sound.playDamage();
+      setIsScreenShaking(true);
+      setTimeout(() => setIsScreenShaking(false), 700);
+      setComposure((c) => Math.max(5, c - 15));
+      setDoorSmashed(true);
+      setRoomBanner({
+        text: 'CRASH! The heavy teak timber strikes the deadbolt with violent force! Splintered wood shrieks as the door bursts open, echoing down Pathway 326...',
+        type: 'warn',
+      });
+      setTimeout(() => {
+        setActiveInspectSubScene('main');
+        setIsDoorTransitioning(false);
+        setRoomBanner(null);
+        setMode('location_select');
+        setCurrentTier(1);
+        setSelectedLocationIdx(0);
+        sound.playDramaticSting();
+      }, 1800);
     }
   };
 
@@ -1060,6 +1289,14 @@ export const VisualNovelEngine: React.FC = () => {
     setIsChapterFinished(false);
     setIsPauseOpen(false);
     setIsNotesOpen(false);
+    setActiveInspectSubScene('main');
+    setDeskMugMoved(false);
+    setHasMagneticCompass(false);
+    setDoorSmashed(false);
+    setRoomBanner(null);
+    setDoorRawTextShown(false);
+    setIsDoorTransitioning(false);
+    setIsDoorInspectOpen(false);
     sound.playPaperRustle();
   };
 
@@ -1070,8 +1307,16 @@ export const VisualNovelEngine: React.FC = () => {
 
   // Resolve active background image
   const getActiveBackground = (): string => {
-    if (mode === 'phase1_2' && currentP12Line.bgImage) {
-      return currentP12Line.bgImage;
+    if (mode === 'phase1_2') {
+      return currentP12Line?.bgImage || ROOM_4B_ASSETS.seance2026;
+    }
+    if (mode === 'room_escape' || mode === 'awakening') {
+      if (activeInspectSubScene === 'desk') return ROOM_4B_ASSETS.desk;
+      if (activeInspectSubScene === 'stool') return ROOM_4B_ASSETS.stool;
+      if (activeInspectSubScene === 'wardrobe') return ROOM_4B_ASSETS.wardrobe;
+      if (activeInspectSubScene === 'calendar') return ROOM_4B_ASSETS.calendar;
+      if (activeInspectSubScene === 'door') return ROOM_4B_ASSETS.door;
+      return ROOM_4B_ASSETS.main;
     }
     if (mode === 'location_select') {
       return activeTierLocations[selectedLocationIdx]?.bgImage || '/assets/uni_room_chp1_bg1.jpg';
@@ -1079,7 +1324,7 @@ export const VisualNovelEngine: React.FC = () => {
     if (mode === 'investigating_location' && activeInvestigatingLoc) {
       return activeInvestigatingLoc.bgImage;
     }
-    return '/assets/uni_room_chp1_bg1.jpg';
+    return ROOM_4B_ASSETS.main;
   };
 
   // Time & Composure formatted display
@@ -1095,20 +1340,24 @@ export const VisualNovelEngine: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between overflow-hidden select-none">
-      {/* 1. Single full-viewport scene background (opaque so nothing stacks behind it) */}
-      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-black">
+    <div
+      className={`fixed inset-0 h-screen w-screen overflow-hidden select-none bg-black flex items-center justify-center z-30 ${
+        isScreenShaking ? 'animate-screen-shake' : ''
+      }`}
+    >
+      {/* 16:9 Strict Aspect Ratio Letterbox Stage (Containment Wrapper) */}
+      <div className="relative w-full h-full max-w-[177.78vh] max-h-[56.25vw] aspect-video overflow-hidden shadow-2xl flex flex-col justify-between">
+        {/* 1. Scene Background Image */}
         <img
           src={getActiveBackground()}
           alt="Scene Atmosphere"
-          className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out select-none pointer-events-none ${
             isZoomed
               ? 'scale-125 filter brightness-[0.75] contrast-125'
               : 'scale-100 filter brightness-90 contrast-105'
           }`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
-      </div>
 
       {/* 2. Supernatural Glitch Flicker Effect */}
       {currentStep.isGlitch && (
@@ -1142,7 +1391,7 @@ export const VisualNovelEngine: React.FC = () => {
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="relative w-full p-3 sm:p-5 flex items-center justify-between z-20 bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-20 bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Phase Badge */}
           <div className="px-3 py-1 bg-stone-950/90 border border-amber-500/80 rounded-lg text-xs font-mono font-bold tracking-wider text-amber-300 shadow-xl flex items-center gap-2">
@@ -1152,6 +1401,10 @@ export const VisualNovelEngine: React.FC = () => {
                 ? currentP12Line.phase === 1
                   ? 'Phase 1 : The Discussion'
                   : 'Phase 2 : The Seance'
+                : mode === 'awakening' || mode === 'room_escape'
+                ? activeInspectSubScene === 'main'
+                  ? 'Phase 3 • Room 4B Escape'
+                  : `Room 4B : ${activeInspectSubScene.toUpperCase()}`
                 : `Phase 3 • Sector 0${currentTier} / 03`}
             </span>
           </div>
@@ -1177,8 +1430,74 @@ export const VisualNovelEngine: React.FC = () => {
           )}
         </div>
 
-        {/* Action Controls: Notebook, Audio & Pause */}
+        {/* Action Controls: Inventory Slots, Compass Dock, Notebook, Audio & Pause */}
         <div className="flex items-center gap-2">
+          {/* HUD Inventory Bar */}
+          {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
+            <div className="flex items-center gap-1 bg-stone-950/85 border border-stone-800 p-1 rounded-xl shadow-inner">
+              <span className="text-[9px] font-mono font-bold text-stone-500 uppercase px-1 hidden md:inline">INV</span>
+              {[0, 1, 2, 3].map((slotIdx) => {
+                const itemId = inventory[slotIdx];
+                const itemData = itemId ? ITEMS[itemId] : null;
+                return (
+                  <button
+                    key={slotIdx}
+                    disabled={!itemId}
+                    onClick={() => {
+                      if (itemId) {
+                        sound.playPaperRustle();
+                        setInspectingItem(itemId);
+                      }
+                    }}
+                    title={itemData ? `${itemData.name} (Click to inspect)` : 'Empty Slot'}
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all ${
+                      itemId
+                        ? 'bg-amber-950/80 border border-amber-500 text-amber-300 hover:bg-amber-900 hover:scale-105 cursor-pointer shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                        : 'bg-stone-950/40 border border-dashed border-stone-800 text-stone-700 cursor-default'
+                    }`}
+                  >
+                    {itemId === 'bobby_pin' ? (
+                      <Key className="w-3.5 h-3.5 text-amber-300" />
+                    ) : itemId === 'wooden_bat' ? (
+                      <Hammer className="w-3.5 h-3.5 text-amber-300" />
+                    ) : itemId === 'magnetic_compass' ? (
+                      <Compass className="w-3.5 h-3.5 text-amber-300" />
+                    ) : (
+                      <span className="text-[9px] text-stone-700">•</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Paranormal Magnetic Compass Dock */}
+          {hasMagneticCompass && (
+            <button
+              onClick={() => {
+                sound.playPaperRustle();
+                setIsCompassModalOpen(true);
+              }}
+              onMouseEnter={() => sound.playMenuHover()}
+              className="relative group p-1 sm:p-1.5 rounded-xl bg-stone-950/90 border border-amber-500/80 hover:border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.3)] flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105"
+              title="Paranormal Magnetic Compass (Click for close-up view)"
+            >
+              <div className="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-amber-950 border border-amber-600/90 flex items-center justify-center overflow-hidden">
+                <span className="absolute top-0.5 text-[6px] font-mono font-bold text-amber-400">N</span>
+                <div
+                  className={`w-0.5 h-4 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-full origin-center ${
+                    activeInspectSubScene === 'door' || currentStep.isGlitch
+                      ? 'animate-compass-jitter'
+                      : 'animate-compass-twitch'
+                  }`}
+                />
+              </div>
+              <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider hidden lg:inline">
+                COMPASS
+              </span>
+            </button>
+          )}
+
           {/* Case Notes / Notebook Button */}
           {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
             <button
@@ -1240,6 +1559,12 @@ export const VisualNovelEngine: React.FC = () => {
             <p className="text-xs font-mono text-stone-400 mt-1 tracking-wider">
               [←/→] Select • [ENTER] Investigate • Observe air currents & drafts to find the escape route
             </p>
+            {doorSmashed && currentTier === 1 && (
+              <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/85 border border-rose-600 text-rose-300 text-xs font-mono shadow-lg animate-pulse">
+                <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>⚠️ DEAFENING CRASH ECHO: Smashing the door alerted entities along Pathway 326. Hallway threat level accelerated!</span>
+              </div>
+            )}
           </div>
 
           {/* 3 Location Cards Showcase (Centered side-by-side) */}
@@ -1404,23 +1729,489 @@ export const VisualNovelEngine: React.FC = () => {
       )}
 
       {/* ======================================================== */}
+      {/* 6.5. MODE: ROOM 4B 2D POINT-AND-CLICK INVESTIGATION */}
+      {/* ======================================================== */}
+      {mode === 'room_escape' && (
+        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
+          {/* Sub-scene Header Bar */}
+          <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
+            {activeInspectSubScene !== 'main' ? (
+              <button
+                onClick={() => {
+                  sound.playPaperRustle();
+                  setActiveInspectSubScene('main');
+                  setRoomBanner(null);
+                  setDoorRawTextShown(false);
+                  setIsDoorInspectOpen(false);
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-stone-950/90 border border-amber-600/80 hover:bg-amber-950 text-amber-200 text-xs font-mono font-bold flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 text-amber-400" />
+                <span>STEP BACK / RETURN TO ROOM</span>
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="px-3.5 py-1 rounded-lg bg-stone-950/90 border border-amber-600/80 text-xs font-mono font-bold text-amber-300 uppercase tracking-widest shadow-md">
+              {activeInspectSubScene === 'main'
+                ? 'ROOM 4B • DORMITORY ROOM'
+                : activeInspectSubScene === 'desk'
+                ? 'INSPECTING • STUDY DESK'
+                : activeInspectSubScene === 'stool'
+                ? 'INSPECTING • BEDSIDE STOOL'
+                : activeInspectSubScene === 'wardrobe'
+                ? 'INSPECTING • WARDROBE FOOTING'
+                : activeInspectSubScene === 'calendar'
+                ? 'INSPECTING • WALL CALENDAR'
+                : 'INSPECTING • ROOM DOOR'}
+            </div>
+          </div>
+
+          {/* Observation Feedback Toast */}
+          <AnimatePresence>
+            {roomBanner && (
+              <motion.div
+                initial={{ opacity: 0, y: -15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="absolute top-24 sm:top-28 left-1/2 -translate-x-1/2 z-40 max-w-xl w-full px-4 pointer-events-auto"
+              >
+                <div
+                  className={`p-3.5 rounded-xl border shadow-2xl flex items-start justify-between gap-3 text-xs font-mono ${
+                    roomBanner.type === 'warn'
+                      ? 'bg-rose-950/95 border-rose-600 text-rose-200'
+                      : roomBanner.type === 'success'
+                      ? 'bg-emerald-950/95 border-emerald-600 text-emerald-200'
+                      : 'bg-stone-900/95 border-amber-600/80 text-amber-200'
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <span className="leading-relaxed">{roomBanner.text}</span>
+                  </div>
+                  <button
+                    onClick={() => setRoomBanner(null)}
+                    className="text-stone-400 hover:text-white cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Hotspot Layer strictly aligned inside same 16:9 container */}
+          <div className="absolute inset-0 z-20 pointer-events-auto">
+            {/* SUB-SCENE 1: MAIN WIDE-ANGLE ROOM 4B (Exact Perspective Polygons) */}
+            {activeInspectSubScene === 'main' && (
+              <>
+                {/* 1. Wardrobe (Yellow) */}
+                <InteractiveHotspot
+                  id="main_wardrobe"
+                  name="Teak Wardrobe"
+                  cursorTooltip="Teak Wardrobe & Footing"
+                  polygonPoints="0,15 21,19 21,99 0,99"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setActiveInspectSubScene('wardrobe');
+                  }}
+                />
+
+                {/* 2. Wall Calendar (Orange) */}
+                <InteractiveHotspot
+                  id="main_calendar"
+                  name="Wall Calendar"
+                  cursorTooltip="Wall Calendar (August 1998)"
+                  polygonPoints="24.5,45 32,45 32,59 24.5,59"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setActiveInspectSubScene('calendar');
+                  }}
+                />
+
+                {/* 3. Compass / Tin Box (Purple) */}
+                <InteractiveHotspot
+                  id="main_tin_compass"
+                  name="Compass / Tin Box"
+                  cursorTooltip={
+                    hasMagneticCompass
+                      ? 'Inspect Antique Magnetic Compass'
+                      : 'Velvet-Lined Tin Box (Compass)'
+                  }
+                  polygonPoints="21,74 38,74 38,92 21,92"
+                  onClick={() => {
+                    if (!hasMagneticCompass) {
+                      setHasMagneticCompass(true);
+                      addInventoryItem('magnetic_compass');
+                      sound.playChime(true);
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        type: 'success',
+                      });
+                      setIsCompassModalOpen(true);
+                    } else {
+                      sound.playPaperRustle();
+                      setIsCompassModalOpen(true);
+                    }
+                  }}
+                />
+
+                {/* 4. Study Desk (Green) */}
+                <InteractiveHotspot
+                  id="main_desk"
+                  name="Study Desk & Notes"
+                  cursorTooltip="Inspect Study Desk"
+                  polygonPoints="45,52 75,52 75,72 45,72"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setActiveInspectSubScene('desk');
+                  }}
+                />
+
+                {/* 5. Room Door 4B (Blue) */}
+                <InteractiveHotspot
+                  id="main_door"
+                  name="Room Door 4B"
+                  cursorTooltip="Room Door 4B"
+                  polygonPoints="79,5 99.5,5 99.5,95 79,95"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setActiveInspectSubScene('door');
+                    setIsDoorInspectOpen(false);
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 2: STUDY DESK ZOOM (Hover-Discovery Hotspots) */}
+            {activeInspectSubScene === 'desk' && (
+              <>
+                {/* Enamel Mug: SVG perspective polygon outline */}
+                <InteractiveHotspot
+                  id="desk_enamel_mug"
+                  name="Chipped Enamel Mug"
+                  cursorTooltip={deskMugMoved ? 'Shifted Enamel Mug' : 'Chipped Enamel Mug (Move Aside)'}
+                  polygonPoints="14.5,23.5 25.5,22 28.5,31 31.5,41 29,52 24.5,56.5 15.5,55 14,35"
+                  onClick={() => {
+                    if (!deskMugMoved) {
+                      setDeskMugMoved(true);
+                      addDiscoveredClue('roster_slip_1998');
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'You shift the chipped enamel mug aside, uncovering the 1998 Cleaning Duty Roster underneath! Room 4B was assigned to students May and Sandar. Clue logged to Case Notes.',
+                        type: 'success',
+                      });
+                    } else {
+                      sound.playMenuSelect();
+                      setRoomBanner({
+                        text: 'The chipped enamel mug has already been shifted aside.',
+                        type: 'info',
+                      });
+                    }
+                  }}
+                />
+
+                {/* Duty Roster Papers: SVG perspective polygon outline */}
+                <InteractiveHotspot
+                  id="desk_roster_slip"
+                  name="1998 Cleaning Roster Slip"
+                  cursorTooltip="Examine Cleaning Duty Roster (Aug 1998)"
+                  polygonPoints="15,42.5 3.5,57.5 22.5,93 39.5,70 33,52 27,56"
+                  onClick={() => {
+                    if (!deskMugMoved) {
+                      setDeskMugMoved(true);
+                      addDiscoveredClue('roster_slip_1998');
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'You shift the chipped enamel mug aside, uncovering the 1998 Cleaning Duty Roster underneath! Room 4B was assigned to students May and Sandar. Clue logged to Case Notes.',
+                        type: 'success',
+                      });
+                    } else {
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: '1998 Cleaning Duty Roster: Room 4B was assigned to May and Sandar for August 1998.',
+                        type: 'info',
+                      });
+                    }
+                  }}
+                />
+
+                {/* Bobby Pin / Clip in Ceramic Tray (hidden when already collected) */}
+                {!hasInventoryItem('bobby_pin') && (
+                  <InteractiveHotspot
+                    id="desk_ceramic_tray"
+                    name="Bent Steel Bobby Pin"
+                    cursorTooltip="Inspect Ceramic Tray (Bent Steel Pin)"
+                    polygonPoints="48.5,28 56.5,28 52,36.5 48.5,36.5"
+                    onClick={() => {
+                      addInventoryItem('bobby_pin');
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'Searching through dried ink nibs in the ceramic tray, you retrieve a sturdy bent steel bobby pin! Added to inventory.',
+                        type: 'success',
+                      });
+                    }}
+                  />
+                )}
+
+                {/* Lecture Books & Notebook */}
+                <InteractiveHotspot
+                  id="desk_lecture_books"
+                  name="Lecture Notebooks"
+                  cursorTooltip="Physics & Chemistry Lecture Notes (1998)"
+                  x={42}
+                  y={56}
+                  width={20}
+                  height={24}
+                  shape="rect"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setRoomBanner({
+                      text: 'Open university physics and chemistry lecture notebooks from 1998. Handwritten notes read: "Strange voltage drops and vibrations in the hallway past 11 PM..."',
+                      type: 'info',
+                    });
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 3: BEDSIDE STOOL & COMPASS */}
+            {activeInspectSubScene === 'stool' && (
+              <>
+                <InteractiveHotspot
+                  id="stool_tin_compass"
+                  name="Rusted Metal Biscuit Tin"
+                  cursorTooltip={
+                    hasMagneticCompass
+                      ? 'Inspect Antique Magnetic Compass'
+                      : 'Open Rusted Metal Tin Box'
+                  }
+                  x={42}
+                  y={40}
+                  width={22}
+                  height={26}
+                  shape="rect"
+                  onClick={() => {
+                    if (!hasMagneticCompass) {
+                      setHasMagneticCompass(true);
+                      addInventoryItem('magnetic_compass');
+                      sound.playChime(true);
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        type: 'success',
+                      });
+                      setIsCompassModalOpen(true);
+                    } else {
+                      sound.playPaperRustle();
+                      setIsCompassModalOpen(true);
+                    }
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 4: WARDROBE FOOTING */}
+            {activeInspectSubScene === 'wardrobe' && (
+              <>
+                {/* Leaning Wooden Bat / Strut (Hides when already collected into inventory) */}
+                {!hasInventoryItem('wooden_bat') && (
+                  <InteractiveHotspot
+                    id="wardrobe_timber_bat"
+                    name="Heavy Wooden Strut"
+                    cursorTooltip="Heavy Wooden Strut"
+                    polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
+                    onClick={() => {
+                      addInventoryItem('wooden_bat');
+                      sound.playPaperRustle();
+                      setRoomBanner({
+                        text: 'You pick up the heavy piece of detached teak timber leaning against the wardrobe. Heavy enough to smash a deadbolt. Added to inventory.',
+                        type: 'success',
+                      });
+                    }}
+                  />
+                )}
+
+                {/* Wardrobe Baseboard Lore Inspect */}
+                <InteractiveHotspot
+                  id="wardrobe_baseboard"
+                  name="Wardrobe Baseboard"
+                  cursorTooltip="Wardrobe Baseboard"
+                  x={45}
+                  y={55}
+                  width={35}
+                  height={25}
+                  shape="rect"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setRoomBanner({
+                      text: 'Heavy 1990s teak baseboard. Weathered by monsoon moisture, but solid. The heavy wardrobe footing has settled deep into the wooden floorboards.',
+                      type: 'info',
+                    });
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 5: WALL CALENDAR ZOOM */}
+            {activeInspectSubScene === 'calendar' && (
+              <>
+                <InteractiveHotspot
+                  id="calendar_aug14"
+                  name="Wall Calendar Sheet"
+                  cursorTooltip="Examine Circled Date (August 14, 1998)"
+                  polygonPoints="25,12 52.5,13.5 53,80.5 24.5,82.5"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    addDiscoveredClue('curfew_calendar_1998');
+                    setRoomBanner({
+                      text: 'August 14, 1998 is circled in red ink with lockdown notes: "All wing exits chained after 11:30 PM. No unauthorized departures." Clue logged to Case Notes.',
+                      type: 'info',
+                    });
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 6: FULL DOOR VIEW (Floor-to-Lintel) */}
+            {activeInspectSubScene === 'door' && (
+              <>
+                {/* Interactive Hotspot over Deadbolt Mechanism / Center Door Area */}
+                <InteractiveHotspot
+                  id="door_deadbolt"
+                  name="Locked Teak Door"
+                  cursorTooltip="Locked Teak Door"
+                  x={26}
+                  y={45}
+                  width={68}
+                  height={52}
+                  shape="rect"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setIsDoorInspectOpen(true);
+                  }}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Inspection / Breach Dialog (Only shown upon interacting with deadbolt) */}
+          {activeInspectSubScene === 'door' && (
+            <AnimatePresence>
+              {isDoorInspectOpen && (
+                <div className="absolute inset-x-0 bottom-6 sm:bottom-10 flex justify-center px-4 z-30 pointer-events-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="w-full max-w-xl bg-stone-950/95 backdrop-blur-xl border-2 border-amber-900/80 rounded-2xl p-5 sm:p-6 shadow-2xl text-center space-y-4 relative"
+                  >
+                    <div className="flex items-center justify-between pb-2 border-b border-stone-800">
+                      <div className="flex items-center gap-2 text-stone-400">
+                        <Lock className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-500">
+                          ROOM 4B HEAVY TEAK EXIT DOOR
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setIsDoorInspectOpen(false)}
+                        className="p-1 rounded bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white cursor-pointer transition-colors"
+                        title="Close door inspection"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
+                    {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
+                      <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
+                        <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                          The deadbolt is engaged from the other side. Locked.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Dynamic Unlocking Options */}
+                    {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
+                      <div className="space-y-3">
+                        <p className="text-xs font-mono text-stone-400">
+                          Choose an action to breach the deadbolt:
+                        </p>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {/* Option 1: Lockpick with Bobby Pin */}
+                          {hasInventoryItem('bobby_pin') && (
+                            <button
+                              disabled={isDoorTransitioning}
+                              onClick={() => executeUnlockDoor('bobby_pin')}
+                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                            >
+                              <div className="flex items-center gap-2 mb-1">
+                                <Unlock className="w-4 h-4 text-emerald-400" />
+                                <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                                  Pick the lock with bobby pin
+                                </span>
+                              </div>
+                              <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
+                                Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
+                              </p>
+                            </button>
+                          )}
+
+                          {/* Option 2: Smash with Wooden Bat */}
+                          {hasInventoryItem('wooden_bat') && (
+                            <button
+                              disabled={isDoorTransitioning}
+                              onClick={() => executeUnlockDoor('wooden_bat')}
+                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                            >
+                              <div className="flex items-center gap-2 mb-1">
+                                <AlertTriangle className="w-4 h-4 text-rose-400" />
+                                <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+                                  Smash open lock with wooden bat
+                                </span>
+                              </div>
+                              <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
+                                ⚠️ Warning: Smashing the door will produce a deafening crash.
+                              </div>
+                              <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
+                                -15% Composure loss • Elevates subsequent hallway threat.
+                              </p>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+          )}
+        </div>
+      )}
+
+      {/* ======================================================== */}
       {/* 7. MODE B: DIALOGUE & INVESTIGATION VIEW */}
       {/* ======================================================== */}
-      {mode !== 'location_select' && mode !== 'character_select' && mode !== 'shattering' && (
+      {mode !== 'location_select' && mode !== 'character_select' && mode !== 'shattering' && mode !== 'room_escape' && (
         <>
-          {/* Character Portraits Container */}
-          <div className="relative w-full max-w-5xl mx-auto flex items-end justify-between px-4 sm:px-12 h-60 sm:h-72 md:h-80 pointer-events-none z-10">
-            {/* Left Slot Character */}
-            <div className="relative h-full flex items-end">
+          {/* Character Portraits Container: Positioned strictly above dialogue box (bottom-[14rem]) */}
+          <div className="absolute bottom-[13.5rem] sm:bottom-[14rem] left-0 right-0 max-w-5xl mx-auto flex items-end justify-between px-4 sm:px-12 pointer-events-none z-10">
+            {/* Left Slot Character (Flipped horizontally in Phase 1 to face inward toward séance circle) */}
+            <div className="relative h-56 sm:h-64 md:h-72 flex items-end">
               {mode === 'phase1_2' ? (
                 currentP12Line.pos === 'left' && (
-                  <InkPortrait
-                    characterId={currentP12Line.characterId}
-                    speakerName={currentP12Line.speaker}
-                    isSpeaking={true}
-                    position="left"
-                    size="lg"
-                  />
+                  <div className="transform scale-x-[-1] flex items-end h-full">
+                    <InkPortrait
+                      characterId={currentP12Line.characterId}
+                      speakerName={currentP12Line.speaker}
+                      isSpeaking={true}
+                      position="left"
+                      size="lg"
+                    />
+                  </div>
                 )
               ) : (
                 <InkPortrait
@@ -1438,7 +2229,7 @@ export const VisualNovelEngine: React.FC = () => {
             </div>
 
             {/* Right Slot Character */}
-            <div className="relative h-full flex items-end">
+            <div className="relative h-56 sm:h-64 md:h-72 flex items-end">
               {mode === 'phase1_2' ? (
                 currentP12Line.pos === 'right' && (
                   <InkPortrait
@@ -1476,7 +2267,7 @@ export const VisualNovelEngine: React.FC = () => {
           </div>
 
           {/* Thematic Dialogue Box Area with REWIND & ADVANCE Features */}
-          <div className="relative w-full max-w-4xl mx-auto px-4 pb-4 sm:pb-8 z-20">
+          <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 max-w-4xl mx-auto px-4 z-20">
             {/* Character Name Tab (attached to top edge, follows speaker position) */}
             <div
               className="absolute top-0 z-30 px-4 py-1.5 rounded-t-md rounded-b-sm border border-b-0 border-amber-600/80 bg-stone-900 shadow-md pointer-events-none select-none"
@@ -1496,7 +2287,7 @@ export const VisualNovelEngine: React.FC = () => {
             </div>
             <div
               onClick={advanceDialogue}
-              className="w-full relative rounded-2xl bg-stone-950/90 backdrop-blur-xl border-2 border-amber-900/60 p-5 sm:p-7 shadow-2xl transition-all duration-200 cursor-pointer hover:border-amber-600/80 group ring-1 ring-black/80"
+              className="w-full relative rounded-2xl bg-stone-950/90 backdrop-blur-xl border-2 border-amber-900/60 p-4 sm:p-6 shadow-2xl transition-all duration-200 cursor-pointer hover:border-amber-600/80 group ring-1 ring-black/80"
             >
               {/* Corner Accents */}
               <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-amber-500/60 pointer-events-none" />
@@ -1505,14 +2296,14 @@ export const VisualNovelEngine: React.FC = () => {
               <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-amber-500/60 pointer-events-none" />
 
               {/* Speaker Name & Rewind Bar */}
-              <div className="flex items-center justify-between mb-3 border-b border-stone-800/80 pb-2">
+              <div className="flex items-center justify-between mb-2 sm:mb-3 border-b border-stone-800/80 pb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono tracking-widest text-stone-400 uppercase hidden sm:inline">
                     {mode === 'investigating_location' && activeInvestigatingLoc
                       ? `[${activeInvestigatingLoc.title.toUpperCase()}]`
                       : mode === 'awakening'
                       ? '[1998 TEMPORAL DISPLACEMENT]'
-                      : '[1998 HOSTEL SEANCE]'}
+                      : '[2026 HOSTEL SEANCE — ROOM 4B]'}
                   </span>
                 </div>
 
@@ -1572,6 +2363,9 @@ export const VisualNovelEngine: React.FC = () => {
           </div>
         </>
       )}
+
+      {/* Close 16:9 Strict Aspect Ratio Letterbox Stage */}
+      </div>
 
       {/* ======================================================== */}
       {/* 8. CHAPTER 1 COMPLETED CELEBRATION MODAL */}
@@ -1647,6 +2441,150 @@ export const VisualNovelEngine: React.FC = () => {
                 >
                   CHAPTER SELECT
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 8.5. Item Inspection Modal */}
+      <AnimatePresence>
+        {inspectingItem && ITEMS[inspectingItem] && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-md bg-stone-950 border-2 border-amber-600 rounded-2xl shadow-2xl p-5 sm:p-6 text-stone-200"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-stone-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-amber-950/80 border border-amber-500 text-amber-400">
+                    {inspectingItem === 'bobby_pin' ? (
+                      <Key className="w-5 h-5" />
+                    ) : inspectingItem === 'wooden_bat' ? (
+                      <Hammer className="w-5 h-5" />
+                    ) : (
+                      <Compass className="w-5 h-5" />
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-amber-500 uppercase font-bold tracking-wider block">
+                      INVENTORY ITEM
+                    </span>
+                    <h3
+                      className="text-2xl font-black text-stone-100 uppercase tracking-wider"
+                      style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                    >
+                      {ITEMS[inspectingItem].name}
+                    </h3>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setInspectingItem(null);
+                  }}
+                  className="p-1.5 rounded-lg bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="py-4">
+                <p className="text-sm font-mono text-stone-300 leading-relaxed bg-stone-900/60 p-3.5 rounded-xl border border-stone-800">
+                  {ITEMS[inspectingItem].description}
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-stone-800/80 flex justify-end">
+                <button
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setInspectingItem(null);
+                  }}
+                  className="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
+                >
+                  CLOSE INSPECTION
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 8.6. Paranormal Magnetic Compass Close-Up Modal */}
+      <AnimatePresence>
+        {isCompassModalOpen && (
+          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-lg bg-stone-950 border-2 border-amber-600 rounded-2xl shadow-[0_0_50px_rgba(245,158,11,0.3)] overflow-hidden flex flex-col text-stone-200"
+            >
+              <div className="relative w-full h-56 bg-stone-900 overflow-hidden">
+                <img
+                  src={ROOM_4B_ASSETS.compassZoom}
+                  alt="Magnetic Compass"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent" />
+                <div className="absolute top-3 right-3 z-10">
+                  <button
+                    onClick={() => {
+                      sound.playPaperRustle();
+                      setIsCompassModalOpen(false);
+                    }}
+                    className="p-1.5 rounded-lg bg-stone-950/80 border border-stone-700 text-stone-300 hover:text-white cursor-pointer shadow-md"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                {/* Center needle indicator overlay */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="relative w-28 h-28 rounded-full border-2 border-amber-500/40 flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                    <div className="w-1 h-20 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-full animate-compass-jitter shadow-[0_0_12px_rgba(244,63,94,0.9)]" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5 sm:p-6 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Compass className="w-5 h-5 text-amber-400" />
+                  <h3
+                    className="text-2xl sm:text-3xl font-black text-amber-300 uppercase tracking-wider"
+                    style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                  >
+                    ANTIQUE MAGNETIC COMPASS
+                  </h3>
+                </div>
+
+                <p className="text-xs sm:text-sm font-mono text-stone-300 leading-relaxed">
+                  An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.
+                </p>
+
+                <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-700/60 text-xs font-mono text-amber-200 leading-relaxed space-y-1">
+                  <div className="font-bold text-amber-400 uppercase flex items-center gap-1.5">
+                    <Radio className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                    <span>PARANORMAL ATTRACTION DETECTED:</span>
+                  </div>
+                  <div>
+                    The magnetic needle twitches erratically, trembling against the curved glass and pointing with uncanny persistence directly toward the locked room door.
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    onClick={() => {
+                      sound.playPaperRustle();
+                      setIsCompassModalOpen(false);
+                    }}
+                    className="px-6 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
+                  >
+                    CLOSE COMPASS VIEW
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>

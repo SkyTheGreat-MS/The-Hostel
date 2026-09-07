@@ -70,6 +70,15 @@ export interface VictimRiddle {
   options: RiddleOption[];
 }
 
+export interface Item {
+  id: string;
+  name: string;
+  description: string;
+  isSpecial?: boolean;
+}
+
+export type Room4BSubScene = 'main' | 'desk' | 'stool' | 'wardrobe' | 'calendar' | 'door';
+
 export interface GameState {
   chapter: number;
   explorationCount: number;
@@ -94,6 +103,12 @@ export interface GameState {
     location: string;
   } | null;
   historyLog: string[];
+  inventory: string[];
+  activeInspectSubScene: 'main' | 'desk' | 'stool' | 'wardrobe' | 'calendar' | 'door';
+  selectedInventoryItem: string | null;
+  deskMugMoved: boolean;
+  hasMagneticCompass: boolean;
+  doorSmashed: boolean;
 }
 
 export interface PLUnitTest {

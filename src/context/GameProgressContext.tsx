@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { MCId } from '../types';
+import { MCId, Room4BSubScene } from '../types';
 
 export interface GameProgressContextType {
   highestChapterCompleted: number;
@@ -16,6 +16,20 @@ export interface GameProgressContextType {
   setChapter1TimeSeconds: (val: number) => void;
   discoveredClues: string[];
   addDiscoveredClue: (clueId: string) => void;
+  // Room 4B Point-and-Click & Inventory additions
+  inventory: string[];
+  addInventoryItem: (itemId: string) => void;
+  hasInventoryItem: (itemId: string) => boolean;
+  activeInspectSubScene: Room4BSubScene;
+  setActiveInspectSubScene: (scene: Room4BSubScene) => void;
+  selectedInventoryItem: string | null;
+  setSelectedInventoryItem: (item: string | null) => void;
+  deskMugMoved: boolean;
+  setDeskMugMoved: (val: boolean | ((prev: boolean) => boolean)) => void;
+  hasMagneticCompass: boolean;
+  setHasMagneticCompass: (val: boolean | ((prev: boolean) => boolean)) => void;
+  doorSmashed: boolean;
+  setDoorSmashed: (val: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 const STORAGE_KEY = 'spirits_labyrinth_progress_v1';
@@ -70,6 +84,70 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return ['seance_notebook'];
   });
 
+  // Room 4B states
+  const [inventory, setInventory] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed.inventory)) {
+          return parsed.inventory;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return [];
+  });
+
+  const [activeInspectSubScene, setActiveInspectSubScene] = useState<Room4BSubScene>('main');
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState<string | null>(null);
+
+  const [deskMugMoved, setDeskMugMoved] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.deskMugMoved === 'boolean') {
+          return parsed.deskMugMoved;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [hasMagneticCompass, setHasMagneticCompass] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.hasMagneticCompass === 'boolean') {
+          return parsed.hasMagneticCompass;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [doorSmashed, setDoorSmashed] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.doorSmashed === 'boolean') {
+          return parsed.doorSmashed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -79,12 +157,25 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           selectedMC,
           composure,
           discoveredClues,
+          inventory,
+          deskMugMoved,
+          hasMagneticCompass,
+          doorSmashed,
         })
       );
     } catch {
       // ignore
     }
-  }, [highestChapterCompleted, selectedMC, composure, discoveredClues]);
+  }, [
+    highestChapterCompleted,
+    selectedMC,
+    composure,
+    discoveredClues,
+    inventory,
+    deskMugMoved,
+    hasMagneticCompass,
+    doorSmashed,
+  ]);
 
   const isChapterUnlocked = (chapterNumber: number): boolean => {
     return chapterNumber <= highestChapterCompleted + 1;
@@ -106,6 +197,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setComposure(100);
     setChapter1TimeSeconds(0);
     setDiscoveredClues(['seance_notebook']);
+    setInventory([]);
+    setActiveInspectSubScene('main');
+    setSelectedInventoryItem(null);
+    setDeskMugMoved(false);
+    setHasMagneticCompass(false);
+    setDoorSmashed(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -126,6 +223,19 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
   };
 
+  const addInventoryItem = (itemId: string) => {
+    setInventory((prev) => {
+      if (!prev.includes(itemId)) {
+        return [...prev, itemId];
+      }
+      return prev;
+    });
+  };
+
+  const hasInventoryItem = (itemId: string): boolean => {
+    return inventory.includes(itemId);
+  };
+
   return (
     <GameProgressContext.Provider
       value={{
@@ -143,6 +253,19 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setChapter1TimeSeconds,
         discoveredClues,
         addDiscoveredClue,
+        inventory,
+        addInventoryItem,
+        hasInventoryItem,
+        activeInspectSubScene,
+        setActiveInspectSubScene,
+        selectedInventoryItem,
+        setSelectedInventoryItem,
+        deskMugMoved,
+        setDeskMugMoved,
+        hasMagneticCompass,
+        setHasMagneticCompass,
+        doorSmashed,
+        setDoorSmashed,
       }}
     >
       {children}

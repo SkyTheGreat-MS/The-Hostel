@@ -31,6 +31,12 @@ export function createInitialState(selectedMC: MCId = 'thazin'): GameState {
       'Ritual performed in 2026. The offering glass shattered.',
       'You awaken alone on the dusty floorboards of Room 4B in August 1998.',
     ],
+    inventory: [],
+    activeInspectSubScene: 'main',
+    selectedInventoryItem: null,
+    deskMugMoved: false,
+    hasMagneticCompass: false,
+    doorSmashed: false,
   };
 }
 
