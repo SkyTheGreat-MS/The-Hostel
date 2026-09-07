@@ -16,6 +16,9 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {
+      "@/assets/*": [
+        "./public/assets/*"
+      ],
       "@/*": [
         "./*"
       ]

@@ -1,10 +1,10 @@
 import React from 'react';
-import hmsPortrait from '@/assets/hms_1.png';
-import mjPortrait from '@/assets/mj_1.png';
-import mskPortrait from '@/assets/msk_1.png';
-import mtPortrait from '@/assets/mt_1.png';
-import ymhPortrait from '@/assets/ymh_1.png';
-import yyhPortrait from '@/assets/yyh_1.png';
+const hmsPortrait = '/assets/hms_1.png';
+const mjPortrait = '/assets/mj_1.png';
+const mskPortrait = '/assets/msk_1.png';
+const mtPortrait = '/assets/mt_1.png';
+const ymhPortrait = '/assets/ymh_1.png';
+const yyhPortrait = '/assets/yyh_1.png';
 
 interface InkPortraitProps {
   characterId?: string;

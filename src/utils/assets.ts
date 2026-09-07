@@ -1,6 +1,4 @@
-import mainMenuJpg from '@/assets/main_menu.jpg';
-
-export const DEFAULT_BACKGROUND_JPG: string = mainMenuJpg;
+export const DEFAULT_BACKGROUND_JPG: string = '/assets/main_menu.jpg';
 
 /**
  * Resolves a background image URL from the assets folder.
