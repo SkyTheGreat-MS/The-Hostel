@@ -19,16 +19,31 @@ export const ROOM_4B_ASSETS = {
   compassZoom: '/assets/scenes/room_4b_compass_zoom.jpg',
 } as const;
 
+export const PHASE_3_ASSETS = {
+  pathwayThreshold: '/assets/scenes/pathway_326_main.jpg',
+  cardPathwayLeft: '/assets/ui/card_pathway_left.jpg',
+  cardPathwayRight: '/assets/ui/card_pathway_right.jpg',
+  westSplitLanding: '/assets/scenes/west_wing_landing.jpg',
+  stairwellGateLocked: '/assets/scenes/stairwell_gate_locked.jpg',
+  washroomOverview: '/assets/scenes/washroom_overview.jpg',
+  washroomBasinZoom: '/assets/scenes/washroom_basin_zoom.jpg',
+  washroomStallZoom: '/assets/scenes/washroom_stall_zoom.jpg',
+  washroomRopeZoom: '/assets/scenes/washroom_rope_zoom.jpg',
+  washroomMirrorZoom: '/assets/scenes/washroom_mirror_zoom.jpg',
+} as const;
+
 export const ITEMS: Record<string, Item> = {
   bobby_pin: {
     id: 'bobby_pin',
     name: 'Bobby Pin',
     description: 'A bent steel bobby pin found in a ceramic tray on the study desk.',
+    usageHint: 'Can rake small cylinder pins in simple locks silently.',
   },
   wooden_bat: {
     id: 'wooden_bat',
     name: 'Wooden Bat',
     description: 'A heavy piece of detached teak timber found near the wardrobe.',
+    usageHint: 'Can break wooden latches with blunt force, but creates heavy noise.',
   },
   magnetic_compass: {
     id: 'magnetic_compass',
@@ -36,6 +51,19 @@ export const ITEMS: Record<string, Item> = {
     description:
       'An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.',
     isSpecial: true,
+    usageHint: 'Twitches and points toward supernatural anomalies and dimensional rifts.',
+  },
+  small_brass_key_32: {
+    id: 'small_brass_key_32',
+    name: 'Small Brass Key (32)',
+    description: "A small tarnished brass key bearing a round metallic tag marked '32', recovered from a soaked uniform pocket.",
+    usageHint: 'A numbered locker or cabinet key; unlikely to turn industrial padlocks.',
+  },
+  coiled_nylon_rope: {
+    id: 'coiled_nylon_rope',
+    name: 'Coiled Nylon Rope',
+    description: 'A length of sturdy weathered nylon rope taken from the overhead drainage pipe.',
+    usageHint: 'Tough enough to bear body weight or secure broken latches.',
   },
 };
 
@@ -281,6 +309,22 @@ export const CLUES: Clue[] = [
     details:
       'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
     pointsTo: 'curfew_lockdown_aug14',
+  },
+  {
+    id: 'washroom_stall_echo',
+    locationId: 'hostel_laundry',
+    title: 'Washroom Stall Blood & Echo',
+    details:
+      'The third washroom stall exhibits fresh blood smears and a shattered pocket mirror beside a crimson student hair ribbon.',
+    pointsTo: 'washroom_third_stall',
+  },
+  {
+    id: 'mirror_locker_scrawl',
+    locationId: 'hostel_laundry',
+    title: 'Mirror Frame Etched Scrawl',
+    details:
+      "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
+    pointsTo: 'locker_14_1998',
   },
 ];
 

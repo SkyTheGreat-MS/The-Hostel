@@ -75,9 +75,21 @@ export interface Item {
   name: string;
   description: string;
   isSpecial?: boolean;
+  usageHint?: string;
 }
 
 export type Room4BSubScene = 'main' | 'desk' | 'stool' | 'wardrobe' | 'calendar' | 'door';
+
+export type Phase3Location =
+  | 'hallway_threshold'
+  | 'west_split_landing'
+  | 'stairwell_gate'
+  | 'washroom_main'
+  | 'washroom_basin'
+  | 'washroom_stall'
+  | 'washroom_rope'
+  | 'washroom_mirror'
+  | 'east_corridor';
 
 export interface GameState {
   chapter: number;
@@ -109,6 +121,12 @@ export interface GameState {
   deskMugMoved: boolean;
   hasMagneticCompass: boolean;
   doorSmashed: boolean;
+  phase3Location: Phase3Location;
+  hasSmallBrassKey: boolean; // Tag "32" from soaked shirt pocket
+  hasNylonRope: boolean;      // Retrieved from washroom overhead pipe
+  washroomStallChecked: boolean;
+  washroomMirrorScratched: boolean;
+  stairwellGateInspected: boolean;
 }
 
 export interface PLUnitTest {

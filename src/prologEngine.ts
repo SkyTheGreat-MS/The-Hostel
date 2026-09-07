@@ -37,6 +37,12 @@ export function createInitialState(selectedMC: MCId = 'thazin'): GameState {
     deskMugMoved: false,
     hasMagneticCompass: false,
     doorSmashed: false,
+    phase3Location: 'hallway_threshold',
+    hasSmallBrassKey: false,
+    hasNylonRope: false,
+    washroomStallChecked: false,
+    washroomMirrorScratched: false,
+    stairwellGateInspected: false,
   };
 }
 

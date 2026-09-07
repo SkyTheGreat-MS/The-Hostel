@@ -66,6 +66,15 @@ class AudioEngine {
     }
   }
 
+  public stopAmbient() {
+    if (this.ambientGain && this.ctx) {
+      try {
+        this.ambientGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      } catch {}
+    }
+    this.isAmbientRunning = false;
+  }
+
   public playKeyClick() {
     if (this.isMuted) return;
     this.initCtx();
@@ -284,19 +293,73 @@ class AudioEngine {
     if (!this.ctx) return;
 
     try {
-      for (let i = 0; i < 4; i++) {
+      // 1. Noise burst for high-energy shattering impact
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseFilter = this.ctx.createBiquadFilter();
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.setValueAtTime(1600, this.ctx.currentTime);
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start();
+
+      // 2. Low-end heavy fracture punch
+      const punchOsc = this.ctx.createOscillator();
+      const punchGain = this.ctx.createGain();
+      punchOsc.type = 'sawtooth';
+      punchOsc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      punchOsc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.2);
+      punchGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      punchGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+      punchOsc.connect(punchGain);
+      punchGain.connect(this.ctx.destination);
+      punchOsc.start();
+      punchOsc.stop(this.ctx.currentTime + 0.2);
+
+      // 3. Sharded resonant glass spikes
+      for (let i = 0; i < 6; i++) {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(1800 + i * 400 + Math.random() * 300, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.15 + i * 0.05);
-        gain.gain.setValueAtTime(0.05, this.ctx.currentTime + i * 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.2 + i * 0.05);
+        osc.frequency.setValueAtTime(2200 + i * 450 + Math.random() * 300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(250, this.ctx.currentTime + 0.18 + i * 0.04);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime + i * 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.22 + i * 0.04);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
-        osc.start(this.ctx.currentTime + i * 0.03);
-        osc.stop(this.ctx.currentTime + 0.25 + i * 0.05);
+        osc.start(this.ctx.currentTime + i * 0.015);
+        osc.stop(this.ctx.currentTime + 0.28 + i * 0.04);
       }
+    } catch {}
+  }
+
+  public playWaterDrop() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(450, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1400, this.ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.15);
     } catch {}
   }
 }

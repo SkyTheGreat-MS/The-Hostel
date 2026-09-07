@@ -9,6 +9,7 @@ import {
   decodeRiddle,
   resolveEnding,
 } from '../prologEngine';
+import { ITEMS, CLUES, PHASE_3_ASSETS } from '../gameData';
 import {
   CheckCircle2,
   XCircle,
@@ -353,6 +354,62 @@ export const TestRunner: React.FC = () => {
         durationMs: Math.round((performance.now() - start) * 100) / 100,
         expected: '3 exploration actions in Chapter 1 trigger shadow event, assert glitch_body_glimpse, and advance to Chapter 2',
         actual: `Final: chapter=${state.chapter}, explorationCount=${state.explorationCount}, hasClue=${state.discoveredClues.includes('glitch_body_glimpse')}`,
+        trace,
+      });
+    }
+
+    // Test 12: phase_3_pathway_326_spec_validation
+    {
+      const start = performance.now();
+      const state = createInitialState('thazin');
+      const trace: string[] = [
+        `Initial phase3Location: ${state.phase3Location}`,
+        `Initial hasSmallBrassKey: ${state.hasSmallBrassKey}, hasNylonRope: ${state.hasNylonRope}`,
+        `Initial washroomStallChecked: ${state.washroomStallChecked}, washroomMirrorScratched: ${state.washroomMirrorScratched}, stairwellGateInspected: ${state.stairwellGateInspected}`,
+      ];
+
+      const passState =
+        state.phase3Location === 'hallway_threshold' &&
+        state.hasSmallBrassKey === false &&
+        state.hasNylonRope === false &&
+        state.washroomStallChecked === false &&
+        state.washroomMirrorScratched === false &&
+        state.stairwellGateInspected === false;
+
+      const hasItems =
+        Boolean(ITEMS['small_brass_key_32']) &&
+        Boolean(ITEMS['coiled_nylon_rope']) &&
+        Boolean(ITEMS['small_brass_key_32'].description.includes('32')) &&
+        Boolean(ITEMS['coiled_nylon_rope'].description.includes('overhead drainage pipe'));
+
+      const hasClues =
+        CLUES.some((c) => c.id === 'washroom_stall_echo') &&
+        CLUES.some((c) => c.id === 'mirror_locker_scrawl');
+
+      const hasAssets =
+        PHASE_3_ASSETS.pathwayThreshold === '/assets/scenes/pathway_326_main.jpg' &&
+        PHASE_3_ASSETS.cardPathwayLeft === '/assets/ui/card_pathway_left.jpg' &&
+        PHASE_3_ASSETS.cardPathwayRight === '/assets/ui/card_pathway_right.jpg' &&
+        PHASE_3_ASSETS.westSplitLanding === '/assets/scenes/west_wing_landing.jpg' &&
+        PHASE_3_ASSETS.stairwellGateLocked === '/assets/scenes/stairwell_gate_locked.jpg' &&
+        PHASE_3_ASSETS.washroomOverview === '/assets/scenes/washroom_overview.jpg' &&
+        PHASE_3_ASSETS.washroomBasinZoom === '/assets/scenes/washroom_basin_zoom.jpg' &&
+        PHASE_3_ASSETS.washroomStallZoom === '/assets/scenes/washroom_stall_zoom.jpg' &&
+        PHASE_3_ASSETS.washroomRopeZoom === '/assets/scenes/washroom_rope_zoom.jpg' &&
+        PHASE_3_ASSETS.washroomMirrorZoom === '/assets/scenes/washroom_mirror_zoom.jpg';
+
+      trace.push(`Pass State: ${passState}, Pass Items: ${hasItems}, Pass Clues: ${hasClues}, Pass Assets: ${hasAssets}`);
+
+      const passed = passState && hasItems && hasClues && hasAssets;
+
+      testList.push({
+        id: 'test_phase3_spec',
+        name: 'test(phase_3_pathway_326_specification_and_assets)',
+        category: 'Phase 3: Pathway 326 & Washroom',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: 'All 10 Phase 3 illustration assets registered, master items & clues registered, and GameState initialised with phase3Location=hallway_threshold',
+        actual: `passState=${passState}, hasItems=${hasItems}, hasClues=${hasClues}, hasAssets=${hasAssets}`,
         trace,
       });
     }
