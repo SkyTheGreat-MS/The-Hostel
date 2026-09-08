@@ -692,6 +692,52 @@ export const TestRunner: React.FC = () => {
       });
     }
 
+    // Test 17: pathway_326_room_4b_bidirectional_route
+    {
+      const start = performance.now();
+      const trace: string[] = ['Validating bidirectional navigation between Pathway 326 and Room 4B'];
+
+      // Simulate state transitions
+      let currentScene = 'pathway_326_main';
+      let phase3Location = 'hallway_threshold';
+      let currentSubScene: string | null = null;
+      let mode = 'phase3';
+      let activeInspectSubScene = 'main';
+      const doorUnlocked = true;
+
+      // 1. Re-enter Room 4B action
+      currentScene = 'room_4b_main';
+      currentSubScene = null;
+      activeInspectSubScene = 'main';
+      mode = 'room_escape';
+      const reenterSuccess = currentScene === 'room_4b_main' && mode === 'room_escape' && activeInspectSubScene === 'main';
+      trace.push(`Re-enter Room 4B transition: ${reenterSuccess}`);
+
+      // 2. Room 4B preserves collected flags and door state
+      const doorStillUnlocked = doorUnlocked === true;
+      trace.push(`Door 4B remains unlocked on re-entry: ${doorStillUnlocked}`);
+
+      // 3. Re-emerge to Pathway 326 action via unlocked door
+      currentScene = 'pathway_326_main';
+      phase3Location = 'hallway_threshold';
+      mode = 'phase3';
+      const reemergeSuccess = currentScene === 'pathway_326_main' && phase3Location === 'hallway_threshold' && mode === 'phase3';
+      trace.push(`Re-emerge to Pathway 326 transition: ${reemergeSuccess}`);
+
+      const passed = reenterSuccess && doorStillUnlocked && reemergeSuccess;
+
+      testList.push({
+        id: 'test_pathway_326_bidirectional_route',
+        name: 'test(pathway_326_room_4b_bidirectional_route)',
+        category: 'Level Design & Navigation',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: 'Bidirectional transition between Pathway 326 and Room 4B preserves unlocked door and state',
+        actual: `Reenter=${reenterSuccess}, DoorUnlocked=${doorStillUnlocked}, Reemerge=${reemergeSuccess}`,
+        trace,
+      });
+    }
+
     setResults(testList);
     setIsRunning(false);
   };

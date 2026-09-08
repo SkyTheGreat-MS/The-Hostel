@@ -1003,15 +1003,27 @@ export const VisualNovelEngine: React.FC = () => {
       if (save.currentPhase === 3) {
         const loc = save.phase3Location || 'hallway_threshold';
         setPhase3Location(loc);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
         setMode('phase3');
         sound.startAmbient();
       } else if (save.currentPhase === 2) {
+        setCurrentScene('room_4b_main');
+        setCurrentSubScene(null);
         setMode('room_escape');
         setActiveInspectSubScene('main');
         sound.startAmbient();
       }
     }
   }, []);
+
+  // Synchronize currentScene with engine mode
+  useEffect(() => {
+    if (currentScene === 'room_4b_main' && mode !== 'room_escape' && mode !== 'awakening') {
+      setMode('room_escape');
+      setActiveInspectSubScene('main');
+    }
+  }, [currentScene, mode]);
 
   // Auto-save progression changes across Phase 2 & Phase 3
   useEffect(() => {
@@ -1441,6 +1453,8 @@ export const VisualNovelEngine: React.FC = () => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
         setRoomBanner(null);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
         setPhase3Location('hallway_threshold');
         setPhase3Message(null);
         setMode('phase3');
@@ -1460,6 +1474,8 @@ export const VisualNovelEngine: React.FC = () => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
         setRoomBanner(null);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
         setPhase3Location('hallway_threshold');
         setPhase3Message(null);
         setMode('phase3');
@@ -2247,12 +2263,21 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="main_door"
                   name="Room Door 4B"
-                  cursorTooltip="Room Door 4B"
+                  cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
                   polygonPoints="79,5 99.5,5 99.5,95 79,95"
                   onClick={() => {
-                    sound.playMenuSelect();
-                    setActiveInspectSubScene('door');
-                    setIsDoorInspectOpen(false);
+                    if (doorUnlocked) {
+                      sound.playPaperRustle();
+                      setCurrentScene('pathway_326_main');
+                      setCurrentSubScene(null);
+                      setPhase3Location('hallway_threshold');
+                      setPhase3Message(null);
+                      setMode('phase3');
+                    } else {
+                      sound.playMenuSelect();
+                      setActiveInspectSubScene('door');
+                      setIsDoorInspectOpen(false);
+                    }
                   }}
                 />
               </>
@@ -2443,16 +2468,25 @@ export const VisualNovelEngine: React.FC = () => {
                 {/* Interactive Hotspot over Deadbolt Mechanism / Center Door Area */}
                 <InteractiveHotspot
                   id="door_deadbolt"
-                  name="Locked Teak Door"
-                  cursorTooltip="Locked Teak Door"
+                  name={doorUnlocked ? "Unlocked Teak Door" : "Locked Teak Door"}
+                  cursorTooltip={doorUnlocked ? "Step through to Pathway 326" : "Locked Teak Door"}
                   x={28}
                   y={5}
                   width={45}
                   height={100}
                   shape="rect"
                   onClick={() => {
-                    sound.playMenuSelect();
-                    setIsDoorInspectOpen(true);
+                    if (doorUnlocked) {
+                      sound.playPaperRustle();
+                      setCurrentScene('pathway_326_main');
+                      setCurrentSubScene(null);
+                      setPhase3Location('hallway_threshold');
+                      setPhase3Message(null);
+                      setMode('phase3');
+                    } else {
+                      sound.playMenuSelect();
+                      setIsDoorInspectOpen(true);
+                    }
                   }}
                 />
               </>
@@ -2486,65 +2520,93 @@ export const VisualNovelEngine: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
-                    {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
-                      <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
-                        <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                          The deadbolt is engaged from the other side. Locked.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Dynamic Unlocking Options */}
-                    {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
+                    {doorUnlocked ? (
                       <div className="space-y-3">
-                        <p className="text-xs font-mono text-stone-400">
-                          Choose an action to breach the deadbolt:
-                        </p>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {/* Option 1: Lockpick with Bobby Pin */}
-                          {hasInventoryItem('bobby_pin') && (
-                            <button
-                              disabled={isDoorTransitioning}
-                              onClick={() => executeUnlockDoor('bobby_pin')}
-                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <Unlock className="w-4 h-4 text-emerald-400" />
-                                <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
-                                  Pick the lock with bobby pin
-                                </span>
-                              </div>
-                              <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
-                              </p>
-                            </button>
-                          )}
-
-                          {/* Option 2: Smash with Wooden Bat */}
-                          {hasInventoryItem('wooden_bat') && (
-                            <button
-                              disabled={isDoorTransitioning}
-                              onClick={() => executeUnlockDoor('wooden_bat')}
-                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <AlertTriangle className="w-4 h-4 text-rose-400" />
-                                <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
-                                  Smash open lock with wooden bat
-                                </span>
-                              </div>
-                              <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
-                                ⚠️ Warning: Smashing the door will produce a deafening crash.
-                              </div>
-                              <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
-                                -15% Composure loss • Elevates subsequent hallway threat.
-                              </p>
-                            </button>
-                          )}
+                        <div className="py-4 px-4 rounded-xl bg-[#151f1a]/80 border border-[#223229]">
+                          <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                            The deadbolt is disengaged. Door 4B is wide open to Pathway 326.
+                          </p>
                         </div>
+                        <button
+                          onClick={() => {
+                            sound.playPaperRustle();
+                            setIsDoorInspectOpen(false);
+                            setActiveInspectSubScene('main');
+                            setCurrentScene('pathway_326_main');
+                            setCurrentSubScene(null);
+                            setPhase3Location('hallway_threshold');
+                            setPhase3Message(null);
+                            setMode('phase3');
+                          }}
+                          className="w-full py-3 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <span>STEP THROUGH TO PATHWAY 326</span>
+                          <span className="text-xs">→</span>
+                        </button>
                       </div>
+                    ) : (
+                      <>
+                        {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
+                        {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
+                          <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
+                            <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                              The deadbolt is engaged from the other side. Locked.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Dynamic Unlocking Options */}
+                        {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
+                          <div className="space-y-3">
+                            <p className="text-xs font-mono text-stone-400">
+                              Choose an action to breach the deadbolt:
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {/* Option 1: Lockpick with Bobby Pin */}
+                              {hasInventoryItem('bobby_pin') && (
+                                <button
+                                  disabled={isDoorTransitioning}
+                                  onClick={() => executeUnlockDoor('bobby_pin')}
+                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <Unlock className="w-4 h-4 text-emerald-400" />
+                                    <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                                      Pick the lock with bobby pin
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
+                                    Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
+                                  </p>
+                                </button>
+                              )}
+
+                              {/* Option 2: Smash with Wooden Bat */}
+                              {hasInventoryItem('wooden_bat') && (
+                                <button
+                                  disabled={isDoorTransitioning}
+                                  onClick={() => executeUnlockDoor('wooden_bat')}
+                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                                    <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+                                      Smash open lock with wooden bat
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
+                                    ⚠️ Warning: Smashing the door will produce a deafening crash.
+                                  </div>
+                                  <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
+                                    -15% Composure loss • Elevates subsequent hallway threat.
+                                  </p>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </motion.div>
                 </div>
@@ -2561,6 +2623,22 @@ export const VisualNovelEngine: React.FC = () => {
       {/* ======================================================== */}
       {mode === 'phase3' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
+          {/* Top-Left Return Button */}
+          {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
+            <button
+              onClick={() => {
+                sound.playPaperRustle();
+                setCurrentScene('room_4b_main');
+                setCurrentSubScene(null);
+                setActiveInspectSubScene('main');
+                setMode('room_escape');
+              }}
+              className="absolute top-4 left-4 z-40 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#121815]/90 border border-[#273830] hover:border-[#425e50] text-[#9db5a8] hover:text-[#c2d6cc] font-mono text-xs tracking-wider transition-all duration-200 shadow-md pointer-events-auto"
+            >
+              <span className="text-[10px]">←</span> RE-ENTER ROOM 4B
+            </button>
+          )}
+
           {/* Sub-scene Header Bar & Navigation */}
           <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
             {phase3Location !== 'hallway_threshold' ? (
@@ -2630,8 +2708,24 @@ export const VisualNovelEngine: React.FC = () => {
           <div className="relative flex-1 w-full h-full pointer-events-auto">
             {/* SUB-SCENE 1: THRESHOLD - TWO CLEAN VISUAL CHOICE CARDS */}
             {phase3Location === 'hallway_threshold' && (
-              <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-auto">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 max-w-4xl w-full">
+              <>
+                {/* Doorway Hotspot Mapping on Corridor Scene (pathway_326_main.jpg) */}
+                <InteractiveHotspot
+                  id="return-room-4b"
+                  name="Door to Room 4B"
+                  cursorTooltip="Step Back into Room 4B"
+                  polygonPoints="0,15 16,18 16,92 0,98"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setCurrentScene('room_4b_main');
+                    setCurrentSubScene(null);
+                    setActiveInspectSubScene('main');
+                    setMode('room_escape');
+                  }}
+                />
+
+                <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 max-w-4xl w-full pointer-events-auto">
                   {/* Left Card: West Wing */}
                   <motion.div
                     whileHover={{ scale: 1.03, y: -4 }}
@@ -2695,6 +2789,7 @@ export const VisualNovelEngine: React.FC = () => {
                   </motion.div>
                 </div>
               </div>
+              </>
             )}
 
             {/* SUB-SCENE 2: WEST WING SPLIT LANDING */}
