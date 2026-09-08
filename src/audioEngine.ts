@@ -648,6 +648,138 @@ class AudioEngine {
       noise.start();
     } catch {}
   }
+
+  public playMatchStrike() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Friction scraping noise burst followed by brief sizzle
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2400, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.25);
+      filter.Q.setValueAtTime(2.5, this.ctx.currentTime);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      noise.start();
+    } catch {}
+  }
+
+  public playMatchSnap() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Sharp wood snapping click & sudden fail dissipation
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(1800, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.08);
+
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.08);
+    } catch {}
+  }
+
+  public playCandleIgnite() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Soft sulfur flare whoosh and warm resonant sustain
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.4);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(2200, this.ctx.currentTime + 0.15);
+      filter.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.4);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+
+      // Add warm hum
+      const humOsc = this.ctx.createOscillator();
+      const humGain = this.ctx.createGain();
+      humOsc.type = 'sine';
+      humOsc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      humGain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+      humGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.5);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      humOsc.connect(humGain);
+      humGain.connect(this.ctx.destination);
+
+      noise.start();
+      humOsc.start();
+      humOsc.stop(this.ctx.currentTime + 0.5);
+    } catch {}
+  }
+
+  public playBellChimeReverb() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Rich, deep bronze ceremonial bell with decaying metallic harmonics
+      const freqs = [440, 880, 1320, 1760, 2640];
+      const gains = [0.35, 0.25, 0.15, 0.1, 0.05];
+
+      freqs.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+        const initialVol = gains[idx] || 0.1;
+        gain.gain.setValueAtTime(initialVol, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 2.8);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 2.8);
+      });
+    } catch {}
+  }
 }
 
 export const sound = new AudioEngine();

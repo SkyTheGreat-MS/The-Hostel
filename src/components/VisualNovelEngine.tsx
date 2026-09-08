@@ -68,7 +68,8 @@ import { InteractiveHotspot } from './InteractiveHotspot';
 import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
-export { Locker32ZoomView, Locker09ZoomView, LockersOverviewView };
+import { PrayerAltarView } from './PrayerAltarView';
+export { Locker32ZoomView, Locker09ZoomView, LockersOverviewView, PrayerAltarView };
 
 interface InitialDialogueStep {
   id: number;
@@ -3646,150 +3647,30 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
             {/* SUB-SCENE 10: PRAYER ALTAR & MATCH STRIKING MECHANIC */}
             {phase3Location === 'prayer_altar' && (
-              <>
-                {/* Offerings Tray Hotspot */}
-                <InteractiveHotspot
-                  id="prayer_altar_tray"
-                  name="Offerings Tray"
-                  x={30}
-                  y={38}
-                  width={40}
-                  height={38}
-                  shape="rect"
-                  cursorTooltip={
-                    altarCandlesPlaced >= 3 && altarBellPlaced
-                      ? "[Offerings Placed: 3 Candles & Bell]"
-                      : "[Place Ritual Offerings on Tray]"
-                  }
-                  onClick={() => {
-                    if (altarCandlesPlaced < 3 || !altarBellPlaced) {
-                      if (hasBlackCandlesCount >= 3 && hasBronzeBell) {
-                        setAltarCandlesPlaced(3);
-                        setAltarBellPlaced(true);
-                        sound.playPaperRustle();
-                        setActiveMonologue(
-                          "— Placed three black beeswax candles in the brass holders and set the bronze prayer bell beside the offering bowl. —"
-                        );
-                      } else {
-                        sound.playPaperRustle();
-                        setActiveMonologue(
-                          "— The altar tray has hollows for three black beeswax candles and a bronze prayer bell. I need to find them first. —"
-                        );
-                      }
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— Three black beeswax candles and the bronze prayer bell rest solemnly on the altar tray. —"
-                      );
-                    }
-                  }}
-                />
-
-                {/* Match Striking Panel (Only when offerings placed and Nat not yet summoned) */}
-                {altarCandlesPlaced >= 3 && altarBellPlaced && !natSummoned && (
-                  <div className="absolute bottom-6 inset-x-0 flex items-center justify-center z-40 pointer-events-none">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.85)] backdrop-blur-md p-4 flex flex-col sm:flex-row items-center gap-4 pointer-events-auto text-[#c2d6cc]"
-                    >
-                      <div className="text-left font-mono">
-                        <div className="flex items-center gap-2">
-                          <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
-                          <span className="text-xs font-bold text-[#82a996] uppercase tracking-wider">
-                            RITUAL IGNITION READY
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-stone-400 mt-0.5">
-                          MATCHES REMAINING: <span className="text-[#6ee7b7] font-bold">{hasMatchesCount}</span> •
-                          COMPOSURE: <span className="text-amber-400 font-bold">{composure}%</span>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          if (hasMatchesCount <= 0) return;
-                          const failRate = Math.max(0.05, ((100 - composure) / 100) * 0.35);
-                          const isFail = Math.random() < failRate;
-                          if (isFail) {
-                            sound.playDamage();
-                            const nextMatches = hasMatchesCount - 1;
-                            setHasMatchesCount(nextMatches);
-                            if (nextMatches <= 0) {
-                              setHasMatchesCount(1);
-                              setComposure((prev) => Math.max(0, prev - 3));
-                              setActiveMonologue(
-                                "— Out of matches! Desperately rummaging around the woven reed mat reveals one discarded damp match. My heart pounds in panic. (-3% Composure) —"
-                              );
-                            } else {
-                              setActiveMonologue("— My hands are shaking too violently... the match snapped in the damp air. —");
-                            }
-                          } else {
-                            // Success!
-                            setHasMatchesCount((prev) => Math.max(0, prev - 1));
-                            sound.playItemPickup();
-                            sound.playDramaticSting();
-                            setAltarCandlesLit(true);
-                            // Purge ritual items from inventory
-                            setInventory((prev) =>
-                              prev.filter(
-                                (id) =>
-                                  id !== 'black_beeswax_candle' &&
-                                  id !== 'matchbox_three_stars' &&
-                                  id !== 'bronze_prayer_bell'
-                              )
-                            );
-                            setHasBlackCandlesCount(0);
-                            setHasMatchesCount(0);
-                            setHasBronzeBell(false);
-                            setNatSummoned(true);
-                            setChapter1Completed(true);
-                            completeChapter(1);
-                            saveChapterOneProgress({
-                              chapter: 1,
-                              currentPhase: 3,
-                              phase3Location: 'prayer_altar',
-                              selectedCharacterId: selectedCharacter.id,
-                              inventory: inventory.filter(
-                                (id) =>
-                                  id !== 'black_beeswax_candle' &&
-                                  id !== 'matchbox_three_stars' &&
-                                  id !== 'bronze_prayer_bell'
-                              ),
-                              discoveredClues,
-                              hasBobbyPin,
-                              hasWoodenBat,
-                              hasMagneticCompass,
-                              hasSmallBrassKey,
-                              hasNylonRope,
-                              deskMugMoved,
-                              doorUnlocked,
-                              composure,
-                              timerSeconds: timeLeft,
-                              timestamp: Date.now(),
-                              hasReadLocker32Note,
-                              hasReadSandarLetters,
-                              hasLocker09Candle,
-                              hasLocker09Matchbox,
-                              chapter1Completed: true,
-                              natSummoned: true,
-                            });
-                            setChapter1VictoryActive(true);
-                            sound.playSuccessTune();
-                            setActiveMonologue(
-                              "— The flames burn cold blue... the bronze bell rings in my mind. The Guardian has awakened. —"
-                            );
-                          }
-                        }}
-                        className="px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] active:scale-95 border border-[#3f5c4c] text-[#d1e3da] text-xs font-mono font-black tracking-wider uppercase transition-all shadow-lg hover:scale-105 cursor-pointer flex items-center gap-2"
-                      >
-                        <Flame className="w-4 h-4 text-[#6ee7b7]" />
-                        <span>STRIKE MATCH TO LIGHT CANDLES</span>
-                      </button>
-                    </motion.div>
-                  </div>
-                )}
-              </>
+              <PrayerAltarView
+                composure={composure}
+                setComposure={setComposure}
+                inventory={inventory}
+                setInventory={setInventory}
+                hasBlackCandlesCount={hasBlackCandlesCount}
+                setHasBlackCandlesCount={setHasBlackCandlesCount}
+                hasMatchesCount={hasMatchesCount}
+                setHasMatchesCount={setHasMatchesCount}
+                hasBronzeBell={hasBronzeBell}
+                setHasBronzeBell={setHasBronzeBell}
+                selectedCharacterId={selectedCharacter.id}
+                setActiveMonologue={setActiveMonologue}
+                setPhase3Location={setPhase3Location}
+                setChapter1Completed={setChapter1Completed}
+                completeChapter={completeChapter}
+                setIsChapterTransitionOpen={setIsChapterTransitionOpen}
+                altarCandlesPlaced={altarCandlesPlaced}
+                setAltarCandlesPlaced={setAltarCandlesPlaced}
+                altarBellPlaced={altarBellPlaced}
+                setAltarBellPlaced={setAltarBellPlaced}
+                natSummoned={natSummoned}
+                setNatSummoned={setNatSummoned}
+              />
             )}
           </div>
         </div>
