@@ -15,20 +15,12 @@ interface InkPortraitProps {
   className?: string;
 }
 
-export const InkPortrait: React.FC<InkPortraitProps> = ({
-  characterId = 'may_jewel',
-  speakerName,
-  isSpeaking = false,
-  position = 'left',
-  size = 'lg',
-  className = '',
-}) => {
+// Per-character portrait mapping.
+// YE YINT HEIN -> yyh, MOE STHEINKHA -> msk, HSU MYAT SHEIN -> hms,
+// YIN MIN HTIKE -> ymh, MAY JEWEL -> mj, MONA -> mt.
+// Legacy aliases from gameData are grouped with their base character.
+export const getCharacterPortraitSrc = (characterId?: string): string => {
   const normalizedId = (characterId || '').toLowerCase();
-
-  // Per-character portrait mapping.
-  // YE YINT HEIN -> yyh, MOE STHEINKHA -> msk, HSU MYAT SHEIN -> hms,
-  // YIN MIN HTIKE -> ymh, MAY JEWEL -> mj, MONA -> mt.
-  // Legacy aliases from gameData are grouped with their base character.
   const portraitByCharacter: Record<string, string> = {
     ye_yint_hein: yyhPortrait,
     kyaw_swar: yyhPortrait,
@@ -44,10 +36,20 @@ export const InkPortrait: React.FC<InkPortraitProps> = ({
     min_khant: mtPortrait,
     mama_may: mjPortrait,
   };
+  return portraitByCharacter[normalizedId] || mjPortrait;
+};
 
+export const InkPortrait: React.FC<InkPortraitProps> = ({
+  characterId = 'may_jewel',
+  speakerName,
+  isSpeaking = false,
+  position = 'left',
+  size = 'lg',
+  className = '',
+}) => {
+  const normalizedId = (characterId || '').toLowerCase();
   const isMamaMay = normalizedId.includes('mama');
-
-  const portraitSrc = portraitByCharacter[normalizedId] || mjPortrait;
+  const portraitSrc = getCharacterPortraitSrc(characterId);
 
   // Sizing definitions
   const sizeClasses = {

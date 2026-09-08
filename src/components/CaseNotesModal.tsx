@@ -102,6 +102,22 @@ const MASTER_CLUES: Record<string, ClueData> = {
     description:
       'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
   },
+  washroom_stall_echo: {
+    id: 'washroom_stall_echo',
+    title: 'Washroom Stall Blood & Echo',
+    location: 'Communal Washroom (Stall 3)',
+    category: 'primary',
+    description:
+      'The third washroom stall exhibits fresh blood smears and a shattered pocket mirror beside a crimson student hair ribbon.',
+  },
+  mirror_locker_scrawl: {
+    id: 'mirror_locker_scrawl',
+    title: 'Washroom Mirror Etched Scrawl',
+    location: 'Communal Washroom (Mirror)',
+    category: 'side',
+    description:
+      "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
+  },
 };
 
 export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
@@ -135,20 +151,20 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           initial={{ scale: 0.94, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.94, opacity: 0 }}
-          className="relative w-full max-w-3xl max-h-[90vh] bg-stone-950 border-2 border-amber-600/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden text-stone-200"
+          className="relative w-full max-w-3xl max-h-[90vh] bg-[#121815]/95 border border-[#2c3d34] rounded-2xl shadow-[0_0_35px_rgba(46,66,56,0.3)] backdrop-blur-md flex flex-col overflow-hidden text-[#c2d6cc]"
         >
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-stone-800 bg-stone-900/90 flex items-center justify-between">
+          <div className="p-4 sm:p-5 border-b border-[#2c3d34] bg-[#18221d]/90 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-950/80 border border-amber-600/80 text-amber-400 shadow-md">
+              <div className="p-2 rounded-lg bg-[#18221d] border border-[#2c3d34] text-[#82a996] shadow-md">
                 <Bookmark className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-mono tracking-widest text-amber-500 uppercase font-bold">
+                <span className="text-[10px] font-mono tracking-widest text-[#82a996] uppercase font-bold">
                   CASE FILE • AUGUST 1998 INCIDENT
                 </span>
                 <h2
-                  className="text-2xl sm:text-3xl font-black text-stone-100 tracking-wider uppercase"
+                  className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase"
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                 >
                   INVESTIGATION NOTEBOOK
@@ -161,7 +177,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="p-2 rounded-lg bg-stone-950 border border-stone-800 text-stone-400 hover:text-white hover:border-amber-600 transition-all cursor-pointer"
+              className="p-2 rounded-lg bg-[#121815] border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer"
               title="Close Notebook [ESC]"
             >
               <X className="w-5 h-5" />
@@ -169,13 +185,13 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           </div>
 
           {/* Vitals Summary Strip */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 p-4 bg-stone-950 border-b border-stone-800/80 text-xs font-mono">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 p-4 bg-[#0b0f0d] border-b border-[#2c3d34]/80 text-xs font-mono">
             {/* Investigator */}
-            <div className="p-2.5 rounded-xl bg-stone-900/90 border border-stone-800 flex items-center gap-2.5">
-              <Shield className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="p-2.5 rounded-xl bg-[#18221d] border border-[#2c3d34] flex items-center gap-2.5">
+              <Shield className="w-4 h-4 text-[#82a996] shrink-0" />
               <div>
-                <div className="text-[10px] text-stone-500 uppercase">Investigator</div>
-                <div className="font-bold text-amber-200 truncate">
+                <div className="text-[10px] text-[#82a996]/70 uppercase">Investigator</div>
+                <div className="font-bold text-[#c2d6cc] truncate">
                   {investigatorName} ({investigatorArchetype})
                 </div>
               </div>
@@ -193,11 +209,11 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
             </div>
 
             {/* Time Left */}
-            <div className="p-2.5 rounded-xl bg-stone-900/90 border border-stone-800 flex items-center gap-2.5">
-              <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="p-2.5 rounded-xl bg-[#18221d] border border-[#2c3d34] flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-[#82a996] shrink-0" />
               <div>
-                <div className="text-[10px] text-stone-500 uppercase">Remaining Time</div>
-                <div className="font-bold text-amber-300">
+                <div className="text-[10px] text-[#82a996]/70 uppercase">Remaining Time</div>
+                <div className="font-bold text-[#c2d6cc]">
                   {timeFormatted} / 10:00
                 </div>
               </div>
@@ -206,15 +222,15 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
 
           {/* Body: Discovered Clues & Lore */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-stone-800 pb-2">
+            <div className="flex items-center justify-between border-b border-[#2c3d34] pb-2">
               <h3
-                className="text-lg font-black text-amber-300 uppercase tracking-wider flex items-center gap-2"
+                className="text-lg font-black text-[#c2d6cc] uppercase tracking-wider flex items-center gap-2"
                 style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
               >
-                <Search className="w-4 h-4 text-amber-400" />
+                <Search className="w-4 h-4 text-[#82a996]" />
                 <span>DISCOVERED CLUES & EVIDENCE ({discoveredClueIds.length})</span>
               </h3>
-              <span className="text-[11px] font-mono text-stone-400">
+              <span className="text-[11px] font-mono text-[#82a996]/80">
                 Uncover critical evidence to unlock Chapter 2
               </span>
             </div>
@@ -232,17 +248,17 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                   return (
                     <div
                       key={id}
-                      className="p-3.5 rounded-xl bg-stone-900/80 border border-stone-800 hover:border-amber-700/60 transition-all flex flex-col justify-between"
+                      className="p-3.5 rounded-xl bg-[#18221d]/80 border border-[#2c3d34] hover:border-[#4d6e5e] hover:bg-[#18221d] transition-all flex flex-col justify-between"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-[10px] font-mono font-bold text-amber-500 uppercase tracking-wider">
+                          <span className="text-[10px] font-mono font-bold text-[#82a996] uppercase tracking-wider">
                             {clue.location}
                           </span>
                           <span
                             className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded border ${
                               clue.category === 'item'
-                                ? 'bg-amber-950 text-amber-300 border-amber-600'
+                                ? 'bg-[#121815] text-[#82a996] border-[#2c3d34]'
                                 : clue.category === 'primary'
                                 ? 'bg-rose-950 text-rose-300 border-rose-700'
                                 : 'bg-stone-800 text-stone-400 border-stone-700'
@@ -251,10 +267,10 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                             {clue.category}
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-stone-100 mb-1">
+                        <h4 className="text-sm font-bold text-[#c2d6cc] mb-1">
                           {clue.title}
                         </h4>
-                        <p className="text-xs text-stone-400 font-mono leading-relaxed">
+                        <p className="text-xs text-[#c2d6cc]/80 font-mono leading-relaxed">
                           {clue.description}
                         </p>
                       </div>
@@ -265,10 +281,10 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
             )}
 
             {/* Environmental Tip Strip */}
-            <div className="mt-6 p-4 rounded-xl bg-amber-950/30 border border-amber-700/60 flex items-start gap-3 text-xs font-mono text-amber-200/90 leading-relaxed">
-              <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="mt-6 p-4 rounded-xl bg-[#18221d]/50 border border-[#2c3d34] flex items-start gap-3 text-xs font-mono text-[#c2d6cc] leading-relaxed">
+              <Sparkles className="w-5 h-5 text-[#6ee7b7] shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-amber-300 uppercase block mb-1">
+                <span className="font-bold text-[#82a996] uppercase block mb-1">
                   Detective Observation Rule:
                 </span>
                 Observe the draft currents and sounds on each location card. Dead-end rooms suffer from stagnant air, padlocks, and no airflow. Rooms leading toward the exterior courtyard always feature cold rain drafts flowing from beneath the doors.
@@ -277,13 +293,13 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="p-4 bg-stone-900/90 border-t border-stone-800 flex justify-end">
+          <div className="p-4 bg-[#18221d]/90 border-t border-[#2c3d34] flex justify-end">
             <button
               onClick={() => {
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
+              className="px-6 py-2.5 rounded-xl bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
             >
               RESUME INVESTIGATION
             </button>

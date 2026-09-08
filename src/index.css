@@ -48,12 +48,29 @@
     animation: screenShake 0.65s cubic-bezier(.36,.07,.19,.97) both;
   }
 
+  .animate-screen-shake-fast {
+    animation: screenShake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
   .animate-compass-twitch {
     animation: compassTwitch 2.5s ease-in-out infinite;
   }
 
   .animate-compass-jitter {
     animation: compassJitterRapid 0.35s ease-in-out infinite;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
 

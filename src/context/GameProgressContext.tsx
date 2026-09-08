@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { MCId, Room4BSubScene } from '../types';
+import { MCId, Room4BSubScene, Phase3Location } from '../types';
 
 export interface GameProgressContextType {
   highestChapterCompleted: number;
@@ -30,6 +30,19 @@ export interface GameProgressContextType {
   setHasMagneticCompass: (val: boolean | ((prev: boolean) => boolean)) => void;
   doorSmashed: boolean;
   setDoorSmashed: (val: boolean | ((prev: boolean) => boolean)) => void;
+  // Phase 3 additions
+  phase3Location: Phase3Location;
+  setPhase3Location: (val: Phase3Location | ((prev: Phase3Location) => Phase3Location)) => void;
+  hasSmallBrassKey: boolean;
+  setHasSmallBrassKey: (val: boolean | ((prev: boolean) => boolean)) => void;
+  hasNylonRope: boolean;
+  setHasNylonRope: (val: boolean | ((prev: boolean) => boolean)) => void;
+  washroomStallChecked: boolean;
+  setWashroomStallChecked: (val: boolean | ((prev: boolean) => boolean)) => void;
+  washroomMirrorScratched: boolean;
+  setWashroomMirrorScratched: (val: boolean | ((prev: boolean) => boolean)) => void;
+  stairwellGateInspected: boolean;
+  setStairwellGateInspected: (val: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 const STORAGE_KEY = 'spirits_labyrinth_progress_v1';
@@ -148,6 +161,96 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return false;
   });
 
+  const [phase3Location, setPhase3Location] = useState<Phase3Location>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.phase3Location === 'string') {
+          return parsed.phase3Location as Phase3Location;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return 'hallway_threshold';
+  });
+
+  const [hasSmallBrassKey, setHasSmallBrassKey] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.hasSmallBrassKey === 'boolean') {
+          return parsed.hasSmallBrassKey;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [hasNylonRope, setHasNylonRope] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.hasNylonRope === 'boolean') {
+          return parsed.hasNylonRope;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [washroomStallChecked, setWashroomStallChecked] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.washroomStallChecked === 'boolean') {
+          return parsed.washroomStallChecked;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [washroomMirrorScratched, setWashroomMirrorScratched] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.washroomMirrorScratched === 'boolean') {
+          return parsed.washroomMirrorScratched;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [stairwellGateInspected, setStairwellGateInspected] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.stairwellGateInspected === 'boolean') {
+          return parsed.stairwellGateInspected;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -161,6 +264,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           deskMugMoved,
           hasMagneticCompass,
           doorSmashed,
+          phase3Location,
+          hasSmallBrassKey,
+          hasNylonRope,
+          washroomStallChecked,
+          washroomMirrorScratched,
+          stairwellGateInspected,
         })
       );
     } catch {
@@ -175,6 +284,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     deskMugMoved,
     hasMagneticCompass,
     doorSmashed,
+    phase3Location,
+    hasSmallBrassKey,
+    hasNylonRope,
+    washroomStallChecked,
+    washroomMirrorScratched,
+    stairwellGateInspected,
   ]);
 
   const isChapterUnlocked = (chapterNumber: number): boolean => {
@@ -203,6 +318,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setDeskMugMoved(false);
     setHasMagneticCompass(false);
     setDoorSmashed(false);
+    setPhase3Location('hallway_threshold');
+    setHasSmallBrassKey(false);
+    setHasNylonRope(false);
+    setWashroomStallChecked(false);
+    setWashroomMirrorScratched(false);
+    setStairwellGateInspected(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -266,6 +387,18 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setHasMagneticCompass,
         doorSmashed,
         setDoorSmashed,
+        phase3Location,
+        setPhase3Location,
+        hasSmallBrassKey,
+        setHasSmallBrassKey,
+        hasNylonRope,
+        setHasNylonRope,
+        washroomStallChecked,
+        setWashroomStallChecked,
+        washroomMirrorScratched,
+        setWashroomMirrorScratched,
+        stairwellGateInspected,
+        setStairwellGateInspected,
       }}
     >
       {children}

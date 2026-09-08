@@ -73,7 +73,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
     <div
       className={`relative w-full ${
         fullBleed ? 'h-screen overflow-hidden' : 'min-h-screen overflow-x-hidden'
-      } bg-[#050b09] text-stone-200 font-sans selection:bg-amber-900/60 selection:text-amber-100 flex flex-col`}
+      } bg-[#050b09] text-[#c2d6cc] font-sans selection:bg-[#18221d] selection:text-[#c2d6cc] flex flex-col`}
     >
       {/* 1. Background Atmosphere Image from Assets */}
       {!hideBackground && (
@@ -129,26 +129,26 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
       {/* 5. Top Bar Header */}
       {!fullBleed && (
-        <header className="relative z-20 w-full border-b border-stone-800/80 bg-stone-950/70 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
+        <header className="relative z-20 w-full border-b border-[#2c3d34] bg-[#0c120f]/80 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
           <div className="flex items-center gap-3.5">
             <Link
               to="/"
-              className="group flex items-center gap-2.5 text-stone-400 hover:text-amber-400 transition-colors"
+              className="group flex items-center gap-2.5 text-stone-400 hover:text-[#82a996] transition-colors"
               title="Return to Main Menu"
             >
-              <div className="w-8 h-8 rounded-lg bg-stone-900 border border-stone-700/70 flex items-center justify-center group-hover:border-amber-500/60 group-hover:bg-amber-950/40 transition-all shadow-md">
-                <Ghost className="w-4 h-4 text-amber-500/80 group-hover:text-amber-400 transition-colors" />
+              <div className="w-8 h-8 rounded-lg bg-[#18221d] border border-[#2c3d34] flex items-center justify-center group-hover:border-[#4d6e5e] group-hover:bg-[#22352b] transition-all shadow-md">
+                <Ghost className="w-4 h-4 text-[#82a996] group-hover:text-[#a7c4b5] transition-colors" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm sm:text-base font-bold tracking-widest font-bebas text-stone-200 group-hover:text-amber-200 transition-colors">
+                  <span className="text-sm sm:text-base font-bold tracking-widest font-bebas text-[#c2d6cc] group-hover:text-[#d1e3da] transition-colors">
                     {headerTitle}
                   </span>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/60 text-amber-300">
+                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#18221d] border border-[#2c3d34] text-[#82a996]">
                     1998 ECHO
                   </span>
                 </div>
-                <span className="text-[11px] text-stone-400 font-mono hidden sm:block">
+                <span className="text-[11px] text-[#7d998b] font-mono hidden sm:block">
                   {headerSubtitle}
                 </span>
               </div>
@@ -160,9 +160,9 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
               <Link
                 to={backTo}
                 onClick={() => sound.playMenuSelect()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-stone-900/90 border border-stone-700/80 text-xs font-mono text-stone-300 hover:text-amber-300 hover:border-amber-600/70 hover:bg-stone-800 transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#18221d] border border-[#2c3d34] text-xs font-mono text-[#c2d6cc] hover:text-[#d1e3da] hover:border-[#4d6e5e] hover:bg-[#22352b] transition-all shadow-sm"
               >
-                <Compass className="w-3.5 h-3.5 text-amber-500" />
+                <Compass className="w-3.5 h-3.5 text-[#82a996]" />
                 <span>{backLabel}</span>
               </Link>
             )}
@@ -172,8 +172,8 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
               aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
               className={`p-2 rounded-lg border transition-all ${
                 isMuted
-                  ? 'bg-stone-900/80 border-stone-800 text-stone-500 hover:text-stone-300'
-                  : 'bg-amber-950/40 border-amber-700/50 text-amber-400 hover:bg-amber-900/50'
+                  ? 'bg-[#111714] border-[#223028] text-stone-500 hover:text-stone-300'
+                  : 'bg-[#18221d] border-[#2c3d34] text-[#82a996] hover:bg-[#22352b] hover:border-[#4d6e5e]'
               }`}
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
