@@ -1976,7 +1976,7 @@ export const VisualNovelEngine: React.FC = () => {
                       ? 'Inspect Antique Magnetic Compass'
                       : 'Velvet-Lined Tin Box (Compass)'
                   }
-                  polygonPoints="21,74 38,74 38,92 21,92"
+                  polygonPoints="27,80 36,75 36,85 28,90"
                   onClick={() => {
                     if (!hasMagneticCompass) {
                       setHasMagneticCompass(true);
@@ -2167,11 +2167,7 @@ export const VisualNovelEngine: React.FC = () => {
                   id="wardrobe_baseboard"
                   name="Wardrobe Baseboard"
                   cursorTooltip="Wardrobe Baseboard"
-                  x={45}
-                  y={55}
-                  width={35}
-                  height={25}
-                  shape="rect"
+                  polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(
@@ -2468,7 +2464,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="landing_communal_washroom"
                   name="Communal Washroom Entrance"
-                  polygonPoints="0,15 44,15 44,98 0,98"
+                  polygonPoints="0,0 44,0 44,73 0,98"
                   cursorTooltip="[Enter Communal Washroom]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2481,7 +2477,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="landing_downstairs_stairwell"
                   name="Downstairs Concrete Stairwell"
-                  polygonPoints="47,20 96,20 96,98 47,98"
+                  polygonPoints="70,35 85,35 78,67 57,60"
                   cursorTooltip="[Descend Stairwell]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2498,7 +2494,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="stairwell_gate_padlock"
                   name="Padlock & Scissor Gate"
-                  polygonPoints="36,32 64,32 66,74 34,74"
+                  polygonPoints="55,22 64,22 60,45 55,45"
                   cursorTooltip="[Examine Heavy Padlock & Chain]"
                   onClick={() => {
                     setStairwellGateInspected(true);
@@ -2518,7 +2514,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_basin_trough"
                   name="Cement Wash Basin & Soaked Uniforms"
-                  polygonPoints="3,52 33,54 28,98 0,98"
+                  polygonPoints="12,48 18,48 30,66 9,78"
                   cursorTooltip="[Inspect Wash Basin]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2531,7 +2527,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_stall_cubicle"
                   name="Third Cubicle Stall Door"
-                  polygonPoints="46,26 56,25 56.5,80 46.5,76"
+                  polygonPoints="48,18 56,13 56.5,73 48,66"
                   cursorTooltip="[Inspect Bloodstained Stall]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2544,7 +2540,11 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_overhead_pipe"
                   name="Overhead Pipe & Coiled Rope"
-                  polygonPoints="57,0 67,0 67,31 57,31"
+                  x={60}
+                  y={0}
+                  width={8}
+                  height={20}
+                  shape="rect"
                   cursorTooltip="[Inspect Overhead Rope]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2557,7 +2557,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_cracked_mirror"
                   name="Cracked Wall Mirror & Sinks"
-                  polygonPoints="70,26 94,26 94,76 68,76"
+                  polygonPoints="70,20 94,19 95,50 70,49"
                   cursorTooltip="[Inspect Mirror & Sinks]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2574,7 +2574,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_basin_pocket"
                   name="Floating Cotton Shirt Pocket"
-                  polygonPoints="18,36 82,36 84,88 16,88"
+                  polygonPoints="60,40 66,40 68,56 55,60"
                   cursorTooltip={
                     !hasSmallBrassKey
                       ? '[Search Soaked Shirt Pocket]'
@@ -2605,7 +2605,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_stall_details"
                   name="Bloodstained Stall Echo"
-                  polygonPoints="25,20 75,20 75,85 25,85"
+                  polygonPoints="58,53 75,53 75,87 58,87"
                   cursorTooltip="[Examine Stall Echo & Hair Ribbon]"
                   onClick={() => {
                     sound.playDramaticSting();
@@ -2623,7 +2623,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_rope_drainage"
                   name="Overhead Coiled Rope"
-                  polygonPoints="25,15 75,15 78,85 22,85"
+                  polygonPoints="55,1 75,1 78,85 55,85"
                   cursorTooltip={
                     !hasNylonRope
                       ? '[Take Coiled Nylon Rope]'
@@ -2654,7 +2654,7 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="washroom_mirror_etching"
                   name="Bottom Mirror Frame"
-                  polygonPoints="15,65 85,65 88,90 12,90"
+                  polygonPoints="15,65 85,65 88,82 12,82"
                   cursorTooltip={
                     !washroomMirrorScratched
                       ? '[Wipe Bottom Mirror Frame]'
