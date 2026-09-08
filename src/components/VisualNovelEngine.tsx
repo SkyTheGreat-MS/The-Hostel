@@ -1863,7 +1863,7 @@ export const VisualNovelEngine: React.FC = () => {
                   id="main_desk"
                   name="Study Desk & Notes"
                   cursorTooltip="Inspect Study Desk"
-                  polygonPoints="45,52 75,52 75,72 45,72"
+                  polygonPoints="46,61 67,70 75,63 52,59"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveInspectSubScene('desk');
@@ -1961,11 +1961,7 @@ export const VisualNovelEngine: React.FC = () => {
                   id="desk_lecture_books"
                   name="Lecture Notebooks"
                   cursorTooltip="Physics & Chemistry Lecture Notes (1998)"
-                  x={42}
-                  y={56}
-                  width={20}
-                  height={24}
-                  shape="rect"
+                 polygonPoints="35,83 72,69 79,96 35,96"
                   onClick={() => {
                     sound.playPaperRustle();
                     setRoomBanner({
@@ -2083,10 +2079,10 @@ export const VisualNovelEngine: React.FC = () => {
                   id="door_deadbolt"
                   name="Locked Teak Door"
                   cursorTooltip="Locked Teak Door"
-                  x={26}
-                  y={45}
-                  width={68}
-                  height={52}
+                  x={28}
+                  y={5}
+                  width={45}
+                  height={100}
                   shape="rect"
                   onClick={() => {
                     sound.playMenuSelect();
