@@ -134,3 +134,22 @@ export interface PLUnitTest {
   description: string;
   run: () => { passed: boolean; message: string; details?: string[] };
 }
+
+export interface ChapterProgressSave {
+  chapter: 1;
+  currentPhase: 1 | 2 | 3;
+  phase3Location?: Phase3Location;
+  selectedCharacterId: string | null;
+  inventory: string[];
+  discoveredClues: string[];
+  hasBobbyPin: boolean;
+  hasWoodenBat: boolean;
+  hasMagneticCompass: boolean;
+  hasSmallBrassKey: boolean;
+  hasNylonRope: boolean;
+  deskMugMoved: boolean;
+  doorUnlocked: boolean;
+  composure: number;
+  timerSeconds: number;
+  timestamp: number;
+}
