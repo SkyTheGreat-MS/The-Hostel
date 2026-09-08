@@ -18,6 +18,7 @@ import {
   clearChapterOneProgress,
   lockChapterOneAndSave,
   loadActiveGameProgress,
+  ACTIVE_SAVE_KEY,
 } from '../gameStore';
 import { ChapterProgressSave } from '../types';
 import {
@@ -744,6 +745,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setWashroomMirrorScratched,
     stairwellGateInspected,
     setStairwellGateInspected,
+    resetProgress,
     resetChapterOneProgress,
   } = useGameProgress();
 
@@ -872,7 +874,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
     const activeSave = loadActiveGameProgress();
-    if (initialChapter === 2 || (activeSave && activeSave.chapter === 2)) {
+    if (initialChapter === 2 || (!initialChapter && activeSave && activeSave.chapter === 2 && activeSave.chapter1Completed)) {
       if (activeSave?.selectedCharacterId) {
         const char = CHARACTERS.find((c) => c.id === activeSave.selectedCharacterId);
         if (char) setSelectedCharacter(char);
@@ -1019,8 +1021,34 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         altarBellPlaced,
         natSummoned,
         corridorShadowScareTriggered,
-        chapter1Completed,
+        chapter1Completed: false,
       });
+
+      // Synchronize active save state to maintain Chapter 2 lock while playing Chapter 1
+      try {
+        const activeSaveData = {
+          chapter: 1,
+          currentPhase: currentPhaseNum,
+          chapter1Completed: false,
+          phase3Location: mode === 'room_escape' ? 'hallway_threshold' : phase3Location,
+          selectedCharacterId: selectedCharacter.id,
+          inventory,
+          discoveredClues,
+          hasBobbyPin,
+          hasWoodenBat,
+          hasSmallBrassKey,
+          hasNylonRope,
+          hasBlackCandlesCount,
+          hasMatchesCount,
+          hasBronzeBell,
+          caretakerDoorUnlocked,
+          composure,
+          timerSeconds: timeLeft,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(activeSaveData));
+        localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+      } catch {}
     }
   }, [
     mode,
@@ -1586,10 +1614,42 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   // Comprehensive Chapter 1 Reset Routine
   const handleRestartChapterOne = () => {
+    // 1. Purge persistent storage
+    localStorage.removeItem('spirits_labyrinth_active_save');
+    localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
     clearChapterOneProgress();
+
+    // 2. Set fresh Chapter 1 state in store / localStorage
+    const freshChapterOneSave = {
+      chapter: 1,
+      currentPhase: 1,
+      chapter1Completed: false, // CRITICAL: Lock Chapter 2 again
+      phase3Location: 'hallway_threshold' as Phase3Location,
+      selectedCharacterId: null,
+      inventory: [],
+      discoveredClues: [],
+      hasBobbyPin: false,
+      hasWoodenBat: false,
+      hasSmallBrassKey: false,
+      hasNylonRope: false,
+      hasBlackCandlesCount: 0,
+      hasMatchesCount: 0,
+      hasBronzeBell: false,
+      caretakerDoorUnlocked: false,
+      composure: 100,
+      timerSeconds: 600,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(freshChapterOneSave));
+
+    resetProgress();
     resetChapterOneProgress();
 
-    // 1. Reset Core Flow & Phase
+    // 3. Reset in-memory engine state
+    setCurrentChapter(1);
+    setChapter1Completed(false);
+
+    // Reset Core Flow & Phase
     setPhase(1);
     setCurrentScene('seance_room_4b_2026');
     setCurrentSubScene(null);
@@ -1598,11 +1658,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setActiveMonologue(null);
     setActiveItemModal(null);
 
-    // 2. Reset Player Vitals & Timers
+    // Reset Player Vitals & Timers
     setTimerSeconds(600); // 10:00 countdown
     setComposure(100);
 
-    // 3. Purge Inventory & Environmental Interaction Flags
+    // Purge Inventory & Environmental Interaction Flags
     setInventory([]);
     setDiscoveredClues([]);
     setHasBobbyPin(false);
@@ -1627,14 +1687,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setAltarBellPlaced(false);
     setNatSummoned(false);
     setCorridorShadowScareTriggered(false);
-    setChapter1Completed(false);
     setKeypadInput('');
     setSpectralClimaxActive(false);
     setAltarCandlesLit(false);
     setChapter1VictoryActive(false);
     setCorridorShadowFlash(false);
 
-    // 4. Reset Audio Channels
+    // Reset Audio Channels
     sound.stopAllAmbience();
     sound.playSeanceRainLoop();
 
@@ -1708,7 +1767,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleSaveAndExit = () => {
     setIsChapterTransitionOpen(false);
     sound.stopAllAmbience();
-    navigate('/');
+    // 1. Persist Chapter 2 checkpoint
+    lockChapterOneAndSave(selectedCharacter.id, composure);
+    // 2. Route directly to Chapter Selection page
+    navigate('/chapters');
   };
 
   const toggleMute = () => {

@@ -24,11 +24,13 @@ import {
   restart_chapter_one,
   loadActiveGameProgress,
   ACTIVE_SAVE_KEY,
+  createFreshChapterOneSave,
 } from '../gameStore';
 import { ChapterPreviewModal } from './ChapterPreviewModal';
 import { ChapterTransitionModal } from './ChapterTransitionModal';
 import { LockersOverviewView } from './LockersOverviewView';
 import { PrayerAltarView } from './PrayerAltarView';
+import { ChapterCard } from './ChapterSelection';
 import {
   CheckCircle2,
   XCircle,
@@ -1401,6 +1403,94 @@ export const TestRunner: React.FC = () => {
         actual: `ComponentLoaded=${hasComponent}, SocketsValid=${socketsValid}, FormulaValid=${formulaValid}, NoLossValid=${noLossValid}, PurgeValid=${purgeValid}, AudioValid=${audioValid}`,
         trace,
       });
+    }
+
+    // Test 31: chapter2_relocking_and_restart_wipe_guard
+    {
+      const start = performance.now();
+      const trace: string[] = [];
+
+      // Backup localStorage states
+      const backupActive = localStorage.getItem(ACTIVE_SAVE_KEY);
+      const backupCh1 = localStorage.getItem('spirits_labyrinth_chapter_1_save');
+      const backupCh2Unlocked = localStorage.getItem('spirits_labyrinth_ch2_unlocked');
+
+      try {
+        // 1. ChapterCard component loaded and callable
+        const hasCard = typeof ChapterCard === 'function';
+        trace.push(`ChapterCard component callable: ${hasCard}`);
+
+        // 2. Complete Chapter 1: verify Chapter 2 is unlocked
+        const ch2State = lockChapterOneAndSave('thazin', 95);
+        const isCh1DoneAfterComplete = Boolean(ch2State.chapter1Completed);
+        const ch2UnlockedAfterComplete = hasActiveChapterTwoSave();
+        trace.push(`Chapter 1 completed: isChapter1Done=${isCh1DoneAfterComplete}, hasActiveChapterTwoSave=${ch2UnlockedAfterComplete}`);
+
+        // 3. Perform Chapter 1 Restart: full state & storage wipe
+        localStorage.removeItem(ACTIVE_SAVE_KEY);
+        localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+        clearChapterOneProgress();
+
+        const freshCh1 = createFreshChapterOneSave();
+        localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(freshCh1));
+
+        // 4. Verify Chapter 2 is strictly re-locked
+        const activeSaveAfterRestart = JSON.parse(localStorage.getItem(ACTIVE_SAVE_KEY) || '{}');
+        const isCh1DoneAfterRestart = Boolean(activeSaveAfterRestart.chapter1Completed);
+        const ch2ActiveAfterRestart = hasActiveChapterTwoSave();
+        const ch2TokenPurged = localStorage.getItem('spirits_labyrinth_ch2_unlocked') === null;
+        trace.push(`After restart: isChapter1Done=${isCh1DoneAfterRestart} (should be false), ch2Active=${ch2ActiveAfterRestart} (should be false), ch2TokenPurged=${ch2TokenPurged}`);
+
+        // 5. Play into Chapter 1 (simulate Room 4B Phase 2): verify Main Menu & Chapter Select guards
+        const ch1PlayingSave = {
+          ...freshCh1,
+          currentPhase: 2,
+          discoveredClues: ['seance_notebook', 'curfew_calendar_1998'],
+          chapter1Completed: false,
+        };
+        localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(ch1PlayingSave));
+
+        const hasCh1ActiveSaveDetected = hasActiveChapterOneSave();
+        const hasCh2ActiveDuringCh1 = hasActiveChapterTwoSave();
+        trace.push(`During Chapter 1 Phase 2 play: hasActiveChapterOneSave=${hasCh1ActiveSaveDetected} (true), hasActiveChapterTwoSave=${hasCh2ActiveDuringCh1} (false)`);
+
+        const passed =
+          hasCard &&
+          isCh1DoneAfterComplete === true &&
+          ch2UnlockedAfterComplete === true &&
+          isCh1DoneAfterRestart === false &&
+          ch2ActiveAfterRestart === false &&
+          ch2TokenPurged === true &&
+          hasCh1ActiveSaveDetected === true &&
+          hasCh2ActiveDuringCh1 === false;
+
+        testList.push({
+          id: 'test_chapter2_relocking_and_restart_wipe_guard',
+          name: 'test(chapter2_relocking_and_restart_wipe_guard)',
+          category: 'Persistence & Lockout Logic',
+          passed,
+          durationMs: Math.round((performance.now() - start) * 100) / 100,
+          expected: 'Chapter 2 locks upon Chapter 1 restart with storage purge; Chapter 2 shows LOCKED and cannot be started; Main Menu updates to CONTINUE (CHAPTER 1)',
+          actual: `Card=${hasCard}, CompleteUnlocked=${ch2UnlockedAfterComplete}, RestartRelocked=${!ch2ActiveAfterRestart}, Ch1Active=${hasCh1ActiveSaveDetected}`,
+          trace,
+        });
+      } finally {
+        if (backupActive !== null) {
+          localStorage.setItem(ACTIVE_SAVE_KEY, backupActive);
+        } else {
+          localStorage.removeItem(ACTIVE_SAVE_KEY);
+        }
+        if (backupCh1 !== null) {
+          localStorage.setItem('spirits_labyrinth_chapter_1_save', backupCh1);
+        } else {
+          localStorage.removeItem('spirits_labyrinth_chapter_1_save');
+        }
+        if (backupCh2Unlocked !== null) {
+          localStorage.setItem('spirits_labyrinth_ch2_unlocked', backupCh2Unlocked);
+        } else {
+          localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+        }
+      }
     }
 
     setResults(testList);

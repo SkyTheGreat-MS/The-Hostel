@@ -384,6 +384,8 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const resetChapterOneProgress = () => {
+    setHighestChapterCompleted(0);
+    setJustUnlockedChapter(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
     setDiscoveredClues([]);
@@ -400,6 +402,11 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
   };
 
   const clearJustUnlocked = () => {

@@ -11,6 +11,7 @@ import {
   hasActiveChapterTwoSave,
   restart_chapter_one,
 } from '../gameStore';
+import { ChapterCard } from '../components/ChapterSelection';
 import { ChapterProgressSave } from '../types';
 import {
   Lock,
@@ -61,16 +62,22 @@ export const ChapterSelect: React.FC = () => {
   const [ch1Save, setCh1Save] = useState<ChapterProgressSave | null>(null);
   const [showRestartCh1Confirm, setShowRestartCh1Confirm] = useState<boolean>(false);
 
-  const hasCh2Save = hasActiveChapterTwoSave();
+  // Dynamic check for Chapter 1 completion via persistent active save
+  const getActiveSave = () => {
+    try {
+      return JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
+    } catch {
+      return {};
+    }
+  };
+  const activeSave = getActiveSave();
+  const isChapter1Done = Boolean(activeSave.chapter1Completed);
 
-  // Strict Chapter Locking Rules
-  const chapter1Completed = highestChapterCompleted >= 1 || hasCh2Save;
-  const chapter2Completed = highestChapterCompleted >= 2;
-
+  // Strict Chapter Locking Rules: Chapter 2 strictly requires Chapter 1 completed
   const isChapterUnlocked = (num: number): boolean => {
     if (num === 1) return true;
-    if (num === 2) return chapter1Completed;
-    if (num === 3) return chapter2Completed;
+    if (num === 2) return isChapter1Done;
+    if (num === 3) return highestChapterCompleted >= 2;
     return false;
   };
 
@@ -84,12 +91,12 @@ export const ChapterSelect: React.FC = () => {
   useEffect(() => {
     if (highestChapterCompleted >= 2) {
       setSelectedChapter(3);
-    } else if (highestChapterCompleted >= 1) {
+    } else if (isChapter1Done) {
       setSelectedChapter(2);
     } else {
       setSelectedChapter(1);
     }
-  }, [highestChapterCompleted]);
+  }, [highestChapterCompleted, isChapter1Done]);
 
   // Audio cue when user newly unlocks a chapter
   useEffect(() => {
@@ -122,12 +129,55 @@ export const ChapterSelect: React.FC = () => {
     }
   };
 
-  // Handle Chapter 1 explicit restart
-  const handleRestartChapter1 = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  // Handle starting Chapter 2
+  const handleStartChapterTwo = () => {
+    if (!isChapter1Done) {
+      sound.playError();
+      setLockedNotice('Finish Chapter 1 to unlock.');
+      setTimeout(() => setLockedNotice(null), 3000);
+      return;
+    }
+    sound.playMenuSelect();
+    navigate('/chapters/2');
+  };
+
+  // Handle Full State & Storage Wipe on Chapter 1 Restart
+  const handleConfirmRestartChapterOne = () => {
+    // 1. Purge persistent storage
+    localStorage.removeItem('spirits_labyrinth_active_save');
+    localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
     clearChapterOneProgress();
+
+    // 2. Set fresh Chapter 1 state in store / localStorage
+    const freshChapterOneSave = {
+      chapter: 1,
+      currentPhase: 1,
+      chapter1Completed: false, // CRITICAL: Lock Chapter 2 again
+      phase3Location: 'hallway_threshold',
+      selectedCharacterId: null,
+      inventory: [],
+      discoveredClues: [],
+      hasBobbyPin: false,
+      hasWoodenBat: false,
+      hasSmallBrassKey: false,
+      hasNylonRope: false,
+      hasBlackCandlesCount: 0,
+      hasMatchesCount: 0,
+      hasBronzeBell: false,
+      caretakerDoorUnlocked: false,
+      composure: 100,
+      timerSeconds: 600,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(freshChapterOneSave));
+
+    // 3. Reset in-memory engine & context state
+    resetProgress();
     resetChapterOneProgress();
     setCh1Save(null);
+    setShowRestartCh1Confirm(false);
+
+    // 4. Start Chapter 1 from the 2026 seance
     sound.playPaperRustle();
     navigate('/chapters/1');
   };
@@ -142,6 +192,8 @@ export const ChapterSelect: React.FC = () => {
   // Keyboard navigation: Left/Right to select, 1-3 to jump, Enter to play
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (showRestartCh1Confirm) return;
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         sound.playMenuHover();
@@ -156,13 +208,23 @@ export const ChapterSelect: React.FC = () => {
         setSelectedChapter(num);
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleSelectChapter(selectedChapter);
+        if (selectedChapter === 2) {
+          if (!isChapter1Done) {
+            sound.playError();
+            setLockedNotice('Finish Chapter 1 to unlock.');
+            setTimeout(() => setLockedNotice(null), 3000);
+            return;
+          }
+          handleStartChapterTwo();
+        } else {
+          handleSelectChapter(selectedChapter);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedChapter, highestChapterCompleted]);
+  }, [selectedChapter, isChapter1Done, highestChapterCompleted, showRestartCh1Confirm]);
 
   return (
     <AtmosphericLayout
@@ -231,161 +293,89 @@ export const ChapterSelect: React.FC = () => {
 
           {/* Cards Showcase: All 3 visible side-by-side on sm+, 1 card on mobile */}
           <div className="w-full flex items-center justify-center gap-3 sm:gap-4 md:gap-6 py-6">
-            {CHAPTERS.map((chap) => {
-              const unlocked = isChapterUnlocked(chap.number);
-              const isCompleted = chap.number === 1 ? chapter1Completed : highestChapterCompleted >= chap.number;
-              const isSelected = selectedChapter === chap.number;
-              const hasCh1ActiveSave =
-                chap.number === 1 &&
+            {/* 1. Chapter 1 Card */}
+            <ChapterCard
+              title="BLIND START"
+              chapterNumber={1}
+              status={isChapter1Done ? 'COMPLETED' : 'AVAILABLE'}
+              buttonText={
+                isChapter1Done
+                  ? 'REVISIT'
+                  : ch1Save &&
+                    (ch1Save.currentPhase > 1 ||
+                      (ch1Save.inventory && ch1Save.inventory.length > 0) ||
+                      (ch1Save.discoveredClues && ch1Save.discoveredClues.length > 0) ||
+                      ch1Save.doorUnlocked)
+                  ? `CONTINUE (PHASE 0${ch1Save.currentPhase})`
+                  : 'START INVESTIGATION'
+              }
+              isLocked={false}
+              isCompleted={isChapter1Done}
+              isSelected={selectedChapter === 1}
+              hasActiveSave={
+                !isChapter1Done &&
                 Boolean(
                   ch1Save &&
                     (ch1Save.currentPhase > 1 ||
                       (ch1Save.inventory && ch1Save.inventory.length > 0) ||
                       (ch1Save.discoveredClues && ch1Save.discoveredClues.length > 0) ||
                       ch1Save.doorUnlocked)
-                );
+                )
+              }
+              activeSavePhase={ch1Save?.currentPhase || 1}
+              onSelect={() => {
+                sound.playMenuHover();
+                setSelectedChapter(1);
+              }}
+              onAction={() => {
+                handleSelectChapter(1);
+              }}
+              onRestart={() => {
+                setShowRestartCh1Confirm(true);
+              }}
+            />
 
-              // Palette Shift Card Frame Classes
-              const cardClass = !unlocked
-                ? 'bg-[#0b100e]/80 border border-[#1a261f] opacity-50 cursor-not-allowed text-stone-600 rounded-xl'
-                : isSelected
-                ? 'bg-[#141f19]/95 border-2 border-[#476756] shadow-[0_0_25px_rgba(71,103,86,0.35)] text-[#c2d6cc] backdrop-blur-md rounded-xl'
-                : 'bg-[#101613]/90 border border-[#233329] text-stone-400 backdrop-blur-md rounded-xl';
+            {/* 2. Chapter 2 Card */}
+            <ChapterCard
+              title="UNDERSTANDING"
+              chapterNumber={2}
+              status={isChapter1Done ? 'AVAILABLE / ACTIVE' : 'LOCKED'}
+              buttonText={isChapter1Done ? 'CONTINUE' : 'LOCKED'}
+              isLocked={!isChapter1Done}
+              isCompleted={highestChapterCompleted >= 2}
+              isSelected={selectedChapter === 2}
+              onSelect={() => {
+                sound.playMenuHover();
+                setSelectedChapter(2);
+              }}
+              onAction={() => {
+                if (!isChapter1Done) {
+                  sound.playError();
+                  setLockedNotice('Finish Chapter 1 to unlock.');
+                  setTimeout(() => setLockedNotice(null), 3000);
+                  return;
+                }
+                handleStartChapterTwo();
+              }}
+            />
 
-              return (
-                <motion.div
-                  key={chap.number}
-                  id={`chapter-card-${chap.number}`}
-                  onClick={() => {
-                    if (selectedChapter !== chap.number) {
-                      sound.playMenuHover();
-                      setSelectedChapter(chap.number);
-                    } else if (unlocked) {
-                      handleSelectChapter(chap.number);
-                    } else {
-                      sound.playError();
-                      setLockedNotice(`Finish Chapter ${chap.number - 1} to unlock`);
-                      setTimeout(() => setLockedNotice(null), 3000);
-                    }
-                  }}
-                  whileHover={unlocked ? { y: -4 } : undefined}
-                  className={`relative flex-1 max-w-[280px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[310px] h-[400px] sm:h-[430px] p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 overflow-hidden ${
-                    isSelected ? 'flex scale-105 z-20' : 'hidden sm:flex scale-95 hover:opacity-95'
-                  } ${cardClass}`}
-                >
-                  {/* Subtle Background Watermark Roman Numeral */}
-                  <div
-                    className="absolute right-4 -bottom-6 text-9xl font-black text-stone-800/15 select-none pointer-events-none"
-                    style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                  >
-                    {chap.number === 1 ? 'I' : chap.number === 2 ? 'II' : 'III'}
-                  </div>
-
-                  {/* Top Status & Phase Number */}
-                  <div className="flex items-center justify-between w-full z-10">
-                    <span className="text-xs font-mono font-bold tracking-widest text-[#8fa89b] uppercase">
-                      PHASE 0{chap.number}
-                    </span>
-
-                    {/* Status Pill */}
-                    {isCompleted ? (
-                      <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-                        <CheckCircle2 className="w-3 h-3 text-[#8fa89b]" />
-                        COMPLETED
-                      </span>
-                    ) : unlocked ? (
-                      <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-                        {chap.number === 2 ? 'AVAILABLE / ACTIVE' : 'AVAILABLE'}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 bg-[#121715] border border-[#1e2621] text-stone-500 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-                        <Lock className="w-3 h-3 text-stone-500" />
-                        LOCKED
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Middle Chapter Content: Title */}
-                  <div className="my-auto z-10 text-center">
-                    <div className="text-[#8fa89b]/70 font-mono text-xs tracking-widest uppercase mb-1">
-                      Chapter {chap.number}
-                    </div>
-                    <h3
-                      className={`text-3xl sm:text-4xl font-black tracking-wider uppercase transition-colors ${
-                        !unlocked
-                          ? 'text-stone-600'
-                          : isSelected
-                          ? 'text-[#d1e3da]'
-                          : 'text-stone-300'
-                      }`}
-                      style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                    >
-                      {chap.title}
-                    </h3>
-                  </div>
-
-                  {/* Bottom Action Area */}
-                  <div className="z-10 w-full pt-4 border-t border-[#233329] text-center">
-                    {!unlocked ? (
-                      <div className="py-2 flex flex-col items-center justify-center text-stone-500 font-mono text-xs">
-                        <Lock className="w-5 h-5 mb-1 text-stone-600" />
-                        <span>Finish Chapter {chap.number - 1} to unlock</span>
-                      </div>
-                    ) : chap.number === 1 && isCompleted ? (
-                      /* Completed Chapter 1: Restart Chapter 1 */
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowRestartCh1Confirm(true);
-                        }}
-                        className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <RotateCcw className="w-4 h-4" />
-                        <span>RESTART CHAPTER 1</span>
-                      </button>
-                    ) : chap.number === 1 && hasCh1ActiveSave && ch1Save ? (
-                      /* Dynamic Continue / Restart buttons for Chapter 1 */
-                      <div className="flex flex-col gap-2 w-full">
-                        <button
-                          onClick={handleContinueChapter1}
-                          className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <Play className="w-4 h-4 fill-current" />
-                          <span>CONTINUE (PHASE 0{ch1Save.currentPhase})</span>
-                        </button>
-                        <button
-                          onClick={handleRestartChapter1}
-                          className="w-full py-2 rounded-lg bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-400 hover:text-[#c2d6cc] font-mono text-xs tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
-                        >
-                          <RotateCcw className="w-3.5 h-3.5" />
-                          <span>RESTART CHAPTER</span>
-                        </button>
-                      </div>
-                    ) : (
-                      /* Standard Action Button */
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSelectChapter(chap.number);
-                        }}
-                        className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <Play className="w-4 h-4 fill-current" />
-                        <span>
-                          {chap.number === 2
-                            ? 'CONTINUE'
-                            : chap.number === 1 && !isCompleted
-                            ? 'START INVESTIGATION'
-                            : isCompleted
-                            ? 'REVISIT'
-                            : 'PLAY'}
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
+            {/* 3. Chapter 3 Card */}
+            <ChapterCard
+              title="THE RITUAL"
+              chapterNumber={3}
+              status={highestChapterCompleted >= 2 ? 'AVAILABLE' : 'LOCKED'}
+              buttonText="PLAY"
+              isLocked={highestChapterCompleted < 2}
+              isCompleted={highestChapterCompleted >= 3}
+              isSelected={selectedChapter === 3}
+              onSelect={() => {
+                sound.playMenuHover();
+                setSelectedChapter(3);
+              }}
+              onAction={() => {
+                handleSelectChapter(3);
+              }}
+            />
           </div>
 
           {/* Next Arrow Button */}
@@ -453,15 +443,7 @@ export const ChapterSelect: React.FC = () => {
                     Cancel
                   </button>
                   <button
-                    onClick={() => {
-                      restart_chapter_one();
-                      clearChapterOneProgress();
-                      resetChapterOneProgress();
-                      setCh1Save(null);
-                      setShowRestartCh1Confirm(false);
-                      sound.playPaperRustle();
-                      navigate('/chapters/1');
-                    }}
+                    onClick={handleConfirmRestartChapterOne}
                     className="px-4 py-2.5 rounded-lg bg-[#24382c] hover:bg-[#2f493a] border border-[#446652] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-lg"
                   >
                     Proceed

@@ -78,7 +78,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
             Continue Investigation →
           </button>
 
-          {/* Option 2: Save and Return to Title */}
+          {/* Option 2: Save and Return to Chapter Selection */}
           <button
             onClick={() => {
               sound.playPaperRustle();
@@ -86,7 +86,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
             }}
             className="w-full sm:w-1/2 py-3 px-4 rounded-lg bg-[#141b17] hover:bg-[#1a241f] border border-[#273830] text-[#8fa89b] hover:text-[#c2d6cc] font-mono text-xs tracking-wider uppercase transition-all cursor-pointer"
           >
-            Save & Exit to Title
+            Save & Exit to Chapter Selection
           </button>
         </motion.div>
       </div>

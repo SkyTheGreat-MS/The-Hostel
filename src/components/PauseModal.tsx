@@ -129,7 +129,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
             onClick={handleReturnToMainMenu}
             className="w-full py-2.5 px-4 rounded bg-red-950/40 hover:bg-red-900/60 border border-red-900/50 text-red-300 font-mono text-sm tracking-wider transition-all cursor-pointer shadow-md"
           >
-            RETURN TO TITLE
+            EXIT TO CHAPTER SELECTION
           </button>
         </div>
 

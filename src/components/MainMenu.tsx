@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
 import { getAssetBackground, DEFAULT_BACKGROUND_JPG } from '../utils/assets';
-import { hasActiveChapterTwoSave } from '../gameStore';
+import { hasActiveChapterOneSave, hasActiveChapterTwoSave } from '../gameStore';
 import {
   Volume2,
   VolumeX,
@@ -30,6 +30,8 @@ export interface MainMenuProps {
   showRain?: boolean;
   /** Callback when PLAY is chosen */
   onPlay?: () => void;
+  /** Callback when CONTINUE (CHAPTER 1) is chosen */
+  onContinueChapterOne?: () => void;
   /** Callback when CONTINUE (CHAPTER 2) is chosen */
   onContinueChapterTwo?: () => void;
   /** Callback when HELP & GUIDE is chosen */
@@ -49,6 +51,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   footerPrompt = 'Press Enter to Continue',
   showRain = true,
   onPlay,
+  onContinueChapterOne,
   onContinueChapterTwo,
   onHelp,
   onSettings,
@@ -64,6 +67,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
   const [colorGrade, setColorGrade] = useState<'monsoon_green' | 'guttering_wax' | 'archive_1998'>('monsoon_green');
 
   const hasCh2Save = hasActiveChapterTwoSave();
+  const hasCh1Save = hasActiveChapterOneSave();
 
   // Menu items list
   const menuItems = customMenuItems || [
@@ -76,6 +80,21 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               sound.playMenuSelect();
               if (onContinueChapterTwo) {
                 onContinueChapterTwo();
+              } else if (onPlay) {
+                onPlay();
+              }
+            },
+          },
+        ]
+      : hasCh1Save
+      ? [
+          {
+            id: 'continue_ch1',
+            label: 'CONTINUE (CHAPTER 1)',
+            action: () => {
+              sound.playMenuSelect();
+              if (onContinueChapterOne) {
+                onContinueChapterOne();
               } else if (onPlay) {
                 onPlay();
               }

@@ -15,7 +15,7 @@ export const ChapterOne: React.FC = () => {
       fullBleed={true}
     >
       <div className="w-full h-full flex-1 flex flex-col">
-        <VisualNovelEngine />
+        <VisualNovelEngine initialChapter={1} />
       </div>
     </AtmosphericLayout>
   );

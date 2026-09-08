@@ -165,13 +165,19 @@ export interface ActiveSaveState {
   currentPhase: number;
   phase3Location: Phase3Location;
   chapter1Completed: boolean;
-  selectedCharacterId: string;
+  selectedCharacterId: string | null;
   inventory: string[];
+  discoveredClues?: string[];
   hasMatchesCount: number;
   hasBlackCandlesCount?: number;
   hasBronzeBell?: boolean;
   caretakerDoorUnlocked: boolean;
   composure: number;
+  timerSeconds?: number;
+  hasBobbyPin?: boolean;
+  hasWoodenBat?: boolean;
+  hasSmallBrassKey?: boolean;
+  hasNylonRope?: boolean;
   timestamp: number;
 }
 

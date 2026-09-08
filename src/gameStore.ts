@@ -291,14 +291,25 @@ export function clearChapterOneProgress(): void {
 
 export function hasActiveChapterOneSave(): boolean {
   const save = loadChapterOneProgress();
-  if (!save) return false;
-  return (
-    save.currentPhase > 1 ||
-    (save.inventory && save.inventory.length > 0) ||
-    (save.discoveredClues && save.discoveredClues.length > 0) ||
-    Boolean(save.doorUnlocked) ||
-    Boolean(save.deskMugMoved)
-  );
+  if (save) {
+    return Boolean(
+      save.currentPhase > 1 ||
+      (save.inventory && save.inventory.length > 0) ||
+      (save.discoveredClues && save.discoveredClues.length > 0) ||
+      save.doorUnlocked ||
+      save.deskMugMoved
+    );
+  }
+  const active = loadActiveGameProgress();
+  if (active && active.chapter === 1 && !active.chapter1Completed) {
+    return Boolean(
+      active.currentPhase > 1 ||
+      (active.inventory && active.inventory.length > 0) ||
+      (active.discoveredClues && active.discoveredClues.length > 0) ||
+      active.caretakerDoorUnlocked
+    );
+  }
+  return false;
 }
 
 export const ACTIVE_SAVE_KEY = 'spirits_labyrinth_active_save';
@@ -332,14 +343,39 @@ export function lockChapterOneAndSave(
 
   try {
     localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(chapterTwoSaveState));
+    localStorage.setItem('spirits_labyrinth_ch2_unlocked', 'true');
   } catch {}
 
   return chapterTwoSaveState;
 }
 
+export function createFreshChapterOneSave(): ActiveSaveState {
+  return {
+    chapter: 1,
+    currentPhase: 1,
+    chapter1Completed: false, // CRITICAL: Lock Chapter 2 again
+    phase3Location: 'hallway_threshold',
+    selectedCharacterId: null,
+    inventory: [],
+    discoveredClues: [],
+    hasBobbyPin: false,
+    hasWoodenBat: false,
+    hasSmallBrassKey: false,
+    hasNylonRope: false,
+    hasBlackCandlesCount: 0,
+    hasMatchesCount: 0,
+    hasBronzeBell: false,
+    caretakerDoorUnlocked: false,
+    composure: 100,
+    timerSeconds: 600,
+    timestamp: Date.now(),
+  };
+}
+
 export function restart_chapter_one(): void {
   try {
     localStorage.removeItem(ACTIVE_SAVE_KEY);
+    localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
     localStorage.removeItem(CHAPTER_1_SAVE_KEY);
   } catch {}
 }
@@ -360,6 +396,10 @@ export function loadActiveGameProgress(): ActiveSaveState | null {
 }
 
 export function hasActiveChapterTwoSave(): boolean {
+  try {
+    const rawCh2 = localStorage.getItem('spirits_labyrinth_ch2_unlocked');
+    if (rawCh2 === 'false') return false;
+  } catch {}
   const save = loadActiveGameProgress();
   return Boolean(save && (save.chapter === 2 || save.chapter1Completed));
 }
