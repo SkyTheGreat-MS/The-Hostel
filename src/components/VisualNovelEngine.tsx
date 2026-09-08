@@ -6,10 +6,17 @@ import { sound } from '../audioEngine';
 import { MCId, MCCharacter, Room4BSubScene, Phase3Location } from '../types';
 import { CHARACTERS, ROOM_4B_ASSETS, PHASE_3_ASSETS, ITEMS } from '../gameData';
 import { InkPortrait, getCharacterPortraitSrc } from './InkPortrait';
+import { CharacterSelectModal } from './CharacterSelectModal';
 import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
 import { DialogueOverlay, ThoughtMonologueOverlay } from './DialogueOverlay';
+import {
+  saveChapterOneProgress,
+  loadChapterOneProgress,
+  clearChapterOneProgress,
+} from '../gameStore';
+import { ChapterProgressSave } from '../types';
 import {
   Volume2,
   VolumeX,
@@ -36,6 +43,7 @@ import {
   Unlock,
   AlertCircle,
   Radio,
+  RotateCcw,
 } from 'lucide-react';
 
 export type ChapterPhase = 1 | 2 | 3;
@@ -828,8 +836,10 @@ export const VisualNovelEngine: React.FC = () => {
     setComposure,
     discoveredClues,
     addDiscoveredClue,
+    setDiscoveredClues,
     setChapter1TimeSeconds,
     inventory,
+    setInventory,
     addInventoryItem,
     hasInventoryItem,
     activeInspectSubScene,
@@ -842,6 +852,12 @@ export const VisualNovelEngine: React.FC = () => {
     setHasMagneticCompass,
     doorSmashed,
     setDoorSmashed,
+    doorUnlocked,
+    setDoorUnlocked,
+    hasBobbyPin,
+    setHasBobbyPin,
+    hasWoodenBat,
+    setHasWoodenBat,
     phase3Location,
     setPhase3Location,
     hasSmallBrassKey,
@@ -854,8 +870,13 @@ export const VisualNovelEngine: React.FC = () => {
     setWashroomMirrorScratched,
     stairwellGateInspected,
     setStairwellGateInspected,
+    resetChapterOneProgress,
   } = useGameProgress();
 
+  // Core Flow & Phase States
+  const [phase, setPhase] = useState<number>(1);
+  const [currentScene, setCurrentScene] = useState<string>('seance_room_4b_2026');
+  const [currentSubScene, setCurrentSubScene] = useState<string | null>(null);
   const [mode, setMode] = useState<EngineMode>('phase1_2');
   const [currentLineIndex, setCurrentLineIndex] = useState<number>(0);
   const [displayedText, setDisplayedText] = useState<string>('');
@@ -866,6 +887,7 @@ export const VisualNovelEngine: React.FC = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<MCCharacter>(CHARACTERS[0]);
   const activeSpeakerSprite = getCharacterPortraitSrc(selectedCharacter.id);
   const [isChapterFinished, setIsChapterFinished] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
 
   // Room 4B Point-and-Click States
   const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' } | null>(null);
@@ -892,12 +914,20 @@ export const VisualNovelEngine: React.FC = () => {
   const [locLineIndex, setLocLineIndex] = useState<number>(0);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
+  // Compatibility state aliases matching Chapter 1 reset spec
+  const isPaused = isPauseOpen;
+  const setIsPaused = setIsPauseOpen;
+  const activeItemModal = inspectingItem;
+  const setActiveItemModal = setInspectingItem;
+  const timerSeconds = timeLeft;
+  const setTimerSeconds = setTimeLeft;
+
   // Reference for timer tracking
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // 10-Minute Countdown Clock (Runs continuously through Awakening, Room Escape, & Corridors)
   useEffect(() => {
-    if (mode === 'shattering' || mode === 'character_select' || isChapterFinished) {
+    if (mode === 'shattering' || mode === 'character_select' || isChapterFinished || isGameOver) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
@@ -906,14 +936,23 @@ export const VisualNovelEngine: React.FC = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
-          // Panic threshold!
-          setComposure((c) => Math.max(5, c - 2));
+          setIsGameOver(true);
+          sound.stopAllAmbience();
+          sound.playDamage();
           return 0;
         }
 
         // Natural slow decay of composure over time
         if (prev % 15 === 0) {
-          setComposure((c) => Math.max(10, c - 1));
+          setComposure((c) => {
+            const next = Math.max(0, c - 1);
+            if (next <= 0) {
+              setIsGameOver(true);
+              sound.stopAllAmbience();
+              sound.playDamage();
+            }
+            return next;
+          });
         }
 
         return prev - 1;
@@ -923,7 +962,116 @@ export const VisualNovelEngine: React.FC = () => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [mode, isChapterFinished]);
+  }, [mode, isChapterFinished, isGameOver]);
+
+  // Monitor composure zero game over condition
+  useEffect(() => {
+    if (composure <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
+      setIsGameOver(true);
+      sound.stopAllAmbience();
+      sound.playDamage();
+    }
+  }, [composure, isGameOver, isChapterFinished, mode]);
+
+  // Load saved Chapter 1 checkpoint on mount if present
+  useEffect(() => {
+    const save = loadChapterOneProgress();
+    if (
+      save &&
+      (save.currentPhase > 1 ||
+        (save.inventory && save.inventory.length > 0) ||
+        (save.discoveredClues && save.discoveredClues.length > 0) ||
+        save.doorUnlocked)
+    ) {
+      setPhase(save.currentPhase);
+      if (save.selectedCharacterId) {
+        const char = CHARACTERS.find((c) => c.id === save.selectedCharacterId);
+        if (char) setSelectedCharacter(char);
+      }
+      if (save.inventory) setInventory(save.inventory);
+      if (save.discoveredClues) setDiscoveredClues(save.discoveredClues);
+      setHasBobbyPin(Boolean(save.hasBobbyPin));
+      setHasWoodenBat(Boolean(save.hasWoodenBat));
+      setHasMagneticCompass(Boolean(save.hasMagneticCompass));
+      setHasSmallBrassKey(Boolean(save.hasSmallBrassKey));
+      setHasNylonRope(Boolean(save.hasNylonRope));
+      setDeskMugMoved(Boolean(save.deskMugMoved));
+      setDoorUnlocked(Boolean(save.doorUnlocked));
+      if (typeof save.composure === 'number') setComposure(save.composure);
+      if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
+
+      if (save.currentPhase === 3) {
+        const loc = save.phase3Location || 'hallway_threshold';
+        setPhase3Location(loc);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
+        setMode('phase3');
+        sound.startAmbient();
+      } else if (save.currentPhase === 2) {
+        setCurrentScene('room_4b_main');
+        setCurrentSubScene(null);
+        setMode('room_escape');
+        setActiveInspectSubScene('main');
+        sound.startAmbient();
+      }
+    }
+  }, []);
+
+  // Synchronize currentScene with engine mode
+  useEffect(() => {
+    if (currentScene === 'room_4b_main' && mode !== 'room_escape' && mode !== 'awakening') {
+      setMode('room_escape');
+      setActiveInspectSubScene('main');
+    }
+  }, [currentScene, mode]);
+
+  // Auto-save progression changes across Phase 2 & Phase 3
+  useEffect(() => {
+    if (isChapterFinished || isGameOver) return;
+    if (
+      mode === 'room_escape' ||
+      mode === 'phase3' ||
+      mode === 'location_select' ||
+      mode === 'investigating_location'
+    ) {
+      const currentPhaseNum: 1 | 2 | 3 = mode === 'room_escape' || mode === 'awakening' ? 2 : 3;
+      saveChapterOneProgress({
+        chapter: 1,
+        currentPhase: currentPhaseNum,
+        phase3Location: mode === 'room_escape' ? undefined : phase3Location,
+        selectedCharacterId: selectedCharacter.id,
+        inventory,
+        discoveredClues,
+        hasBobbyPin,
+        hasWoodenBat,
+        hasMagneticCompass,
+        hasSmallBrassKey,
+        hasNylonRope,
+        deskMugMoved,
+        doorUnlocked,
+        composure,
+        timerSeconds: timeLeft,
+        timestamp: Date.now(),
+      });
+    }
+  }, [
+    mode,
+    phase3Location,
+    inventory,
+    discoveredClues,
+    doorUnlocked,
+    deskMugMoved,
+    hasBobbyPin,
+    hasWoodenBat,
+    hasMagneticCompass,
+    hasSmallBrassKey,
+    hasNylonRope,
+    isChapterFinished,
+    isGameOver,
+    composure,
+    timeLeft,
+    selectedCharacter.id,
+  ]);
 
   // Current active dialogue line for Phase 1 & 2
   const currentP12Line = PHASE1_2_SCRIPT[currentLineIndex] || PHASE1_2_SCRIPT[0];
@@ -1267,6 +1415,34 @@ export const VisualNovelEngine: React.FC = () => {
   // Door unlock execution (stealth vs brute force)
   const executeUnlockDoor = (method: 'bobby_pin' | 'wooden_bat') => {
     setIsDoorTransitioning(true);
+    setDoorUnlocked(true);
+    const nextInv =
+      method === 'wooden_bat'
+        ? inventory.includes('wooden_bat')
+          ? inventory
+          : [...inventory, 'wooden_bat']
+        : inventory;
+
+    // Milestone 3 Auto-Save: Unlocking Door 4B & entering Pathway 326
+    saveChapterOneProgress({
+      chapter: 1,
+      currentPhase: 3,
+      phase3Location: 'hallway_threshold',
+      selectedCharacterId: selectedCharacter.id,
+      inventory: nextInv,
+      discoveredClues,
+      hasBobbyPin,
+      hasWoodenBat: method === 'wooden_bat' || hasWoodenBat,
+      hasMagneticCompass,
+      hasSmallBrassKey,
+      hasNylonRope,
+      deskMugMoved,
+      doorUnlocked: true,
+      composure: method === 'bobby_pin' ? composure : Math.max(0, composure - 15),
+      timerSeconds: timeLeft,
+      timestamp: Date.now(),
+    });
+
     if (method === 'bobby_pin') {
       sound.playChime(true);
       setRoomBanner({
@@ -1277,6 +1453,8 @@ export const VisualNovelEngine: React.FC = () => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
         setRoomBanner(null);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
         setPhase3Location('hallway_threshold');
         setPhase3Message(null);
         setMode('phase3');
@@ -1286,7 +1464,7 @@ export const VisualNovelEngine: React.FC = () => {
       sound.playDamage();
       setIsScreenShaking(true);
       setTimeout(() => setIsScreenShaking(false), 700);
-      setComposure((c) => Math.max(5, c - 15));
+      setComposure((c) => Math.max(0, c - 15));
       setDoorSmashed(true);
       setRoomBanner({
         text: 'CRASH! The heavy teak timber strikes the deadbolt with violent force! Splintered wood shrieks as the door bursts open, echoing down Pathway 326...',
@@ -1296,6 +1474,8 @@ export const VisualNovelEngine: React.FC = () => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
         setRoomBanner(null);
+        setCurrentScene('pathway_326_main');
+        setCurrentSubScene(null);
         setPhase3Location('hallway_threshold');
         setPhase3Message(null);
         setMode('phase3');
@@ -1312,6 +1492,25 @@ export const VisualNovelEngine: React.FC = () => {
     setMode('shattering');
     setIsScreenShaking(true);
     setBlackoutText('');
+
+    // Milestone 1 Auto-Save: Séance complete -> time slip
+    saveChapterOneProgress({
+      chapter: 1,
+      currentPhase: 1,
+      selectedCharacterId: null,
+      inventory,
+      discoveredClues,
+      hasBobbyPin,
+      hasWoodenBat,
+      hasMagneticCompass,
+      hasSmallBrassKey,
+      hasNylonRope,
+      deskMugMoved,
+      doorUnlocked: false,
+      composure,
+      timerSeconds: timeLeft,
+      timestamp: Date.now(),
+    });
 
     setTimeout(() => {
       setIsScreenShaking(false);
@@ -1344,6 +1543,25 @@ export const VisualNovelEngine: React.FC = () => {
     setDoorRawTextShown(false);
     setActiveMonologue(null);
     setMode('awakening');
+
+    // Milestone 2 Auto-Save: Awakening in Room 4B
+    saveChapterOneProgress({
+      chapter: 1,
+      currentPhase: 2,
+      selectedCharacterId: chosen.id,
+      inventory,
+      discoveredClues,
+      hasBobbyPin,
+      hasWoodenBat,
+      hasMagneticCompass,
+      hasSmallBrassKey,
+      hasNylonRope,
+      deskMugMoved,
+      doorUnlocked: false,
+      composure,
+      timerSeconds: timeLeft,
+      timestamp: Date.now(),
+    });
   };
 
   // Enter a location from the 3 cards
@@ -1363,42 +1581,76 @@ export const VisualNovelEngine: React.FC = () => {
     const timeTaken = 600 - timeLeft;
     setChapter1TimeSeconds(timeTaken);
     completeChapter(1);
+    clearChapterOneProgress();
     sound.playSuccessTune();
     setIsChapterFinished(true);
   };
 
-  // Restart Chapter 1
-  const handleRestartChapter = () => {
+  // Comprehensive Chapter 1 Reset Routine
+  const handleRestartChapterOne = () => {
+    clearChapterOneProgress();
+    resetChapterOneProgress();
+
+    // 1. Reset Core Flow & Phase
+    setPhase(1);
+    setCurrentScene('seance_room_4b_2026');
+    setCurrentSubScene(null);
+    setPhase3Location('hallway_threshold');
+    setIsPaused(false);
+    setActiveMonologue(null);
+    setActiveItemModal(null);
+
+    // 2. Reset Player Vitals & Timers
+    setTimerSeconds(600); // 10:00 countdown
+    setComposure(100);
+
+    // 3. Purge Inventory & Environmental Interaction Flags
+    setInventory([]);
+    setDiscoveredClues([]);
+    setHasBobbyPin(false);
+    setHasWoodenBat(false);
+    setHasMagneticCompass(false);
+    setHasSmallBrassKey(false);
+    setHasNylonRope(false);
+    setDeskMugMoved(false);
+    setDoorUnlocked(false);
+    setWashroomStallChecked(false);
+    setWashroomMirrorScratched(false);
+    setStairwellGateInspected(false);
+
+    // 4. Reset Audio Channels
+    sound.stopAllAmbience();
+    sound.playSeanceRainLoop();
+
+    // Additional local UI & engine state resets
     setMode('phase1_2');
     setCurrentLineIndex(0);
+    setDisplayedText('');
+    setIsTyping(true);
     setCurrentTier(1);
-    setTimeLeft(600);
-    setComposure(100);
+    setSelectedLocationIdx(0);
     setInvestigatedLocIds([]);
     setActiveInvestigatingLoc(null);
     setLocLineIndex(0);
     setIsZoomed(false);
     setIsChapterFinished(false);
+    setIsGameOver(false);
     setIsPauseOpen(false);
     setIsNotesOpen(false);
     setActiveInspectSubScene('main');
-    setDeskMugMoved(false);
-    setHasMagneticCompass(false);
     setDoorSmashed(false);
-    setPhase3Location('hallway_threshold');
-    setHasSmallBrassKey(false);
-    setHasNylonRope(false);
-    setWashroomStallChecked(false);
-    setWashroomMirrorScratched(false);
-    setStairwellGateInspected(false);
     setPhase3Message(null);
     setIsCompassVibrating(false);
+    setIsCompassModalOpen(false);
     setRoomBanner(null);
     setDoorRawTextShown(false);
     setIsDoorTransitioning(false);
     setIsDoorInspectOpen(false);
-    sound.playPaperRustle();
+    setSelectedInventoryItem(null);
+    setSelectedCharacter(CHARACTERS[0]);
   };
+
+  const handleRestartChapter = handleRestartChapterOne;
 
   const toggleMute = () => {
     const nextMuted = sound.toggleMute();
@@ -1512,7 +1764,7 @@ export const VisualNovelEngine: React.FC = () => {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             className="absolute inset-0 z-40 bg-[#0a0f0d] flex flex-col"
           >
-            <CharacterSelectScreen onSelectCharacter={handleCharacterSelected} />
+            <CharacterSelectModal onSelectCharacter={handleCharacterSelected} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -2011,12 +2263,21 @@ export const VisualNovelEngine: React.FC = () => {
                 <InteractiveHotspot
                   id="main_door"
                   name="Room Door 4B"
-                  cursorTooltip="Room Door 4B"
+                  cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
                   polygonPoints="79,5 99.5,5 99.5,95 79,95"
                   onClick={() => {
-                    sound.playMenuSelect();
-                    setActiveInspectSubScene('door');
-                    setIsDoorInspectOpen(false);
+                    if (doorUnlocked) {
+                      sound.playPaperRustle();
+                      setCurrentScene('pathway_326_main');
+                      setCurrentSubScene(null);
+                      setPhase3Location('hallway_threshold');
+                      setPhase3Message(null);
+                      setMode('phase3');
+                    } else {
+                      sound.playMenuSelect();
+                      setActiveInspectSubScene('door');
+                      setIsDoorInspectOpen(false);
+                    }
                   }}
                 />
               </>
@@ -2203,16 +2464,25 @@ export const VisualNovelEngine: React.FC = () => {
                 {/* Interactive Hotspot over Deadbolt Mechanism / Center Door Area */}
                 <InteractiveHotspot
                   id="door_deadbolt"
-                  name="Locked Teak Door"
-                  cursorTooltip="Locked Teak Door"
+                  name={doorUnlocked ? "Unlocked Teak Door" : "Locked Teak Door"}
+                  cursorTooltip={doorUnlocked ? "Step through to Pathway 326" : "Locked Teak Door"}
                   x={28}
                   y={5}
                   width={45}
                   height={100}
                   shape="rect"
                   onClick={() => {
-                    sound.playMenuSelect();
-                    setIsDoorInspectOpen(true);
+                    if (doorUnlocked) {
+                      sound.playPaperRustle();
+                      setCurrentScene('pathway_326_main');
+                      setCurrentSubScene(null);
+                      setPhase3Location('hallway_threshold');
+                      setPhase3Message(null);
+                      setMode('phase3');
+                    } else {
+                      sound.playMenuSelect();
+                      setIsDoorInspectOpen(true);
+                    }
                   }}
                 />
               </>
@@ -2246,65 +2516,93 @@ export const VisualNovelEngine: React.FC = () => {
                       </button>
                     </div>
 
-                    {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
-                    {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
-                      <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
-                        <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                          The deadbolt is engaged from the other side. Locked.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Dynamic Unlocking Options */}
-                    {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
+                    {doorUnlocked ? (
                       <div className="space-y-3">
-                        <p className="text-xs font-mono text-stone-400">
-                          Choose an action to breach the deadbolt:
-                        </p>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {/* Option 1: Lockpick with Bobby Pin */}
-                          {hasInventoryItem('bobby_pin') && (
-                            <button
-                              disabled={isDoorTransitioning}
-                              onClick={() => executeUnlockDoor('bobby_pin')}
-                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <Unlock className="w-4 h-4 text-emerald-400" />
-                                <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
-                                  Pick the lock with bobby pin
-                                </span>
-                              </div>
-                              <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
-                              </p>
-                            </button>
-                          )}
-
-                          {/* Option 2: Smash with Wooden Bat */}
-                          {hasInventoryItem('wooden_bat') && (
-                            <button
-                              disabled={isDoorTransitioning}
-                              onClick={() => executeUnlockDoor('wooden_bat')}
-                              className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <AlertTriangle className="w-4 h-4 text-rose-400" />
-                                <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
-                                  Smash open lock with wooden bat
-                                </span>
-                              </div>
-                              <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
-                                ⚠️ Warning: Smashing the door will produce a deafening crash.
-                              </div>
-                              <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
-                                -15% Composure loss • Elevates subsequent hallway threat.
-                              </p>
-                            </button>
-                          )}
+                        <div className="py-4 px-4 rounded-xl bg-[#151f1a]/80 border border-[#223229]">
+                          <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                            The deadbolt is disengaged. Door 4B is wide open to Pathway 326.
+                          </p>
                         </div>
+                        <button
+                          onClick={() => {
+                            sound.playPaperRustle();
+                            setIsDoorInspectOpen(false);
+                            setActiveInspectSubScene('main');
+                            setCurrentScene('pathway_326_main');
+                            setCurrentSubScene(null);
+                            setPhase3Location('hallway_threshold');
+                            setPhase3Message(null);
+                            setMode('phase3');
+                          }}
+                          className="w-full py-3 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <span>STEP THROUGH TO PATHWAY 326</span>
+                          <span className="text-xs">→</span>
+                        </button>
                       </div>
+                    ) : (
+                      <>
+                        {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
+                        {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
+                          <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
+                            <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                              The deadbolt is engaged from the other side. Locked.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Dynamic Unlocking Options */}
+                        {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
+                          <div className="space-y-3">
+                            <p className="text-xs font-mono text-stone-400">
+                              Choose an action to breach the deadbolt:
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {/* Option 1: Lockpick with Bobby Pin */}
+                              {hasInventoryItem('bobby_pin') && (
+                                <button
+                                  disabled={isDoorTransitioning}
+                                  onClick={() => executeUnlockDoor('bobby_pin')}
+                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <Unlock className="w-4 h-4 text-emerald-400" />
+                                    <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                                      Pick the lock with bobby pin
+                                    </span>
+                                  </div>
+                                  <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
+                                    Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
+                                  </p>
+                                </button>
+                              )}
+
+                              {/* Option 2: Smash with Wooden Bat */}
+                              {hasInventoryItem('wooden_bat') && (
+                                <button
+                                  disabled={isDoorTransitioning}
+                                  onClick={() => executeUnlockDoor('wooden_bat')}
+                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                >
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                                    <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+                                      Smash open lock with wooden bat
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
+                                    ⚠️ Warning: Smashing the door will produce a deafening crash.
+                                  </div>
+                                  <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
+                                    -15% Composure loss • Elevates subsequent hallway threat.
+                                  </p>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </motion.div>
                 </div>
@@ -2321,6 +2619,22 @@ export const VisualNovelEngine: React.FC = () => {
       {/* ======================================================== */}
       {mode === 'phase3' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
+          {/* Top-Left Return Button */}
+          {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
+            <button
+              onClick={() => {
+                sound.playPaperRustle();
+                setCurrentScene('room_4b_main');
+                setCurrentSubScene(null);
+                setActiveInspectSubScene('main');
+                setMode('room_escape');
+              }}
+              className="absolute top-4 left-4 z-40 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#121815]/90 border border-[#273830] hover:border-[#425e50] text-[#9db5a8] hover:text-[#c2d6cc] font-mono text-xs tracking-wider transition-all duration-200 shadow-md pointer-events-auto"
+            >
+              <span className="text-[10px]">←</span> RE-ENTER ROOM 4B
+            </button>
+          )}
+
           {/* Sub-scene Header Bar & Navigation */}
           <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
             {phase3Location !== 'hallway_threshold' ? (
@@ -2390,8 +2704,24 @@ export const VisualNovelEngine: React.FC = () => {
           <div className="relative flex-1 w-full h-full pointer-events-auto">
             {/* SUB-SCENE 1: THRESHOLD - TWO CLEAN VISUAL CHOICE CARDS */}
             {phase3Location === 'hallway_threshold' && (
-              <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-auto">
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 max-w-4xl w-full">
+              <>
+                {/* Doorway Hotspot Mapping on Corridor Scene (pathway_326_main.jpg) */}
+                <InteractiveHotspot
+                  id="return-room-4b"
+                  name="Door to Room 4B"
+                  cursorTooltip="Step Back into Room 4B"
+                  polygonPoints="0,15 16,18 16,92 0,98"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setCurrentScene('room_4b_main');
+                    setCurrentSubScene(null);
+                    setActiveInspectSubScene('main');
+                    setMode('room_escape');
+                  }}
+                />
+
+                <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 max-w-4xl w-full pointer-events-auto">
                   {/* Left Card: West Wing */}
                   <motion.div
                     whileHover={{ scale: 1.03, y: -4 }}
@@ -2455,6 +2785,7 @@ export const VisualNovelEngine: React.FC = () => {
                   </motion.div>
                 </div>
               </div>
+              </>
             )}
 
             {/* SUB-SCENE 2: WEST WING SPLIT LANDING */}
@@ -3065,9 +3396,61 @@ export const VisualNovelEngine: React.FC = () => {
       <PauseModal
         isOpen={isPauseOpen}
         onClose={() => setIsPauseOpen(false)}
-        onRestart={handleRestartChapter}
+        onRestart={handleRestartChapterOne}
+        onRestartChapter={handleRestartChapterOne}
         onQuit={() => navigate('/chapters')}
       />
+
+      {/* 11. Game Over / Temporal Displacement Collapse Modal */}
+      <AnimatePresence>
+        {isGameOver && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 select-none animate-fade-in">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-md bg-[#140d0d] border-2 border-red-900/80 rounded-2xl shadow-[0_0_50px_rgba(185,28,28,0.4)] p-6 sm:p-8 text-center text-[#e8d5d5] flex flex-col items-center"
+            >
+              <div className="w-16 h-16 rounded-full bg-red-950/90 border border-red-800 mx-auto flex items-center justify-center mb-4 text-red-400 shadow-xl">
+                <AlertTriangle className="w-8 h-8 animate-pulse" />
+              </div>
+
+              <span className="text-xs font-mono font-bold tracking-widest text-red-400 uppercase">
+                TEMPORAL DISPLACEMENT COLLAPSED
+              </span>
+              <h3
+                className="text-3xl sm:text-4xl font-black text-red-200 tracking-wider uppercase mt-1 mb-2"
+                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+              >
+                INVESTIGATION FAILED
+              </h3>
+
+              <p className="text-[#c2a6a6] font-mono text-xs sm:text-sm mb-6 leading-relaxed">
+                {timeLeft <= 0
+                  ? 'The 10-minute temporal synchronization window expired. Your anchor to August 1998 dissolved into the void.'
+                  : 'Your mental composure shattered under the supernatural horror and suffocating atmosphere of the hostel.'}
+              </p>
+
+              <div className="w-full flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={handleRestartChapterOne}
+                  className="flex-1 py-3 px-4 rounded-xl bg-red-900/80 hover:bg-red-800 text-red-100 border border-red-700 hover:border-red-500 font-mono font-bold tracking-wider text-xs uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>RESTART CHAPTER</span>
+                </button>
+
+                <button
+                  onClick={() => navigate('/chapters')}
+                  className="py-3 px-5 rounded-xl bg-[#161212] hover:bg-[#221a1a] text-stone-400 hover:text-stone-200 border border-stone-800 font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
+                >
+                  RETURN TO TITLE
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -5,6 +5,9 @@ class AudioEngine {
   private isMuted: boolean = false;
   private ambientGain: GainNode | null = null;
   private isAmbientRunning: boolean = false;
+  private rainNode: AudioBufferSourceNode | null = null;
+  private rainGain: GainNode | null = null;
+  private isRainRunning: boolean = false;
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -23,6 +26,9 @@ class AudioEngine {
     if (this.ambientGain && this.ctx) {
       this.ambientGain.gain.setValueAtTime(this.isMuted ? 0 : 0.04, this.ctx.currentTime);
     }
+    if (this.rainGain && this.ctx) {
+      this.rainGain.gain.setValueAtTime(this.isMuted ? 0 : 0.035, this.ctx.currentTime);
+    }
     return this.isMuted;
   }
 
@@ -30,6 +36,9 @@ class AudioEngine {
     this.isMuted = muted;
     if (this.ambientGain && this.ctx) {
       this.ambientGain.gain.setValueAtTime(this.isMuted ? 0 : 0.04, this.ctx.currentTime);
+    }
+    if (this.rainGain && this.ctx) {
+      this.rainGain.gain.setValueAtTime(this.isMuted ? 0 : 0.035, this.ctx.currentTime);
     }
     return this.isMuted;
   }
@@ -64,6 +73,68 @@ class AudioEngine {
     } catch {
       // Audio autoplay policy fallback
     }
+  }
+
+  public playSeanceRainLoop() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    // Start background drone as well
+    this.startAmbient();
+
+    if (this.isRainRunning) return;
+
+    try {
+      const bufferSize = 2 * this.ctx.sampleRate;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      let b0 = 0, b1 = 0, b2 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        data[i] = (b0 + b1 + b2) * 0.15;
+      }
+
+      this.rainNode = this.ctx.createBufferSource();
+      this.rainNode.buffer = buffer;
+      this.rainNode.loop = true;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(850, this.ctx.currentTime);
+
+      this.rainGain = this.ctx.createGain();
+      this.rainGain.gain.setValueAtTime(this.isMuted ? 0 : 0.035, this.ctx.currentTime);
+
+      this.rainNode.connect(filter);
+      filter.connect(this.rainGain);
+      this.rainGain.connect(this.ctx.destination);
+
+      this.rainNode.start();
+      this.isRainRunning = true;
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  }
+
+  public stopAllAmbience() {
+    this.stopAmbient();
+    if (this.rainGain && this.ctx) {
+      try {
+        this.rainGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      } catch {}
+    }
+    if (this.rainNode) {
+      try {
+        this.rainNode.stop();
+        this.rainNode.disconnect();
+      } catch {}
+      this.rainNode = null;
+    }
+    this.isRainRunning = false;
   }
 
   public stopAmbient() {
@@ -137,6 +208,26 @@ class AudioEngine {
       gain.connect(this.ctx.destination);
       osc.start();
       osc.stop(this.ctx.currentTime + 0.06);
+    } catch {}
+  }
+
+  public playError() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(130, this.ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(65, this.ctx.currentTime + 0.18);
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
     } catch {}
   }
 

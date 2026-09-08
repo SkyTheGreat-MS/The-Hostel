@@ -16,10 +16,12 @@ export interface GameProgressContextType {
   setChapter1TimeSeconds: (val: number) => void;
   discoveredClues: string[];
   addDiscoveredClue: (clueId: string) => void;
+  setDiscoveredClues: (val: string[] | ((prev: string[]) => string[])) => void;
   // Room 4B Point-and-Click & Inventory additions
   inventory: string[];
   addInventoryItem: (itemId: string) => void;
   hasInventoryItem: (itemId: string) => boolean;
+  setInventory: (val: string[] | ((prev: string[]) => string[])) => void;
   activeInspectSubScene: Room4BSubScene;
   setActiveInspectSubScene: (scene: Room4BSubScene) => void;
   selectedInventoryItem: string | null;
@@ -43,6 +45,14 @@ export interface GameProgressContextType {
   setWashroomMirrorScratched: (val: boolean | ((prev: boolean) => boolean)) => void;
   stairwellGateInspected: boolean;
   setStairwellGateInspected: (val: boolean | ((prev: boolean) => boolean)) => void;
+  // Chapter 1 Specific Flags & Reset
+  hasBobbyPin: boolean;
+  setHasBobbyPin: (val: boolean | ((prev: boolean) => boolean)) => void;
+  hasWoodenBat: boolean;
+  setHasWoodenBat: (val: boolean | ((prev: boolean) => boolean)) => void;
+  doorUnlocked: boolean;
+  setDoorUnlocked: (val: boolean | ((prev: boolean) => boolean)) => void;
+  resetChapterOneProgress: () => void;
 }
 
 const STORAGE_KEY = 'spirits_labyrinth_progress_v1';
@@ -251,6 +261,45 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return false;
   });
 
+  const [doorUnlocked, setDoorUnlocked] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.doorUnlocked === 'boolean') {
+          return parsed.doorUnlocked;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const hasBobbyPin = inventory.includes('bobby_pin');
+  const setHasBobbyPin = (val: boolean | ((prev: boolean) => boolean)) => {
+    const nextVal = typeof val === 'function' ? val(inventory.includes('bobby_pin')) : val;
+    setInventory((prev) =>
+      nextVal
+        ? prev.includes('bobby_pin')
+          ? prev
+          : [...prev, 'bobby_pin']
+        : prev.filter((i) => i !== 'bobby_pin')
+    );
+  };
+
+  const hasWoodenBat = inventory.includes('wooden_bat');
+  const setHasWoodenBat = (val: boolean | ((prev: boolean) => boolean)) => {
+    const nextVal = typeof val === 'function' ? val(inventory.includes('wooden_bat')) : val;
+    setInventory((prev) =>
+      nextVal
+        ? prev.includes('wooden_bat')
+          ? prev
+          : [...prev, 'wooden_bat']
+        : prev.filter((i) => i !== 'wooden_bat')
+    );
+  };
+
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -264,6 +313,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           deskMugMoved,
           hasMagneticCompass,
           doorSmashed,
+          doorUnlocked,
           phase3Location,
           hasSmallBrassKey,
           hasNylonRope,
@@ -284,6 +334,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     deskMugMoved,
     hasMagneticCompass,
     doorSmashed,
+    doorUnlocked,
     phase3Location,
     hasSmallBrassKey,
     hasNylonRope,
@@ -311,13 +362,14 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setJustUnlockedChapter(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
-    setDiscoveredClues(['seance_notebook']);
+    setDiscoveredClues([]);
     setInventory([]);
     setActiveInspectSubScene('main');
     setSelectedInventoryItem(null);
     setDeskMugMoved(false);
     setHasMagneticCompass(false);
     setDoorSmashed(false);
+    setDoorUnlocked(false);
     setPhase3Location('hallway_threshold');
     setHasSmallBrassKey(false);
     setHasNylonRope(false);
@@ -329,6 +381,25 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch {
       // ignore
     }
+  };
+
+  const resetChapterOneProgress = () => {
+    setComposure(100);
+    setChapter1TimeSeconds(0);
+    setDiscoveredClues([]);
+    setInventory([]);
+    setActiveInspectSubScene('main');
+    setSelectedInventoryItem(null);
+    setDeskMugMoved(false);
+    setHasMagneticCompass(false);
+    setDoorSmashed(false);
+    setDoorUnlocked(false);
+    setPhase3Location('hallway_threshold');
+    setHasSmallBrassKey(false);
+    setHasNylonRope(false);
+    setWashroomStallChecked(false);
+    setWashroomMirrorScratched(false);
+    setStairwellGateInspected(false);
   };
 
   const clearJustUnlocked = () => {
@@ -366,6 +437,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         isChapterUnlocked,
         completeChapter,
         resetProgress,
+        resetChapterOneProgress,
         justUnlockedChapter,
         clearJustUnlocked,
         composure,
@@ -374,7 +446,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setChapter1TimeSeconds,
         discoveredClues,
         addDiscoveredClue,
+        setDiscoveredClues,
         inventory,
+        setInventory,
         addInventoryItem,
         hasInventoryItem,
         activeInspectSubScene,
@@ -387,6 +461,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setHasMagneticCompass,
         doorSmashed,
         setDoorSmashed,
+        doorUnlocked,
+        setDoorUnlocked,
+        hasBobbyPin,
+        setHasBobbyPin,
+        hasWoodenBat,
+        setHasWoodenBat,
         phase3Location,
         setPhase3Location,
         hasSmallBrassKey,
