@@ -3770,6 +3770,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 hasBronzeBell={hasBronzeBell}
                 setHasBronzeBell={setHasBronzeBell}
                 selectedCharacterId={selectedCharacter.id}
+                activeMonologue={activeMonologue}
                 setActiveMonologue={setActiveMonologue}
                 setPhase3Location={setPhase3Location}
                 altarCandlesPlaced={altarCandlesPlaced}
@@ -3902,7 +3903,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
       {/* Universal "Thought Monologue" Component for Object Examinations & Observations */}
       <AnimatePresence>
-        {activeMonologue && (
+        {activeMonologue && phase3Location !== 'prayer_altar' && (
           <ThoughtMonologueOverlay
             key="universal-thought-monologue"
             text={activeMonologue}

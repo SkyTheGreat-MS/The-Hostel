@@ -16,6 +16,7 @@ export interface PrayerAltarViewProps {
   hasBronzeBell: boolean;
   setHasBronzeBell: React.Dispatch<React.SetStateAction<boolean>>;
   selectedCharacterId?: string;
+  activeMonologue?: string | null;
   setActiveMonologue: (msg: string | null) => void;
   setPhase3Location: (loc: Phase3Location) => void;
   setChapter1Completed?: (val: boolean) => void;
@@ -43,6 +44,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   hasBronzeBell,
   setHasBronzeBell,
   selectedCharacterId,
+  activeMonologue,
   setActiveMonologue,
   setPhase3Location,
   setChapter1Completed,
@@ -304,6 +306,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   const allCandlesReady = candlesPlaced.every(Boolean);
   const allCandlesLit = candlesLit.every(Boolean);
   const ritualReadyToRing = allCandlesLit && hasPlacedBell;
+  const litCount = candlesLit.filter(Boolean).length;
+  const failRate = Math.max(0.08, ((100 - composure) / 100) * 0.35);
+  const failRateDisplay = Math.round(failRate * 100);
 
   return (
     <div className="absolute inset-0 z-30 pointer-events-none select-none">
@@ -575,138 +580,150 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         </span>
       )}
 
-      {/* 2. Interactive Match-Striking Panel (When all 3 candles placed but not yet lit) */}
-      <AnimatePresence>
-        {allCandlesReady && !allCandlesLit && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            className="absolute bottom-6 inset-x-0 flex items-center justify-center z-40 pointer-events-none"
-          >
-            <div className="bg-[#111714]/95 border border-[#2b4034] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] backdrop-blur-md p-4 flex flex-col sm:flex-row items-center gap-4 pointer-events-auto text-[#c2d6cc]">
-              <div className="text-left font-mono">
-                <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
-                  <span className="text-xs font-bold text-[#8fa89b] uppercase tracking-wider">
-                    Ritual Candle Ignition
-                  </span>
-                </div>
-                <div className="text-[11px] text-stone-400 mt-0.5 space-x-3">
-                  <span>
-                    Matches: <strong className="text-[#6ee7b7]">{matchesRemaining}</strong>
-                  </span>
-                  <span>•</span>
-                  <span>
-                    Composure: <strong className="text-amber-300">{composure}%</strong>
-                  </span>
-                  <span>•</span>
-                  <span>
-                    Fail Chance:{' '}
-                    <strong className="text-stone-300">
-                      {Math.round(Math.max(0.08, ((100 - composure) / 100) * 0.35) * 100)}%
-                    </strong>
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={handleStrikeMatch}
-                className="px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
-              >
-                <Flame className="w-4 h-4 fill-amber-500 text-amber-400" />
-                <span>Strike Match</span>
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 3. Ring Ceremonial Bell Banner (When all 3 candles lit and bell placed) */}
-      <AnimatePresence>
-        {ritualReadyToRing && !natSummoned && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            className="absolute bottom-6 inset-x-0 flex items-center justify-center z-40 pointer-events-none"
-          >
-            <div className="bg-[#111714]/95 border border-[#3f5c4c] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] backdrop-blur-md p-4 flex flex-col sm:flex-row items-center gap-4 pointer-events-auto text-[#c2d6cc]">
-              <div className="text-left font-mono">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-emerald-400 animate-spin" />
-                  <span className="text-xs font-bold text-[#8fa89b] uppercase tracking-wider">
-                    Altar Prepared • Pacification Rite
-                  </span>
-                </div>
-                <div className="text-[11px] text-stone-400 mt-0.5">
-                  The candles burn cold pale-blue. The Guardian Nat awaits the ceremonial chime.
-                </div>
-              </div>
-
-              <button
-                onClick={handleRingBell}
-                className="px-5 py-2.5 rounded-xl bg-[#2a4536] hover:bg-[#365946] border border-[#4e7960] text-[#e0ede6] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-lg flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
-              >
-                <Bell className="w-4 h-4 fill-current text-amber-300" />
-                <span>Ring Ceremonial Bell</span>
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 4. Guardian Nat Manifestation Banner (When Nat is awakened and dialogue is closed) */}
-      <AnimatePresence>
-        {(natSummoned || isNatManifested) && !dialogueState.active && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 16 }}
-            className="absolute bottom-6 inset-x-0 flex items-center justify-center z-40 pointer-events-none"
-          >
-            <div className="bg-[#111714]/95 border border-[#3f5c4c] rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.85)] backdrop-blur-md p-4 flex flex-col sm:flex-row items-center gap-4 pointer-events-auto text-[#c2d6cc]">
-              <div className="text-left font-mono">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#6ee7b7] animate-spin" />
-                  <span className="text-xs font-bold text-[#8fa89b] uppercase tracking-wider">
-                    Guardian Nat Awakened
-                  </span>
-                </div>
-                <div className="text-[11px] text-stone-400 mt-0.5">
-                  The cold sulfur flames burn steadily. The Guardian Nat is manifest. Return to the corridor and inspect the Caretaker's office.
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    sound.playGhostWhisper();
-                    setDialogueState({
-                      speaker: 'Hostel Guardian Nat',
-                      line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
-                      active: true,
-                    });
-                  }}
-                  className="px-3.5 py-2.5 rounded-xl bg-[#1a2b22] hover:bg-[#253d30] border border-[#3f5c4c] text-[#a8cdb9] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center gap-1.5 cursor-pointer hover:scale-105 active:scale-95"
+      {/* 2. SPLIT BOTTOM HUD: Left Dock (Minigame / Ritual Actions), Right Dock (Inner Monologue) */}
+      {!dialogueState.active && (
+        <div className="absolute bottom-4 inset-x-4 z-40 flex items-end justify-between gap-6 pointer-events-none">
+          {/* LEFT DOCK: Match-Striking Minigame Card / Ritual Action Banners */}
+          <div className="w-full max-w-sm pointer-events-auto">
+            <AnimatePresence mode="wait">
+              {allCandlesReady && !allCandlesLit && (
+                <motion.div
+                  key="match-striking-card"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-2"
                 >
-                  <span>Hear Nat</span>
-                </button>
+                  <div className="flex items-center justify-between text-[11px] font-mono tracking-wider text-[#8fa89b] uppercase">
+                    <span className="flex items-center gap-1.5 font-bold">
+                      <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                      Ritual Ignition
+                    </span>
+                    <span className="text-[#6ee7b7] font-semibold">
+                      {matchesRemaining} Matches Left
+                    </span>
+                  </div>
 
-                <button
-                  onClick={() => {
-                    sound.playMenuSelect();
-                    setPhase3Location('prayer_room_main');
-                  }}
-                  className="px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+                  {/* Fail rate & composure stat bar */}
+                  <div className="flex items-center justify-between text-[10px] font-mono text-stone-400 bg-black/40 px-2 py-1 rounded">
+                    <span>
+                      Composure: <strong className="text-amber-300">{composure}%</strong>
+                    </span>
+                    <span>
+                      Fail Chance: <strong className="text-stone-300">{failRateDisplay}%</strong>
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handleStrikeMatch}
+                    className="w-full py-2 px-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
+                  >
+                    <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-400" />
+                    <span>Strike Match ({litCount}/3 Lit)</span>
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Altar Prepared • Pacification Rite (When ready to ring bell) */}
+              {ritualReadyToRing && !natSummoned && !isNatManifested && (
+                <motion.div
+                  key="bell-ready-card"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#3f5c4c] backdrop-blur-md shadow-2xl space-y-2 text-[#c2d6cc]"
                 >
-                  <span>Return to Prayer Room</span>
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  <div className="flex items-center gap-2 font-mono">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
+                    <span className="text-[11px] font-bold text-[#8fa89b] uppercase tracking-wider">
+                      Altar Prepared • Pacification Rite
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-stone-400 leading-snug">
+                    The candles burn cold pale-blue. Strike the bronze bell to invoke the Guardian Nat.
+                  </div>
+                  <button
+                    onClick={handleRingBell}
+                    className="w-full py-2 px-3 rounded-lg bg-[#2a4536] hover:bg-[#365946] border border-[#4e7960] text-[#e0ede6] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
+                  >
+                    <Bell className="w-3.5 h-3.5 fill-current text-amber-300" />
+                    <span>Ring Ceremonial Bell</span>
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Guardian Nat Awakened Banner (When Nat is awakened and dialogue is closed) */}
+              {(natSummoned || isNatManifested) && (
+                <motion.div
+                  key="nat-awakened-card"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#3f5c4c] backdrop-blur-md shadow-2xl space-y-2 text-[#c2d6cc]"
+                >
+                  <div className="flex items-center gap-2 font-mono">
+                    <Sparkles className="w-3.5 h-3.5 text-[#6ee7b7] animate-spin" />
+                    <span className="text-[11px] font-bold text-[#8fa89b] uppercase tracking-wider">
+                      Guardian Nat Awakened
+                    </span>
+                  </div>
+                  <div className="text-[10px] text-stone-400 leading-snug">
+                    The cold sulfur flames burn steadily. Guardian Nat is manifest. Return to corridor and inspect the Caretaker's office.
+                  </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      onClick={() => {
+                        sound.playGhostWhisper();
+                        setDialogueState({
+                          speaker: 'Hostel Guardian Nat',
+                          line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+                          active: true,
+                        });
+                      }}
+                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#1a2b22] hover:bg-[#253d30] border border-[#3f5c4c] text-[#a8cdb9] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
+                    >
+                      <span>Hear Nat</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        sound.playMenuSelect();
+                        setPhase3Location('prayer_room_main');
+                      }}
+                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
+                    >
+                      <span>Return</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT DOCK: Thought Box */}
+          <div className="w-full max-w-md pointer-events-auto">
+            <AnimatePresence>
+              {activeMonologue && (
+                <motion.div
+                  key="altar-thought-monologue"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 12 }}
+                  onClick={() => setActiveMonologue(null)}
+                  className="p-3.5 rounded-xl bg-[#0b0f0d]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-1.5 cursor-pointer hover:border-[#3f5c4c] transition-all group"
+                >
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8fa89b]/80 uppercase tracking-wider border-b border-[#1f2d26] pb-1">
+                    <span>Inner Monologue</span>
+                    <span className="group-hover:text-[#6ee7b7] transition-colors">[Click to Dismiss]</span>
+                  </div>
+                  <p className="text-xs text-[#c2d6cc] italic font-serif leading-relaxed line-clamp-4 select-none">
+                    "{activeMonologue}"
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      )}
 
       {/* 5. Guardian Nat Dialogue Modal */}
       <AnimatePresence>
