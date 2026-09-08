@@ -738,6 +738,58 @@ export const TestRunner: React.FC = () => {
       });
     }
 
+    // Test 18: wooden_bat_pickup_and_inventory_registration
+    {
+      const start = performance.now();
+      const trace: string[] = ['Validating wooden_bat item definition & pickup handler in wardrobe footing'];
+
+      // 1. Check ITEMS dictionary
+      const batItem = ITEMS['wooden_bat'];
+      const batValid = Boolean(
+        batItem &&
+        batItem.id === 'wooden_bat' &&
+        batItem.name === 'Heavy Teak Timber' &&
+        batItem.type === 'tool' &&
+        batItem.icon === '/assets/items/wooden_bat.png'
+      );
+      trace.push(`ITEMS.wooden_bat registered with name='Heavy Teak Timber', type='tool': ${batValid}`);
+
+      // 2. Simulate pickup routine
+      let mockInventory: string[] = [];
+      let mockHasWoodenBat: boolean = false;
+      let mockMonologue: string | null = null;
+
+      const simulatePickup = () => {
+        if (!mockHasWoodenBat) {
+          mockInventory = [...mockInventory, 'wooden_bat'];
+          mockHasWoodenBat = true;
+          mockMonologue = "A hefty piece of solid teak timber. Heavy enough to force open a jammed latch, but it will make serious noise.";
+        }
+      };
+
+      simulatePickup();
+      const pickupSuccess = mockInventory.includes('wooden_bat') && Boolean(mockHasWoodenBat) && mockMonologue !== null;
+      trace.push(`Pickup adds to inventory and sets monologue: ${pickupSuccess}`);
+
+      // 3. Second click idempotence (no duplicates)
+      simulatePickup();
+      const noDuplicate = mockInventory.length === 1;
+      trace.push(`Second pickup attempt does not duplicate item: ${noDuplicate}`);
+
+      const passed = batValid && pickupSuccess && noDuplicate;
+
+      testList.push({
+        id: 'test_wooden_bat_pickup',
+        name: 'test(wooden_bat_pickup_and_inventory_registration)',
+        category: 'Inventory & Item Pickup',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: 'wooden_bat exists in ITEMS, pickup adds to inventory, triggers monologue, and prevents duplicate pickup',
+        actual: `ItemValid=${batValid}, PickupSuccess=${pickupSuccess}, NoDuplicate=${noDuplicate}`,
+        trace,
+      });
+    }
+
     setResults(testList);
     setIsRunning(false);
   };

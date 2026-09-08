@@ -73,6 +73,8 @@ export interface VictimRiddle {
 export interface Item {
   id: string;
   name: string;
+  type?: string;
+  icon?: string;
   description: string;
   isSpecial?: boolean;
   usageHint?: string;

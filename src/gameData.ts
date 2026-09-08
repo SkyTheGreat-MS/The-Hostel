@@ -41,9 +41,11 @@ export const ITEMS: Record<string, Item> = {
   },
   wooden_bat: {
     id: 'wooden_bat',
-    name: 'Wooden Bat',
-    description: 'A heavy piece of detached teak timber found near the wardrobe.',
-    usageHint: 'Can break wooden latches with blunt force, but creates heavy noise.',
+    name: 'Heavy Teak Timber',
+    type: 'tool',
+    icon: '/assets/items/wooden_bat.png',
+    description: 'A weathered piece of solid teak planking salvaged from the wardrobe base.',
+    usageHint: 'Can break wooden latches or jammed mechanisms with blunt force, but creates heavy noise.',
   },
   magnetic_compass: {
     id: 'magnetic_compass',

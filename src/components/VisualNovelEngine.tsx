@@ -1412,6 +1412,23 @@ export const VisualNovelEngine: React.FC = () => {
     }
   };
 
+  // Wooden plank/bat pickup handler under wardrobe footing inspection
+  const handlePickupWoodenBat = () => {
+    if (!hasWoodenBat) {
+      // 1. Add item ID to inventory
+      setInventory((prev) => (prev.includes('wooden_bat') ? prev : [...prev, 'wooden_bat']));
+      setHasWoodenBat(true);
+
+      // 2. Play item pickup sound
+      sound.playPaperRustle(); // or sound.playItemPickup()
+
+      // 3. Trigger pickup thought monologue
+      setActiveMonologue(
+        "A hefty piece of solid teak timber. Heavy enough to force open a jammed latch, but it will make serious noise."
+      );
+    }
+  };
+
   // Door unlock execution (stealth vs brute force)
   const executeUnlockDoor = (method: 'bobby_pin' | 'wooden_bat') => {
     setIsDoorTransitioning(true);
@@ -2406,20 +2423,19 @@ export const VisualNovelEngine: React.FC = () => {
             {activeInspectSubScene === 'wardrobe' && (
               <>
                 {/* Leaning Wooden Bat / Strut (Hides when already collected into inventory) */}
-                {!hasInventoryItem('wooden_bat') && (
+                {!hasWoodenBat && !inventory.includes('wooden_bat') ? (
                   <InteractiveHotspot
                     id="wardrobe_timber_bat"
-                    name="Heavy Wooden Strut"
-                    cursorTooltip="Heavy Wooden Strut"
+                    name="Heavy Teak Timber"
+                    cursorTooltip="Heavy Teak Timber"
                     polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
-                    onClick={() => {
-                      addInventoryItem('wooden_bat');
-                      sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'You pick up the heavy piece of detached teak timber leaning against the wardrobe. Heavy enough to smash a deadbolt. Added to inventory.',
-                        type: 'success',
-                      });
-                    }}
+                    onClick={handlePickupWoodenBat}
+                  />
+                ) : (
+                  /* Once collected, keep spot inactive / pointer-events-none */
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    aria-hidden="true"
                   />
                 )}
 
@@ -2428,11 +2444,17 @@ export const VisualNovelEngine: React.FC = () => {
                   id="wardrobe_baseboard"
                   name="Wardrobe Baseboard"
                   cursorTooltip="Wardrobe Baseboard"
-                  polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
+                  x={10}
+                  y={75}
+                  width={80}
+                  height={22}
+                  shape="rect"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(
-                      "— Solid teak baseboard from the nineties, warped by monsoon moisture. The heavy wardrobe footing has settled deep into the floorboards. —"
+                      hasWoodenBat || inventory.includes('wooden_bat')
+                        ? "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
+                        : "— Solid teak baseboard from the nineties, warped by monsoon moisture. The heavy wardrobe footing has settled deep into the floorboards. —"
                     );
                   }}
                 />
