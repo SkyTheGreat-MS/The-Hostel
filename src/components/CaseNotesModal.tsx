@@ -118,6 +118,22 @@ const MASTER_CLUES: Record<string, ClueData> = {
     description:
       "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
   },
+  cipher_note_32: {
+    id: 'cipher_note_32',
+    title: 'Warden Office Overwrite Slip',
+    location: 'Locker 32 (Sandar)',
+    category: 'primary',
+    description:
+      "An official hostel maintenance slip: 'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2.' Note: Caretaker mirrors all sequence inputs for emergency security.",
+  },
+  sandar_kozaw_letters: {
+    id: 'sandar_kozaw_letters',
+    title: 'Folded Love Letters (K.Z.)',
+    location: 'Locker 32 (Sandar)',
+    category: 'primary',
+    description:
+      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Shows the hidden betrayal behind Mama May.",
+  },
 };
 
 export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({

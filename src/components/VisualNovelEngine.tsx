@@ -11,10 +11,13 @@ import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
 import { DialogueOverlay, ThoughtMonologueOverlay } from './DialogueOverlay';
+import { ChapterTransitionModal } from './ChapterTransitionModal';
 import {
   saveChapterOneProgress,
   loadChapterOneProgress,
   clearChapterOneProgress,
+  lockChapterOneAndSave,
+  loadActiveGameProgress,
 } from '../gameStore';
 import { ChapterProgressSave } from '../types';
 import {
@@ -44,6 +47,8 @@ import {
   AlertCircle,
   Radio,
   RotateCcw,
+  Flame,
+  Bell,
 } from 'lucide-react';
 
 export type ChapterPhase = 1 | 2 | 3;
@@ -58,148 +63,12 @@ type EngineMode =
   | 'location_select'
   | 'investigating_location';
 
-export interface InteractiveHotspotProps {
-  id: string;
-  name: string;
-  // Optional SVG polygon points formatted as percentages: "x1,y1 x2,y2 x3,y3 ..."
-  polygonPoints?: string;
-  // Fallback box properties if no polygon is provided
-  x?: number; // e.g. 15 for left: 15%
-  y?: number; // e.g. 25 for top: 25%
-  width?: number; // e.g. 18 for width: 18%
-  height?: number; // e.g. 30 for height: 30%
-  shape?: 'rect' | 'circle';
-  rotation?: number; // e.g. 14 for rotate(14deg)
-  transformOrigin?: string; // e.g. 'bottom center'
-  clipPath?: string; // e.g. polygon(...)
-  overlaySrc?: string; // transparent PNG cutout if available
-  cursorTooltip?: string;
-  onClick: () => void;
-  disabled?: boolean;
-}
-
-export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
-  id,
-  name,
-  polygonPoints,
-  x,
-  y,
-  width,
-  height,
-  shape = 'rect',
-  rotation,
-  transformOrigin = 'bottom center',
-  clipPath,
-  overlaySrc,
-  cursorTooltip,
-  onClick,
-  disabled = false,
-}) => {
-  if (disabled) return null;
-
-  // Mode A: Perspective-molded SVG Polygon (Tailored Shape)
-  if (polygonPoints) {
-    // Calculate approximate center for floating tooltip positioning
-    const coords = polygonPoints
-      .trim()
-      .split(/\s+/)
-      .map((pt) => {
-        const [px, py] = pt.split(',').map(Number);
-        return { x: px || 0, y: py || 0 };
-      });
-    const avgX = coords.reduce((acc, c) => acc + c.x, 0) / (coords.length || 1);
-    const minY = Math.min(...coords.map((c) => c.y));
-
-    return (
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none group" data-hotspot-id={id}>
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none select-none"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <g
-            className="group/poly pointer-events-auto cursor-pointer"
-            onClick={onClick}
-            onMouseEnter={() => sound.playMenuHover()}
-          >
-            {/* Invisible Hitbox + Hover Moss/Iron Perspective Glow */}
-            <polygon
-              points={polygonPoints}
-              className="fill-transparent stroke-transparent transition-all duration-300 group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/5 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]"
-            />
-            <title>{cursorTooltip || name}</title>
-          </g>
-        </svg>
-
-        {/* Hover label / tooltip anchored above polygon center */}
-        {cursorTooltip && (
-          <span
-            className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
-            style={{
-              left: `${avgX}%`,
-              top: `${minY}%`,
-            }}
-          >
-            {cursorTooltip}
-          </span>
-        )}
-      </div>
-    );
-  }
-
-  // Mode B: Standard fallback bounding box
-  const containerStyle: React.CSSProperties = {
-    left: `${x ?? 0}%`,
-    top: `${y ?? 0}%`,
-    width: `${width ?? 0}%`,
-    height: `${height ?? 0}%`,
-    ...(rotation !== undefined ? { transform: `rotate(${rotation}deg)`, transformOrigin } : {}),
-    ...(clipPath ? { clipPath } : {}),
-  };
-
-  return (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => sound.playMenuHover()}
-      style={containerStyle}
-      className={`absolute z-20 cursor-pointer group select-none ${
-        shape === 'circle' ? 'rounded-full' : 'rounded-lg'
-      }`}
-      title={name}
-      aria-label={name}
-      data-hotspot-id={id}
-    >
-      {/* If transparent PNG overlay cutout provided */}
-      {overlaySrc ? (
-        <img
-          src={overlaySrc}
-          alt={name}
-          className="w-full h-full object-contain pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:filter group-hover:drop-shadow-[0_0_18px_rgba(130,169,150,0.6)]"
-        />
-      ) : (
-        /* Light aura / glow boundary — strictly hidden until cursor hovers */
-        <div
-          className="w-full h-full pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 border border-[#82a996]/40 bg-[#82a996]/5 shadow-[0_0_12px_rgba(130,169,150,0.25)] rounded-md"
-          style={clipPath ? { clipPath } : undefined}
-        />
-      )}
-
-      {/* Elegant minimalist tooltip that follows hover */}
-      {cursorTooltip && (
-        <span
-          className={`absolute left-1/2 px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg z-30 ${
-            (y ?? 0) < 15 ? 'top-full mt-2' : 'bottom-full mb-2'
-          }`}
-          style={{
-            transform: rotation ? `translateX(-50%) rotate(-${rotation}deg)` : 'translateX(-50%)',
-          }}
-        >
-          {cursorTooltip}
-        </span>
-      )}
-    </div>
-  );
-};
+export { InteractiveHotspot, type InteractiveHotspotProps } from './InteractiveHotspot';
+import { InteractiveHotspot } from './InteractiveHotspot';
+import { Locker32ZoomView } from './Locker32ZoomView';
+import { Locker09ZoomView } from './Locker09ZoomView';
+import { LockersOverviewView } from './LockersOverviewView';
+export { Locker32ZoomView, Locker09ZoomView, LockersOverviewView };
 
 interface InitialDialogueStep {
   id: number;
@@ -828,7 +697,11 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
   ],
 };
 
-export const VisualNovelEngine: React.FC = () => {
+export interface VisualNovelEngineProps {
+  initialChapter?: number;
+}
+
+export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialChapter }) => {
   const navigate = useNavigate();
   const {
     completeChapter,
@@ -905,6 +778,28 @@ export const VisualNovelEngine: React.FC = () => {
   const phase3Message = activeMonologue;
   const [isCompassVibrating, setIsCompassVibrating] = useState<boolean>(false);
 
+  // Phase 3 East Wing & Ritual States
+  const [hasBlackCandlesCount, setHasBlackCandlesCount] = useState<number>(0);
+  const [hasMatchesCount, setHasMatchesCount] = useState<number>(0);
+  const [hasBronzeBell, setHasBronzeBell] = useState<boolean>(false);
+  const [hasReadLocker32Note, setHasReadLocker32Note] = useState<boolean>(false);
+  const [hasReadSandarLetters, setHasReadSandarLetters] = useState<boolean>(false);
+  const [hasLocker09Candle, setHasLocker09Candle] = useState<boolean>(false);
+  const [hasLocker09Matchbox, setHasLocker09Matchbox] = useState<boolean>(false);
+  const [caretakerDoorUnlocked, setCaretakerDoorUnlocked] = useState<boolean>(false);
+  const [altarCandlesPlaced, setAltarCandlesPlaced] = useState<number>(0);
+  const [altarBellPlaced, setAltarBellPlaced] = useState<boolean>(false);
+  const [natSummoned, setNatSummoned] = useState<boolean>(false);
+  const [corridorShadowScareTriggered, setCorridorShadowScareTriggered] = useState<boolean>(false);
+  const [chapter1Completed, setChapter1Completed] = useState<boolean>(false);
+  const [keypadInput, setKeypadInput] = useState<string>('');
+  const [spectralClimaxActive, setSpectralClimaxActive] = useState<boolean>(false);
+  const [altarCandlesLit, setAltarCandlesLit] = useState<boolean>(false);
+  const [chapter1VictoryActive, setChapter1VictoryActive] = useState<boolean>(false);
+  const [corridorShadowFlash, setCorridorShadowFlash] = useState<boolean>(false);
+  const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
+  const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
+
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
   const [currentTier, setCurrentTier] = useState<1 | 2 | 3>(1);
@@ -973,8 +868,50 @@ export const VisualNovelEngine: React.FC = () => {
     }
   }, [composure, isGameOver, isChapterFinished, mode]);
 
-  // Load saved Chapter 1 checkpoint on mount if present
+  // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
+    const activeSave = loadActiveGameProgress();
+    if (initialChapter === 2 || (activeSave && activeSave.chapter === 2)) {
+      if (activeSave?.selectedCharacterId) {
+        const char = CHARACTERS.find((c) => c.id === activeSave.selectedCharacterId);
+        if (char) setSelectedCharacter(char);
+      }
+      if (typeof activeSave?.composure === 'number') {
+        setComposure(activeSave.composure);
+      }
+      setCurrentChapter(2);
+      setPhase(2);
+      setPhase3Location(activeSave?.phase3Location || 'east_fork');
+      setCurrentScene('pathway_326_main');
+      setCurrentSubScene(null);
+      setMode('phase3');
+      setChapter1Completed(true);
+      setCaretakerDoorUnlocked(true);
+      setHasBlackCandlesCount(3);
+      setHasMatchesCount(3);
+      setHasBronzeBell(true);
+      setHasBobbyPin(true);
+      setHasWoodenBat(true);
+      setHasSmallBrassKey(true);
+      setHasNylonRope(true);
+      setHasLocker09Candle(true);
+      setHasLocker09Matchbox(true);
+      setHasReadLocker32Note(true);
+      setHasReadSandarLetters(true);
+      setDoorUnlocked(true);
+      setInventory([
+        'bobby_pin',
+        'wooden_bat',
+        'small_brass_key_32',
+        'coiled_nylon_rope',
+        'black_beeswax_candle',
+        'matchbox_three_stars',
+        'bronze_prayer_bell',
+      ]);
+      sound.startAmbient();
+      return;
+    }
+
     const save = loadChapterOneProgress();
     if (
       save &&
@@ -997,6 +934,19 @@ export const VisualNovelEngine: React.FC = () => {
       setHasNylonRope(Boolean(save.hasNylonRope));
       setDeskMugMoved(Boolean(save.deskMugMoved));
       setDoorUnlocked(Boolean(save.doorUnlocked));
+      if (typeof save.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(save.hasBlackCandlesCount);
+      if (typeof save.hasMatchesCount === 'number') setHasMatchesCount(save.hasMatchesCount);
+      setHasBronzeBell(Boolean(save.hasBronzeBell));
+      setHasReadLocker32Note(Boolean(save.hasReadLocker32Note));
+      setHasReadSandarLetters(Boolean(save.hasReadSandarLetters));
+      setHasLocker09Candle(Boolean(save.hasLocker09Candle || (typeof save.hasBlackCandlesCount === 'number' && save.hasBlackCandlesCount > 0)));
+      setHasLocker09Matchbox(Boolean(save.hasLocker09Matchbox || (typeof save.hasMatchesCount === 'number' && save.hasMatchesCount > 0)));
+      setCaretakerDoorUnlocked(Boolean(save.caretakerDoorUnlocked));
+      if (typeof save.altarCandlesPlaced === 'number') setAltarCandlesPlaced(save.altarCandlesPlaced);
+      setAltarBellPlaced(Boolean(save.altarBellPlaced));
+      setNatSummoned(Boolean(save.natSummoned));
+      setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
+      setChapter1Completed(Boolean(save.chapter1Completed));
       if (typeof save.composure === 'number') setComposure(save.composure);
       if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
 
@@ -1015,7 +965,7 @@ export const VisualNovelEngine: React.FC = () => {
         sound.startAmbient();
       }
     }
-  }, []);
+  }, [initialChapter]);
 
   // Synchronize currentScene with engine mode
   useEffect(() => {
@@ -1028,6 +978,10 @@ export const VisualNovelEngine: React.FC = () => {
   // Auto-save progression changes across Phase 2 & Phase 3
   useEffect(() => {
     if (isChapterFinished || isGameOver) return;
+    if (currentChapter === 2) {
+      lockChapterOneAndSave(selectedCharacter.id, composure);
+      return;
+    }
     if (
       mode === 'room_escape' ||
       mode === 'phase3' ||
@@ -1052,6 +1006,19 @@ export const VisualNovelEngine: React.FC = () => {
         composure,
         timerSeconds: timeLeft,
         timestamp: Date.now(),
+        hasBlackCandlesCount,
+        hasMatchesCount,
+        hasBronzeBell,
+        hasReadLocker32Note,
+        hasReadSandarLetters,
+        hasLocker09Candle,
+        hasLocker09Matchbox,
+        caretakerDoorUnlocked,
+        altarCandlesPlaced,
+        altarBellPlaced,
+        natSummoned,
+        corridorShadowScareTriggered,
+        chapter1Completed,
       });
     }
   }, [
@@ -1071,6 +1038,19 @@ export const VisualNovelEngine: React.FC = () => {
     composure,
     timeLeft,
     selectedCharacter.id,
+    hasBlackCandlesCount,
+    hasMatchesCount,
+    hasBronzeBell,
+    hasReadLocker32Note,
+    hasReadSandarLetters,
+    hasLocker09Candle,
+    hasLocker09Matchbox,
+    caretakerDoorUnlocked,
+    altarCandlesPlaced,
+    altarBellPlaced,
+    natSummoned,
+    corridorShadowScareTriggered,
+    chapter1Completed,
   ]);
 
   // Current active dialogue line for Phase 1 & 2
@@ -1634,6 +1614,24 @@ export const VisualNovelEngine: React.FC = () => {
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    setHasBlackCandlesCount(0);
+    setHasMatchesCount(0);
+    setHasBronzeBell(false);
+    setHasReadLocker32Note(false);
+    setHasReadSandarLetters(false);
+    setHasLocker09Candle(false);
+    setHasLocker09Matchbox(false);
+    setCaretakerDoorUnlocked(false);
+    setAltarCandlesPlaced(0);
+    setAltarBellPlaced(false);
+    setNatSummoned(false);
+    setCorridorShadowScareTriggered(false);
+    setChapter1Completed(false);
+    setKeypadInput('');
+    setSpectralClimaxActive(false);
+    setAltarCandlesLit(false);
+    setChapter1VictoryActive(false);
+    setCorridorShadowFlash(false);
 
     // 4. Reset Audio Channels
     sound.stopAllAmbience();
@@ -1669,6 +1667,49 @@ export const VisualNovelEngine: React.FC = () => {
 
   const handleRestartChapter = handleRestartChapterOne;
 
+  const handleContinueToChapterTwo = () => {
+    setIsChapterTransitionOpen(false);
+    setCurrentChapter(2);
+    setPhase(2);
+    setPhase3Location('east_fork');
+    setCurrentScene('pathway_326_main');
+    setCurrentSubScene(null);
+    setMode('phase3');
+    setChapter1Completed(true);
+    setCaretakerDoorUnlocked(true);
+    setHasBlackCandlesCount(3);
+    setHasMatchesCount(3);
+    setHasBronzeBell(true);
+    setHasBobbyPin(true);
+    setHasWoodenBat(true);
+    setHasSmallBrassKey(true);
+    setHasNylonRope(true);
+    setHasLocker09Candle(true);
+    setHasLocker09Matchbox(true);
+    setHasReadLocker32Note(true);
+    setHasReadSandarLetters(true);
+    setInventory([
+      'bobby_pin',
+      'wooden_bat',
+      'small_brass_key_32',
+      'coiled_nylon_rope',
+      'black_beeswax_candle',
+      'matchbox_three_stars',
+      'bronze_prayer_bell',
+    ]);
+    sound.startAmbient();
+    setActiveMonologue(
+      "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. Seven ritual items are in hand. The communal prayer room altar awaits. —"
+    );
+    navigate('/chapters/2');
+  };
+
+  const handleSaveAndExit = () => {
+    setIsChapterTransitionOpen(false);
+    sound.stopAllAmbience();
+    navigate('/');
+  };
+
   const toggleMute = () => {
     const nextMuted = sound.toggleMute();
     setIsMuted(nextMuted);
@@ -1699,6 +1740,19 @@ export const VisualNovelEngine: React.FC = () => {
       if (phase3Location === 'washroom_stall') return PHASE_3_ASSETS.washroomStallZoom;
       if (phase3Location === 'washroom_rope') return PHASE_3_ASSETS.washroomRopeZoom;
       if (phase3Location === 'washroom_mirror') return PHASE_3_ASSETS.washroomMirrorZoom;
+      if (phase3Location === 'east_fork') return PHASE_3_ASSETS.eastWingFork;
+      if (phase3Location === 'lockers_main') return PHASE_3_ASSETS.lockersOverview;
+      if (phase3Location === 'locker_32') return PHASE_3_ASSETS.locker32Zoom;
+      if (phase3Location === 'locker_09') return PHASE_3_ASSETS.locker09Zoom;
+      if (phase3Location === 'locker_14') return PHASE_3_ASSETS.locker14Zoom;
+      if (phase3Location === 'locker_spider') return PHASE_3_ASSETS.lockerSpiderZoom;
+      if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
+      if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
+      if (phase3Location === 'caretaker_door_keypad') return PHASE_3_ASSETS.caretakerKeypadZoom;
+      if (phase3Location === 'caretaker_office_main') {
+        if (spectralClimaxActive) return PHASE_3_ASSETS.caretakerSpectralClimax;
+        return PHASE_3_ASSETS.caretakerOfficeOverview;
+      }
       return PHASE_3_ASSETS.pathwayThreshold;
     }
     if (mode === 'location_select') {
@@ -1864,6 +1918,12 @@ export const VisualNovelEngine: React.FC = () => {
                       <Key className="w-3.5 h-3.5 text-[#82a996]" />
                     ) : itemId === 'coiled_nylon_rope' ? (
                       <Wind className="w-3.5 h-3.5 text-[#82a996]" />
+                    ) : itemId === 'black_beeswax_candle' ? (
+                      <Flame className="w-3.5 h-3.5 text-stone-400" />
+                    ) : itemId === 'matchbox_three_stars' ? (
+                      <Flame className="w-3.5 h-3.5 text-amber-500" />
+                    ) : itemId === 'bronze_prayer_bell' ? (
+                      <Bell className="w-3.5 h-3.5 text-amber-300" />
                     ) : (
                       <span className="text-[9px] text-[#2c3d34]">•</span>
                     )}
@@ -2662,7 +2722,6 @@ export const VisualNovelEngine: React.FC = () => {
             {phase3Location !== 'hallway_threshold' ? (
               <button
                 onClick={() => {
-                  sound.playPaperRustle();
                   setPhase3Message(null);
                   if (
                     phase3Location === 'washroom_basin' ||
@@ -2670,10 +2729,53 @@ export const VisualNovelEngine: React.FC = () => {
                     phase3Location === 'washroom_rope' ||
                     phase3Location === 'washroom_mirror'
                   ) {
+                    sound.playPaperRustle();
                     setPhase3Location('washroom_main');
                   } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+                    sound.playPaperRustle();
                     setPhase3Location('west_split_landing');
                   } else if (phase3Location === 'west_split_landing') {
+                    sound.playPaperRustle();
+                    setPhase3Location('hallway_threshold');
+                  } else if (
+                    phase3Location === 'locker_32' ||
+                    phase3Location === 'locker_09' ||
+                    phase3Location === 'locker_14' ||
+                    phase3Location === 'locker_spider'
+                  ) {
+                    sound.playPaperRustle();
+                    setPhase3Location('lockers_main');
+                  } else if (phase3Location === 'lockers_main') {
+                    if (hasReadLocker32Note && !corridorShadowScareTriggered) {
+                      setIsScreenShaking(true);
+                      setCorridorShadowFlash(true);
+                      sound.playScareSlam();
+                      setComposure((prev) => Math.max(0, prev - 5));
+                      setCorridorShadowScareTriggered(true);
+                      setTimeout(() => {
+                        setIsScreenShaking(false);
+                        setCorridorShadowFlash(false);
+                      }, 900);
+                      setActiveMonologue("— A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) —");
+                    } else {
+                      sound.playPaperRustle();
+                      setActiveMonologue(null);
+                    }
+                    setPhase3Location('east_fork');
+                  } else if (phase3Location === 'caretaker_door_keypad') {
+                    sound.playPaperRustle();
+                    setPhase3Location('east_fork');
+                  } else if (phase3Location === 'caretaker_office_main') {
+                    sound.playPaperRustle();
+                    setPhase3Location('east_fork');
+                  } else if (phase3Location === 'prayer_altar') {
+                    sound.playPaperRustle();
+                    setPhase3Location('prayer_room_main');
+                  } else if (phase3Location === 'prayer_room_main') {
+                    sound.playPaperRustle();
+                    setPhase3Location('east_fork');
+                  } else if (phase3Location === 'east_fork') {
+                    sound.playPaperRustle();
                     setPhase3Location('hallway_threshold');
                   }
                 }}
@@ -2687,6 +2789,18 @@ export const VisualNovelEngine: React.FC = () => {
                     ? 'EXIT TO HALLWAY LANDING'
                     : phase3Location.startsWith('washroom_')
                     ? 'RETURN TO WASHROOM'
+                    : phase3Location.startsWith('locker_')
+                    ? 'STEP BACK TO LOCKER BAY'
+                    : phase3Location === 'lockers_main'
+                    ? 'EXIT TO EAST WING FORK'
+                    : phase3Location === 'caretaker_door_keypad'
+                    ? 'STEP BACK TO EAST WING FORK'
+                    : phase3Location === 'caretaker_office_main'
+                    ? 'EXIT CARETAKER OFFICE'
+                    : phase3Location === 'prayer_altar'
+                    ? 'STEP BACK TO PRAYER ROOM'
+                    : phase3Location === 'prayer_room_main'
+                    ? 'EXIT TO EAST WING FORK'
                     : 'STEP BACK TO THRESHOLD'}
                 </span>
               </button>
@@ -2717,7 +2831,27 @@ export const VisualNovelEngine: React.FC = () => {
                   ? 'Third Cubicle Stall'
                   : phase3Location === 'washroom_rope'
                   ? 'Overhead Drainage Pipe'
-                  : 'Cracked Wall Mirror & Sinks'}
+                  : phase3Location === 'washroom_mirror'
+                  ? 'Cracked Wall Mirror & Sinks'
+                  : phase3Location === 'east_fork'
+                  ? 'East Wing Fork'
+                  : phase3Location === 'lockers_main'
+                  ? 'Student Locker Bay'
+                  : phase3Location === 'locker_32'
+                  ? "Locker 32 (Sandar's)"
+                  : phase3Location === 'locker_09'
+                  ? 'Locker 09 (Supplies)'
+                  : phase3Location === 'locker_14'
+                  ? "Locker 14 (Mama May's)"
+                  : phase3Location === 'locker_spider'
+                  ? 'Rusted Locker Vent'
+                  : phase3Location === 'caretaker_door_keypad'
+                  ? 'Caretaker Office Push-Latch Keypad'
+                  : phase3Location === 'caretaker_office_main'
+                  ? "Caretaker's Old Office"
+                  : phase3Location === 'prayer_room_main'
+                  ? 'Communal Prayer Sanctuary'
+                  : 'Guardian Nat Prayer Altar'}
               </span>
             </div>
           </div>
@@ -2776,32 +2910,30 @@ export const VisualNovelEngine: React.FC = () => {
 
                   {/* Right Card: East Wing */}
                   <motion.div
-                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileHover={{ scale: 1.03, y: -4 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => {
-                      sound.playDamage();
-                      setActiveMonologue(
-                        "— The east corridor is completely swallowed by pitch darkness... The gate is barred from the other side. —"
-                      );
+                      sound.playMenuSelect();
+                      setPhase3Message(null);
+                      setPhase3Location('east_fork');
                     }}
-                    className="group relative w-72 sm:w-80 h-96 rounded-2xl overflow-hidden border border-[#2c3d34]/60 hover:border-[#2c3d34] bg-[#121815]/90 cursor-pointer shadow-lg transition-all duration-300 flex flex-col justify-end p-5 opacity-80 hover:opacity-95"
+                    className="group relative w-72 sm:w-80 h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardPathwayRight}
                       alt="East Wing"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50 group-hover:brightness-65"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/70 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-widest text-stone-400 uppercase">
-                        <Lock className="w-3.5 h-3.5 text-rose-400/80" />
-                        <span>LOCKED</span>
-                      </div>
+                      <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                        EAST WING
+                      </span>
                       <h3
-                        className="text-2xl sm:text-3xl font-black text-stone-400 tracking-wider uppercase"
+                        className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
-                        EAST WING
+                        LOCKERS & SHRINE
                       </h3>
                     </div>
                   </motion.div>
@@ -3022,6 +3154,641 @@ export const VisualNovelEngine: React.FC = () => {
                     );
                   }}
                 />
+              </>
+            )}
+
+            {/* SUB-SCENE 5: EAST WING FORK - THREE CHOICE CARDS */}
+            {phase3Location === 'east_fork' && (
+              <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 max-w-5xl w-full pointer-events-auto">
+                  {/* Card A: Lockers */}
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      sound.playMenuSelect();
+                      setPhase3Message(null);
+                      setPhase3Location('lockers_main');
+                    }}
+                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                  >
+                    <img
+                      src={PHASE_3_ASSETS.cardEastLockers}
+                      alt="Lockers Area"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
+                    <div className="relative z-10 space-y-1 text-left">
+                      <span className="text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                        SECTOR A • LOCKERS
+                      </span>
+                      <h3
+                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                      >
+                        STUDENT LOCKER BAY
+                      </h3>
+                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                        Metal lockers from 1998. Belongings of May, Sandar, and dorm residents.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* Card B: Prayer Room */}
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      sound.playMenuSelect();
+                      setPhase3Message(null);
+                      setPhase3Location('prayer_room_main');
+                    }}
+                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                  >
+                    <img
+                      src={PHASE_3_ASSETS.cardEastPrayer}
+                      alt="Prayer Room"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
+                    <div className="relative z-10 space-y-1 text-left">
+                      <span className="text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                        SECTOR B • SANCTUARY
+                      </span>
+                      <h3
+                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                      >
+                        PRAYER ROOM & ALTAR
+                      </h3>
+                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                        Ancient Burmese Nat shrine with offering bowls and incense tiers.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* Card C: Caretaker Archive */}
+                  <motion.div
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      sound.playMenuSelect();
+                      setPhase3Message(null);
+                      if (!caretakerDoorUnlocked) {
+                        setPhase3Location('caretaker_door_keypad');
+                      } else {
+                        setPhase3Location('caretaker_office_main');
+                      }
+                    }}
+                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                  >
+                    <img
+                      src={PHASE_3_ASSETS.cardEastCaretaker}
+                      alt="Caretaker Office"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
+                    <div className="relative z-10 space-y-1 text-left">
+                      <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-widest uppercase">
+                        {caretakerDoorUnlocked ? (
+                          <span className="text-[#6ee7b7] flex items-center gap-1">
+                            <Unlock className="w-3 h-3 text-[#6ee7b7]" /> UNLOCKED
+                          </span>
+                        ) : (
+                          <span className="text-stone-400 flex items-center gap-1">
+                            <Lock className="w-3 h-3 text-stone-400" /> KEYPAD LOCKED
+                          </span>
+                        )}
+                      </div>
+                      <h3
+                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                      >
+                        CARETAKER ARCHIVE
+                      </h3>
+                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                        Warden's locked records office secured by a push-latch electronic keypad.
+                      </p>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            )}
+
+            {/* SUB-SCENE 6: LOCKER BAY OVERVIEW */}
+            {phase3Location === 'lockers_main' && (
+              <LockersOverviewView
+                hasSmallBrassKey={hasSmallBrassKey}
+                setPhase3Location={setPhase3Location}
+                setActiveMonologue={setActiveMonologue}
+                setComposure={setComposure}
+                setIsScreenShaking={setIsScreenShaking}
+              />
+            )}
+
+            {/* ZOOM: LOCKER 32 INTERIOR */}
+            {phase3Location === 'locker_32' && (
+              <>
+                {/* 1. Hotspot: Pinned Pink Hostel Slip (Top-Right) */}
+                <InteractiveHotspot
+                  id="locker-32-pink-slip"
+                  name="Pink Hostel Overwrite Slip"
+                  polygonPoints="60,10 77,12 76,48 59,42"
+                  cursorTooltip="Examine Pinned Slip"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setActiveMonologue(
+                      "An official hostel maintenance slip: 'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2.' Below it in faint pencil: 'Note: Caretaker mirrors all sequence inputs for emergency security.'"
+                    );
+                    setHasReadLocker32Note(true);
+                    addDiscoveredClue('cipher_note_32');
+                  }}
+                />
+
+                {/* 2. Hotspot: Bundle of Folded Letters marked K.Z. (Bottom-Right) */}
+                <InteractiveHotspot
+                  id="locker-32-letters"
+                  name="Folded Love Letters"
+                  polygonPoints="60,50 83,52 84,77 60,75"
+                  cursorTooltip="Read Folded Letters"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setActiveMonologue(
+                      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.'"
+                    );
+                    setHasReadSandarLetters(true);
+                    addDiscoveredClue('sandar_kozaw_letters');
+                  }}
+                />
+
+                {/* 3. Optional Hotspot: Stacked Course Books (Bottom-Left) */}
+                <InteractiveHotspot
+                  id="locker-32-books"
+                  name="Old Engineering Textbooks"
+                  polygonPoints="38,40 61,42 62,74 38,72"
+                  cursorTooltip="Inspect Books"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setActiveMonologue(
+                      "Heavy textbooks belonging to Sandar. The covers are warped with moisture and smelling of damp mildew."
+                    );
+                  }}
+                />
+              </>
+            )}
+
+            {/* ZOOM: LOCKER 09 INTERIOR */}
+            {phase3Location === 'locker_09' && (
+              <>
+                {/* 1. Black Beeswax Candle (Left Center) */}
+                {!hasLocker09Candle && (
+                  <InteractiveHotspot
+                    id="locker-09-candle"
+                    name="Black Beeswax Candle"
+                    polygonPoints="50,29 57,29 59,85 50,85"
+                    cursorTooltip="Take Black Candle"
+                    onClick={() => {
+                      sound.playItemPickup();
+                      setHasLocker09Candle(true);
+                      setHasBlackCandlesCount((prev) => prev + 1);
+                      setInventory((prev) => [...prev, 'black_beeswax_candle']);
+                      setActiveMonologue(
+                        "A thick black beeswax candle. Heavy, cold, and smells faintly of sweet oil. Ideal for the prayer altar."
+                      );
+                    }}
+                  />
+                )}
+
+                {/* 2. Vintage Burmese Matchbox (Right Center) */}
+                {!hasLocker09Matchbox && (
+                  <InteractiveHotspot
+                    id="locker-09-matchbox"
+                    name="Three-Shooting-Stars Matchbox"
+                    polygonPoints="65,27 87,32 87,85 65,80"
+                    cursorTooltip="Take Matchbox"
+                    onClick={() => {
+                      sound.playPaperRustle();
+                      setHasLocker09Matchbox(true);
+                      setHasMatchesCount(3);
+                      setInventory((prev) => [...prev, 'matchbox_three_stars']);
+                      setActiveMonologue(
+                        "A box of 'Three-Shooting-Stars' safety matches. There are only three dry matches left inside."
+                      );
+                    }}
+                  />
+                )}
+
+                {/* Emptied Feedback Hotspot */}
+                {hasLocker09Candle && hasLocker09Matchbox && (
+                  <InteractiveHotspot
+                    id="locker-09-empty"
+                    name="Locker 09 (Emptied)"
+                    polygonPoints="45,25 90,25 90,88 45,88"
+                    cursorTooltip="Locker 09 (Emptied)"
+                    onClick={() => {
+                      sound.playPaperRustle();
+                      setActiveMonologue(
+                        "— Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. —"
+                      );
+                    }}
+                  />
+                )}
+              </>
+            )}
+
+            {/* ZOOM: LOCKER 14 PADLOCK */}
+            {phase3Location === 'locker_14' && (
+              <>
+                <InteractiveHotspot
+                  id="locker_14_cylinder"
+                  name="Barrel Cylinder Lock"
+                  x={32}
+                  y={28}
+                  width={36}
+                  height={48}
+                  shape="rect"
+                  cursorTooltip="[Inspect Barrel Lock]"
+                  onClick={() => {
+                    sound.playDramaticSting();
+                    setActiveMonologue(
+                      "— Locked tight with a small barrel cylinder. May's personal locker... the key is nowhere here. —"
+                    );
+                  }}
+                />
+              </>
+            )}
+
+            {/* ZOOM: LOCKER SPIDERS */}
+            {phase3Location === 'locker_spider' && (
+              <>
+                <InteractiveHotspot
+                  id="locker_spider_retreat"
+                  name="Scurrying Cellar Spiders"
+                  x={25}
+                  y={25}
+                  width={50}
+                  height={50}
+                  shape="rect"
+                  cursorTooltip="[Step Back from Infestation]"
+                  onClick={() => {
+                    sound.playPaperRustle();
+                    setPhase3Location('lockers_main');
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 7: CARETAKER DOOR KEYPAD */}
+            {phase3Location === 'caretaker_door_keypad' && (
+              <div className="absolute inset-0 flex items-center justify-center p-4 z-20 pointer-events-none">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="w-full max-w-sm bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-md p-6 pointer-events-auto text-[#c2d6cc]"
+                >
+                  <div className="flex items-center justify-between pb-3 border-b border-[#26382f]">
+                    <div className="flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-[#82a996]" />
+                      <span className="text-xs font-mono font-bold tracking-wider text-[#82a996] uppercase">
+                        PUSH-LATCH OVERWRITE
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-stone-500 uppercase">MODEL 1998-E</span>
+                  </div>
+
+                  {/* Screen Display */}
+                  <div className="my-4 p-3 rounded-xl bg-[#0b100e] border border-[#202e26] text-center">
+                    <span className="text-[10px] font-mono text-stone-500 block mb-1 uppercase tracking-widest">
+                      SECURITY SEQUENCE INPUT
+                    </span>
+                    <div className="text-2xl font-mono font-black tracking-[0.35em] text-[#6ee7b7] min-h-[36px] flex items-center justify-center">
+                      {keypadInput ? keypadInput : <span className="text-stone-700 animate-pulse">_ _ _ _ _ _</span>}
+                    </div>
+                  </div>
+
+                  {/* 0-9 Keypad Grid */}
+                  <div className="grid grid-cols-3 gap-2 mb-3">
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
+                      <button
+                        key={digit}
+                        onClick={() => {
+                          sound.playKeyClick();
+                          if (keypadInput.length < 8) {
+                            setKeypadInput((prev) => prev + digit);
+                          }
+                        }}
+                        className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
+                      >
+                        {digit}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => {
+                        sound.playPaperRustle();
+                        setKeypadInput('');
+                      }}
+                      className="h-12 rounded-xl bg-[#141b17] hover:bg-[#1a241e] border border-[#233329] text-stone-400 hover:text-stone-200 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      CLEAR
+                    </button>
+                    <button
+                      onClick={() => {
+                        sound.playKeyClick();
+                        if (keypadInput.length < 8) {
+                          setKeypadInput((prev) => prev + '0');
+                        }
+                      }}
+                      className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
+                    >
+                      0
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (keypadInput === '290418') {
+                          sound.playSuccessTune();
+                          setCaretakerDoorUnlocked(true);
+                          setActiveMonologue(
+                            "— Heavy metallic clunk! The internal solenoid retracts, unlocking the caretaker office door. —"
+                          );
+                          setPhase3Location('caretaker_office_main');
+                        } else {
+                          sound.playError();
+                          setKeypadInput('');
+                          setActiveMonologue("— The keypad emits a dull rejected buzz. Incorrect sequence. —");
+                        }
+                      }}
+                      className="h-12 rounded-xl bg-[#22352b] hover:bg-[#2d4639] active:scale-95 border border-[#3f5c4c] text-[#6ee7b7] font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                    >
+                      ENTER
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+
+            {/* SUB-SCENE 8: CARETAKER'S OFFICE ARCHIVE */}
+            {phase3Location === 'caretaker_office_main' && (
+              <>
+                {/* 1. Wooden Supply Shelf (2 candles) */}
+                <InteractiveHotspot
+                  id="caretaker_supply_shelf"
+                  name="Wooden Supply Shelf"
+                  x={8}
+                  y={18}
+                  width={22}
+                  height={45}
+                  shape="rect"
+                  cursorTooltip={hasBlackCandlesCount < 3 ? "[Take 2 Black Beeswax Candles]" : "[Supply Shelf (Empty)]"}
+                  onClick={() => {
+                    if (hasBlackCandlesCount < 3) {
+                      setHasBlackCandlesCount((prev) => prev + 2);
+                      if (!inventory.includes('black_beeswax_candle')) addInventoryItem('black_beeswax_candle');
+                      sound.playPaperRustle();
+                      setActiveMonologue(
+                        "— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —"
+                      );
+                    } else {
+                      sound.playPaperRustle();
+                      setActiveMonologue("— The supply shelf is bare now. Nothing remains except dried cobwebs. —");
+                    }
+                  }}
+                />
+
+                {/* 2. Glass Counter Cabinet (Bronze Prayer Bell) */}
+                <InteractiveHotspot
+                  id="caretaker_glass_cabinet"
+                  name="Glass Display Cabinet"
+                  x={70}
+                  y={25}
+                  width={22}
+                  height={50}
+                  shape="rect"
+                  cursorTooltip={!hasBronzeBell ? "[Take Bronze Prayer Bell]" : "[Glass Cabinet (Empty)]"}
+                  onClick={() => {
+                    if (!hasBronzeBell) {
+                      addInventoryItem('bronze_prayer_bell');
+                      setHasBronzeBell(true);
+                      sound.playPaperRustle();
+                      setActiveMonologue(
+                        "— Inside the glass display: an ornate cast bronze hand bell with traditional spirit runes etched into the lip. Acquired: Bronze Prayer Bell. —"
+                      );
+                    } else {
+                      sound.playPaperRustle();
+                      setActiveMonologue("— The glass display cabinet is empty. —");
+                    }
+                  }}
+                />
+
+                {/* 3. Center Desk Ledger (Spectral Encounter) */}
+                <InteractiveHotspot
+                  id="caretaker_desk_ledger"
+                  name="Caretaker 1998 Ledger"
+                  x={34}
+                  y={46}
+                  width={32}
+                  height={38}
+                  shape="rect"
+                  cursorTooltip={
+                    hasBlackCandlesCount >= 3 && hasBronzeBell
+                      ? "[Examine Open Ledger on Desk]"
+                      : "[Examine Caretaker Desk]"
+                  }
+                  onClick={() => {
+                    if (hasBlackCandlesCount >= 3 && hasBronzeBell) {
+                      setSpectralClimaxActive(true);
+                      setIsScreenShaking(true);
+                      sound.playGlassBreak();
+                      sound.playGhostWhisper();
+                      sound.playDramaticSting();
+                      setCaretakerDoorUnlocked(false);
+                      setActiveMonologue(
+                        "— \"You do not know who holds the cord... Ask the Guardian before you burn...\" —"
+                      );
+                      setTimeout(() => {
+                        setIsScreenShaking(false);
+                        setSpectralClimaxActive(false);
+                        completeChapter(1);
+                        setChapter1Completed(true);
+                        lockChapterOneAndSave(selectedCharacter.id, composure);
+                        setIsChapterTransitionOpen(true);
+                      }, 2000);
+                    } else {
+                      sound.playPaperRustle();
+                      setActiveMonologue(
+                        "— The Caretaker's ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies first. —"
+                      );
+                    }
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 9: COMMUNAL PRAYER ROOM */}
+            {phase3Location === 'prayer_room_main' && (
+              <>
+                <InteractiveHotspot
+                  id="prayer_room_altar_approach"
+                  name="Guardian Nat Altar"
+                  x={32}
+                  y={25}
+                  width={36}
+                  height={55}
+                  shape="rect"
+                  cursorTooltip="[Approach Guardian Nat Altar]"
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setPhase3Message(null);
+                    setPhase3Location('prayer_altar');
+                  }}
+                />
+              </>
+            )}
+
+            {/* SUB-SCENE 10: PRAYER ALTAR & MATCH STRIKING MECHANIC */}
+            {phase3Location === 'prayer_altar' && (
+              <>
+                {/* Offerings Tray Hotspot */}
+                <InteractiveHotspot
+                  id="prayer_altar_tray"
+                  name="Offerings Tray"
+                  x={30}
+                  y={38}
+                  width={40}
+                  height={38}
+                  shape="rect"
+                  cursorTooltip={
+                    altarCandlesPlaced >= 3 && altarBellPlaced
+                      ? "[Offerings Placed: 3 Candles & Bell]"
+                      : "[Place Ritual Offerings on Tray]"
+                  }
+                  onClick={() => {
+                    if (altarCandlesPlaced < 3 || !altarBellPlaced) {
+                      if (hasBlackCandlesCount >= 3 && hasBronzeBell) {
+                        setAltarCandlesPlaced(3);
+                        setAltarBellPlaced(true);
+                        sound.playPaperRustle();
+                        setActiveMonologue(
+                          "— Placed three black beeswax candles in the brass holders and set the bronze prayer bell beside the offering bowl. —"
+                        );
+                      } else {
+                        sound.playPaperRustle();
+                        setActiveMonologue(
+                          "— The altar tray has hollows for three black beeswax candles and a bronze prayer bell. I need to find them first. —"
+                        );
+                      }
+                    } else {
+                      sound.playPaperRustle();
+                      setActiveMonologue(
+                        "— Three black beeswax candles and the bronze prayer bell rest solemnly on the altar tray. —"
+                      );
+                    }
+                  }}
+                />
+
+                {/* Match Striking Panel (Only when offerings placed and Nat not yet summoned) */}
+                {altarCandlesPlaced >= 3 && altarBellPlaced && !natSummoned && (
+                  <div className="absolute bottom-6 inset-x-0 flex items-center justify-center z-40 pointer-events-none">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.85)] backdrop-blur-md p-4 flex flex-col sm:flex-row items-center gap-4 pointer-events-auto text-[#c2d6cc]"
+                    >
+                      <div className="text-left font-mono">
+                        <div className="flex items-center gap-2">
+                          <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
+                          <span className="text-xs font-bold text-[#82a996] uppercase tracking-wider">
+                            RITUAL IGNITION READY
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-stone-400 mt-0.5">
+                          MATCHES REMAINING: <span className="text-[#6ee7b7] font-bold">{hasMatchesCount}</span> •
+                          COMPOSURE: <span className="text-amber-400 font-bold">{composure}%</span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (hasMatchesCount <= 0) return;
+                          const failRate = Math.max(0.05, ((100 - composure) / 100) * 0.35);
+                          const isFail = Math.random() < failRate;
+                          if (isFail) {
+                            sound.playDamage();
+                            const nextMatches = hasMatchesCount - 1;
+                            setHasMatchesCount(nextMatches);
+                            if (nextMatches <= 0) {
+                              setHasMatchesCount(1);
+                              setComposure((prev) => Math.max(0, prev - 3));
+                              setActiveMonologue(
+                                "— Out of matches! Desperately rummaging around the woven reed mat reveals one discarded damp match. My heart pounds in panic. (-3% Composure) —"
+                              );
+                            } else {
+                              setActiveMonologue("— My hands are shaking too violently... the match snapped in the damp air. —");
+                            }
+                          } else {
+                            // Success!
+                            setHasMatchesCount((prev) => Math.max(0, prev - 1));
+                            sound.playItemPickup();
+                            sound.playDramaticSting();
+                            setAltarCandlesLit(true);
+                            // Purge ritual items from inventory
+                            setInventory((prev) =>
+                              prev.filter(
+                                (id) =>
+                                  id !== 'black_beeswax_candle' &&
+                                  id !== 'matchbox_three_stars' &&
+                                  id !== 'bronze_prayer_bell'
+                              )
+                            );
+                            setHasBlackCandlesCount(0);
+                            setHasMatchesCount(0);
+                            setHasBronzeBell(false);
+                            setNatSummoned(true);
+                            setChapter1Completed(true);
+                            completeChapter(1);
+                            saveChapterOneProgress({
+                              chapter: 1,
+                              currentPhase: 3,
+                              phase3Location: 'prayer_altar',
+                              selectedCharacterId: selectedCharacter.id,
+                              inventory: inventory.filter(
+                                (id) =>
+                                  id !== 'black_beeswax_candle' &&
+                                  id !== 'matchbox_three_stars' &&
+                                  id !== 'bronze_prayer_bell'
+                              ),
+                              discoveredClues,
+                              hasBobbyPin,
+                              hasWoodenBat,
+                              hasMagneticCompass,
+                              hasSmallBrassKey,
+                              hasNylonRope,
+                              deskMugMoved,
+                              doorUnlocked,
+                              composure,
+                              timerSeconds: timeLeft,
+                              timestamp: Date.now(),
+                              hasReadLocker32Note,
+                              hasReadSandarLetters,
+                              hasLocker09Candle,
+                              hasLocker09Matchbox,
+                              chapter1Completed: true,
+                              natSummoned: true,
+                            });
+                            setChapter1VictoryActive(true);
+                            sound.playSuccessTune();
+                            setActiveMonologue(
+                              "— The flames burn cold blue... the bronze bell rings in my mind. The Guardian has awakened. —"
+                            );
+                          }
+                        }}
+                        className="px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] active:scale-95 border border-[#3f5c4c] text-[#d1e3da] text-xs font-mono font-black tracking-wider uppercase transition-all shadow-lg hover:scale-105 cursor-pointer flex items-center gap-2"
+                      >
+                        <Flame className="w-4 h-4 text-[#6ee7b7]" />
+                        <span>STRIKE MATCH TO LIGHT CANDLES</span>
+                      </button>
+                    </motion.div>
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -3258,6 +4025,10 @@ export const VisualNovelEngine: React.FC = () => {
                       <Hammer className="w-5 h-5 text-[#82a996]" />
                     ) : inspectingItem === 'coiled_nylon_rope' ? (
                       <Wind className="w-5 h-5 text-[#82a996]" />
+                    ) : inspectingItem === 'black_beeswax_candle' || inspectingItem === 'matchbox_three_stars' ? (
+                      <Flame className="w-5 h-5 text-[#82a996]" />
+                    ) : inspectingItem === 'bronze_prayer_bell' ? (
+                      <Bell className="w-5 h-5 text-[#82a996]" />
                     ) : (
                       <Compass className="w-5 h-5 text-[#82a996]" />
                     )}
@@ -3473,6 +4244,101 @@ export const VisualNovelEngine: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* 12. Corridor Shadow Jump Scare Flash */}
+      <AnimatePresence>
+        {corridorShadowFlash && (
+          <div className="fixed inset-0 z-50 bg-black/95 pointer-events-none flex items-center justify-center overflow-hidden">
+            {/* High-contrast black shadow phantom silhouette sliding across with motion blur */}
+            <motion.div
+              initial={{ x: '-100%', opacity: 0, filter: 'blur(20px)' }}
+              animate={{ x: '100%', opacity: 0.9, filter: 'blur(10px)' }}
+              transition={{ duration: 0.9, ease: 'easeInOut' }}
+              className="absolute inset-y-0 w-3/4 bg-gradient-to-r from-transparent via-black to-transparent pointer-events-none"
+            />
+            {/* Large distressing horror typography */}
+            <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-40">
+              <span className="font-serif tracking-widest text-red-600 font-extrabold text-xl md:text-3xl uppercase drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse">
+                SOMETHING JUST SLIPPED PAST BEHIND ME...
+              </span>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 13. Chapter 1 Victory Screen */}
+      <AnimatePresence>
+        {chapter1VictoryActive && (
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4 select-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="relative w-full max-w-xl bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-md p-6 sm:p-8 text-center text-[#c2d6cc]"
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16241d] border border-[#2b4235] text-[#86af99] text-[11px] font-mono tracking-widest uppercase mb-4">
+                <Sparkles className="w-3.5 h-3.5 text-[#4d6e5e]" />
+                CHAPTER 01 COMPLETED
+              </div>
+
+              <h2
+                className="text-3xl sm:text-4xl font-black text-[#d1e3da] tracking-wider uppercase mb-2"
+                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+              >
+                BLIND START • COMPLETED
+              </h2>
+
+              <p className="text-sm font-mono text-[#8fa89b] max-w-md mx-auto mb-6 leading-relaxed">
+                "— The flames burn cold blue... the bronze bell rings in my mind. The Guardian has awakened. —"
+              </p>
+
+              <div className="p-4 rounded-xl bg-[#151f1a]/80 border border-[#223229] text-left text-xs font-mono text-[#b4c9bf] mb-6 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-stone-400">STATUS:</span>
+                  <span className="text-[#86af99] font-bold">GUARDIAN NAT AWAKENED</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-stone-400">COMPOSURE MAINTAINED:</span>
+                  <span className="text-[#86af99] font-bold">{composure}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-stone-400">ROUTE UNLOCKED:</span>
+                  <span className="text-[#86af99] font-bold">CHAPTER 02 • WHISPERS IN THE COURTYARD</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    navigate('/chapters');
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] text-xs font-mono font-bold tracking-wider uppercase transition-all shadow-lg hover:scale-105 cursor-pointer"
+                >
+                  CHAPTER SELECTION →
+                </button>
+                <button
+                  onClick={() => {
+                    sound.playMenuSelect();
+                    setChapter1VictoryActive(false);
+                    handleRestartChapterOne();
+                  }}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#151e19] hover:bg-[#1b2721] border border-[#283830] text-[#a1b8ac] text-xs font-mono tracking-wider uppercase transition-all cursor-pointer"
+                >
+                  REPLAY CHAPTER 1
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* 14. Chapter Transition Modal (Chapter 1 -> Chapter 2) */}
+      <ChapterTransitionModal
+        isOpen={isChapterTransitionOpen}
+        onContinueToChapterTwo={handleContinueToChapterTwo}
+        onSaveAndExit={handleSaveAndExit}
+      />
     </div>
   );
 };

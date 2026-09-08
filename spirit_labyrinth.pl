@@ -12,7 +12,14 @@
     inspect_target/2,
     unlock_exit_door/0,
     deduct_composure/1,
-    restart_chapter_one/0
+    restart_chapter_one/0,
+    unlock_caretaker_office/1,
+    perform_nat_awakening/0,
+    caretaker_door/1,
+    altar_candle_count/1,
+    altar_bell_placed/1,
+    nat_summoned/1,
+    chapter/1
 ]).
 
 :- dynamic current_location/1.
@@ -22,6 +29,11 @@
 :- dynamic composure/1.
 :- dynamic time_remaining/1.
 :- dynamic subscene_state/2.
+:- dynamic caretaker_door/1.
+:- dynamic altar_candle_count/1.
+:- dynamic altar_bell_placed/1.
+:- dynamic nat_summoned/1.
+:- dynamic chapter/1.
 
 % ==============================================================================
 % 1. WORLD TOPOLOGY (Phase 1, 2, and 3 Navigation Graph)
@@ -42,6 +54,18 @@ location(washroom_basin).
 location(washroom_stall).
 location(washroom_rope).
 location(washroom_mirror).
+
+% East Wing Locations
+location(east_fork).
+location(lockers_main).
+location(locker_32).
+location(locker_09).
+location(locker_14).
+location(locker_spider).
+location(caretaker_door_keypad).
+location(caretaker_office_main).
+location(prayer_room_main).
+location(prayer_altar).
 
 % Bidirectional and Directional Passages
 connected(room_4b_main, room_4b_desk).
@@ -85,6 +109,39 @@ can_traverse(washroom_rope, washroom_main).
 can_traverse(washroom_main, washroom_mirror).
 can_traverse(washroom_mirror, washroom_main).
 
+% East Wing Fork Navigation
+can_traverse(pathway_326_threshold, east_fork).
+can_traverse(east_fork, pathway_326_threshold).
+
+% East Wing Branches
+can_traverse(east_fork, lockers_main).
+can_traverse(lockers_main, east_fork).
+
+can_traverse(lockers_main, locker_32) :- has_item(small_brass_key_32).
+can_traverse(locker_32, lockers_main).
+
+can_traverse(lockers_main, locker_09).
+can_traverse(locker_09, lockers_main).
+
+can_traverse(lockers_main, locker_14).
+can_traverse(locker_14, lockers_main).
+
+can_traverse(lockers_main, locker_spider).
+can_traverse(locker_spider, lockers_main).
+
+can_traverse(east_fork, caretaker_door_keypad).
+can_traverse(caretaker_door_keypad, east_fork).
+
+can_traverse(caretaker_door_keypad, caretaker_office_main) :-
+    caretaker_door(unlocked).
+can_traverse(caretaker_office_main, east_fork).
+
+can_traverse(east_fork, prayer_room_main).
+can_traverse(prayer_room_main, east_fork).
+
+can_traverse(prayer_room_main, prayer_altar).
+can_traverse(prayer_altar, prayer_room_main).
+
 % Fallback traversal for standard connections
 can_traverse(From, To) :-
     connected(From, To).
@@ -97,6 +154,9 @@ item(bobby_pin, room_4b_desk, 'A bent steel hairpin; ideal for pin-tumbler lock 
 item(wooden_bat, room_4b_wardrobe_footing, 'A solid teak timber baseboard; blunt force tool.').
 item(small_brass_key_32, washroom_basin, 'A small brass key stamped with 32, taken from a soaked uniform.').
 item(coiled_nylon_rope, washroom_rope, 'Weathered nylon-jute packing rope looped over the drainage pipe.').
+item(black_beeswax_candle, locker_09, 'A heavy taper molded from dark beeswax.').
+item(matchbox_three_stars, locker_09, 'A damp wooden matchbox with red phosphorus striking strip.').
+item(bronze_prayer_bell, caretaker_office_main, 'A ceremonial temple bell made of cast bronze.').
 
 % ==============================================================================
 % 3. INITIALIZATION & RESTART ROUTINES
@@ -110,11 +170,21 @@ init_game_state :-
     retractall(composure(_)),
     retractall(time_remaining(_)),
     retractall(subscene_state(_, _)),
+    retractall(caretaker_door(_)),
+    retractall(altar_candle_count(_)),
+    retractall(altar_bell_placed(_)),
+    retractall(nat_summoned(_)),
+    retractall(chapter(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
     assertz(door_state(room_4b_door, locked)),
     assertz(door_state(stairwell_exit_gate, locked)),
+    assertz(caretaker_door(locked)),
+    assertz(altar_candle_count(0)),
+    assertz(altar_bell_placed(false)),
+    assertz(nat_summoned(false)),
+    assertz(chapter(1)),
     assertz(composure(100)),
     assertz(time_remaining(600)), % 10:00 Countdown
     assertz(subscene_state(desk_mug_moved, false)),
@@ -207,3 +277,29 @@ unlock_exit_door :-
     assertz(door_state(room_4b_door, unlocked)),
     deduct_composure(10), % Penalty for loud blunt-force entry
     assertz(clue_discovered(forced_lock_with_timber)).
+
+% ==============================================================================
+% 7. PHASE 3: CARETAKER KEYPAD & NAT AWAKENING
+% ==============================================================================
+
+% Password verification rule
+unlock_caretaker_office(InputCode) :-
+    InputCode == '290418',
+    retractall(caretaker_door(_)),
+    assertz(caretaker_door(unlocked)).
+
+% Altar lighting and item consumption rule
+perform_nat_awakening :-
+    has_item(black_beeswax_candle),
+    has_item(matchbox_three_stars),
+    has_item(bronze_prayer_bell),
+    % Purge ritual items from inventory
+    inventory(Inv),
+    delete(Inv, black_beeswax_candle, Inv1),
+    delete(Inv1, matchbox_three_stars, Inv2),
+    delete(Inv2, bronze_prayer_bell, FinalInv),
+    retract(inventory(Inv)),
+    assertz(inventory(FinalInv)),
+    assertz(nat_summoned(true)),
+    retractall(chapter(_)),
+    assertz(chapter(2)).

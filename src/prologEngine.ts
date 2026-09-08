@@ -43,6 +43,19 @@ export function createInitialState(selectedMC: MCId = 'thazin'): GameState {
     washroomStallChecked: false,
     washroomMirrorScratched: false,
     stairwellGateInspected: false,
+    hasBlackCandlesCount: 0,
+    hasMatchesCount: 0,
+    hasBronzeBell: false,
+    hasReadLocker32Note: false,
+    hasReadSandarLetters: false,
+    hasLocker09Candle: false,
+    hasLocker09Matchbox: false,
+    caretakerDoorUnlocked: false,
+    altarCandlesPlaced: 0,
+    altarBellPlaced: false,
+    natSummoned: false,
+    corridorShadowScareTriggered: false,
+    chapter1Completed: false,
   };
 }
 

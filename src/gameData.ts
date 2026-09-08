@@ -30,6 +30,21 @@ export const PHASE_3_ASSETS = {
   washroomStallZoom: '/assets/scenes/washroom_stall_zoom.jpg',
   washroomRopeZoom: '/assets/scenes/washroom_rope_zoom.jpg',
   washroomMirrorZoom: '/assets/scenes/washroom_mirror_zoom.jpg',
+  // East Wing Assets
+  eastWingFork: '/assets/scenes/east_wing_fork.jpg',
+  cardEastLockers: '/assets/ui/card_east_lockers.jpg',
+  cardEastPrayer: '/assets/ui/card_east_prayer.jpg',
+  cardEastCaretaker: '/assets/ui/card_east_caretaker.jpg',
+  lockersOverview: '/assets/scenes/lockers_overview.jpg',
+  locker32Zoom: '/assets/scenes/locker_32_zoom.jpg',
+  locker09Zoom: '/assets/scenes/locker_09_zoom.jpg',
+  locker14Zoom: '/assets/scenes/locker_14_zoom.jpg',
+  lockerSpiderZoom: '/assets/scenes/locker_spider_zoom.jpg',
+  prayerRoomOverview: '/assets/scenes/prayer_room_overview.jpg',
+  prayerAltarZoom: '/assets/scenes/prayer_altar_zoom.jpg',
+  caretakerKeypadZoom: '/assets/scenes/caretaker_keypad_zoom.jpg',
+  caretakerOfficeOverview: '/assets/scenes/caretaker_office_overview.jpg',
+  caretakerSpectralClimax: '/assets/scenes/caretaker_spectral_climax.jpg',
 } as const;
 
 export const ITEMS: Record<string, Item> = {
@@ -66,6 +81,24 @@ export const ITEMS: Record<string, Item> = {
     name: 'Coiled Nylon Rope',
     description: 'A length of sturdy weathered nylon rope taken from the overhead drainage pipe.',
     usageHint: 'Tough enough to bear body weight or secure broken latches.',
+  },
+  black_beeswax_candle: {
+    id: 'black_beeswax_candle',
+    name: 'Black Beeswax Candle',
+    description: 'Thick black beeswax candle used in traditional guardian rites.',
+    usageHint: 'An essential offering element on the Guardian Nat prayer altar.',
+  },
+  matchbox_three_stars: {
+    id: 'matchbox_three_stars',
+    name: 'Matchbox (Three Stars)',
+    description: "A vintage Burmese 'Three-Shooting-Stars' safety matchbox containing 3 matches.",
+    usageHint: 'Used to strike a flame on ritual candles. High dread causes trembling hands.',
+  },
+  bronze_prayer_bell: {
+    id: 'bronze_prayer_bell',
+    name: 'Bronze Prayer Bell',
+    description: 'A ceremonial hand bell cast with traditional spirit runes.',
+    usageHint: 'Rung to summon and awaken the Guardian Nat at the altar.',
   },
 };
 
@@ -327,6 +360,23 @@ export const CLUES: Clue[] = [
     details:
       "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
     pointsTo: 'locker_14_1998',
+  },
+  {
+    id: 'cipher_note_32',
+    locationId: 'hostel_laundry',
+    title: 'Warden Office Overwrite Note',
+    details:
+      "'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2. Note: Caretaker mirrors all sequence inputs for emergency security.'",
+    pointsTo: 'caretaker_door_reverse_code',
+    isCipher: true,
+  },
+  {
+    id: 'sandar_kozaw_letters',
+    locationId: 'lockers_main',
+    title: 'Folded Love Letters (K.Z.)',
+    details:
+      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Reveals the hidden betrayal behind Mama May.",
+    pointsTo: 'sandar_kozaw_betrayal',
   },
 ];
 

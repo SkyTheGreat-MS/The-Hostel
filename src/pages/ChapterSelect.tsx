@@ -8,6 +8,8 @@ import {
   loadChapterOneProgress,
   clearChapterOneProgress,
   hasActiveChapterOneSave,
+  hasActiveChapterTwoSave,
+  restart_chapter_one,
 } from '../gameStore';
 import { ChapterProgressSave } from '../types';
 import {
@@ -57,9 +59,12 @@ export const ChapterSelect: React.FC = () => {
   const [selectedChapter, setSelectedChapter] = useState<number>(1);
   const [lockedNotice, setLockedNotice] = useState<string | null>(null);
   const [ch1Save, setCh1Save] = useState<ChapterProgressSave | null>(null);
+  const [showRestartCh1Confirm, setShowRestartCh1Confirm] = useState<boolean>(false);
+
+  const hasCh2Save = hasActiveChapterTwoSave();
 
   // Strict Chapter Locking Rules
-  const chapter1Completed = highestChapterCompleted >= 1;
+  const chapter1Completed = highestChapterCompleted >= 1 || hasCh2Save;
   const chapter2Completed = highestChapterCompleted >= 2;
 
   const isChapterUnlocked = (num: number): boolean => {
@@ -228,7 +233,7 @@ export const ChapterSelect: React.FC = () => {
           <div className="w-full flex items-center justify-center gap-3 sm:gap-4 md:gap-6 py-6">
             {CHAPTERS.map((chap) => {
               const unlocked = isChapterUnlocked(chap.number);
-              const isCompleted = highestChapterCompleted >= chap.number;
+              const isCompleted = chap.number === 1 ? chapter1Completed : highestChapterCompleted >= chap.number;
               const isSelected = selectedChapter === chap.number;
               const hasCh1ActiveSave =
                 chap.number === 1 &&
@@ -290,7 +295,7 @@ export const ChapterSelect: React.FC = () => {
                       </span>
                     ) : unlocked ? (
                       <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-                        AVAILABLE
+                        {chap.number === 2 ? 'AVAILABLE / ACTIVE' : 'AVAILABLE'}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 bg-[#121715] border border-[#1e2621] text-stone-500 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
@@ -326,6 +331,18 @@ export const ChapterSelect: React.FC = () => {
                         <Lock className="w-5 h-5 mb-1 text-stone-600" />
                         <span>Finish Chapter {chap.number - 1} to unlock</span>
                       </div>
+                    ) : chap.number === 1 && isCompleted ? (
+                      /* Completed Chapter 1: Restart Chapter 1 */
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowRestartCh1Confirm(true);
+                        }}
+                        className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        <span>RESTART CHAPTER 1</span>
+                      </button>
                     ) : chap.number === 1 && hasCh1ActiveSave && ch1Save ? (
                       /* Dynamic Continue / Restart buttons for Chapter 1 */
                       <div className="flex flex-col gap-2 w-full">
@@ -355,7 +372,9 @@ export const ChapterSelect: React.FC = () => {
                       >
                         <Play className="w-4 h-4 fill-current" />
                         <span>
-                          {chap.number === 1 && !isCompleted
+                          {chap.number === 2
+                            ? 'CONTINUE'
+                            : chap.number === 1 && !isCompleted
                             ? 'START INVESTIGATION'
                             : isCompleted
                             ? 'REVISIT'
@@ -398,6 +417,57 @@ export const ChapterSelect: React.FC = () => {
             >
               <Lock className="w-3.5 h-3.5 text-red-400" />
               <span>{lockedNotice}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Replay Chapter 1 Purge Confirmation Modal */}
+        <AnimatePresence>
+          {showRestartCh1Confirm && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 select-none"
+            >
+              <motion.div
+                initial={{ scale: 0.95, y: 10 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 10 }}
+                className="bg-[#121915] border border-[#2e4337] rounded-xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-[#d1e3da] text-center"
+              >
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1b2b22] border border-[#375242] flex items-center justify-center text-amber-400">
+                  <RotateCcw className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold font-mono tracking-wider text-[#d1e3da] mb-2 uppercase">
+                  Restart Chapter 1?
+                </h3>
+                <p className="text-xs text-[#8fa89b] mb-6 leading-relaxed font-mono">
+                  Replaying Chapter 1 will purge your Chapter 2 investigation checkpoint. You will start completely from the 2026 seance. Proceed?
+                </p>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => setShowRestartCh1Confirm(false)}
+                    className="px-4 py-2.5 rounded-lg bg-[#18221c] hover:bg-[#202c25] border border-[#2b3d32] text-[#8fa89b] text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      restart_chapter_one();
+                      clearChapterOneProgress();
+                      resetChapterOneProgress();
+                      setCh1Save(null);
+                      setShowRestartCh1Confirm(false);
+                      sound.playPaperRustle();
+                      navigate('/chapters/1');
+                    }}
+                    className="px-4 py-2.5 rounded-lg bg-[#24382c] hover:bg-[#2f493a] border border-[#446652] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-lg"
+                  >
+                    Proceed
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

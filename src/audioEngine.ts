@@ -453,6 +453,201 @@ class AudioEngine {
       osc.stop(this.ctx.currentTime + 0.15);
     } catch {}
   }
+
+  public playItemPickup() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(587.33, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(880, this.ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(1174.66, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.25);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 0.25);
+      osc2.stop(this.ctx.currentTime + 0.25);
+    } catch {}
+  }
+
+  public playScareSlam() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // 1. Audio hum immediately drops to zero right before impact
+      if (this.ambientGain) {
+        this.ambientGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      }
+      if (this.rainGain) {
+        this.rainGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      }
+
+      // 2. High-impact terrifying slam: low-end sub bass drop (140Hz -> 24Hz)
+      const bassOsc = this.ctx.createOscillator();
+      const bassGain = this.ctx.createGain();
+      bassOsc.type = 'sawtooth';
+      bassOsc.frequency.setValueAtTime(140, this.ctx.currentTime);
+      bassOsc.frequency.exponentialRampToValueAtTime(24, this.ctx.currentTime + 0.9);
+
+      bassGain.gain.setValueAtTime(0.45, this.ctx.currentTime);
+      bassGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.9);
+
+      bassOsc.connect(bassGain);
+      bassGain.connect(this.ctx.destination);
+      bassOsc.start();
+      bassOsc.stop(this.ctx.currentTime + 0.9);
+
+      // 3. Piercing spectral screech / distorted harmonic spikes
+      const screechOsc1 = this.ctx.createOscillator();
+      const screechOsc2 = this.ctx.createOscillator();
+      const screechGain = this.ctx.createGain();
+
+      screechOsc1.type = 'sawtooth';
+      screechOsc1.frequency.setValueAtTime(880, this.ctx.currentTime);
+      screechOsc1.frequency.linearRampToValueAtTime(1760, this.ctx.currentTime + 0.15);
+      screechOsc1.frequency.exponentialRampToValueAtTime(220, this.ctx.currentTime + 0.8);
+
+      screechOsc2.type = 'square';
+      screechOsc2.frequency.setValueAtTime(895, this.ctx.currentTime);
+      screechOsc2.frequency.linearRampToValueAtTime(1820, this.ctx.currentTime + 0.15);
+      screechOsc2.frequency.exponentialRampToValueAtTime(210, this.ctx.currentTime + 0.8);
+
+      screechGain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+      screechGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.85);
+
+      screechOsc1.connect(screechGain);
+      screechOsc2.connect(screechGain);
+      screechGain.connect(this.ctx.destination);
+      screechOsc1.start();
+      screechOsc2.start();
+      screechOsc1.stop(this.ctx.currentTime + 0.85);
+      screechOsc2.stop(this.ctx.currentTime + 0.85);
+
+      // 4. White noise blast for violent visceral impact
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.45);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.45);
+      noise.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start();
+    } catch {}
+  }
+
+  public playLockJiggle() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Rapid metallic padlock jiggle: two quick metallic clicks
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+      osc.frequency.setValueAtTime(1200, this.ctx.currentTime + 0.05);
+      osc.frequency.setValueAtTime(600, this.ctx.currentTime + 0.1);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.18);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.18);
+    } catch {}
+  }
+
+  public playKeyUnlock() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Satisfying brass lock mechanism click & spring retract
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(1400, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(350, this.ctx.currentTime + 0.08);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(320, this.ctx.currentTime + 0.04);
+      osc2.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.22);
+
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start(this.ctx.currentTime + 0.04);
+      osc1.stop(this.ctx.currentTime + 0.1);
+      osc2.stop(this.ctx.currentTime + 0.25);
+    } catch {}
+  }
+
+  public playCreepInsect() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // High-pitch skittering / crawling insect scurry
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.35);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        const pulse = Math.sin(i * 0.08) > 0.4 ? 1 : 0;
+        data[i] = (Math.random() * 2 - 1) * pulse * (1 - i / bufferSize);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(3200, this.ctx.currentTime);
+      filter.Q.setValueAtTime(4.0, this.ctx.currentTime);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      noise.start();
+    } catch {}
+  }
 }
 
 export const sound = new AudioEngine();

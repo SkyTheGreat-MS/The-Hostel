@@ -91,7 +91,17 @@ export type Phase3Location =
   | 'washroom_stall'
   | 'washroom_rope'
   | 'washroom_mirror'
-  | 'east_corridor';
+  | 'east_corridor'
+  | 'east_fork'
+  | 'lockers_main'
+  | 'locker_32'
+  | 'locker_09'
+  | 'locker_14'
+  | 'locker_spider'
+  | 'prayer_room_main'
+  | 'prayer_altar'
+  | 'caretaker_door_keypad'
+  | 'caretaker_office_main';
 
 export interface GameState {
   chapter: number;
@@ -129,6 +139,19 @@ export interface GameState {
   washroomStallChecked: boolean;
   washroomMirrorScratched: boolean;
   stairwellGateInspected: boolean;
+  hasBlackCandlesCount: number; // 0 to 3
+  hasMatchesCount: number;      // starts at 3 once matchbox picked
+  hasBronzeBell: boolean;
+  hasReadLocker32Note: boolean;
+  hasReadSandarLetters: boolean;
+  hasLocker09Candle: boolean;
+  hasLocker09Matchbox: boolean;
+  caretakerDoorUnlocked: boolean;
+  altarCandlesPlaced: number;   // 0 to 3
+  altarBellPlaced: boolean;
+  natSummoned: boolean;
+  corridorShadowScareTriggered: boolean;
+  chapter1Completed: boolean;
 }
 
 export interface PLUnitTest {
@@ -137,8 +160,23 @@ export interface PLUnitTest {
   run: () => { passed: boolean; message: string; details?: string[] };
 }
 
+export interface ActiveSaveState {
+  chapter: number;
+  currentPhase: number;
+  phase3Location: Phase3Location;
+  chapter1Completed: boolean;
+  selectedCharacterId: string;
+  inventory: string[];
+  hasMatchesCount: number;
+  hasBlackCandlesCount?: number;
+  hasBronzeBell?: boolean;
+  caretakerDoorUnlocked: boolean;
+  composure: number;
+  timestamp: number;
+}
+
 export interface ChapterProgressSave {
-  chapter: 1;
+  chapter: number;
   currentPhase: 1 | 2 | 3;
   phase3Location?: Phase3Location;
   selectedCharacterId: string | null;
@@ -154,4 +192,17 @@ export interface ChapterProgressSave {
   composure: number;
   timerSeconds: number;
   timestamp: number;
+  hasBlackCandlesCount?: number;
+  hasMatchesCount?: number;
+  hasBronzeBell?: boolean;
+  hasReadLocker32Note?: boolean;
+  hasReadSandarLetters?: boolean;
+  hasLocker09Candle?: boolean;
+  hasLocker09Matchbox?: boolean;
+  caretakerDoorUnlocked?: boolean;
+  altarCandlesPlaced?: number;
+  altarBellPlaced?: boolean;
+  natSummoned?: boolean;
+  corridorShadowScareTriggered?: boolean;
+  chapter1Completed?: boolean;
 }

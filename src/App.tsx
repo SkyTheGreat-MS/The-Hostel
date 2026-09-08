@@ -4,6 +4,7 @@ import { GameProgressProvider } from './context/GameProgressContext';
 import { MainMenu } from './components/MainMenu';
 import { ChapterSelect } from './pages/ChapterSelect';
 import { ChapterOne } from './pages/ChapterOne';
+import { ChapterTwo } from './pages/ChapterTwo';
 import { ChapterStub } from './pages/ChapterStub';
 
 // Optional Diagnostic Modal components (retained for verification & dev testing)
@@ -47,6 +48,7 @@ const MainMenuRoute: React.FC = () => {
         footerPrompt="Press Enter to Continue"
         showRain={true}
         onPlay={() => navigate('/chapters')}
+        onContinueChapterTwo={() => navigate('/chapters/2')}
       />
 
       {/* Developer Diagnostic Modal */}
@@ -135,25 +137,8 @@ export default function App() {
           {/* Chapter 1 Gameplay (Playable) */}
           <Route path="/chapters/1" element={<ChapterOne />} />
 
-          {/* Chapter 2 Stub (Guarded) */}
-          <Route
-            path="/chapters/2"
-            element={
-              <ChapterStub
-                chapterNumber={2}
-                title="Chapter 2"
-                subtitle="Chapter 2 — Understanding"
-                tagline="CORRESPONDENCE OF THE CARETAKER & CAESAR CIPHERS"
-                scopeSummary="Deepen the communion with the hostel spirits. Cross-reference the dormitory ledger with the Caretaker's sealed records to decipher the true conspiracy."
-                plannedFeatures={[
-                  'Cross-referencing the hostel ledger with the Caretaker old office files',
-                  'Interactive multi-layer Caesar cipher decoding puzzles with shift keys',
-                  'Advanced Guardian Nat paired logic puzzles with nested contradictions',
-                  'Uncovering the 5,000 Kyats payoff trail to seal the dried courtyard well',
-                ]}
-              />
-            }
-          />
+          {/* Chapter 2 Gameplay (Playable via Active Save) */}
+          <Route path="/chapters/2" element={<ChapterTwo />} />
 
           {/* Chapter 3 Stub (Guarded) */}
           <Route

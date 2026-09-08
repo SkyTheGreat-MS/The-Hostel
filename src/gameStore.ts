@@ -1,5 +1,5 @@
 // State Reducer & Store for Chapter 1 Flow & Reset Routine
-import { MCId, Phase3Location, Room4BSubScene, ChapterProgressSave } from './types';
+import { MCId, Phase3Location, Room4BSubScene, ChapterProgressSave, ActiveSaveState } from './types';
 
 export interface ChapterOneState {
   // 1. Reset Core Flow & Phase
@@ -28,6 +28,19 @@ export interface ChapterOneState {
   washroomStallChecked: boolean;
   washroomMirrorScratched: boolean;
   stairwellGateInspected: boolean;
+  hasBlackCandlesCount: number;
+  hasMatchesCount: number;
+  hasBronzeBell: boolean;
+  hasReadLocker32Note: boolean;
+  hasReadSandarLetters: boolean;
+  hasLocker09Candle: boolean;
+  hasLocker09Matchbox: boolean;
+  caretakerDoorUnlocked: boolean;
+  altarCandlesPlaced: number;
+  altarBellPlaced: boolean;
+  natSummoned: boolean;
+  corridorShadowScareTriggered: boolean;
+  chapter1Completed: boolean;
 }
 
 export const initialChapterOneState: ChapterOneState = {
@@ -52,6 +65,19 @@ export const initialChapterOneState: ChapterOneState = {
   washroomStallChecked: false,
   washroomMirrorScratched: false,
   stairwellGateInspected: false,
+  hasBlackCandlesCount: 0,
+  hasMatchesCount: 0,
+  hasBronzeBell: false,
+  hasReadLocker32Note: false,
+  hasReadSandarLetters: false,
+  hasLocker09Candle: false,
+  hasLocker09Matchbox: false,
+  caretakerDoorUnlocked: false,
+  altarCandlesPlaced: 0,
+  altarBellPlaced: false,
+  natSummoned: false,
+  corridorShadowScareTriggered: false,
+  chapter1Completed: false,
 };
 
 export type GameStoreAction =
@@ -78,7 +104,11 @@ export type GameStoreAction =
   | { type: 'SET_DOOR_UNLOCKED'; payload: boolean }
   | { type: 'SET_WASHROOM_STALL_CHECKED'; payload: boolean }
   | { type: 'SET_WASHROOM_MIRROR_SCRATCHED'; payload: boolean }
-  | { type: 'SET_STAIRWELL_GATE_INSPECTED'; payload: boolean };
+  | { type: 'SET_STAIRWELL_GATE_INSPECTED'; payload: boolean }
+  | { type: 'SET_HAS_READ_LOCKER_32_NOTE'; payload: boolean }
+  | { type: 'SET_HAS_READ_SANDAR_LETTERS'; payload: boolean }
+  | { type: 'SET_HAS_LOCKER_09_CANDLE'; payload: boolean }
+  | { type: 'SET_HAS_LOCKER_09_MATCHBOX'; payload: boolean };
 
 export function chapterOneReducer(
   state: ChapterOneState = initialChapterOneState,
@@ -208,6 +238,18 @@ export function chapterOneReducer(
     case 'SET_STAIRWELL_GATE_INSPECTED':
       return { ...state, stairwellGateInspected: action.payload };
 
+    case 'SET_HAS_READ_LOCKER_32_NOTE':
+      return { ...state, hasReadLocker32Note: action.payload };
+
+    case 'SET_HAS_READ_SANDAR_LETTERS':
+      return { ...state, hasReadSandarLetters: action.payload };
+
+    case 'SET_HAS_LOCKER_09_CANDLE':
+      return { ...state, hasLocker09Candle: action.payload };
+
+    case 'SET_HAS_LOCKER_09_MATCHBOX':
+      return { ...state, hasLocker09Matchbox: action.payload };
+
     default:
       return state;
   }
@@ -257,6 +299,69 @@ export function hasActiveChapterOneSave(): boolean {
     Boolean(save.doorUnlocked) ||
     Boolean(save.deskMugMoved)
   );
+}
+
+export const ACTIVE_SAVE_KEY = 'spirits_labyrinth_active_save';
+
+export function lockChapterOneAndSave(
+  selectedCharacterId: string = 'thazin',
+  currentComposure: number = 100
+): ActiveSaveState {
+  const chapterTwoSaveState: ActiveSaveState = {
+    chapter: 2,
+    currentPhase: 1, // Chapter 2, Phase 1 (The Prayer Room Rite)
+    phase3Location: 'east_fork',
+    chapter1Completed: true,
+    selectedCharacterId,
+    inventory: [
+      'bobby_pin',
+      'wooden_bat',
+      'small_brass_key_32',
+      'coiled_nylon_rope',
+      'black_beeswax_candle', // x3 acquired
+      'matchbox_three_stars',
+      'bronze_prayer_bell',
+    ],
+    hasMatchesCount: 3,
+    hasBlackCandlesCount: 3,
+    hasBronzeBell: true,
+    caretakerDoorUnlocked: true,
+    composure: currentComposure,
+    timestamp: Date.now(),
+  };
+
+  try {
+    localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(chapterTwoSaveState));
+  } catch {}
+
+  return chapterTwoSaveState;
+}
+
+export function restart_chapter_one(): void {
+  try {
+    localStorage.removeItem(ACTIVE_SAVE_KEY);
+    localStorage.removeItem(CHAPTER_1_SAVE_KEY);
+  } catch {}
+}
+
+export const restartChapterOne = restart_chapter_one;
+
+export function loadActiveGameProgress(): ActiveSaveState | null {
+  try {
+    const data = localStorage.getItem(ACTIVE_SAVE_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (parsed && typeof parsed.chapter === 'number') {
+        return parsed as ActiveSaveState;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+export function hasActiveChapterTwoSave(): boolean {
+  const save = loadActiveGameProgress();
+  return Boolean(save && (save.chapter === 2 || save.chapter1Completed));
 }
 
 export default chapterOneReducer;
