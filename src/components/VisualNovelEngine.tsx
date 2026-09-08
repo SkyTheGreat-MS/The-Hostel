@@ -820,52 +820,76 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const timerSeconds = timeLeft;
   const setTimerSeconds = setTimeLeft;
 
-  // Reference for timer tracking
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // Screen tracking for gameplay vs menu/modals
+  const [currentScreen, setCurrentScreen] = useState<string>(
+    mode === 'character_select' || mode === 'shattering' ? 'prologue' : 'gameplay'
+  );
 
-  // 10-Minute Countdown Clock (Runs continuously through Awakening, Room Escape, & Corridors)
   useEffect(() => {
-    if (mode === 'shattering' || mode === 'character_select' || isChapterFinished || isGameOver) {
-      if (timerRef.current) clearInterval(timerRef.current);
-      return;
+    if (isGameOver) {
+      setCurrentScreen('game_over');
+    } else if (isChapterFinished) {
+      setCurrentScreen('victory');
+    } else if (mode === 'character_select' || mode === 'shattering') {
+      setCurrentScreen('prologue');
+    } else {
+      setCurrentScreen('gameplay');
     }
+  }, [isGameOver, isChapterFinished, mode]);
 
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
+  // ONLY true pause freezes the world clock and mental attrition:
+  const isSystemPaused = isPaused || currentScreen !== 'gameplay';
+
+  // Diegetic actions that MUST keep the clock running in real time:
+  // - isInventoryOpen
+  // - isCaseNotesOpen
+  // - phase3Location === 'caretaker_door_keypad'
+  // - dialogueState.active / activeMonologue
+
+  const handleTimeoutGameOver = () => {
+    setIsGameOver(true);
+    setCurrentScreen('game_over');
+    sound.stopAllAmbience();
+    sound.playDamage();
+  };
+
+  // 10-Minute Countdown Clock Hook
+  // Ensure the timer only suspends when isSystemPaused is true:
+  useEffect(() => {
+    if (isSystemPaused || timerSeconds <= 0) return;
+
+    const timerInterval = setInterval(() => {
+      setTimerSeconds((prev) => {
         if (prev <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          setIsGameOver(true);
-          sound.stopAllAmbience();
-          sound.playDamage();
+          clearInterval(timerInterval);
+          handleTimeoutGameOver();
           return 0;
         }
-
-        // Natural slow decay of composure over time
-        if (prev % 15 === 0) {
-          setComposure((c) => {
-            const next = Math.max(0, c - 1);
-            if (next <= 0) {
-              setIsGameOver(true);
-              sound.stopAllAmbience();
-              sound.playDamage();
-            }
-            return next;
-          });
-        }
-
         return prev - 1;
       });
     }, 1000);
 
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [mode, isChapterFinished, isGameOver]);
+    return () => clearInterval(timerInterval);
+  }, [isSystemPaused, timerSeconds]);
+
+  // Ambient Composure Attrition Hook
+  // Ensure mental drain continues ticking even while the player is reading notes, checking clues, or inspecting items:
+  useEffect(() => {
+    if (isSystemPaused || composure <= 5) return;
+
+    // Passive ambient decay (e.g., 1% every 15s in haunted corridors)
+    const composureInterval = setInterval(() => {
+      setComposure((prev) => Math.max(5, prev - 1));
+    }, 15000);
+
+    return () => clearInterval(composureInterval);
+  }, [isSystemPaused, composure]);
 
   // Monitor composure zero game over condition
   useEffect(() => {
     if (composure <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
       setIsGameOver(true);
+      setCurrentScreen('game_over');
       sound.stopAllAmbience();
       sound.playDamage();
     }

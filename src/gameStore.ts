@@ -1,6 +1,11 @@
 // State Reducer & Store for Chapter 1 Flow & Reset Routine
 import { MCId, Phase3Location, Room4BSubScene, ChapterProgressSave, ActiveSaveState } from './types';
 
+// Helper to evaluate system pausing status: ONLY true pause freezes world clock and mental attrition
+export const getIsSystemPaused = (isPaused: boolean, currentScreen: string = 'gameplay'): boolean => {
+  return isPaused || currentScreen !== 'gameplay';
+};
+
 export interface ChapterOneState {
   // 1. Reset Core Flow & Phase
   phase: number;
@@ -10,6 +15,8 @@ export interface ChapterOneState {
   isPaused: boolean;
   activeMonologue: string | null;
   activeItemModal: string | null;
+  currentScreen?: string;
+  isSystemPaused?: boolean;
 
   // 2. Reset Player Vitals & Timers
   timerSeconds: number;
@@ -51,6 +58,8 @@ export const initialChapterOneState: ChapterOneState = {
   isPaused: false,
   activeMonologue: null,
   activeItemModal: null,
+  currentScreen: 'gameplay',
+  isSystemPaused: false,
   timerSeconds: 600,
   composure: 100,
   inventory: [],

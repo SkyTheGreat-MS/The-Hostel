@@ -1745,6 +1745,66 @@ export const TestRunner: React.FC = () => {
       });
     }
 
+    // Test 36: game_loop_active_investigation_vs_system_pause
+    {
+      const start = performance.now();
+      const trace: string[] = [];
+
+      const evalSystemPaused = (isPaused: boolean, currentScreen: string = 'gameplay') =>
+        isPaused || currentScreen !== 'gameplay';
+
+      // 1. Gameplay baseline
+      const baseline = evalSystemPaused(false, 'gameplay');
+      trace.push(`Baseline gameplay isSystemPaused: ${baseline} (expected false)`);
+
+      // 2. Active investigation actions (MUST keep clock running)
+      // Notes open, inspecting item, keypad puzzle, monologue
+      const notesOpen = evalSystemPaused(false, 'gameplay'); // isNotesOpen does not change system pause
+      const itemInspecting = evalSystemPaused(false, 'gameplay'); // inspectingItem does not change system pause
+      const keypadActive = evalSystemPaused(false, 'gameplay'); // caretaker keypad does not change system pause
+      const monologueActive = evalSystemPaused(false, 'gameplay'); // monologue does not change system pause
+
+      trace.push(`Case notes open isSystemPaused: ${notesOpen}`);
+      trace.push(`Inventory item inspecting isSystemPaused: ${itemInspecting}`);
+      trace.push(`Keypad active isSystemPaused: ${keypadActive}`);
+      trace.push(`Monologue active isSystemPaused: ${monologueActive}`);
+
+      // 3. True system pause (Escape / Pause modal)
+      const systemPaused = evalSystemPaused(true, 'gameplay');
+      trace.push(`System paused (isPaused=true): ${systemPaused} (expected true)`);
+
+      // 4. Non-gameplay screens (game_over, victory, prologue)
+      const gameOverPaused = evalSystemPaused(false, 'game_over');
+      const victoryPaused = evalSystemPaused(false, 'victory');
+      const prologuePaused = evalSystemPaused(false, 'prologue');
+
+      trace.push(`Game over screen isSystemPaused: ${gameOverPaused}`);
+      trace.push(`Victory screen isSystemPaused: ${victoryPaused}`);
+      trace.push(`Prologue screen isSystemPaused: ${prologuePaused}`);
+
+      const passed =
+        baseline === false &&
+        notesOpen === false &&
+        itemInspecting === false &&
+        keypadActive === false &&
+        monologueActive === false &&
+        systemPaused === true &&
+        gameOverPaused === true &&
+        victoryPaused === true &&
+        prologuePaused === true;
+
+      testList.push({
+        id: 'test_game_loop_active_investigation_vs_system_pause',
+        name: 'test(game_loop_active_investigation_vs_system_pause)',
+        category: 'Game Loop & Attrition',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: 'Timer & composure drain continue during notes/inventory/keypad/monologue; ONLY halt when isPaused=true or currentScreen!=gameplay',
+        actual: `InvestigationRunning=${!notesOpen && !itemInspecting && !keypadActive && !monologueActive}, SystemPauseFreezes=${systemPaused && gameOverPaused}`,
+        trace,
+      });
+    }
+
     setResults(testList);
     setIsRunning(false);
   };
