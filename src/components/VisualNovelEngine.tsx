@@ -1773,6 +1773,47 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     navigate('/chapters');
   };
 
+  // Caretaker Office Climax Handler
+  const triggerSpectralBlackout = () => {
+    setSpectralClimaxActive(true);
+    setIsScreenShaking(true);
+    sound.playScareSlam();
+    sound.playGlassBreak();
+    sound.playGhostWhisper();
+    sound.playDramaticSting();
+    setActiveMonologue(
+      "— \"You do not know who holds the cord... Ask the Guardian before you burn...\" The shadows violently erupt from the desk ledger! —"
+    );
+  };
+
+  const setCaretakerDoorLocked = (locked: boolean) => {
+    setCaretakerDoorUnlocked(!locked);
+  };
+
+  const setShowChapterTransitionModal = (show: boolean) => {
+    setIsChapterTransitionOpen(show);
+  };
+
+  const handleCaretakerClimax = () => {
+    // 1. Screen blackout + screech + ghost jump-scare
+    triggerSpectralBlackout();
+
+    setTimeout(() => {
+      setIsScreenShaking(false);
+      setSpectralClimaxActive(false);
+
+      // 2. Force expulsion to East Wing fork
+      setPhase3Location('east_fork');
+      setCaretakerDoorLocked(true);
+
+      // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY
+      setChapter1Completed(true);
+      completeChapter(1);
+      lockChapterOneAndSave(selectedCharacter.id, composure);
+      setShowChapterTransitionModal(true);
+    }, 1800);
+  };
+
   const toggleMute = () => {
     const nextMuted = sound.toggleMute();
     setIsMuted(nextMuted);
@@ -3652,33 +3693,17 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   height={38}
                   shape="rect"
                   cursorTooltip={
-                    hasBlackCandlesCount >= 3 && hasBronzeBell
+                    natSummoned || (hasBlackCandlesCount >= 3 && hasBronzeBell)
                       ? "[Examine Open Ledger on Desk]"
                       : "[Examine Caretaker Desk]"
                   }
                   onClick={() => {
-                    if (hasBlackCandlesCount >= 3 && hasBronzeBell) {
-                      setSpectralClimaxActive(true);
-                      setIsScreenShaking(true);
-                      sound.playGlassBreak();
-                      sound.playGhostWhisper();
-                      sound.playDramaticSting();
-                      setCaretakerDoorUnlocked(false);
-                      setActiveMonologue(
-                        "— \"You do not know who holds the cord... Ask the Guardian before you burn...\" —"
-                      );
-                      setTimeout(() => {
-                        setIsScreenShaking(false);
-                        setSpectralClimaxActive(false);
-                        completeChapter(1);
-                        setChapter1Completed(true);
-                        lockChapterOneAndSave(selectedCharacter.id, composure);
-                        setIsChapterTransitionOpen(true);
-                      }, 2000);
+                    if (natSummoned || (hasBlackCandlesCount >= 3 && hasBronzeBell)) {
+                      handleCaretakerClimax();
                     } else {
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— The Caretaker's ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies first. —"
+                        "— The Caretaker's ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies and awaken the Guardian Nat first. —"
                       );
                     }
                   }}
@@ -3723,9 +3748,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 selectedCharacterId={selectedCharacter.id}
                 setActiveMonologue={setActiveMonologue}
                 setPhase3Location={setPhase3Location}
-                setChapter1Completed={setChapter1Completed}
-                completeChapter={completeChapter}
-                setIsChapterTransitionOpen={setIsChapterTransitionOpen}
                 altarCandlesPlaced={altarCandlesPlaced}
                 setAltarCandlesPlaced={setAltarCandlesPlaced}
                 altarBellPlaced={altarBellPlaced}

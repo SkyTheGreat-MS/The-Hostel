@@ -780,6 +780,53 @@ class AudioEngine {
       });
     } catch {}
   }
+
+  public playSpiritManifestHiss() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Soft airy spirit chime / ethereal hiss
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.9);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(3600, this.ctx.currentTime + 0.4);
+      filter.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.9);
+      filter.Q.setValueAtTime(3.5, this.ctx.currentTime);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.9);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      noise.start();
+
+      // High spiritual bell overtone (E6 / 1318.5Hz)
+      const osc = this.ctx.createOscillator();
+      const oscGain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1318.5, this.ctx.currentTime);
+      oscGain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1.2);
+
+      osc.connect(oscGain);
+      oscGain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 1.2);
+    } catch {}
+  }
 }
 
 export const sound = new AudioEngine();
