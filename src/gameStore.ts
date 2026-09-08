@@ -382,6 +382,11 @@ export function restart_chapter_one(): void {
 
 export const restartChapterOne = restart_chapter_one;
 
+export function resetChapterState(): ChapterOneState {
+  restart_chapter_one();
+  return resetChapterOne();
+}
+
 export function loadActiveGameProgress(): ActiveSaveState | null {
   try {
     const data = localStorage.getItem(ACTIVE_SAVE_KEY);

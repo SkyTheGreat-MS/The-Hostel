@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Lock, Play, RotateCcw, CheckCircle2 } from 'lucide-react';
 import { ChapterSelect } from '../pages/ChapterSelect';
 export { ChapterPreviewModal } from './ChapterPreviewModal';
@@ -159,6 +159,62 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
         )}
       </div>
     </motion.div>
+  );
+};
+
+export interface RestartConfirmationModalProps {
+  isOpen: boolean;
+  onCancel: () => void;
+  onProceed: () => void;
+}
+
+export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> = ({
+  isOpen,
+  onCancel,
+  onProceed,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 select-none"
+      >
+        <motion.div
+          initial={{ scale: 0.95, y: 10 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.95, y: 10 }}
+          className="bg-[#121915] border border-[#2e4337] rounded-xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-[#d1e3da] text-center"
+        >
+          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1b2b22] border border-[#375242] flex items-center justify-center text-amber-400">
+            <RotateCcw className="w-6 h-6" />
+          </div>
+          <h3 className="text-xl font-bold font-mono tracking-wider text-[#d1e3da] mb-2 uppercase">
+            Restart Chapter 1?
+          </h3>
+          <p className="text-xs text-[#8fa89b] mb-6 leading-relaxed font-mono">
+            Replaying Chapter 1 will purge your Chapter 2 investigation checkpoint. You will start completely from the 2026 seance. Proceed?
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={onCancel}
+              className="px-4 py-2.5 rounded-lg bg-[#18221c] hover:bg-[#202c25] border border-[#2b3d32] text-[#8fa89b] text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onProceed}
+              className="px-4 py-2.5 rounded-lg bg-[#24382c] hover:bg-[#2f493a] border border-[#446652] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-lg"
+            >
+              Proceed
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

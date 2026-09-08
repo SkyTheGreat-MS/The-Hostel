@@ -48,8 +48,6 @@ const MainMenuRoute: React.FC = () => {
         footerPrompt="Press Enter to Continue"
         showRain={true}
         onPlay={() => navigate('/chapters')}
-        onContinueChapterOne={() => navigate('/chapters/1')}
-        onContinueChapterTwo={() => navigate('/chapters/2')}
       />
 
       {/* Developer Diagnostic Modal */}

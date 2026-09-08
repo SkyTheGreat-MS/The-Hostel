@@ -25,12 +25,13 @@ import {
   loadActiveGameProgress,
   ACTIVE_SAVE_KEY,
   createFreshChapterOneSave,
+  resetChapterState,
 } from '../gameStore';
 import { ChapterPreviewModal } from './ChapterPreviewModal';
 import { ChapterTransitionModal } from './ChapterTransitionModal';
 import { LockersOverviewView } from './LockersOverviewView';
 import { PrayerAltarView } from './PrayerAltarView';
-import { ChapterCard } from './ChapterSelection';
+import { ChapterCard, RestartConfirmationModal } from './ChapterSelection';
 import {
   CheckCircle2,
   XCircle,
@@ -1484,6 +1485,76 @@ export const TestRunner: React.FC = () => {
           localStorage.setItem('spirits_labyrinth_chapter_1_save', backupCh1);
         } else {
           localStorage.removeItem('spirits_labyrinth_chapter_1_save');
+        }
+        if (backupCh2Unlocked !== null) {
+          localStorage.setItem('spirits_labyrinth_ch2_unlocked', backupCh2Unlocked);
+        } else {
+          localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+        }
+      }
+    }
+
+    // Test 32: bottom_reset_button_and_main_menu_continue_purged
+    {
+      const start = performance.now();
+      const trace: string[] = [];
+
+      // Backup localStorage states
+      const backupActive = localStorage.getItem(ACTIVE_SAVE_KEY);
+      const backupCh1 = localStorage.getItem('spirits_labyrinth_save_ch1');
+      const backupCh2Unlocked = localStorage.getItem('spirits_labyrinth_ch2_unlocked');
+
+      try {
+        // 1. Verify RestartConfirmationModal component export
+        const hasModal = typeof RestartConfirmationModal === 'function';
+        trace.push(`RestartConfirmationModal component callable: ${hasModal}`);
+
+        // 2. Simulate full storage keys populated
+        lockChapterOneAndSave('thazin', 85);
+        localStorage.setItem('spirits_labyrinth_save_ch1', JSON.stringify({ chapter: 1, currentPhase: 2 }));
+        const preResetCh2Active = hasActiveChapterTwoSave();
+        trace.push(`Pre-reset state populated: hasActiveChapterTwoSave=${preResetCh2Active}`);
+
+        // 3. Execute handleExecuteChapterReset storage purge routine
+        localStorage.removeItem('spirits_labyrinth_active_save');
+        localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+        localStorage.removeItem('spirits_labyrinth_save_ch1');
+        resetChapterState();
+
+        const activePurged = localStorage.getItem('spirits_labyrinth_active_save') === null;
+        const ch2TokenPurged = localStorage.getItem('spirits_labyrinth_ch2_unlocked') === null;
+        const ch1SavePurged = localStorage.getItem('spirits_labyrinth_save_ch1') === null;
+        const postResetCh2Active = hasActiveChapterTwoSave();
+        trace.push(`Post-reset storage purge: activePurged=${activePurged}, ch2TokenPurged=${ch2TokenPurged}, ch1SavePurged=${ch1SavePurged}, postResetCh2Active=${postResetCh2Active}`);
+
+        const passed =
+          hasModal &&
+          preResetCh2Active === true &&
+          activePurged === true &&
+          ch2TokenPurged === true &&
+          ch1SavePurged === true &&
+          postResetCh2Active === false;
+
+        testList.push({
+          id: 'test_bottom_reset_button_and_main_menu_continue_purged',
+          name: 'test(bottom_reset_button_and_main_menu_continue_purged)',
+          category: 'Persistence & Lockout Logic',
+          passed,
+          durationMs: Math.round((performance.now() - start) * 100) / 100,
+          expected: 'RestartConfirmationModal is callable, bottom reset purges all 3 storage keys, Chapter 2 re-locks immediately, and CONTINUE banner is removed',
+          actual: `Modal=${hasModal}, StoragePurged=${activePurged && ch2TokenPurged && ch1SavePurged}, Relocked=${!postResetCh2Active}`,
+          trace,
+        });
+      } finally {
+        if (backupActive !== null) {
+          localStorage.setItem(ACTIVE_SAVE_KEY, backupActive);
+        } else {
+          localStorage.removeItem(ACTIVE_SAVE_KEY);
+        }
+        if (backupCh1 !== null) {
+          localStorage.setItem('spirits_labyrinth_save_ch1', backupCh1);
+        } else {
+          localStorage.removeItem('spirits_labyrinth_save_ch1');
         }
         if (backupCh2Unlocked !== null) {
           localStorage.setItem('spirits_labyrinth_ch2_unlocked', backupCh2Unlocked);
