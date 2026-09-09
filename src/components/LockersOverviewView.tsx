@@ -47,12 +47,12 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 1. Locker 14 (Top-Left Tier, marked '14') */}
         <polygon
           id="hotspot-locker-14"
-          points="13.5,9.5 24.2,15.2 24.0,59.0 13.5,62.0"
+          points="14,0 21.5,0 21.5,47 14,47"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 14 (Mama May)',
+              text: 'Inspect Locker 14',
               x: 18.8,
               y: 9.5,
             });
@@ -69,12 +69,12 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 2. Locker 32 (Bottom-Left Tier, marked '32') */}
         <polygon
           id="hotspot-locker-32"
-          points="13.5,62.5 24.0,59.5 24.2,87.0 13.5,99.0"
+          points="13.5,57 19.5,59.5 19.5,95 13.5,110"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 32 (Sandar)',
+              text: 'Inspect Locker 32',
               x: 18.8,
               y: 59.5,
             });
@@ -96,12 +96,12 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 3. Locker 09 (Top-Right Tier, marked '09') */}
         <polygon
           id="hotspot-locker-09"
-          points="86.8,11.5 95.5,5.5 95.8,59.5 86.8,61.8"
+          points="86.8,0 95.5,0 95.8,55 86.8,54"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 09 (Supplies)',
+              text: 'Inspect Locker 09',
               x: 88.0,
               y: 8.0,
               align: 'right',
@@ -119,7 +119,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
         <polygon
           id="hotspot-locker-spider"
-          points="31.2,20.0 34.2,22.0 34.2,56.5 31.2,58.0"
+          points="31.2,13 34.2,15 34.2,47 31.2,49"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-red-950/20 stroke-transparent hover:stroke-red-500/40 stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();

@@ -2907,11 +2907,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   : phase3Location === 'lockers_main'
                   ? 'Student Locker Bay'
                   : phase3Location === 'locker_32'
-                  ? "Locker 32 (Sandar's)"
+                  ? "Locker 32 "
                   : phase3Location === 'locker_09'
-                  ? 'Locker 09 (Supplies)'
+                  ? 'Locker 09 '
                   : phase3Location === 'locker_14'
-                  ? "Locker 14 (Mama May's)"
+                  ? "Locker 14 "
                   : phase3Location === 'locker_spider'
                   ? 'Rusted Locker Vent'
                   : phase3Location === 'caretaker_door_keypad'
@@ -3364,7 +3364,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <InteractiveHotspot
                   id="locker-32-pink-slip"
                   name="Pink Hostel Overwrite Slip"
-                  polygonPoints="60,10 77,12 76,48 59,42"
+                  polygonPoints="62,12 75,12 74,48 60,42"
                   cursorTooltip="Examine Pinned Slip"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3380,7 +3380,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <InteractiveHotspot
                   id="locker-32-letters"
                   name="Folded Love Letters"
-                  polygonPoints="60,50 83,52 84,77 60,75"
+                  polygonPoints="63,53 75,46 84,60 68,75"
                   cursorTooltip="Read Folded Letters"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3396,7 +3396,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <InteractiveHotspot
                   id="locker-32-books"
                   name="Old Engineering Textbooks"
-                  polygonPoints="38,40 61,42 62,74 38,72"
+                  polygonPoints="39.5,48.5 46,39 61,39 58,54"
                   cursorTooltip="Inspect Books"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3416,7 +3416,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   <InteractiveHotspot
                     id="locker-09-candle"
                     name="Black Beeswax Candle"
-                    polygonPoints="50,29 57,29 59,85 50,85"
+                    polygonPoints="47,29 55,29 55,69 47,69"
                     cursorTooltip="Take Black Candle"
                     onClick={() => {
                       sound.playItemPickup();
@@ -3435,7 +3435,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   <InteractiveHotspot
                     id="locker-09-matchbox"
                     name="Three-Shooting-Stars Matchbox"
-                    polygonPoints="65,27 87,32 87,85 65,80"
+                    polygonPoints="59,25 72,28 72,69 59,66"
                     cursorTooltip="Take Matchbox"
                     onClick={() => {
                       sound.playPaperRustle();
@@ -3473,9 +3473,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <InteractiveHotspot
                   id="locker_14_cylinder"
                   name="Barrel Cylinder Lock"
-                  x={32}
-                  y={28}
-                  width={36}
+                  x={40}
+                  y={15}
+                  width={23}
                   height={48}
                   shape="rect"
                   cursorTooltip="[Inspect Barrel Lock]"
@@ -3495,10 +3495,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <InteractiveHotspot
                   id="locker_spider_retreat"
                   name="Scurrying Cellar Spiders"
-                  x={25}
-                  y={25}
-                  width={50}
-                  height={50}
+                  x={0}
+                  y={0}
+                  width={100}
+                  height={100}
                   shape="rect"
                   cursorTooltip="[Step Back from Infestation]"
                   onClick={() => {
