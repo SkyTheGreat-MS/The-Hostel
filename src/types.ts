@@ -70,9 +70,16 @@ export interface VictimRiddle {
   options: RiddleOption[];
 }
 
+export interface InventoryItemDef {
+  id: string;
+  shortLabel: string;
+  icon: string;
+}
+
 export interface Item {
   id: string;
   name: string;
+  shortLabel?: string;
   type?: string;
   icon?: string;
   description: string;

@@ -35,7 +35,16 @@
     detect_pacification_method/0,
     apply_composure_damage/2,
     advance_chapter_phase/2,
-    chapter_phase/2
+    chapter_phase/2,
+    % Chapter 2 Caretaker Room Blackout & Quickslot Inventory exports
+    caretaker_power_killed/0,
+    room_state/2,
+    inspect_location/2,
+    get_quickslot_inventory/1,
+    player_has/1,
+    prefix_up_to/3,
+    item_display_meta/3,
+    get_player_inventory_labels/1
 ]).
 
 :- dynamic current_location/1.
@@ -59,6 +68,11 @@
 :- dynamic learned_clue/1.
 :- dynamic taboo_triggered/1.
 :- dynamic deduction_unlocked/1.
+
+% Chapter 2 Caretaker Blackout & Inventory Dynamic State
+:- dynamic caretaker_power_killed/0.
+:- dynamic room_state/2.
+:- dynamic player_has/1.
 
 % Top-level defaults for interactive evaluation & bridge queries
 :- assertz(nat_summoned).
@@ -214,6 +228,9 @@ init_game_state :-
     retractall(deduction_unlocked(_)),
     retractall(chapter(_)),
     retractall(chapter_phase(_, _)),
+    retractall(caretaker_power_killed),
+    retractall(room_state(_, _)),
+    retractall(player_has(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
@@ -441,3 +458,56 @@ detect_pacification_method :-
     learned_clue(clue_shame_of_the_neck),
     \+ deduction_unlocked(pacify_may_requirement),
     assertz(deduction_unlocked(pacify_may_requirement)).
+
+% ==============================================================================
+% 6. CHAPTER 2 CARETAKER ROOM BLACKOUT & EXPANDED INVENTORY RULES
+% ==============================================================================
+
+% Room inspection in Chapter 2
+inspect_location(caretaker_office, Outcome) :-
+    chapter(CurrentChapter),
+    CurrentChapter >= 2,
+    Outcome = state_abandoned_blackout,
+    assertz(caretaker_power_killed).
+
+inspect_location(caretaker_office, Outcome) :-
+    chapter(1),
+    Outcome = state_chapter_1_active.
+
+inspect_location(caretaker_office_main, Outcome) :-
+    inspect_location(caretaker_office, Outcome).
+
+% Inventory quick-slot helper (first 3 items)
+get_quickslot_inventory(QuickList) :-
+    findall(Item, player_has(Item), FullList),
+    prefix_up_to(3, FullList, QuickList).
+
+player_has(Item) :-
+    has_item(Item).
+
+prefix_up_to(N, List, Prefix) :-
+    length(Prefix, Len),
+    Len =< N,
+    append(Prefix, _, List),
+    (Len =:= N ; length(List, Len)), !.
+
+% ==============================================================================
+% 7. SHORT DISPLAY METADATA & LABELED INVENTORY QUERIES
+% ==============================================================================
+
+% item_display_meta(ItemId, ShortLabel, IconType)
+item_display_meta(bobby_pin, 'Pin 4B', pin).
+item_display_meta(wooden_table_leg, 'Wood', club).
+item_display_meta(wooden_bat, 'Wood', club).
+item_display_meta(brass_key, 'Key 32', key).
+item_display_meta(small_brass_key_32, 'Key 32', key).
+item_display_meta(nylon_rope, 'Rope', rope).
+item_display_meta(coiled_nylon_rope, 'Rope', rope).
+item_display_meta(black_beeswax_candle, 'Candle', candle).
+item_display_meta(matchbox_three_stars, 'Match', match).
+item_display_meta(bronze_prayer_bell, 'Bell', bell).
+item_display_meta(magnetic_compass, 'Compass', compass).
+
+% Inventory query returning short labels directly
+get_player_inventory_labels(LabeledItems) :-
+    findall([Id, Label], (player_has(Id), item_display_meta(Id, Label, _)), LabeledItems).

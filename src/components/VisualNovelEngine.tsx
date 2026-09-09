@@ -70,7 +70,18 @@ import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
 import { PrayerAltarView } from './PrayerAltarView';
-export { Locker32ZoomView, Locker09ZoomView, LockersOverviewView, PrayerAltarView };
+import { CaretakerOfficeView } from './CaretakerOfficeView';
+import { TopInventoryBar } from './TopInventoryBar';
+import { InventoryDrawerModal } from './InventoryDrawerModal';
+export {
+  Locker32ZoomView,
+  Locker09ZoomView,
+  LockersOverviewView,
+  PrayerAltarView,
+  CaretakerOfficeView,
+  TopInventoryBar,
+  InventoryDrawerModal,
+};
 
 interface InitialDialogueStep {
   id: number;
@@ -722,6 +733,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [corridorShadowFlash, setCorridorShadowFlash] = useState<boolean>(false);
   const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
+  const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -1816,6 +1828,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
       if (phase3Location === 'caretaker_door_keypad') return PHASE_3_ASSETS.caretakerKeypadZoom;
       if (phase3Location === 'caretaker_office_main') {
+        if (currentChapter >= 2 || chapter1Completed) return '';
         if (spectralClimaxActive) return PHASE_3_ASSETS.caretakerSpectralClimax;
         return PHASE_3_ASSETS.caretakerOfficeOverview;
       }
@@ -1907,7 +1920,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-40 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Phase Badge */}
           <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2">
@@ -1950,57 +1963,19 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
         {/* Action Controls: Inventory Slots, Compass Dock, Notebook, Audio & Pause */}
         <div className="flex items-center gap-2 z-50 pointer-events-auto">
-          {/* HUD Inventory Bar */}
+          {/* HUD Inventory Bar (Top 3 quick-slots with expandable drawer) */}
           {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
-            <div className="flex items-center gap-1 bg-[#121815]/90 border border-[#2c3d34] p-1 rounded-xl shadow-inner">
-              <span className="text-[9px] font-mono font-bold text-[#82a996]/60 uppercase px-1 hidden md:inline">INV</span>
-              {Array.from({ length: Math.max(6, inventory.length) }).map((_, slotIdx) => {
-                const itemId = inventory[slotIdx];
-                const itemData = itemId ? ITEMS[itemId] : null;
-                return (
-                  <button
-                    key={slotIdx}
-                    disabled={!itemId}
-                    onClick={() => {
-                      if (itemId) {
-                        sound.playPaperRustle();
-                        setInspectingItem(itemId);
-                        if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
-                          sound.playError();
-                          setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
-                        }
-                      }
-                    }}
-                    title={itemData ? `${itemData.name} (Click to inspect)` : 'Empty Slot'}
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center transition-all ${
-                      itemId
-                        ? 'bg-[#18221d] border border-[#2e4238] text-[#82a996] hover:border-[#4d6e5e] hover:shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:bg-[#18221d]/80 hover:scale-105 cursor-pointer shadow-md'
-                        : 'bg-[#0f1412]/60 border border-dashed border-[#2c3d34]/50 text-[#2c3d34] cursor-default'
-                    }`}
-                  >
-                    {itemId === 'bobby_pin' ? (
-                      <Key className="w-3.5 h-3.5 text-[#82a996]" />
-                    ) : itemId === 'wooden_bat' ? (
-                      <Hammer className="w-3.5 h-3.5 text-[#82a996]" />
-                    ) : itemId === 'magnetic_compass' ? (
-                      <Compass className="w-3.5 h-3.5 text-[#82a996]" />
-                    ) : itemId === 'small_brass_key_32' ? (
-                      <Key className="w-3.5 h-3.5 text-[#82a996]" />
-                    ) : itemId === 'coiled_nylon_rope' ? (
-                      <Wind className="w-3.5 h-3.5 text-[#82a996]" />
-                    ) : itemId === 'black_beeswax_candle' ? (
-                      <Flame className="w-3.5 h-3.5 text-stone-400" />
-                    ) : itemId === 'matchbox_three_stars' ? (
-                      <Flame className="w-3.5 h-3.5 text-amber-500" />
-                    ) : itemId === 'bronze_prayer_bell' ? (
-                      <Bell className="w-3.5 h-3.5 text-amber-300" />
-                    ) : (
-                      <span className="text-[9px] text-[#2c3d34]">•</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <TopInventoryBar
+              inventory={inventory}
+              setIsInventoryDrawerOpen={setIsInventoryDrawerOpen}
+              onItemClick={(itemId) => {
+                sound.playPaperRustle();
+                if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
+                  sound.playError();
+                  setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+                }
+              }}
+            />
           )}
 
           {/* Paranormal Magnetic Compass Dock */}
@@ -3304,7 +3279,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
-                      if (!caretakerDoorUnlocked) {
+                      if (!caretakerDoorUnlocked && !(currentChapter >= 2 || chapter1Completed)) {
                         setPhase3Location('caretaker_door_keypad');
                       } else {
                         setPhase3Location('caretaker_office_main');
@@ -3320,7 +3295,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
                       <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-widest uppercase">
-                        {caretakerDoorUnlocked ? (
+                        {currentChapter >= 2 || chapter1Completed ? (
+                          <span className="text-[#8fa89b] flex items-center gap-1">
+                            <Lock className="w-3 h-3 text-[#5a7a69]" /> ABANDONED (CH. 2)
+                          </span>
+                        ) : caretakerDoorUnlocked ? (
                           <span className="text-[#6ee7b7] flex items-center gap-1">
                             <Unlock className="w-3 h-3 text-[#6ee7b7]" /> UNLOCKED
                           </span>
@@ -3598,84 +3577,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
             {/* SUB-SCENE 8: CARETAKER'S OFFICE ARCHIVE */}
             {phase3Location === 'caretaker_office_main' && (
-              <>
-                {/* 1. Wooden Supply Shelf (2 candles) */}
-                <InteractiveHotspot
-                  id="caretaker_supply_shelf"
-                  name="Wooden Supply Shelf"
-                  x={8}
-                  y={18}
-                  width={22}
-                  height={45}
-                  shape="rect"
-                  cursorTooltip={!hasCaretakerCandles ? "[Take 2 Black Beeswax Candles]" : "[Supply Shelf (Empty)]"}
-                  onClick={() => {
-                    if (!hasCaretakerCandles) {
-                      setHasCaretakerCandles(true);
-                      setHasBlackCandlesCount((prev) => prev + 2);
-                      setInventory((prev) => [...prev, 'black_beeswax_candle', 'black_beeswax_candle']);
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —"
-                      );
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue("— The supply shelf is bare now. Nothing remains except dried cobwebs. —");
-                    }
-                  }}
-                />
-
-                {/* 2. Glass Counter Cabinet (Bronze Prayer Bell) */}
-                <InteractiveHotspot
-                  id="caretaker_glass_cabinet"
-                  name="Glass Display Cabinet"
-                  x={70}
-                  y={25}
-                  width={22}
-                  height={50}
-                  shape="rect"
-                  cursorTooltip={!hasBronzeBell ? "[Take Bronze Prayer Bell]" : "[Glass Cabinet (Empty)]"}
-                  onClick={() => {
-                    if (!hasBronzeBell) {
-                      addInventoryItem('bronze_prayer_bell');
-                      setHasBronzeBell(true);
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— Inside the glass display: an ornate cast bronze hand bell with traditional spirit runes etched into the lip. Acquired: Bronze Prayer Bell. —"
-                      );
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue("— The glass display cabinet is empty. —");
-                    }
-                  }}
-                />
-
-                {/* 3. Center Desk Ledger (Spectral Encounter) */}
-                <InteractiveHotspot
-                  id="caretaker_desk_ledger"
-                  name="Caretaker 1998 Ledger"
-                  x={34}
-                  y={46}
-                  width={32}
-                  height={38}
-                  shape="rect"
-                  cursorTooltip={
-                    natSummoned || ((hasBlackCandlesCount + altarCandlesPlaced) >= 3 && hasBronzeBell)
-                      ? "[Examine Open Ledger on Desk]"
-                      : "[Examine Caretaker Desk]"
-                  }
-                  onClick={() => {
-                    if (natSummoned || ((hasBlackCandlesCount + altarCandlesPlaced) >= 3 && hasBronzeBell)) {
-                      handleCaretakerClimax();
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— The Caretaker's ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies and awaken the Guardian Nat first. —"
-                      );
-                    }
-                  }}
-                />
-              </>
+              <CaretakerOfficeView
+                currentChapter={currentChapter}
+                chapter1Completed={chapter1Completed}
+                setPhase3Location={setPhase3Location}
+                hasCaretakerCandles={hasCaretakerCandles}
+                setHasCaretakerCandles={setHasCaretakerCandles}
+                setHasBlackCandlesCount={setHasBlackCandlesCount}
+                setInventory={setInventory}
+                hasBronzeBell={hasBronzeBell}
+                setHasBronzeBell={setHasBronzeBell}
+                addInventoryItem={addInventoryItem}
+                natSummoned={natSummoned}
+                hasBlackCandlesCount={hasBlackCandlesCount}
+                altarCandlesPlaced={altarCandlesPlaced}
+                handleCaretakerClimax={handleCaretakerClimax}
+                setActiveMonologue={setActiveMonologue}
+              />
             )}
 
             {/* SUB-SCENE 9: COMMUNAL PRAYER ROOM */}
@@ -3944,95 +3862,19 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         )}
       </AnimatePresence>
 
-      {/* 8.5. Item Inspection Modal */}
-      <AnimatePresence>
-        {inspectingItem && ITEMS[inspectingItem] && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 select-none">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-md bg-[#121815]/95 border border-[#2c3d34] rounded-2xl shadow-[0_0_30px_rgba(0,0,0,0.9)] p-5 sm:p-6 text-[#c2d6cc] backdrop-blur-md"
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-[#2c3d34]/80">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-[#18221d] border border-[#2c3d34] text-[#82a996]">
-                    {inspectingItem === 'bobby_pin' || inspectingItem === 'small_brass_key_32' ? (
-                      <Key className="w-5 h-5 text-[#82a996]" />
-                    ) : inspectingItem === 'wooden_bat' ? (
-                      <Hammer className="w-5 h-5 text-[#82a996]" />
-                    ) : inspectingItem === 'coiled_nylon_rope' ? (
-                      <Wind className="w-5 h-5 text-[#82a996]" />
-                    ) : inspectingItem === 'black_beeswax_candle' || inspectingItem === 'matchbox_three_stars' ? (
-                      <Flame className="w-5 h-5 text-[#82a996]" />
-                    ) : inspectingItem === 'bronze_prayer_bell' ? (
-                      <Bell className="w-5 h-5 text-[#82a996]" />
-                    ) : (
-                      <Compass className="w-5 h-5 text-[#82a996]" />
-                    )}
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-mono text-[#82a996] uppercase font-bold tracking-wider block">
-                      INVENTORY ITEM
-                    </span>
-                    <h3
-                      className="text-2xl font-black text-[#c2d6cc] uppercase tracking-wider"
-                      style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                    >
-                      {ITEMS[inspectingItem].name}
-                    </h3>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setInspectingItem(null);
-                  }}
-                  className="p-1.5 rounded-lg bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34]/60 text-[#82a996] hover:text-[#c2d6cc] cursor-pointer transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="py-4 space-y-3">
-                <div className="bg-[#18221d]/70 p-3.5 rounded-xl border border-[#2c3d34]/70">
-                  <span className="text-[10px] font-mono text-[#82a996]/80 uppercase font-bold tracking-wider block mb-1">
-                    ITEM DESCRIPTION
-                  </span>
-                  <p className="text-sm font-mono text-[#c2d6cc] leading-relaxed">
-                    {ITEMS[inspectingItem].description}
-                  </p>
-                </div>
-
-                {/* Utility & Practical Uses Section */}
-                {ITEMS[inspectingItem].usageHint && (
-                  <div className="p-3.5 rounded-xl bg-[#18221d]/50 border border-[#2c3d34]/70 space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-wider text-[#82a996] uppercase">
-                      <Sparkles className="w-3.5 h-3.5 text-[#6ee7b7]" />
-                      <span>Utility & Practical Uses</span>
-                    </div>
-                    <ul className="text-xs font-mono text-[#c2d6cc] list-disc list-inside space-y-1 pl-1 leading-relaxed">
-                      <li>{ITEMS[inspectingItem].usageHint}</li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-3 border-t border-[#2c3d34]/80 flex justify-end">
-                <button
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setInspectingItem(null);
-                  }}
-                  className="px-5 py-2 rounded-xl bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
-                >
-                  CLOSE INSPECTION
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* 8.4. Expandable Inventory Drawer Modal */}
+      <InventoryDrawerModal
+        isInventoryDrawerOpen={isInventoryDrawerOpen}
+        setIsInventoryDrawerOpen={setIsInventoryDrawerOpen}
+        inventory={inventory}
+        onSelectItem={(itemId) => {
+          sound.playPaperRustle();
+          if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
+            sound.playError();
+            setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+          }
+        }}
+      />
 
       {/* 8.6. Paranormal Magnetic Compass Close-Up Modal */}
       <AnimatePresence>

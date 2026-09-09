@@ -366,8 +366,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         }`}
       />
 
-      {/* Guardian Nat Manifestation Sprite & Ethereal Backlight Layer */}
-      {isNatManifested && (
+      {/* Guardian Nat Manifestation Sprite & Ethereal Backlight Layer (Unmounts when NatDialogueView is open) */}
+      {isNatManifested && !isNatDialogueOpen && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none transition-all duration-1000 ease-out">
           {/* Ambient Spirit Backlight Glow */}
           <div className="absolute w-72 h-96 rounded-full bg-emerald-500/10 blur-3xl animate-pulse" />
@@ -723,7 +723,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
               )}
 
               {/* Guardian Nat Awakened Banner (When Nat is awakened and dialogue is closed) */}
-              {(natSummoned || isNatManifested) && (
+              {(natSummoned || isNatManifested) && !isNatDialogueOpen && (
                 <motion.div
                   key="nat-awakened-card"
                   initial={{ opacity: 0, y: 12 }}
@@ -768,7 +768,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           {/* RIGHT DOCK: Thought Box */}
           <div className="w-full max-w-md pointer-events-auto">
             <AnimatePresence>
-              {activeMonologue && (
+              {activeMonologue && !isNatDialogueOpen && (
                 <motion.div
                   key="altar-thought-monologue"
                   initial={{ opacity: 0, y: 12 }}
