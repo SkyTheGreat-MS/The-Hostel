@@ -258,12 +258,12 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
           }`}
         >
           <img
-            src="/assets/characters/moe_bust_thinking.png"
+            src="/assets/characters/moe_fear_bust.png"
             onError={(e) => {
               e.currentTarget.src = '/assets/characters/moe_fear_bust.png';
             }}
             alt={characterName || 'Moe'}
-            className="h-[52vh] max-h-[500px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.02] brightness-95"
+            className="h-[60vh] max-h-[600px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.02] brightness-85"
           />
           <div className="mt-1 px-3 py-0.5 rounded bg-[#0b120e]/85 border border-[#22352b] text-center">
             <span className="font-mono text-xs text-[#a3c2b2] tracking-wider uppercase block">

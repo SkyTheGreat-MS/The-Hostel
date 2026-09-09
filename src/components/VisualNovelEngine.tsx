@@ -734,6 +734,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
+  const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -786,9 +787,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   };
 
   // 10-Minute Countdown Clock Hook
-  // Ensure the timer only suspends when isSystemPaused is true:
+  // Ensure the timer only suspends when isPaused is true or outside gameplay:
   useEffect(() => {
-    if (isSystemPaused || timerSeconds <= 0) return;
+    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0) return;
 
     const timerInterval = setInterval(() => {
       setTimerSeconds((prev) => {
@@ -802,20 +803,24 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [isSystemPaused, timerSeconds]);
+  }, [isPaused, currentScreen, timerSeconds]);
 
   // Ambient Composure Attrition Hook
-  // Ensure mental drain continues ticking even while the player is reading notes, checking clues, or inspecting items:
+  // Base rate: 1% per 18s (accelerated to 8s during Nat dialogue), scaled by active investigator tensionMultiplier
+  // Continues ticking while player checks case notes or inventory; halts when system is paused (isPaused)
   useEffect(() => {
-    if (isSystemPaused || composure <= 5) return;
+    if (isPaused || currentScreen !== 'gameplay' || composure <= 0) return;
 
-    // Passive ambient decay (e.g., 1% every 15s in haunted corridors)
+    const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
+    const tension = selectedCharacter.tensionMultiplier || 1.0;
+    const decayIntervalMs = Math.max(500, Math.round(basePeriodMs / tension));
+
     const composureInterval = setInterval(() => {
-      setComposure((prev) => Math.max(5, prev - 1));
-    }, 15000);
+      setComposure((prev) => Math.max(0, prev - 1));
+    }, decayIntervalMs);
 
     return () => clearInterval(composureInterval);
-  }, [isSystemPaused, composure]);
+  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier]);
 
   // Monitor composure zero game over condition
   useEffect(() => {
@@ -1703,6 +1708,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   const handleContinueToChapterTwo = () => {
     setIsChapterTransitionOpen(false);
+    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+    const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
+    const rolloverTime = 600 + Math.max(0, timeLeft);
+    setComposure(recoveredComposure);
+    setTimeLeft(rolloverTime);
     setCurrentChapter(2);
     setPhase(2);
     setPhase3Location('east_fork');
@@ -1743,8 +1753,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleSaveAndExit = () => {
     setIsChapterTransitionOpen(false);
     sound.stopAllAmbience();
-    // 1. Persist Chapter 2 checkpoint
-    lockChapterOneAndSave(selectedCharacter.id, composure);
+    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+    // 1. Persist Chapter 2 checkpoint with rollover time & recovered composure
+    lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, resolve);
     // 2. Route directly to Chapter Selection page
     navigate('/chapters');
   };
@@ -1782,10 +1793,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setPhase3Location('east_fork');
       setCaretakerDoorLocked(true);
 
-      // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY
+      // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY with Time Bank rollover and Resolve recovery
+      const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+      const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
+      const rolloverTime = 600 + Math.max(0, timeLeft);
+
+      setComposure(recoveredComposure);
+      setTimeLeft(rolloverTime);
       setChapter1Completed(true);
       completeChapter(1);
-      lockChapterOneAndSave(selectedCharacter.id, composure, inventory);
+      lockChapterOneAndSave(selectedCharacter.id, recoveredComposure, inventory, timeLeft, resolve);
       setShowChapterTransitionModal(true);
     }, 1800);
   };
@@ -3626,6 +3643,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setComposure={setComposure}
                 inventory={inventory}
                 setInventory={setInventory}
+                onNatDialogueActiveChange={setIsNatDialogueActive}
                 hasBlackCandlesCount={hasBlackCandlesCount}
                 setHasBlackCandlesCount={setHasBlackCandlesCount}
                 hasMatchesCount={hasMatchesCount}

@@ -122,7 +122,11 @@ export type GameStoreAction =
   | { type: 'SET_HAS_READ_SANDAR_LETTERS'; payload: boolean }
   | { type: 'SET_HAS_LOCKER_09_CANDLE'; payload: boolean }
   | { type: 'SET_HAS_LOCKER_09_MATCHBOX'; payload: boolean }
-  | { type: 'SET_HAS_CONSULTED_NAT'; payload: boolean };
+  | { type: 'SET_HAS_CONSULTED_NAT'; payload: boolean }
+  | { type: 'TICK_TIMER' }
+  | { type: 'APPLY_COMPOSURE_SHOCK'; payload: { baseDamage: number; tensionMultiplier?: number } }
+  | { type: 'APPLY_RELIEF_SURGE'; payload: { baseRecovery: number; resolveMultiplier?: number } }
+  | { type: 'ADVANCE_CHAPTER_WITH_ROLLOVER'; payload?: { resolveMultiplier?: number } };
 
 export function chapterOneReducer(
   state: ChapterOneState = initialChapterOneState,
@@ -267,9 +271,74 @@ export function chapterOneReducer(
     case 'SET_HAS_CONSULTED_NAT':
       return { ...state, hasConsultedNat: action.payload };
 
+    case 'TICK_TIMER': {
+      if (state.isPaused || state.timerSeconds <= 0) return state;
+      return { ...state, timerSeconds: Math.max(0, state.timerSeconds - 1) };
+    }
+
+    case 'APPLY_COMPOSURE_SHOCK': {
+      const tension = action.payload.tensionMultiplier ?? 1.0;
+      const damage = Math.round(action.payload.baseDamage * tension);
+      return { ...state, composure: Math.max(0, state.composure - damage) };
+    }
+
+    case 'APPLY_RELIEF_SURGE': {
+      const resolve = action.payload.resolveMultiplier ?? 1.0;
+      const recovery = Math.round(action.payload.baseRecovery * resolve);
+      return { ...state, composure: Math.min(100, state.composure + recovery) };
+    }
+
+    case 'ADVANCE_CHAPTER_WITH_ROLLOVER': {
+      const resolve = action.payload?.resolveMultiplier ?? 1.0;
+      const nextTimer = calculateRolloverTime(state.timerSeconds);
+      const nextComposure = calculateComposureRecovery(state.composure, resolve);
+      return {
+        ...state,
+        timerSeconds: nextTimer,
+        composure: nextComposure,
+        chapter1Completed: true,
+      };
+    }
+
     default:
       return state;
   }
+}
+
+export const BASE_CHAPTER_TIME_SECONDS = 600;
+
+export function calculateRolloverTime(timeRemaining: number): number {
+  return BASE_CHAPTER_TIME_SECONDS + Math.max(0, timeRemaining);
+}
+
+export function calculateComposureRecovery(
+  currentComposure: number,
+  resolveMultiplier: number = 1.0
+): number {
+  const recovery = Math.round(20 * resolveMultiplier);
+  return Math.min(100, currentComposure + recovery);
+}
+
+export function calculateComposureShock(
+  baseDamage: number,
+  tensionMultiplier: number = 1.0
+): number {
+  return Math.round(baseDamage * tensionMultiplier);
+}
+
+export function calculateReliefSurge(
+  baseRelief: number,
+  resolveMultiplier: number = 1.0
+): number {
+  return Math.round(baseRelief * resolveMultiplier);
+}
+
+export function tickTimer(
+  currentTimer: number,
+  isPaused: boolean = false
+): number {
+  if (isPaused || currentTimer <= 0) return currentTimer;
+  return Math.max(0, currentTimer - 1);
 }
 
 /**
@@ -334,7 +403,9 @@ export const ACTIVE_SAVE_KEY = 'spirits_labyrinth_active_save';
 export function lockChapterOneAndSave(
   selectedCharacterId: string = 'thazin',
   currentComposure: number = 100,
-  customInventory?: string[]
+  customInventory?: string[],
+  timeRemaining: number = 0,
+  resolveMultiplier: number = 1.0
 ): ActiveSaveState {
   const defaultInventory = [
     'bobby_pin',
@@ -348,6 +419,9 @@ export function lockChapterOneAndSave(
     'bronze_prayer_bell',
   ];
 
+  const rolloverTime = calculateRolloverTime(timeRemaining);
+  const recoveredComposure = calculateComposureRecovery(currentComposure, resolveMultiplier);
+
   const chapterTwoSaveState: ActiveSaveState = {
     chapter: 2,
     currentPhase: 1, // Chapter 2, Phase 1 (The Prayer Room Rite)
@@ -359,7 +433,8 @@ export function lockChapterOneAndSave(
     hasBlackCandlesCount: 3,
     hasBronzeBell: true,
     caretakerDoorUnlocked: true,
-    composure: currentComposure,
+    composure: recoveredComposure,
+    timerSeconds: rolloverTime,
     timestamp: Date.now(),
   };
 

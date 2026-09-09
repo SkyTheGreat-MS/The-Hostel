@@ -48,7 +48,17 @@
     prefix_up_to/3,
     item_display_meta/3,
     get_player_inventory_labels/1,
-    scene_background/2
+    scene_background/2,
+    % Section 8: Investigator Tension/Resolve & Time Bank Rollover exports
+    selected_investigator/1,
+    investigator_stat/3,
+    current_chapter/1,
+    player_time_remaining/1,
+    player_composure/1,
+    init_investigation/1,
+    advance_chapter_with_rollover/1,
+    apply_fear_shock/1,
+    apply_relief_recovery/1
 ]).
 
 :- dynamic current_location/1.
@@ -78,6 +88,13 @@
 :- dynamic caretaker_spectral_climax/0.
 :- dynamic room_state/2.
 :- dynamic player_has/1.
+
+% Investigator Tension & Resolve, Time Bank, and Dynamic Vitals
+:- dynamic selected_investigator/1.
+:- dynamic investigator_stat/3.
+:- dynamic current_chapter/1.
+:- dynamic player_time_remaining/1.
+:- dynamic player_composure/1.
 
 % Top-level defaults for interactive evaluation & bridge queries
 :- assertz(nat_summoned).
@@ -548,3 +565,103 @@ item_display_meta(magnetic_compass, 'Compass', compass).
 % Inventory query returning short labels directly
 get_player_inventory_labels(LabeledItems) :-
     findall([Id, Label], (player_has(Id), item_display_meta(Id, Label, _)), LabeledItems).
+
+% ==============================================================================
+% 8. INVESTIGATOR TENSION/RESOLVE STATS & TIME BANK ROLLOVER SYSTEM
+% ==============================================================================
+
+% investigator_stat(CharId, TensionMultiplier, ResolveMultiplier)
+investigator_stat(moe_stheinkha, 1.2, 0.9).
+investigator_stat(ye_yint_hein, 1.3, 1.4).
+investigator_stat(may_jewel, 0.8, 1.3).
+investigator_stat(yin_min_htike, 0.8, 0.8).
+investigator_stat(hsu_myat_shein, 1.4, 1.5).
+investigator_stat(mona, 1.0, 1.0).
+
+% Backward-compatibility aliases
+investigator_stat(thazin, 1.2, 0.9).
+investigator_stat(kyaw_swar, 1.3, 1.4).
+investigator_stat(su_su, 0.8, 1.3).
+investigator_stat(htet, 0.8, 0.8).
+investigator_stat(aye_aye, 1.4, 1.5).
+investigator_stat(min_khant, 1.0, 1.0).
+
+% Initialize investigation for chosen character
+init_investigation(CharId) :-
+    retractall(selected_investigator(_)),
+    assertz(selected_investigator(CharId)),
+    retractall(current_chapter(_)),
+    assertz(current_chapter(1)),
+    retractall(chapter(_)),
+    assertz(chapter(1)),
+    retractall(player_time_remaining(_)),
+    assertz(player_time_remaining(600)),
+    retractall(time_remaining(_)),
+    assertz(time_remaining(600)),
+    retractall(player_composure(_)),
+    assertz(player_composure(100)),
+    retractall(composure(_)),
+    assertz(composure(100)).
+
+% Advance chapter with 10-minute rollover time bank and resolve composure recovery
+advance_chapter_with_rollover(NextChapter) :-
+    (player_time_remaining(RemainingTime) -> true ; (time_remaining(TR) -> RemainingTime = TR ; RemainingTime = 0)),
+    BankedTime is max(0, RemainingTime),
+    NewTime is 600 + BankedTime,
+    retractall(player_time_remaining(_)),
+    assertz(player_time_remaining(NewTime)),
+    retractall(time_remaining(_)),
+    assertz(time_remaining(NewTime)),
+    % Apply chapter completion relief recovery (+20 scaled by resolve)
+    (
+        selected_investigator(CharId),
+        investigator_stat(CharId, _, Resolve)
+    ->
+        RecoveryVal is round(20 * Resolve)
+    ;
+        RecoveryVal is 20
+    ),
+    (player_composure(CurrComp) -> true ; (composure(C) -> CurrComp = C ; CurrComp = 100)),
+    NewComp is min(100, CurrComp + RecoveryVal),
+    retractall(player_composure(_)),
+    assertz(player_composure(NewComp)),
+    retractall(composure(_)),
+    assertz(composure(NewComp)),
+    retractall(current_chapter(_)),
+    assertz(current_chapter(NextChapter)),
+    retractall(chapter(_)),
+    assertz(chapter(NextChapter)).
+
+% Apply fear shock scaled by investigator's tensionMultiplier
+apply_fear_shock(BaseShock) :-
+    (
+        selected_investigator(CharId),
+        investigator_stat(CharId, Tension, _)
+    ->
+        Damage is round(BaseShock * Tension)
+    ;
+        Damage is BaseShock
+    ),
+    (player_composure(CurrComp) -> true ; (composure(C) -> CurrComp = C ; CurrComp = 100)),
+    NewComp is max(0, CurrComp - Damage),
+    retractall(player_composure(_)),
+    assertz(player_composure(NewComp)),
+    retractall(composure(_)),
+    assertz(composure(NewComp)).
+
+% Apply relief recovery scaled by investigator's resolveMultiplier
+apply_relief_recovery(BaseRecovery) :-
+    (
+        selected_investigator(CharId),
+        investigator_stat(CharId, _, Resolve)
+    ->
+        Recovery is round(BaseRecovery * Resolve)
+    ;
+        Recovery is BaseRecovery
+    ),
+    (player_composure(CurrComp) -> true ; (composure(C) -> CurrComp = C ; CurrComp = 100)),
+    NewComp is min(100, CurrComp + Recovery),
+    retractall(player_composure(_)),
+    assertz(player_composure(NewComp)),
+    retractall(composure(_)),
+    assertz(composure(NewComp)).

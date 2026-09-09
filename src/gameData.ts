@@ -118,6 +118,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Moe Stheinkha',
     archetype: 'Skeptic',
     description: 'Analytical and rational mind; resists physical intimidation, but highly vulnerable to occult anomalies.',
+    tensionMultiplier: 1.2,
+    resolveMultiplier: 0.9,
     multipliers: {
       supernatural_direct: 1.5,
       physical_threat: 0.8,
@@ -129,6 +131,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Ye Yint Hein',
     archetype: 'Daredevil',
     description: 'Audacious and quick to act; shrugs off physical threats but easily unhinged in eerie isolation.',
+    tensionMultiplier: 1.3,
+    resolveMultiplier: 1.4,
     multipliers: {
       supernatural_direct: 1.2,
       physical_threat: 0.7,
@@ -140,6 +144,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'May Jewel',
     archetype: 'Intuitive',
     description: 'Spiritually attuned medium who detects hidden vibrations and whispers; suffers severe mental strain.',
+    tensionMultiplier: 0.8,
+    resolveMultiplier: 1.3,
     multipliers: {
       supernatural_direct: 0.7,
       physical_threat: 1.4,
@@ -151,6 +157,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Yin Min Htike',
     archetype: 'Archivist',
     description: 'Expert on historical ledgers, ciphers, and discrepancies; physically frail when under violent pressure.',
+    tensionMultiplier: 0.8,
+    resolveMultiplier: 0.8,
     multipliers: {
       supernatural_direct: 0.9,
       physical_threat: 1.4,
@@ -162,6 +170,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Hsu Myat Shein',
     archetype: 'Kin-Bound',
     description: 'Deeply empathetic; unknowingly linked by bloodline to the tragic events of August 1998.',
+    tensionMultiplier: 1.4,
+    resolveMultiplier: 1.5,
     multipliers: {
       supernatural_direct: 1.4,
       physical_threat: 1.2,
@@ -173,6 +183,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Mona',
     archetype: 'Protector',
     description: 'Steadfast shield of the circle; resists brute force, but psychologically crushed by betrayal.',
+    tensionMultiplier: 1.0,
+    resolveMultiplier: 1.0,
     multipliers: {
       supernatural_direct: 1.0,
       physical_threat: 0.6,
@@ -185,6 +197,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Thazin (Moe Stheinkha)',
     archetype: 'Skeptic',
     description: 'Calculates probability; struggles when confronted by direct supernatural phenomena.',
+    tensionMultiplier: 1.2,
+    resolveMultiplier: 0.9,
     multipliers: {
       supernatural_direct: 1.5,
       physical_threat: 0.8,
@@ -196,6 +210,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Min Khant (Mona)',
     archetype: 'Protector',
     description: 'Steadfast against physical danger; deeply hurt by betrayal and broken oaths.',
+    tensionMultiplier: 1.0,
+    resolveMultiplier: 1.0,
     multipliers: {
       supernatural_direct: 1.0,
       physical_threat: 0.6,
@@ -207,6 +223,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Htet (Yin Min Htike)',
     archetype: 'Archivist',
     description: 'Keen eye for documents, ledgers, and ciphers; physically frail under strain.',
+    tensionMultiplier: 0.8,
+    resolveMultiplier: 0.8,
     multipliers: {
       supernatural_direct: 0.9,
       physical_threat: 1.4,
@@ -218,6 +236,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Aye Aye (Hsu Myat Shein)',
     archetype: 'Kin-Bound',
     description: 'Deeply attuned to emotional resonance; secretly carries maternal ties to 1998.',
+    tensionMultiplier: 1.4,
+    resolveMultiplier: 1.5,
     multipliers: {
       supernatural_direct: 1.4,
       physical_threat: 1.2,
@@ -229,6 +249,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Kyaw Swar (Ye Yint Hein)',
     archetype: 'Daredevil',
     description: 'Bold and impulsive; quick to take action but easily unhinged by quiet isolation.',
+    tensionMultiplier: 1.3,
+    resolveMultiplier: 1.4,
     multipliers: {
       supernatural_direct: 1.2,
       physical_threat: 0.7,
@@ -240,6 +262,8 @@ export const CHARACTERS: MCCharacter[] = [
     name: 'Su Su (May Jewel)',
     archetype: 'Intuitive',
     description: 'Spiritually receptive medium; hears whispers clearly but suffers heavy mental fatigue.',
+    tensionMultiplier: 0.8,
+    resolveMultiplier: 1.3,
     multipliers: {
       supernatural_direct: 0.7,
       physical_threat: 1.4,
@@ -247,6 +271,8 @@ export const CHARACTERS: MCCharacter[] = [
     },
   },
 ];
+
+export { CHARACTER_ROSTER, getCharacterProfile } from './characterData';
 
 export const LOCATIONS: HostelLocation[] = [
   {

@@ -36,6 +36,7 @@ export interface PrayerAltarViewProps {
   addDiscoveredClue?: (clueId: string) => void;
   discoveredClues?: string[];
   setDiscoveredClues?: React.Dispatch<React.SetStateAction<string[]>>;
+  onNatDialogueActiveChange?: (active: boolean) => void;
 }
 
 export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
@@ -43,6 +44,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   setComposure,
   inventory,
   setInventory,
+  onNatDialogueActiveChange,
   hasBlackCandlesCount,
   setHasBlackCandlesCount,
   hasMatchesCount,
@@ -91,6 +93,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   const [natAppearing, setNatAppearing] = useState<boolean>(false);
   const [isRoomDimmed, setIsRoomDimmed] = useState<boolean>(false);
   const [isNatDialogueOpen, setIsNatDialogueOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    onNatDialogueActiveChange?.(isNatDialogueOpen);
+  }, [isNatDialogueOpen, onNatDialogueActiveChange]);
+
   const [dialogueState, setDialogueState] = useState<{
     speaker: string;
     line: string;

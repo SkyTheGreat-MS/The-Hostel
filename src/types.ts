@@ -25,12 +25,23 @@ export type EndingId =
   | 'deceived'
   | 'misunderstood';
 
+export interface CharacterProfile {
+  id: string;
+  name: string;
+  archetype: string;
+  tensionMultiplier: number; // Drain speed & blunder shock (0.8x - 1.4x)
+  resolveMultiplier: number; // Relief surges & chapter recovery (0.8x - 1.5x)
+  avatar: string;
+}
+
 export interface MCCharacter {
   id: MCId;
   name: string;
   archetype: string;
   description: string;
-  multipliers: Record<TriggerType, number>;
+  tensionMultiplier: number;
+  resolveMultiplier: number;
+  multipliers?: Record<TriggerType, number>;
 }
 
 export interface Clue {
