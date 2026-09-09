@@ -120,7 +120,9 @@ export type Phase3Location =
   | 'prayer_altar'
   | 'caretaker_door_keypad'
   | 'caretaker_office_main'
-  | 'caretaker_office';
+  | 'caretaker_office'
+  | 'balcony_326'
+  | 'balcony';
 
 export interface GameState {
   chapter: number;
@@ -283,6 +285,7 @@ export interface ActiveSaveState {
   hasSmallBrassKey?: boolean;
   hasNylonRope?: boolean;
   askedNatTopics?: string[];
+  natAudienceConcluded?: boolean;
   timestamp: number;
 }
 
@@ -319,4 +322,5 @@ export interface ChapterProgressSave {
   askedNatTopics?: string[];
   corridorShadowScareTriggered?: boolean;
   chapter1Completed?: boolean;
+  natAudienceConcluded?: boolean;
 }

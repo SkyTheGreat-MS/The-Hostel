@@ -120,6 +120,57 @@ class AudioEngine {
     }
   }
 
+  public startRainAmbient() {
+    this.playSeanceRainLoop();
+  }
+
+  public stopRainAmbient() {
+    if (this.rainGain && this.ctx) {
+      try {
+        this.rainGain.gain.setValueAtTime(0, this.ctx.currentTime);
+      } catch {}
+    }
+    if (this.rainNode) {
+      try {
+        this.rainNode.stop();
+        this.rainNode.disconnect();
+      } catch {}
+      this.rainNode = null;
+    }
+    this.isRainRunning = false;
+  }
+
+  public playDoorPush() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Heavy metallic/wooden door push with low friction scrape
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(85, this.ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(55, this.ctx.currentTime + 0.35);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(320, this.ctx.currentTime);
+      filter.frequency.linearRampToValueAtTime(140, this.ctx.currentTime + 0.35);
+
+      gain.gain.setValueAtTime(0.09, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.38);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.38);
+    } catch {}
+  }
+
   public stopAllAmbience() {
     this.stopAmbient();
     if (this.rainGain && this.ctx) {

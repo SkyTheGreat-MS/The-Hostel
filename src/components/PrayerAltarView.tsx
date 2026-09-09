@@ -41,6 +41,10 @@ export interface PrayerAltarViewProps {
   askedTopics?: string[];
   setAskedTopics?: React.Dispatch<React.SetStateAction<string[]>>;
   applyComposureShock?: (amount: number) => void;
+  natAudienceConcluded?: boolean;
+  setNatAudienceConcluded?: (val: boolean) => void;
+  currentChapter?: number;
+  setCurrentChapter?: (chap: number) => void;
 }
 
 export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
@@ -77,6 +81,10 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   askedTopics,
   setAskedTopics,
   applyComposureShock,
+  natAudienceConcluded,
+  setNatAudienceConcluded,
+  currentChapter = 1,
+  setCurrentChapter,
 }) => {
   // State Tracking with persistent manifestation support
   const [candlesPlaced, setCandlesPlaced] = useState<boolean[]>([
@@ -128,9 +136,18 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (setHasConsultedNat) {
       setHasConsultedNat(true);
     }
+    if (setNatAudienceConcluded) {
+      setNatAudienceConcluded(true);
+    }
+    if (setCurrentChapter) {
+      setCurrentChapter(2);
+    }
+    if (setChapter1Completed) {
+      setChapter1Completed(true);
+    }
     setPhase3Location('east_fork');
     setActiveMonologue(
-      "— The Guardian Nat fades into the incense smoke. I hold her truths and deceit alike in mind. The East Fork corridor awaits. —"
+      '— "The rain falls heaviest where the girls used to gather for secret music. Seek the terrace where wire catches the sky… she waits where the wind never settles." —'
     );
   };
 
@@ -779,7 +796,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                     <button
                       onClick={() => {
                         sound.playMenuSelect();
-                        setPhase3Location('prayer_room_main');
+                        if (natSummoned || isNatManifested) {
+                          handleConcludeNatAudience();
+                        } else {
+                          setPhase3Location('prayer_room_main');
+                        }
                       }}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
                     >

@@ -80,6 +80,8 @@ export interface ChapterOneState {
   selectedCharacterId?: string | null;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
+  natAudienceConcluded?: boolean;
+  currentChapter?: number;
 }
 
 export const initialChapterOneState: ChapterOneState = {
@@ -124,6 +126,8 @@ export const initialChapterOneState: ChapterOneState = {
   selectedCharacterId: 'moe_stheinkha',
   corridorShadowScareTriggered: false,
   chapter1Completed: false,
+  natAudienceConcluded: false,
+  currentChapter: 1,
 };
 
 export type GameStoreAction =
@@ -172,7 +176,9 @@ export type GameStoreAction =
   | { type: 'TICK_TIMER' }
   | { type: 'APPLY_COMPOSURE_SHOCK'; payload: { baseDamage: number; tensionMultiplier?: number } }
   | { type: 'APPLY_RELIEF_SURGE'; payload: { baseRecovery: number; resolveMultiplier?: number } }
-  | { type: 'ADVANCE_CHAPTER_WITH_ROLLOVER'; payload?: { resolveMultiplier?: number } };
+  | { type: 'ADVANCE_CHAPTER_WITH_ROLLOVER'; payload?: { resolveMultiplier?: number } }
+  | { type: 'SET_NAT_AUDIENCE_CONCLUDED'; payload: boolean }
+  | { type: 'SET_CURRENT_CHAPTER'; payload: number };
 
 export function chapterOneReducer(
   state: ChapterOneState = initialChapterOneState,
@@ -421,6 +427,12 @@ export function chapterOneReducer(
         chapter1Completed: true,
       };
     }
+
+    case 'SET_NAT_AUDIENCE_CONCLUDED':
+      return { ...state, natAudienceConcluded: action.payload };
+
+    case 'SET_CURRENT_CHAPTER':
+      return { ...state, currentChapter: action.payload };
 
     default:
       return state;
@@ -727,6 +739,7 @@ export function createFreshChapterOneSave(): ActiveSaveState {
     caretakerDoorUnlocked: false,
     composure: 100,
     timerSeconds: 600,
+    natAudienceConcluded: false,
     timestamp: Date.now(),
   };
 }

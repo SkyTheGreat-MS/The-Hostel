@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { sound } from '../audioEngine';
 import { PHASE_3_ASSETS } from '../gameData';
+import { SceneNavBar } from './SceneNavBar';
 
 export interface CaretakerOfficeViewProps {
   currentChapter?: number;
@@ -107,26 +108,21 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           }}
         />
 
-        {/* Navigation Anchor: Step back to East Wing Fork */}
-        <div className="fixed top-16 left-6 z-40 pointer-events-auto">
-          <button
-            onClick={() => {
-              try { sound.playDoorCreak(); } catch {}
-              if (onStepBack) {
-                onStepBack();
-              } else {
-                setPhase3Location?.('east_fork');
-                setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
-              }
-            }}
-            className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0b120e]/90 hover:bg-[#16241c] border border-[#23382b] hover:border-[#3d5e48] shadow-2xl transition-all cursor-pointer"
-          >
-            <span className="text-[#688a77] group-hover:text-[#a2c9b4] text-xs transition-colors">←</span>
-            <span className="font-mono text-[11px] tracking-wider text-[#a2c9b4] group-hover:text-[#d3e8dc] uppercase transition-colors">
-              Step Back to East Fork
-            </span>
-          </button>
-        </div>
+        {/* Standardized Scene Navigation Bar */}
+        <SceneNavBar
+          onReturn={() => {
+            try { sound.playDoorCreak(); } catch {}
+            if (onStepBack) {
+              onStepBack();
+            } else {
+              setPhase3Location?.('east_fork');
+              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+            }
+          }}
+          returnDestination="EAST FORK"
+          areaZone="ROOM 101"
+          areaName="CARETAKER ARCHIVE"
+        />
 
         {/* Hotspot Inspection Guard: Dark Doorway on bottom-left edge */}
         <InteractiveHotspot
@@ -181,26 +177,21 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
 
-      {/* Navigation Anchor: Step back to East Wing Fork */}
-      <div className="fixed top-16 left-6 z-40 pointer-events-auto">
-        <button
-          onClick={() => {
-            try { sound.playDoorCreak(); } catch {}
-            if (onStepBack) {
-              onStepBack();
-            } else {
-              setPhase3Location?.('east_fork');
-              setActiveMonologue?.('— Stepped out of the office back into the corridor fork. —');
-            }
-          }}
-          className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0b120e]/90 hover:bg-[#16241c] border border-[#23382b] hover:border-[#3d5e48] shadow-2xl transition-all cursor-pointer"
-        >
-          <span className="text-[#688a77] group-hover:text-[#a2c9b4] text-xs transition-colors">←</span>
-          <span className="font-mono text-[11px] tracking-wider text-[#a2c9b4] group-hover:text-[#d3e8dc] uppercase transition-colors">
-            Step Back to East Fork
-          </span>
-        </button>
-      </div>
+      {/* Standardized Scene Navigation Bar */}
+      <SceneNavBar
+        onReturn={() => {
+          try { sound.playDoorCreak(); } catch {}
+          if (onStepBack) {
+            onStepBack();
+          } else {
+            setPhase3Location?.('east_fork');
+            setActiveMonologue?.('— Stepped out of the office back into the corridor fork. —');
+          }
+        }}
+        returnDestination="EAST FORK"
+        areaZone="ROOM 101"
+        areaName="CARETAKER ARCHIVE"
+      />
 
       {/* 1. Wooden Supply Shelf (2 candles) */}
       <InteractiveHotspot

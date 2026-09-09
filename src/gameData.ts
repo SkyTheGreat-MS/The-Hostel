@@ -45,7 +45,9 @@ export const PHASE_3_ASSETS = {
   caretakerKeypadZoom: '/assets/scenes/caretaker_keypad_zoom.jpg',
   caretakerOfficeOverview: '/assets/scenes/caretaker_office_overview.jpg',
   caretakerSpectralClimax: '/assets/scenes/caretaker_spectral_climax.jpg',
-} as const;
+  cardBalcony: '/assets/scenes/balcony_rain_night.jpg',
+  balconyOverlook: '/assets/scenes/balcony_rain_night.jpg',
+};
 
 export const ITEMS: Record<string, Item> = {
   bobby_pin: {

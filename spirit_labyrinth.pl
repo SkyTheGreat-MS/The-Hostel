@@ -42,6 +42,7 @@
     nat_statement/4,
     ask_nat/3,
     conclude_nat_audience/0,
+    nat_audience_concluded/0,
     check_deductions/0,
     detect_key_deceit/0,
     detect_pacification_method/0,
@@ -102,6 +103,7 @@
 :- dynamic nat_knows/3.
 :- dynamic nat_summoned/0.
 :- dynamic nat_consulted/0.
+:- dynamic nat_audience_concluded/0.
 :- dynamic nat_inquiry_made/1.
 :- dynamic learned_clue/1.
 :- dynamic taboo_triggered/1.
@@ -166,6 +168,8 @@ location(caretaker_door_keypad).
 location(caretaker_office_main).
 location(prayer_room_main).
 location(prayer_altar).
+location(balcony_326).
+location(balcony).
 
 % Bidirectional and Directional Passages
 connected(room_4b_main, room_4b_desk).
@@ -281,6 +285,7 @@ init_game_state :-
     retractall(nat_summoned),
     retractall(nat_summoned(_)),
     retractall(nat_consulted),
+    retractall(nat_audience_concluded),
     retractall(nat_inquiry_made(_)),
     retractall(learned_clue(_)),
     retractall(taboo_triggered(_)),
@@ -576,10 +581,14 @@ ask_nat(TopicId, Veracity, ResponseText) :-
 
 % Audience Conclusion: locks chapter phase and routes player to East Fork
 conclude_nat_audience :-
-    nat_summoned,
+    (nat_summoned ; true),
     assertz(nat_consulted),
+    retractall(nat_audience_concluded),
+    assertz(nat_audience_concluded),
     retractall(current_location(_)),
     assertz(current_location(east_fork)),
+    retractall(current_chapter(_)),
+    assertz(current_chapter(2)),
     advance_chapter_phase(2, 2).
 
 % Composure Damage Bridge
@@ -673,6 +682,20 @@ path(caretaker_office, east_fork) :-
     ( current_chapter(2) ; (chapter(C), C >= 2) ).
 path(caretaker_office_main, east_fork) :-
     ( current_chapter(2) ; (chapter(C), C >= 2) ).
+
+% Balcony (Pathway 326) scene background & movement rules
+scene_background(balcony_326, 'assets/scenes/balcony_rain_night.jpg').
+scene_background(balcony, 'assets/scenes/balcony_rain_night.jpg').
+
+path(east_fork, balcony_326) :-
+    ( current_chapter(2) ; chapter(2) ; (current_chapter(C), C >= 2) ; (chapter(C), C >= 2) ),
+    nat_audience_concluded.
+path(balcony_326, east_fork).
+
+path(east_fork, balcony) :-
+    ( current_chapter(2) ; chapter(2) ; (current_chapter(C), C >= 2) ; (chapter(C), C >= 2) ),
+    nat_audience_concluded.
+path(balcony, east_fork).
 
 % Action to leave caretaker office
 leave_caretaker_office :-

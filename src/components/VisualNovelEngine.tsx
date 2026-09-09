@@ -71,15 +71,23 @@ import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
+import { BalconySceneView } from './BalconySceneView';
+import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
+
+export const LockerBayView = LockersOverviewView;
+export const CaretakerArchiveView = CaretakerOfficeView;
+
 export {
   Locker32ZoomView,
   Locker09ZoomView,
   LockersOverviewView,
   PrayerAltarView,
   CaretakerOfficeView,
+  BalconySceneView,
+  SceneNavBar,
   TopInventoryBar,
   InventoryDrawerModal,
   CaretakerLockModal,
@@ -739,6 +747,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
   const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
+  const [natAudienceConcluded, setNatAudienceConcluded] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -868,6 +877,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasReadLocker32Note(true);
       setHasReadSandarLetters(true);
       setDoorUnlocked(true);
+      if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
       setInventory([
         'bobby_pin',
         'wooden_bat',
@@ -921,6 +931,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (Array.isArray(save.askedNatTopics)) setAskedNatTopics(save.askedNatTopics);
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
+      setNatAudienceConcluded(Boolean(save.natAudienceConcluded));
       if (typeof save.composure === 'number') setComposure(save.composure);
       if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
 
@@ -1633,6 +1644,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     // 3. Reset in-memory engine state
     setCurrentChapter(1);
     setChapter1Completed(false);
+    setNatAudienceConcluded(false);
 
     // Reset Core Flow & Phase
     setPhase(1);
@@ -1846,6 +1858,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'washroom_rope') return PHASE_3_ASSETS.washroomRopeZoom;
       if (phase3Location === 'washroom_mirror') return PHASE_3_ASSETS.washroomMirrorZoom;
       if (phase3Location === 'east_fork') return PHASE_3_ASSETS.eastWingFork;
+      if (phase3Location === 'balcony_326' || phase3Location === 'balcony') return '/assets/scenes/balcony_rain_night.jpg';
       if (phase3Location === 'lockers_main') return PHASE_3_ASSETS.lockersOverview;
       if (phase3Location === 'locker_32') return PHASE_3_ASSETS.locker32Zoom;
       if (phase3Location === 'locker_09') return PHASE_3_ASSETS.locker09Zoom;
@@ -1867,6 +1880,211 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       return activeInvestigatingLoc.bgImage;
     }
     return ROOM_4B_ASSETS.main;
+  };
+
+  // Dynamic Global HUD Location Label
+  const getGlobalHudLocationLabel = (): string => {
+    if (mode === 'phase1_2') {
+      return currentP12Line.phase === 1
+        ? 'Phase 1 : The Discussion'
+        : 'Phase 2 : The Seance';
+    }
+    if (mode === 'awakening' || mode === 'room_escape') {
+      return activeInspectSubScene === 'main'
+        ? 'Phase 3 • Room 4B Escape'
+        : `Room 4B : ${activeInspectSubScene.toUpperCase()}`;
+    }
+    if (mode === 'phase3') {
+      switch (phase3Location) {
+        case 'hallway_threshold':
+          return 'PATHWAY 326 • THRESHOLD';
+        case 'west_split_landing':
+          return 'WEST WING • SPLIT LANDING';
+        case 'stairwell_gate':
+          return 'WEST WING • STAIRWELL GATE';
+        case 'washroom_main':
+          return 'WEST WING • COMMUNAL WASHROOM';
+        case 'washroom_basin':
+          return 'WASHROOM • CEMENT BASIN';
+        case 'washroom_stall':
+          return 'WASHROOM • THIRD STALL';
+        case 'washroom_rope':
+          return 'WASHROOM • DRAINAGE PIPE';
+        case 'washroom_mirror':
+          return 'WASHROOM • CRACKED MIRROR';
+        case 'east_fork':
+          return 'EAST WING • TRIPLE FORK';
+        case 'lockers_main':
+          return 'EAST WING • STUDENT LOCKER BAY';
+        case 'locker_32':
+          return 'LOCKER BAY • LOCKER 32';
+        case 'locker_09':
+          return 'LOCKER BAY • LOCKER 09';
+        case 'locker_14':
+          return 'LOCKER BAY • LOCKER 14';
+        case 'locker_spider':
+          return 'LOCKER BAY • RUSTED VENT';
+        case 'prayer_room_main':
+          return 'EAST WING • PRAYER ROOM';
+        case 'prayer_altar':
+          return 'PRAYER ROOM • GUARDIAN ALTAR';
+        case 'caretaker_door_keypad':
+          return 'EAST WING • CARETAKER DOOR';
+        case 'caretaker_office_main':
+        case 'caretaker_office':
+          return 'ROOM 101 • CARETAKER ARCHIVE';
+        case 'balcony_326':
+        case 'balcony':
+          return 'PATHWAY 326 • THE OVERLOOK BALCONY';
+        default:
+          return 'PHASE 3 • PATHWAY 326';
+      }
+    }
+    return `Phase 3 • Sector 0${currentTier} / 03`;
+  };
+
+  // Unified Phase 3 Return Navigation Handler
+  const handlePhase3Return = () => {
+    setPhase3Message(null);
+    if (
+      phase3Location === 'washroom_basin' ||
+      phase3Location === 'washroom_stall' ||
+      phase3Location === 'washroom_rope' ||
+      phase3Location === 'washroom_mirror'
+    ) {
+      sound.playPaperRustle();
+      setPhase3Location('washroom_main');
+    } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+      sound.playPaperRustle();
+      setPhase3Location('west_split_landing');
+    } else if (phase3Location === 'west_split_landing') {
+      sound.playPaperRustle();
+      setPhase3Location('hallway_threshold');
+    } else if (
+      phase3Location === 'locker_32' ||
+      phase3Location === 'locker_09' ||
+      phase3Location === 'locker_14' ||
+      phase3Location === 'locker_spider'
+    ) {
+      sound.playPaperRustle();
+      setPhase3Location('lockers_main');
+    } else if (phase3Location === 'lockers_main') {
+      if (hasReadLocker32Note && !corridorShadowScareTriggered) {
+        setIsScreenShaking(true);
+        setCorridorShadowFlash(true);
+        sound.playScareSlam();
+        setComposure((prev) => Math.max(0, prev - 5));
+        setCorridorShadowScareTriggered(true);
+        setTimeout(() => {
+          setIsScreenShaking(false);
+          setCorridorShadowFlash(false);
+        }, 900);
+        setActiveMonologue("— A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) —");
+      } else {
+        sound.playPaperRustle();
+        setActiveMonologue(null);
+      }
+      setPhase3Location('east_fork');
+    } else if (phase3Location === 'caretaker_door_keypad') {
+      sound.playPaperRustle();
+      setPhase3Location('east_fork');
+    } else if (phase3Location === 'prayer_altar') {
+      sound.playPaperRustle();
+      setPhase3Location('prayer_room_main');
+    } else if (phase3Location === 'prayer_room_main') {
+      sound.playPaperRustle();
+      setPhase3Location('east_fork');
+    } else if (phase3Location === 'east_fork') {
+      sound.playPaperRustle();
+      setPhase3Location('hallway_threshold');
+    } else if (phase3Location === 'hallway_threshold') {
+      sound.playPaperRustle();
+      setCurrentScene('room_4b_main');
+      setCurrentSubScene(null);
+      setActiveInspectSubScene('main');
+      setMode('room_escape');
+    }
+  };
+
+  // Unified Return Destination Label
+  const getPhase3ReturnDestination = (): string => {
+    if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+      return 'LANDING';
+    }
+    if (phase3Location === 'west_split_landing') {
+      return 'HALLWAY';
+    }
+    if (phase3Location.startsWith('washroom_')) {
+      return 'WASHROOM';
+    }
+    if (phase3Location.startsWith('locker_')) {
+      return 'LOCKER BAY';
+    }
+    if (
+      phase3Location === 'lockers_main' ||
+      phase3Location === 'caretaker_door_keypad' ||
+      phase3Location === 'prayer_room_main'
+    ) {
+      return 'EAST FORK';
+    }
+    if (phase3Location === 'prayer_altar') {
+      return 'PRAYER ROOM';
+    }
+    if (phase3Location === 'east_fork') {
+      return 'HALLWAY';
+    }
+    if (phase3Location === 'hallway_threshold') {
+      return 'ROOM 4B';
+    }
+    return 'EAST FORK';
+  };
+
+  // Unified Area Breadcrumb Resolver
+  const getPhase3AreaBreadcrumb = (): { zone: string; name: string } => {
+    switch (phase3Location) {
+      case 'hallway_threshold':
+        return { zone: 'PATHWAY 326', name: 'THRESHOLD' };
+      case 'west_split_landing':
+        return { zone: 'WEST WING', name: 'SPLIT LANDING' };
+      case 'stairwell_gate':
+        return { zone: 'WEST WING', name: 'STAIRWELL GATE' };
+      case 'washroom_main':
+        return { zone: 'WEST WING', name: 'COMMUNAL WASHROOM' };
+      case 'washroom_basin':
+        return { zone: 'WASHROOM', name: 'CEMENT BASIN' };
+      case 'washroom_stall':
+        return { zone: 'WASHROOM', name: 'THIRD STALL' };
+      case 'washroom_rope':
+        return { zone: 'WASHROOM', name: 'DRAINAGE PIPE' };
+      case 'washroom_mirror':
+        return { zone: 'WASHROOM', name: 'CRACKED MIRROR' };
+      case 'east_fork':
+        return { zone: 'EAST WING', name: 'TRIPLE FORK' };
+      case 'lockers_main':
+        return { zone: 'EAST WING', name: 'STUDENT LOCKER BAY' };
+      case 'locker_32':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 32' };
+      case 'locker_09':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 09' };
+      case 'locker_14':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 14' };
+      case 'locker_spider':
+        return { zone: 'LOCKER BAY', name: 'RUSTED VENT' };
+      case 'prayer_room_main':
+        return { zone: 'EAST WING', name: 'PRAYER ROOM' };
+      case 'prayer_altar':
+        return { zone: 'PRAYER ROOM', name: 'GUARDIAN ALTAR' };
+      case 'caretaker_door_keypad':
+        return { zone: 'EAST WING', name: 'CARETAKER DOOR' };
+      case 'caretaker_office_main':
+      case 'caretaker_office':
+        return { zone: 'ROOM 101', name: 'CARETAKER ARCHIVE' };
+      case 'balcony_326':
+      case 'balcony':
+        return { zone: 'PATHWAY 326', name: 'THE OVERLOOK BALCONY' };
+      default:
+        return { zone: 'PATHWAY 326', name: 'CORRIDOR' };
+    }
   };
 
   // Time & Composure formatted display
@@ -1948,37 +2166,27 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="fixed top-0 inset-x-0 p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+      <div className="fixed top-0 inset-x-0 p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-none bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 pointer-events-none">
           {/* Phase Badge */}
-          <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2">
+          <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2 pointer-events-none">
             <span className="w-2 h-2 rounded-full bg-[#6ee7b7] animate-ping" />
             <span className="uppercase">
-              {mode === 'phase1_2'
-                ? currentP12Line.phase === 1
-                  ? 'Phase 1 : The Discussion'
-                  : 'Phase 2 : The Seance'
-                : mode === 'awakening' || mode === 'room_escape'
-                ? activeInspectSubScene === 'main'
-                  ? 'Phase 3 • Room 4B Escape'
-                  : `Room 4B : ${activeInspectSubScene.toUpperCase()}`
-                : mode === 'phase3'
-                ? 'Phase 3 • Pathway 326'
-                : `Phase 3 • Sector 0${currentTier} / 03`}
+              {getGlobalHudLocationLabel()}
             </span>
           </div>
 
           {/* 10-Minute Timer Badge */}
           {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
-            <div className="flex items-center gap-2">
-              <div className="px-2.5 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold text-[#c2d6cc] flex items-center gap-1.5 shadow-md">
+            <div className="flex items-center gap-2 pointer-events-none">
+              <div className="px-2.5 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold text-[#c2d6cc] flex items-center gap-1.5 shadow-md pointer-events-none">
                 <Clock className="w-3.5 h-3.5 text-[#82a996] animate-pulse" />
                 <span>{timeFormatted}</span>
               </div>
 
               {/* Composure Badge */}
               <div
-                className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md ${getComposureColor(
+                className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md pointer-events-none ${getComposureColor(
                   composure
                 )}`}
               >
@@ -2803,155 +3011,47 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         />
       )}
 
-      {mode === 'phase3' && phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
-        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
-          {/* Top-Left Return Button */}
-          {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
-            <button
-              onClick={() => {
+      {/* BALCONY SCENE VIEW (PATHWAY 326) */}
+      {mode === 'phase3' && (phase3Location === 'balcony_326' || phase3Location === 'balcony') && (
+        <BalconySceneView
+          setPhase3Location={setPhase3Location}
+          activeMonologue={activeMonologue}
+          setActiveMonologue={setActiveMonologue}
+          currentChapter={currentChapter}
+          inventory={inventory}
+          setInventory={setInventory}
+          composure={composure}
+          setComposure={setComposure}
+          discoveredClues={discoveredClues}
+          onStepBack={() => {
+            try {
+              sound.playDoorCreak();
+            } catch {
+              try {
+                sound.playDoorPush();
+              } catch {
                 sound.playPaperRustle();
-                setCurrentScene('room_4b_main');
-                setCurrentSubScene(null);
-                setActiveInspectSubScene('main');
-                setMode('room_escape');
-              }}
-              className="absolute top-4 left-4 z-40 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#121815]/90 border border-[#273830] hover:border-[#425e50] text-[#9db5a8] hover:text-[#c2d6cc] font-mono text-xs tracking-wider transition-all duration-200 shadow-md pointer-events-auto"
-            >
-              <span className="text-[10px]">←</span> RE-ENTER ROOM 4B
-            </button>
-          )}
+              }
+            }
+            setPhase3Location('east_fork');
+            setActiveMonologue('— Stepped off the rain-swept balcony back into the East Fork corridor. —');
+          }}
+        />
+      )}
 
-          {/* Sub-scene Header Bar & Navigation */}
-          <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
-            {phase3Location !== 'hallway_threshold' ? (
-              <button
-                onClick={() => {
-                  setPhase3Message(null);
-                  if (
-                    phase3Location === 'washroom_basin' ||
-                    phase3Location === 'washroom_stall' ||
-                    phase3Location === 'washroom_rope' ||
-                    phase3Location === 'washroom_mirror'
-                  ) {
-                    sound.playPaperRustle();
-                    setPhase3Location('washroom_main');
-                  } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
-                    sound.playPaperRustle();
-                    setPhase3Location('west_split_landing');
-                  } else if (phase3Location === 'west_split_landing') {
-                    sound.playPaperRustle();
-                    setPhase3Location('hallway_threshold');
-                  } else if (
-                    phase3Location === 'locker_32' ||
-                    phase3Location === 'locker_09' ||
-                    phase3Location === 'locker_14' ||
-                    phase3Location === 'locker_spider'
-                  ) {
-                    sound.playPaperRustle();
-                    setPhase3Location('lockers_main');
-                  } else if (phase3Location === 'lockers_main') {
-                    if (hasReadLocker32Note && !corridorShadowScareTriggered) {
-                      setIsScreenShaking(true);
-                      setCorridorShadowFlash(true);
-                      sound.playScareSlam();
-                      setComposure((prev) => Math.max(0, prev - 5));
-                      setCorridorShadowScareTriggered(true);
-                      setTimeout(() => {
-                        setIsScreenShaking(false);
-                        setCorridorShadowFlash(false);
-                      }, 900);
-                      setActiveMonologue("— A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) —");
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue(null);
-                    }
-                    setPhase3Location('east_fork');
-                  } else if (phase3Location === 'caretaker_door_keypad') {
-                    sound.playPaperRustle();
-                    setPhase3Location('east_fork');
-                  } else if (phase3Location === 'prayer_altar') {
-                    sound.playPaperRustle();
-                    setPhase3Location('prayer_room_main');
-                  } else if (phase3Location === 'prayer_room_main') {
-                    sound.playPaperRustle();
-                    setPhase3Location('east_fork');
-                  } else if (phase3Location === 'east_fork') {
-                    sound.playPaperRustle();
-                    setPhase3Location('hallway_threshold');
-                  }
-                }}
-                className="px-3.5 py-1.5 rounded-xl bg-[#121815]/95 border border-[#2c3d34] hover:bg-[#18221d] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-mono font-bold flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 transition-all"
-              >
-                <ArrowLeft className="w-4 h-4 text-[#82a996]" />
-                <span>
-                  {phase3Location === 'stairwell_gate'
-                    ? 'ASCEND BACK TO LANDING'
-                    : phase3Location === 'washroom_main'
-                    ? 'EXIT TO HALLWAY LANDING'
-                    : phase3Location.startsWith('washroom_')
-                    ? 'RETURN TO WASHROOM'
-                    : phase3Location.startsWith('locker_')
-                    ? 'STEP BACK TO LOCKER BAY'
-                    : phase3Location === 'lockers_main'
-                    ? 'EXIT TO EAST WING FORK'
-                    : phase3Location === 'caretaker_door_keypad'
-                    ? 'STEP BACK TO EAST WING FORK'
-                    : phase3Location === 'prayer_altar'
-                    ? 'STEP BACK TO PRAYER ROOM'
-                    : phase3Location === 'prayer_room_main'
-                    ? 'EXIT TO EAST WING FORK'
-                    : 'STEP BACK TO THRESHOLD'}
-                </span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#82a996]" />
-                <span className="text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest">
-                  PATHWAY 326 • THRESHOLD
-                </span>
-              </div>
-            )}
-
-            {/* Current Area Subtitle Badge */}
-            <div className="flex items-center gap-2 px-3 py-1 rounded-xl bg-[#121815]/95 border border-[#2c3d34] text-[11px] font-mono text-[#c2d6cc]">
-              <span className="text-[#82a996] font-bold">AREA:</span>
-              <span className="uppercase">
-                {phase3Location === 'hallway_threshold'
-                  ? 'Corridor Split'
-                  : phase3Location === 'west_split_landing'
-                  ? 'West Wing Split Landing'
-                  : phase3Location === 'stairwell_gate'
-                  ? 'Ground Floor Padlocked Gate'
-                  : phase3Location === 'washroom_main'
-                  ? 'Communal Washroom'
-                  : phase3Location === 'washroom_basin'
-                  ? 'Cement Wash Basin'
-                  : phase3Location === 'washroom_stall'
-                  ? 'Third Cubicle Stall'
-                  : phase3Location === 'washroom_rope'
-                  ? 'Overhead Drainage Pipe'
-                  : phase3Location === 'washroom_mirror'
-                  ? 'Cracked Wall Mirror & Sinks'
-                  : phase3Location === 'east_fork'
-                  ? 'East Wing Fork'
-                  : phase3Location === 'lockers_main'
-                  ? 'Student Locker Bay'
-                  : phase3Location === 'locker_32'
-                  ? "Locker 32 "
-                  : phase3Location === 'locker_09'
-                  ? 'Locker 09 '
-                  : phase3Location === 'locker_14'
-                  ? "Locker 14 "
-                  : phase3Location === 'locker_spider'
-                  ? 'Rusted Locker Vent'
-                  : phase3Location === 'caretaker_door_keypad'
-                  ? 'Caretaker Office Brass Padlock'
-                  : phase3Location === 'prayer_room_main'
-                  ? 'Communal Prayer Sanctuary'
-                  : 'Guardian Nat Prayer Altar'}
-              </span>
-            </div>
-          </div>
+      {mode === 'phase3' &&
+        phase3Location !== 'caretaker_office_main' &&
+        phase3Location !== 'caretaker_office' &&
+        phase3Location !== 'balcony_326' &&
+        phase3Location !== 'balcony' && (
+        <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
+          {/* Standardized Scene Navigation Bar */}
+          <SceneNavBar
+            onReturn={handlePhase3Return}
+            returnDestination={getPhase3ReturnDestination()}
+            areaZone={getPhase3AreaBreadcrumb().zone}
+            areaName={getPhase3AreaBreadcrumb().name}
+          />
 
           {/* Sub-scene Interactive Area */}
           <div className="relative flex-1 w-full h-full pointer-events-auto">
@@ -3254,10 +3354,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               </>
             )}
 
-            {/* SUB-SCENE 5: EAST WING FORK - THREE CHOICE CARDS */}
+            {/* SUB-SCENE 5: EAST WING FORK - CHOICE CARDS */}
             {phase3Location === 'east_fork' && (
               <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 max-w-5xl w-full pointer-events-auto">
+                <div
+                  className={`w-full grid gap-3 sm:gap-4 md:gap-5 pointer-events-auto items-center justify-center ${
+                    currentChapter >= 2 && natAudienceConcluded
+                      ? 'grid-cols-4 max-w-5xl lg:max-w-6xl'
+                      : 'grid-cols-3 max-w-4xl lg:max-w-5xl'
+                  }`}
+                >
                   {/* Card A: Lockers */}
                   <motion.div
                     whileHover={{ scale: 1.03, y: -4 }}
@@ -3267,7 +3373,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       setPhase3Message(null);
                       setPhase3Location('lockers_main');
                     }}
-                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardEastLockers}
@@ -3276,16 +3382,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
                         SECTOR A • LOCKERS
                       </span>
                       <h3
-                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
                         STUDENT LOCKER BAY
                       </h3>
-                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
                         Metal lockers from 1998. Belongings of May, Sandar, and dorm residents.
                       </p>
                     </div>
@@ -3300,7 +3406,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       setPhase3Message(null);
                       setPhase3Location('prayer_room_main');
                     }}
-                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardEastPrayer}
@@ -3309,16 +3415,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
                         SECTOR B • SANCTUARY
                       </span>
                       <h3
-                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
                         PRAYER ROOM & ALTAR
                       </h3>
-                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
                         Ancient Burmese Nat shrine with offering bowls and incense tiers.
                       </p>
                     </div>
@@ -3337,7 +3443,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         setPhase3Location('caretaker_office_main');
                       }
                     }}
-                    className="group relative w-64 sm:w-72 h-88 sm:h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardEastCaretaker}
@@ -3346,7 +3452,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-widest uppercase">
+                      <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-widest uppercase">
                         {currentChapter >= 2 || chapter1Completed ? (
                           <span className="text-[#8fa89b] flex items-center gap-1">
                             <Lock className="w-3 h-3 text-[#5a7a69]" /> ABANDONED (CH. 2)
@@ -3362,16 +3468,66 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         )}
                       </div>
                       <h3
-                        className="text-2xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
+                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
                         CARETAKER ARCHIVE
                       </h3>
-                      <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
+                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
                         Warden's locked records office secured by a heavy brass tumbler combination lock.
                       </p>
                     </div>
                   </motion.div>
+
+                  {/* Card D: Pathway 326 (The Overlook Balcony) - Dynamically revealed when currentChapter >= 2 && natAudienceConcluded */}
+                  {currentChapter >= 2 && natAudienceConcluded && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.4 }}
+                      whileHover={{ scale: 1.03, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        try {
+                          sound.playDoorPush();
+                        } catch {
+                          try {
+                            sound.playDoorCreak();
+                          } catch {
+                            sound.playMenuSelect();
+                          }
+                        }
+                        setPhase3Message(null);
+                        setPhase3Location('balcony_326');
+                      }}
+                      className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-emerald-500/60 hover:border-emerald-400 bg-[#121815]/95 cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4 ring-1 ring-emerald-500/40"
+                    >
+                      <img
+                        src="/assets/scenes/balcony_rain_night.jpg"
+                        onError={(e) => {
+                          e.currentTarget.src = 'assets/scenes/balcony_rain_night.jpg';
+                        }}
+                        alt="Pathway 326"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
+                      <div className="relative z-10 space-y-1 text-left">
+                        <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                          PATHWAY 326
+                        </span>
+                        <h3
+                          className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-emerald-300 transition-colors"
+                          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                        >
+                          THE OVERLOOK BALCONY
+                        </h3>
+                        <p className="text-[10px] sm:text-[11px] font-mono text-stone-300 line-clamp-2 leading-tight">
+                          Padlocked fire door forced ajar. Monsoon rain lashing the eaves.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             )}
@@ -3615,6 +3771,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setDiscoveredClues={setDiscoveredClues}
                 askedTopics={askedNatTopics}
                 setAskedTopics={setAskedNatTopics}
+                natAudienceConcluded={natAudienceConcluded}
+                setNatAudienceConcluded={setNatAudienceConcluded}
+                currentChapter={currentChapter}
+                setCurrentChapter={setCurrentChapter}
               />
             )}
           </div>
