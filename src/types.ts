@@ -146,12 +146,28 @@ export interface GameState {
   hasReadSandarLetters: boolean;
   hasLocker09Candle: boolean;
   hasLocker09Matchbox: boolean;
+  hasCaretakerCandles?: boolean;
   caretakerDoorUnlocked: boolean;
   altarCandlesPlaced: number;   // 0 to 3
   altarBellPlaced: boolean;
   natSummoned: boolean;
+  hasConsultedNat?: boolean;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
+}
+
+export type StatementVeracity = 'truth' | 'deceit' | 'forbidden_silence';
+
+export interface NatInquiryOption {
+  id: string;
+  label: string; // The question player asks
+  playerLine: string;
+  natResponses: {
+    text: string;
+    veracity: StatementVeracity;
+    caseNoteSnippet?: string; // Auto-logs to Case Notes
+    spritePose?: 'neutral' | 'pensive' | 'warning';
+  }[];
 }
 
 export interface PLUnitTest {
@@ -205,10 +221,12 @@ export interface ChapterProgressSave {
   hasReadSandarLetters?: boolean;
   hasLocker09Candle?: boolean;
   hasLocker09Matchbox?: boolean;
+  hasCaretakerCandles?: boolean;
   caretakerDoorUnlocked?: boolean;
   altarCandlesPlaced?: number;
   altarBellPlaced?: boolean;
   natSummoned?: boolean;
+  hasConsultedNat?: boolean;
   corridorShadowScareTriggered?: boolean;
   chapter1Completed?: boolean;
 }

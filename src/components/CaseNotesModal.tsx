@@ -13,7 +13,7 @@ interface CaseNotesModalProps {
   discoveredClueIds: string[];
 }
 
-interface ClueData {
+export interface ClueData {
   id: string;
   title: string;
   location: string;
@@ -21,7 +21,7 @@ interface ClueData {
   description: string;
 }
 
-const MASTER_CLUES: Record<string, ClueData> = {
+export const MASTER_CLUES: Record<string, ClueData> = {
   seance_notebook: {
     id: 'seance_notebook',
     title: 'The Mirror-Well Pact (1998 Notebook)',
@@ -133,6 +133,38 @@ const MASTER_CLUES: Record<string, ClueData> = {
     category: 'primary',
     description:
       "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Shows the hidden betrayal behind Mama May.",
+  },
+  nat_testimony_may_murder: {
+    id: 'nat_testimony_may_murder',
+    title: "Nat Testimony: May's Murder",
+    location: 'Guardian Nat Altar',
+    category: 'primary',
+    description:
+      '[NOTE: May was strangled inside the hostel during monsoon term 1998.] The Guardian Nat confirmed her name was May, a warden’s favorite, choke-strangled in the quiet dark of monsoon week.',
+  },
+  nat_testimony_locker_key: {
+    id: 'nat_testimony_locker_key',
+    title: 'Nat Testimony: Locker 14 Key',
+    location: 'Guardian Nat Altar',
+    category: 'side',
+    description:
+      '[NOTE: Nat claimed the key was incinerated behind the mess hall. DEDUCTION: Contradicts Locker 32 notes confirming May carries the key around her neck—a deliberate deceit.]',
+  },
+  nat_testimony_office_attack: {
+    id: 'nat_testimony_office_attack',
+    title: 'Nat Testimony: Caretaker Office Attack',
+    location: 'Guardian Nat Altar',
+    category: 'primary',
+    description:
+      '[NOTE: May mistakes anyone in the office for her killer until calmed.] Until her neck is freed of shame, every living soul looks like her murderer.',
+  },
+  nat_testimony_banyan_well: {
+    id: 'nat_testimony_banyan_well',
+    title: 'Nat Testimony: Banyan Tree Well',
+    location: 'Guardian Nat Altar',
+    category: 'side',
+    description:
+      '[NOTE: The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.]',
   },
 };
 

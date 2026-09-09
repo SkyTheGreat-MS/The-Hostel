@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
 import { Phase3Location } from '../types';
 import { Flame, Bell, Sparkles } from 'lucide-react';
+import { NatDialogueView } from './NatDialogueView';
 
 export interface PrayerAltarViewProps {
   composure: number;
@@ -30,6 +31,11 @@ export interface PrayerAltarViewProps {
   natSummoned?: boolean;
   setNatSummoned?: React.Dispatch<React.SetStateAction<boolean>>;
   triggerNatManifestationSequence?: () => void;
+  hasConsultedNat?: boolean;
+  setHasConsultedNat?: React.Dispatch<React.SetStateAction<boolean>>;
+  addDiscoveredClue?: (clueId: string) => void;
+  discoveredClues?: string[];
+  setDiscoveredClues?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
@@ -56,6 +62,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   setAltarBellPlaced,
   natSummoned = false,
   setNatSummoned,
+  hasConsultedNat = false,
+  setHasConsultedNat,
+  addDiscoveredClue,
+  discoveredClues = [],
+  setDiscoveredClues,
 }) => {
   // State Tracking as specified
   const [candlesPlaced, setCandlesPlaced] = useState<boolean[]>([
@@ -79,6 +90,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   const [isNatManifested, setIsNatManifested] = useState<boolean>(Boolean(natSummoned));
   const [natAppearing, setNatAppearing] = useState<boolean>(false);
   const [isRoomDimmed, setIsRoomDimmed] = useState<boolean>(false);
+  const [isNatDialogueOpen, setIsNatDialogueOpen] = useState<boolean>(false);
   const [dialogueState, setDialogueState] = useState<{
     speaker: string;
     line: string;
@@ -88,6 +100,18 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
     active: false,
   });
+
+  // Conclude Nat Audience and Return to East Fork
+  const handleConcludeNatAudience = () => {
+    setIsNatDialogueOpen(false);
+    if (setHasConsultedNat) {
+      setHasConsultedNat(true);
+    }
+    setPhase3Location('east_fork');
+    setActiveMonologue(
+      "— The Guardian Nat fades into the incense smoke. I hold her truths and deceit alike in mind. The East Fork corridor awaits. —"
+    );
+  };
 
   // Keep state synchronized with parent if natSummoned is true
   useEffect(() => {
@@ -114,41 +138,55 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   }, [hasPlacedBell, setAltarBellPlaced]);
 
   // Handle Placing Candle on Spikes 1, 2, or 3
-  const handlePlaceCandle = (slot: 1 | 2 | 3) => {
+  const handlePlaceCandle = (spikeIndex: number) => {
     if (natSummoned || isNatManifested) {
       sound.playGhostWhisper();
       setActiveMonologue("— The black beeswax candles burn with steady pale-blue sulfur flames, sustaining the Guardian Nat's presence. —");
       return;
     }
 
-    const idx = slot - 1;
-    if (candlesPlaced[idx]) {
-      if (candlesLit[idx]) {
-        setActiveMonologue("— The black beeswax candle burns steadily with a cold, pale-blue sulfur glow. —");
-      } else {
-        setActiveMonologue(`— Black candle #${slot} is firmly mounted onto the iron spike, ready to be lit. —`);
-      }
+    // spikeIndex: 0, 1, or 2 (for Left, Center, Right)
+    if (candlesPlaced[spikeIndex]) {
+      setActiveMonologue(
+        candlesLit[spikeIndex]
+          ? "The tallow flame burns cold and steady."
+          : "A black beeswax candle is already mounted here."
+      );
       return;
     }
 
-    // Check if player has ritual candle in inventory
-    const hasCandle =
-      hasBlackCandlesCount > 0 || inventory.includes('black_beeswax_candle');
-    if (!hasCandle) {
-      sound.playPaperRustle();
-      setActiveMonologue("— An iron candle spike. It needs a thick ritual candle. —");
+    // Check how many candles are currently held in inventory
+    const heldCandles = inventory.filter((id) => id === 'black_beeswax_candle').length;
+
+    if (heldCandles <= 0) {
+      sound.playError();
+      setActiveMonologue(
+        "— An iron candle spike. I have no more ritual candles to mount. The altar still needs more tallow. —"
+      );
       return;
     }
 
-    // Mount Candle
-    sound.playPaperRustle();
+    // 1. Mount candle on the targeted spike
+    sound.playWoodTap();
     setCandlesPlaced((prev) => {
-      const next = [...prev];
-      next[idx] = true;
-      return next;
+      const updated = [...prev];
+      updated[spikeIndex] = true;
+      return updated;
     });
+
+    // 2. Consume EXACTLY ONE candle from inventory
+    setInventory((prev) => {
+      const firstIndex = prev.indexOf('black_beeswax_candle');
+      if (firstIndex === -1) return prev;
+      const nextInv = [...prev];
+      nextInv.splice(firstIndex, 1);
+      return nextInv;
+    });
+
+    // 3. Decrement available candle counter
     setHasBlackCandlesCount((prev) => Math.max(0, prev - 1));
-    setActiveMonologue(`— Mounted a thick black beeswax candle onto spike #${slot}. —`);
+
+    setActiveMonologue(`Mounted a thick black beeswax candle onto Spike #${spikeIndex + 1}.`);
   };
 
   // Handle Placing Bell on Pedestal
@@ -190,8 +228,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
 
   // Match Striking Logic & Composure-Penalty System
   const handleStrikeMatch = () => {
-    if (!candlesPlaced.every(Boolean)) {
-      setActiveMonologue("I need to mount all three black candles onto the spikes first.");
+    if (candlesPlaced.filter(Boolean).length < 3) {
+      sound.playError();
+      setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
       return;
     }
 
@@ -293,12 +332,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         setIsRoomDimmed(false);
         sound.playSpiritManifestHiss(); // Soft airy chime / spirit whisper
 
-        // 5. Open dialogue modal with the Guardian Nat
-        setDialogueState({
-          speaker: 'Hostel Guardian Nat',
-          line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
-          active: true,
-        });
+        // 5. Open Nat Interrogation Dialogue View
+        setIsNatDialogueOpen(true);
       }, 400);
     }, 600);
   };
@@ -379,7 +414,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             });
           }}
           onMouseLeave={() => setHoveredSocket(null)}
-          onClick={() => handlePlaceCandle(1)}
+          onClick={() => handlePlaceCandle(0)}
         >
           <title>
             {candlesPlaced[0]
@@ -408,7 +443,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             });
           }}
           onMouseLeave={() => setHoveredSocket(null)}
-          onClick={() => handlePlaceCandle(2)}
+          onClick={() => handlePlaceCandle(1)}
         >
           <title>
             {candlesPlaced[1]
@@ -437,7 +472,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             });
           }}
           onMouseLeave={() => setHoveredSocket(null)}
-          onClick={() => handlePlaceCandle(3)}
+          onClick={() => handlePlaceCandle(2)}
         >
           <title>
             {candlesPlaced[2]
@@ -446,6 +481,38 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                 : 'Unlit Candle #3'
               : 'Place Black Candle on Spike 3'}
           </title>
+        </polygon>
+
+        {/* Ceremonial Altar Offering Bowl */}
+        <polygon
+          id="altar-socket-bowl"
+          points="50.0,54.0 65.0,54.0 63.5,63.0 51.5,63.0"
+          className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#476756]/20 stroke-[#4a7a60]/30 hover:stroke-[#8fa89b] stroke-[0.2] transition-all"
+          onMouseEnter={() => {
+            sound.playMenuHover();
+            setHoveredSocket({
+              text: 'Guardian Nat Altar Bowl',
+              x: 57.5,
+              y: 53.5,
+            });
+          }}
+          onMouseLeave={() => setHoveredSocket(null)}
+          onClick={() => {
+            if (candlesPlaced.filter(Boolean).length < 3) {
+              sound.playError();
+              setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+            } else if (!candlesLit.every(Boolean)) {
+              if (inventory.includes('matchbox_three_stars')) {
+                setActiveMonologue("— Three black beeswax candles stand ready on the altar spikes. Use the safety matches to strike the fire. —");
+              } else {
+                setActiveMonologue("— Three black beeswax candles stand ready, but I need matches to strike the flame. —");
+              }
+            } else {
+              setActiveMonologue("— The three candles burn cold and steady with pale blue sulfur light. —");
+            }
+          }}
+        >
+          <title>Guardian Nat Altar Bowl</title>
         </polygon>
 
         {/* Bell Pedestal (Circular Wooden Stand on Right) */}
@@ -581,18 +648,21 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       )}
 
       {/* 2. SPLIT BOTTOM HUD: Left Dock (Minigame / Ritual Actions), Right Dock (Inner Monologue) */}
-      {!dialogueState.active && (
+      {!isNatDialogueOpen && !dialogueState.active && (
         <div className="absolute bottom-4 inset-x-4 z-40 flex items-end justify-between gap-6 pointer-events-none">
           {/* LEFT DOCK: Match-Striking Minigame Card / Ritual Action Banners */}
           <div className="w-full max-w-sm pointer-events-auto">
             <AnimatePresence mode="wait">
-              {allCandlesReady && !allCandlesLit && (
+              {/* Only render ignition panel when all 3 spikes actually have candles mounted AND matches exist */}
+              {candlesPlaced.filter(Boolean).length === 3 &&
+                !candlesLit.every(Boolean) &&
+                inventory.includes('matchbox_three_stars') && (
                 <motion.div
                   key="match-striking-card"
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
-                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-2"
+                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-2 pointer-events-auto"
                 >
                   <div className="flex items-center justify-between text-[11px] font-mono tracking-wider text-[#8fa89b] uppercase">
                     <span className="flex items-center gap-1.5 font-bold">
@@ -674,11 +744,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                     <button
                       onClick={() => {
                         sound.playGhostWhisper();
-                        setDialogueState({
-                          speaker: 'Hostel Guardian Nat',
-                          line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
-                          active: true,
-                        });
+                        setIsNatDialogueOpen(true);
                       }}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-[#1a2b22] hover:bg-[#253d30] border border-[#3f5c4c] text-[#a8cdb9] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
                     >
@@ -725,72 +791,17 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         </div>
       )}
 
-      {/* 5. Guardian Nat Dialogue Modal */}
+      {/* 5. Guardian Nat Interrogation Dialogue System */}
       <AnimatePresence>
-        {dialogueState.active && (
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="absolute inset-x-0 bottom-4 sm:bottom-6 z-50 px-4 max-w-4xl mx-auto pointer-events-auto"
-          >
-            <div className="w-full relative">
-              {/* Character Name Tab */}
-              <div
-                className="absolute -top-7 left-6 z-30 px-4 py-1.5 rounded-t-md border border-b-0 border-[#3f5c4c] bg-[#111814] shadow-md pointer-events-none select-none"
-              >
-                <span
-                  className="text-sm sm:text-base font-black tracking-wider uppercase text-[#82a996] whitespace-nowrap"
-                  style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                >
-                  {dialogueState.speaker}
-                </span>
-              </div>
-
-              {/* Main Dialogue Box */}
-              <div
-                onClick={() => {
-                  sound.playMenuSelect();
-                  setDialogueState((prev) => ({ ...prev, active: false }));
-                  setActiveMonologue(
-                    "— The Guardian Nat remains manifest before the altar, eyes piercing through the pale blue candle smoke. Return to the corridor to inspect the Caretaker's office. —"
-                  );
-                }}
-                className="w-full relative rounded-xl bg-gradient-to-b from-[#18231e]/98 via-[#121815]/98 to-[#0b0f0d]/98 backdrop-blur-md border border-[#3f5c4c] p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.9)] transition-all duration-200 cursor-pointer hover:border-[#68947c] group ring-1 ring-emerald-950/60"
-              >
-                {/* Top Bar with Location Tag & Status */}
-                <div className="flex items-center justify-between mb-2 sm:mb-3 border-b border-[#2c3d34]/60 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono tracking-widest text-[#82a996]/80 uppercase">
-                      Communal Prayer Sanctuary • 1998
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-[11px] font-mono text-[#82a996]/80">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
-                    <span>Spectral Manifestation</span>
-                  </div>
-                </div>
-
-                {/* Dialogue Text Body */}
-                <p className="text-[#c2d6cc] font-sans text-sm sm:text-base md:text-lg leading-relaxed min-h-[56px] sm:min-h-[64px] tracking-wide select-text">
-                  {dialogueState.line}
-                </p>
-
-                {/* Advance Action Prompt */}
-                <div className="mt-4 flex items-center justify-between text-xs font-mono text-[#82a996]/80 border-t border-[#2c3d34]/60 pt-2">
-                  <span className="text-[11px] text-[#82a996]/70">
-                    Click anywhere to dismiss
-                  </span>
-
-                  <div className="flex items-center gap-1.5 text-[#82a996] group-hover:text-[#6ee7b7] group-hover:translate-x-1 transition-all">
-                    <span className="font-semibold uppercase tracking-wider">CONTINUE</span>
-                    <span className="text-xs">→</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+        {isNatDialogueOpen && (
+          <NatDialogueView
+            composure={composure}
+            setComposure={setComposure}
+            characterName="Moe"
+            onConcludeAudience={handleConcludeNatAudience}
+            addDiscoveredClue={addDiscoveredClue}
+            discoveredClues={discoveredClues}
+          />
         )}
       </AnimatePresence>
     </div>

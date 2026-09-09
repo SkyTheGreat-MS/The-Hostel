@@ -707,10 +707,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [hasReadSandarLetters, setHasReadSandarLetters] = useState<boolean>(false);
   const [hasLocker09Candle, setHasLocker09Candle] = useState<boolean>(false);
   const [hasLocker09Matchbox, setHasLocker09Matchbox] = useState<boolean>(false);
+  const [hasCaretakerCandles, setHasCaretakerCandles] = useState<boolean>(false);
   const [caretakerDoorUnlocked, setCaretakerDoorUnlocked] = useState<boolean>(false);
   const [altarCandlesPlaced, setAltarCandlesPlaced] = useState<number>(0);
   const [altarBellPlaced, setAltarBellPlaced] = useState<boolean>(false);
   const [natSummoned, setNatSummoned] = useState<boolean>(false);
+  const [hasConsultedNat, setHasConsultedNat] = useState<boolean>(false);
   const [corridorShadowScareTriggered, setCorridorShadowScareTriggered] = useState<boolean>(false);
   const [chapter1Completed, setChapter1Completed] = useState<boolean>(false);
   const [keypadInput, setKeypadInput] = useState<string>('');
@@ -841,6 +843,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasNylonRope(true);
       setHasLocker09Candle(true);
       setHasLocker09Matchbox(true);
+      setHasCaretakerCandles(true);
       setHasReadLocker32Note(true);
       setHasReadSandarLetters(true);
       setDoorUnlocked(true);
@@ -849,6 +852,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         'wooden_bat',
         'small_brass_key_32',
         'coiled_nylon_rope',
+        'black_beeswax_candle',
+        'black_beeswax_candle',
         'black_beeswax_candle',
         'matchbox_three_stars',
         'bronze_prayer_bell',
@@ -886,10 +891,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasReadSandarLetters(Boolean(save.hasReadSandarLetters));
       setHasLocker09Candle(Boolean(save.hasLocker09Candle || (typeof save.hasBlackCandlesCount === 'number' && save.hasBlackCandlesCount > 0)));
       setHasLocker09Matchbox(Boolean(save.hasLocker09Matchbox || (typeof save.hasMatchesCount === 'number' && save.hasMatchesCount > 0)));
+      setHasCaretakerCandles(Boolean(save.hasCaretakerCandles));
       setCaretakerDoorUnlocked(Boolean(save.caretakerDoorUnlocked));
       if (typeof save.altarCandlesPlaced === 'number') setAltarCandlesPlaced(save.altarCandlesPlaced);
       setAltarBellPlaced(Boolean(save.altarBellPlaced));
       setNatSummoned(Boolean(save.natSummoned));
+      setHasConsultedNat(Boolean(save.hasConsultedNat));
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       if (typeof save.composure === 'number') setComposure(save.composure);
@@ -958,10 +965,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasReadSandarLetters,
         hasLocker09Candle,
         hasLocker09Matchbox,
+        hasCaretakerCandles,
         caretakerDoorUnlocked,
         altarCandlesPlaced,
         altarBellPlaced,
         natSummoned,
+        hasConsultedNat,
         corridorShadowScareTriggered,
         chapter1Completed: false,
       });
@@ -984,6 +993,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           hasMatchesCount,
           hasBronzeBell,
           caretakerDoorUnlocked,
+          altarCandlesPlaced,
+          altarBellPlaced,
+          natSummoned,
+          hasConsultedNat,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1020,6 +1033,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     altarCandlesPlaced,
     altarBellPlaced,
     natSummoned,
+    hasConsultedNat,
     corridorShadowScareTriggered,
     chapter1Completed,
   ]);
@@ -1578,6 +1592,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasMatchesCount: 0,
       hasBronzeBell: false,
       caretakerDoorUnlocked: false,
+      altarCandlesPlaced: 0,
+      altarBellPlaced: false,
+      natSummoned: false,
+      hasConsultedNat: false,
       composure: 100,
       timerSeconds: 600,
       timestamp: Date.now(),
@@ -1624,10 +1642,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setHasReadSandarLetters(false);
     setHasLocker09Candle(false);
     setHasLocker09Matchbox(false);
+    setHasCaretakerCandles(false);
     setCaretakerDoorUnlocked(false);
     setAltarCandlesPlaced(0);
     setAltarBellPlaced(false);
     setNatSummoned(false);
+    setHasConsultedNat(false);
     setCorridorShadowScareTriggered(false);
     setKeypadInput('');
     setSpectralClimaxActive(false);
@@ -1945,6 +1965,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       if (itemId) {
                         sound.playPaperRustle();
                         setInspectingItem(itemId);
+                        if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
+                          sound.playError();
+                          setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+                        }
                       }
                     }}
                     title={itemData ? `${itemData.name} (Click to inspect)` : 'Empty Slot'}
@@ -3584,11 +3608,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   width={22}
                   height={45}
                   shape="rect"
-                  cursorTooltip={hasBlackCandlesCount < 3 ? "[Take 2 Black Beeswax Candles]" : "[Supply Shelf (Empty)]"}
+                  cursorTooltip={!hasCaretakerCandles ? "[Take 2 Black Beeswax Candles]" : "[Supply Shelf (Empty)]"}
                   onClick={() => {
-                    if (hasBlackCandlesCount < 3) {
+                    if (!hasCaretakerCandles) {
+                      setHasCaretakerCandles(true);
                       setHasBlackCandlesCount((prev) => prev + 2);
-                      if (!inventory.includes('black_beeswax_candle')) addInventoryItem('black_beeswax_candle');
+                      setInventory((prev) => [...prev, 'black_beeswax_candle', 'black_beeswax_candle']);
                       sound.playPaperRustle();
                       setActiveMonologue(
                         "— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —"
@@ -3635,12 +3660,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   height={38}
                   shape="rect"
                   cursorTooltip={
-                    natSummoned || (hasBlackCandlesCount >= 3 && hasBronzeBell)
+                    natSummoned || ((hasBlackCandlesCount + altarCandlesPlaced) >= 3 && hasBronzeBell)
                       ? "[Examine Open Ledger on Desk]"
                       : "[Examine Caretaker Desk]"
                   }
                   onClick={() => {
-                    if (natSummoned || (hasBlackCandlesCount >= 3 && hasBronzeBell)) {
+                    if (natSummoned || ((hasBlackCandlesCount + altarCandlesPlaced) >= 3 && hasBronzeBell)) {
                       handleCaretakerClimax();
                     } else {
                       sound.playPaperRustle();
@@ -3697,6 +3722,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setAltarBellPlaced={setAltarBellPlaced}
                 natSummoned={natSummoned}
                 setNatSummoned={setNatSummoned}
+                hasConsultedNat={hasConsultedNat}
+                setHasConsultedNat={setHasConsultedNat}
+                addDiscoveredClue={addDiscoveredClue}
+                discoveredClues={discoveredClues}
+                setDiscoveredClues={setDiscoveredClues}
               />
             )}
           </div>

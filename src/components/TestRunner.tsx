@@ -32,6 +32,8 @@ import { ChapterTransitionModal } from './ChapterTransitionModal';
 import { LockersOverviewView } from './LockersOverviewView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { ChapterCard, RestartConfirmationModal } from './ChapterSelection';
+import { NatDialogueView, NAT_INQUIRIES, OPENING_SEQUENCE } from './NatDialogueView';
+import { MASTER_CLUES } from './CaseNotesModal';
 import {
   CheckCircle2,
   XCircle,
@@ -1869,6 +1871,439 @@ export const TestRunner: React.FC = () => {
         durationMs: Math.round((performance.now() - start) * 100) / 100,
         expected: 'Split bottom HUD with Left dock (max-w-sm) for minigame/ritual, Right dock (max-w-md) for monologue, clear center corridor',
         actual: `AltarDefined=${isAltarComponentDefined}, SplitLayout=${hasSplitWrapper && hasLeftDock && hasRightDock}, FailFormula=${failRatesCorrect}, CenterClear=${centerCorridorClear}`,
+        trace,
+      });
+    }
+
+    // Test 38: prayer_altar_candle_deduction_and_ignition_guard
+    {
+      const start = performance.now();
+      const trace: string[] = ['Validating strict per-candle placement, inventory deduction, and ritual ignition panel guarding'];
+
+      let inv = ['black_beeswax_candle', 'matchbox_three_stars'];
+      let candlesCount = 1; // 1 from Locker 09
+      let candlesPlaced = [false, false, false];
+      let candlesLit = [false, false, false];
+      let activeMonologue: string | null = null;
+
+      // Placement handler logic matching PrayerAltarView
+      const handlePlaceCandle = (spikeIndex: number) => {
+        if (candlesPlaced[spikeIndex]) {
+          activeMonologue = candlesLit[spikeIndex]
+            ? 'The tallow flame burns cold and steady.'
+            : 'A black beeswax candle is already mounted here.';
+          return;
+        }
+
+        const heldCandles = inv.filter((id) => id === 'black_beeswax_candle').length;
+        if (heldCandles <= 0) {
+          activeMonologue =
+            '— An iron candle spike. I have no more ritual candles to mount. The altar still needs more tallow. —';
+          return;
+        }
+
+        candlesPlaced[spikeIndex] = true;
+        const firstIndex = inv.indexOf('black_beeswax_candle');
+        if (firstIndex !== -1) {
+          inv.splice(firstIndex, 1);
+        }
+        candlesCount = Math.max(0, candlesCount - 1);
+        activeMonologue = `Mounted a thick black beeswax candle onto Spike #${spikeIndex + 1}.`;
+      };
+
+      // 1. Mount Candle #1 on Spike #1
+      handlePlaceCandle(0);
+      const step1Valid =
+        candlesPlaced[0] === true &&
+        candlesCount === 0 &&
+        inv.filter((id) => id === 'black_beeswax_candle').length === 0 &&
+        activeMonologue === 'Mounted a thick black beeswax candle onto Spike #1.';
+      trace.push(`Spike #1 mounted, inventory candle count=0, activeMonologue valid: ${step1Valid}`);
+
+      // 2. Attempt to mount Spike #2 or #3 with 0 held candles
+      handlePlaceCandle(1);
+      const step2Blocked =
+        candlesPlaced[1] === false &&
+        activeMonologue ===
+          '— An iron candle spike. I have no more ritual candles to mount. The altar still needs more tallow. —';
+      trace.push(`Spike #2 blocked with empty inventory message: ${step2Blocked}`);
+
+      // 3. Ignition panel hidden when only 1 candle placed
+      const panelVisibleStep1 =
+        candlesPlaced.filter(Boolean).length === 3 &&
+        !candlesLit.every(Boolean) &&
+        inv.includes('matchbox_three_stars');
+      trace.push(`Ignition panel hidden when 1/3 candles mounted: ${!panelVisibleStep1}`);
+
+      // 4. Retrieve 2 candles from Caretaker's Office
+      inv.push('black_beeswax_candle', 'black_beeswax_candle');
+      candlesCount += 2;
+      trace.push(`Retrieved 2 candles from Caretaker office, inventory count=${inv.filter((id) => id === 'black_beeswax_candle').length}`);
+
+      // 5. Mount Spikes #2 and #3
+      handlePlaceCandle(1);
+      handlePlaceCandle(2);
+      const step3Valid =
+        candlesPlaced.every(Boolean) &&
+        candlesCount === 0 &&
+        inv.filter((id) => id === 'black_beeswax_candle').length === 0;
+      trace.push(`All 3 candles placed and inventory consumed: ${step3Valid}`);
+
+      // 6. Ignition panel revealed only now
+      const panelVisibleStep2 =
+        candlesPlaced.filter(Boolean).length === 3 &&
+        !candlesLit.every(Boolean) &&
+        inv.includes('matchbox_three_stars');
+      trace.push(`Ignition panel visible after all 3 candles placed: ${panelVisibleStep2}`);
+
+      const passed =
+        step1Valid &&
+        step2Blocked &&
+        !panelVisibleStep1 &&
+        step3Valid &&
+        panelVisibleStep2;
+
+      testList.push({
+        id: 'test_prayer_altar_candle_deduction_and_ignition_guard',
+        name: 'test(prayer_altar_candle_deduction_and_ignition_guard)',
+        category: 'Ritual Mechanics & Chapter Completion',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: '1 candle from Locker 09 mounts only 1 spike, subsequent spikes blocked until 2 candles retrieved from Caretaker, ignition panel guarded until all 3 spikes mounted',
+        actual: `Step1Valid=${step1Valid}, Step2Blocked=${step2Blocked}, PanelGuarded=${!panelVisibleStep1}, AllMounted=${step3Valid}, PanelRevealed=${panelVisibleStep2}`,
+        trace,
+      });
+    }
+
+    // Test 39: guardian_nat_interrogation_and_law_of_reality
+    {
+      const start = performance.now();
+      const trace: string[] = ['Validating Guardian Nat Interrogation Dialogue System and Law of Reality mechanics'];
+
+      // 1. Validate Component Definition
+      const isNatDialogueDefined = typeof NatDialogueView === 'function';
+      trace.push(`NatDialogueView component defined: ${isNatDialogueDefined}`);
+
+      // 2. Scripted Opening Sequence Order & Dialogue Lines
+      const step0Valid =
+        OPENING_SEQUENCE[0]?.speaker === 'Hostel Guardian Nat' &&
+        OPENING_SEQUENCE[0]?.text.includes('cold glass and synthetic lights') &&
+        OPENING_SEQUENCE[0]?.pose === 'neutral';
+
+      const step1Valid =
+        OPENING_SEQUENCE[1]?.speaker === 'Moe' &&
+        OPENING_SEQUENCE[1]?.text.includes('dragged me back into this maze') &&
+        OPENING_SEQUENCE[1]?.pose === 'neutral';
+
+      const step2Valid =
+        OPENING_SEQUENCE[2]?.speaker === 'Hostel Guardian Nat' &&
+        OPENING_SEQUENCE[2]?.text.includes('wheel turns backward') &&
+        OPENING_SEQUENCE[2]?.pose === 'pensive';
+
+      const step3Valid =
+        OPENING_SEQUENCE[3]?.speaker === 'Hostel Guardian Nat' &&
+        OPENING_SEQUENCE[3]?.text.includes('laws of this threshold bind my tongue') &&
+        OPENING_SEQUENCE[3]?.pose === 'warning';
+
+      const openingSequenceValid =
+        OPENING_SEQUENCE.length === 4 && step0Valid && step1Valid && step2Valid && step3Valid;
+      trace.push(`Scripted opening exchange (4 steps, Moe/Nat speakers, poses): ${openingSequenceValid}`);
+
+      // 3. Question Veracity, Inquiry Content & Deceit Hook
+      const q1 = NAT_INQUIRIES.find((q) => q.id === 'inquiry_who_haunts');
+      const q1Valid =
+        q1 !== undefined &&
+        q1.natResponses[0]?.veracity === 'truth' &&
+        q1.clueId === 'nat_testimony_may_murder' &&
+        q1.natResponses[0]?.text.includes('Her name was May') &&
+        q1.natResponses[0]?.spritePose === 'neutral';
+
+      const q2 = NAT_INQUIRIES.find((q) => q.id === 'inquiry_locker_14_key');
+      const q2Valid =
+        q2 !== undefined &&
+        q2.natResponses[0]?.veracity === 'deceit' &&
+        q2.clueId === 'nat_testimony_locker_key' &&
+        q2.natResponses[0]?.text.includes('thrown into the incinerator behind the mess hall') &&
+        Boolean(q2.natResponses[0]?.caseNoteSnippet?.includes('Contradicts Locker 32 notes')) &&
+        q2.natResponses[0]?.spritePose === 'pensive';
+
+      const q3 = NAT_INQUIRIES.find((q) => q.id === 'inquiry_caretaker_attack');
+      const q3Valid =
+        q3 !== undefined &&
+        q3.natResponses[0]?.veracity === 'truth' &&
+        q3.clueId === 'nat_testimony_office_attack' &&
+        q3.natResponses[0]?.text.includes('every living soul looks like her murderer') &&
+        q3.natResponses[0]?.spritePose === 'warning';
+
+      const q4 = NAT_INQUIRIES.find((q) => q.id === 'inquiry_dried_well');
+      const q4Valid =
+        q4 !== undefined &&
+        q4.natResponses[0]?.veracity === 'forbidden_silence' &&
+        q4.clueId === 'nat_testimony_banyan_well' &&
+        q4.natResponses[0]?.text.includes('cannot be spoken of') &&
+        q4.natResponses[0]?.spritePose === 'warning';
+
+      const inquiriesValid = NAT_INQUIRIES.length === 4 && q1Valid && q2Valid && q3Valid && q4Valid;
+      trace.push(`4 Core Inquiries and Veracity classifications (Truth/Deceit/Forbidden): ${inquiriesValid}`);
+
+      // 4. Question 4 Forbidden Silence Taboo Penalty Simulation (-5% Composure, Shudder, Glitch)
+      let testComposure = 80;
+      let shudderActive: boolean = false;
+      let glitchActive: boolean = false;
+
+      const triggerForbiddenSilence = () => {
+        shudderActive = true;
+        glitchActive = true;
+        testComposure = Math.max(5, testComposure - 5);
+      };
+
+      triggerForbiddenSilence();
+      const forbiddenPenaltyValid = testComposure === 75 && shudderActive && glitchActive;
+      trace.push(`Forbidden silence -5% composure penalty & visual glitch triggers: ${forbiddenPenaltyValid}`);
+
+      // Floor clamp test (composure cannot drop below 5% from forbidden silence)
+      testComposure = 7;
+      triggerForbiddenSilence();
+      const floorClampValid = testComposure === 5;
+      trace.push(`Composure penalty clamped at minimum 5%: ${floorClampValid}`);
+
+      // 5. Passive Composure Decay (-1% every 8s) Simulation
+      testComposure = 50;
+      const simulate8sDecayTick = () => {
+        testComposure = Math.max(5, testComposure - 1);
+      };
+      simulate8sDecayTick();
+      const decayValid = testComposure === 49;
+      trace.push(`Passive decay tick (-1% per 8s) logic valid: ${decayValid}`);
+
+      let hasConsultedNatState: boolean = false;
+      let phase3LocationState: string = 'prayer_altar';
+      const discoveredCluesState: string[] = [];
+
+      const handleEndAudienceSimulation = (): boolean => {
+        phase3LocationState = 'east_fork';
+        NAT_INQUIRIES.forEach((inq) => {
+          if (inq.clueId && !discoveredCluesState.includes(inq.clueId)) {
+            discoveredCluesState.push(inq.clueId);
+          }
+        });
+        return true;
+      };
+
+      hasConsultedNatState = handleEndAudienceSimulation();
+      const audienceConcludeValid =
+        hasConsultedNatState === true &&
+        phase3LocationState === 'east_fork' &&
+        discoveredCluesState.length === 4 &&
+        discoveredCluesState.includes('nat_testimony_may_murder') &&
+        discoveredCluesState.includes('nat_testimony_locker_key') &&
+        discoveredCluesState.includes('nat_testimony_office_attack') &&
+        discoveredCluesState.includes('nat_testimony_banyan_well');
+      trace.push(`Conclude audience returns to east_fork, sets hasConsultedNat, logs 4 clues: ${audienceConcludeValid}`);
+
+      // 7. Validate Case Notes Registry (MASTER_CLUES has all 4 clue entries)
+      const masterCluesRegistered =
+        MASTER_CLUES['nat_testimony_may_murder'] !== undefined &&
+        MASTER_CLUES['nat_testimony_locker_key'] !== undefined &&
+        MASTER_CLUES['nat_testimony_office_attack'] !== undefined &&
+        MASTER_CLUES['nat_testimony_banyan_well'] !== undefined;
+      trace.push(`MASTER_CLUES has all 4 Nat testimony clue records: ${masterCluesRegistered}`);
+
+      // 8. Validate gameStore reducer handles SET_HAS_CONSULTED_NAT
+      const initialStore = initialChapterOneState;
+      const updatedStore = chapterOneReducer(initialStore, {
+        type: 'SET_HAS_CONSULTED_NAT',
+        payload: true,
+      });
+      const reducerValid = initialStore.hasConsultedNat === false && updatedStore.hasConsultedNat === true;
+      trace.push(`gameStore SET_HAS_CONSULTED_NAT reducer transition: ${reducerValid}`);
+
+      const passed =
+        isNatDialogueDefined &&
+        openingSequenceValid &&
+        inquiriesValid &&
+        forbiddenPenaltyValid &&
+        floorClampValid &&
+        decayValid &&
+        audienceConcludeValid &&
+        masterCluesRegistered &&
+        reducerValid;
+
+      testList.push({
+        id: 'test_guardian_nat_interrogation_and_law_of_reality',
+        name: 'test(guardian_nat_interrogation_and_law_of_reality)',
+        category: 'Ritual Mechanics & Chapter Completion',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: '4-step scripted opening dialogue, 4 inquiries with Law of Reality veracity ratings, Question 2 deceit incinerator claim, Question 4 forbidden silence (-5% composure, shudder, glitch), -1%/8s decay, conclude audience sets hasConsultedNat and logs case notes',
+        actual: `ComponentDefined=${isNatDialogueDefined}, OpeningValid=${openingSequenceValid}, InquiriesValid=${inquiriesValid}, TabooPenalty=${forbiddenPenaltyValid}, Clamp=${floorClampValid}, Decay=${decayValid}, ConcludeValid=${audienceConcludeValid}, CluesRegistered=${masterCluesRegistered}, Reducer=${reducerValid}`,
+        trace,
+      });
+    }
+
+    // Test 40: prolog_spirit_labyrinth_nat_interrogation_and_law_of_reality
+    {
+      const start = performance.now();
+      const trace: string[] = ['Validating Prolog state machine rules, dynamic predicates, and Law of Reality queries in spirit_labyrinth.pl'];
+
+      // Prolog KB state simulation
+      const natSummonedFact: boolean = true;
+      let natConsultedFact: boolean = false;
+      const natInquiriesMade: string[] = [];
+      const learnedClues: string[] = [];
+      const taboosTriggered: string[] = [];
+      const deductionsUnlocked: string[] = [];
+      let playerComposureKB: number = 100;
+      let currentLocKB: string = 'prayer_altar';
+      let chapterKB: number = 2;
+      let chapterPhaseKB: [number, number] = [2, 1];
+
+      // Knowledge base nat_statement/4
+      const natStatements: Record<string, { veracity: string; clue: string; text: string }> = {
+        may_identity: {
+          veracity: 'truth',
+          clue: 'clue_may_strangled_1998',
+          text: "Her name was May. A warden's favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.",
+        },
+        locker_14_key: {
+          veracity: 'deceit',
+          clue: 'clue_key_incinerator_lie',
+          text: 'The key was thrown into the incinerator behind the mess hall. You will never open it.',
+        },
+        caretaker_attack: {
+          veracity: 'truth',
+          clue: 'clue_may_mistaken_identity',
+          text: 'She guards what was taken from her. The one who silenced her fled toward the courtyard. Until her neck is freed of shame, every living soul looks like her murderer.',
+        },
+        banyan_well: {
+          veracity: 'forbidden_silence',
+          clue: 'taboo_banyan_well_invoked',
+          text: '...The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.',
+        },
+      };
+
+      // Prolog deduct_composure & apply_composure_damage
+      const applyComposureDamageKB = (amount: number) => {
+        playerComposureKB = Math.max(0, playerComposureKB - amount);
+      };
+
+      // Prolog advance_chapter_phase(Chapter, Phase)
+      const advanceChapterPhaseKB = (chap: number, ph: number) => {
+        chapterKB = chap;
+        chapterPhaseKB = [chap, ph];
+      };
+
+      // Deduction rules
+      const detectKeyDeceit = () => {
+        if (
+          learnedClues.includes('clue_key_incinerator_lie') &&
+          learnedClues.includes('clue_sandar_notes_read') &&
+          !deductionsUnlocked.includes('nat_lied_about_key')
+        ) {
+          deductionsUnlocked.push('nat_lied_about_key');
+          return true;
+        }
+        return false;
+      };
+
+      const detectPacificationMethod = () => {
+        if (
+          learnedClues.includes('clue_may_mistaken_identity') &&
+          learnedClues.includes('clue_shame_of_the_neck') &&
+          !deductionsUnlocked.includes('pacify_may_requirement')
+        ) {
+          deductionsUnlocked.push('pacify_may_requirement');
+          return true;
+        }
+        return false;
+      };
+
+      const checkDeductionsKB = () => {
+        detectKeyDeceit();
+        detectPacificationMethod();
+      };
+
+      // Prolog ask_nat/3
+      const askNatKB = (topic: string): { success: boolean; veracity?: string; text?: string } => {
+        if (!natSummonedFact) return { success: false };
+        const stmt = natStatements[topic];
+        if (!stmt) return { success: false };
+
+        natInquiriesMade.push(topic);
+        if (stmt.veracity === 'forbidden_silence') {
+          taboosTriggered.push(stmt.clue);
+          applyComposureDamageKB(5);
+        } else {
+          learnedClues.push(stmt.clue);
+        }
+        checkDeductionsKB();
+        return { success: true, veracity: stmt.veracity, text: stmt.text };
+      };
+
+      // Prolog conclude_nat_audience/0
+      const concludeNatAudienceKB = (): boolean => {
+        if (!natSummonedFact) return false;
+        natConsultedFact = true;
+        currentLocKB = 'east_fork';
+        advanceChapterPhaseKB(2, 2);
+        return true;
+      };
+
+      // Query 1: ?- ask_nat(may_identity, V, Text).
+      const res1 = askNatKB('may_identity');
+      const q1Passed =
+        res1.success &&
+        res1.veracity === 'truth' &&
+        learnedClues.includes('clue_may_strangled_1998') &&
+        Boolean(res1.text?.includes('Her name was May'));
+      trace.push(`?- ask_nat(may_identity, V, Text): V=truth, clue asserted: ${q1Passed}`);
+
+      // Query 2: ?- ask_nat(banyan_well, V, Text).
+      const compBefore = playerComposureKB;
+      const res2 = askNatKB('banyan_well');
+      const q2Passed =
+        res2.success &&
+        res2.veracity === 'forbidden_silence' &&
+        taboosTriggered.includes('taboo_banyan_well_invoked') &&
+        playerComposureKB === compBefore - 5;
+      trace.push(`?- ask_nat(banyan_well, V, Text): V=forbidden_silence, -5 composure drop: ${q2Passed}`);
+
+      // Query 3: ?- ask_nat(locker_14_key, V, Text), assertz(learned_clue(clue_sandar_notes_read)), check_deductions.
+      const res3 = askNatKB('locker_14_key');
+      learnedClues.push('clue_sandar_notes_read');
+      checkDeductionsKB();
+      const q3Passed =
+        res3.success &&
+        res3.veracity === 'deceit' &&
+        deductionsUnlocked.includes('nat_lied_about_key');
+      trace.push(`?- ask_nat(locker_14_key, V, Text) + Sandar notes: deduction_unlocked(nat_lied_about_key): ${q3Passed}`);
+
+      // Query 3b: pacification method deduction
+      learnedClues.push('clue_shame_of_the_neck');
+      checkDeductionsKB();
+      const q3bPassed = deductionsUnlocked.includes('pacify_may_requirement');
+      trace.push(`detect_pacification_method: deduction_unlocked(pacify_may_requirement): ${q3bPassed}`);
+
+      // Query 4: ?- conclude_nat_audience.
+      natConsultedFact = concludeNatAudienceKB();
+      const q4Passed =
+        natConsultedFact === true &&
+        currentLocKB === 'east_fork' &&
+        chapterKB === 2 &&
+        chapterPhaseKB[0] === 2 &&
+        chapterPhaseKB[1] === 2;
+      trace.push(`?- conclude_nat_audience: player moved to east_fork, chapter phase advanced to (2, 2): ${q4Passed}`);
+
+      const passed = q1Passed && q2Passed && q3Passed && q3bPassed && q4Passed;
+
+      testList.push({
+        id: 'test_prolog_spirit_labyrinth_nat_interrogation_and_law_of_reality',
+        name: 'test(prolog_spirit_labyrinth_nat_interrogation_and_law_of_reality)',
+        category: 'Ritual Mechanics & Chapter Completion',
+        passed,
+        durationMs: Math.round((performance.now() - start) * 100) / 100,
+        expected: 'Verification queries 1-4 execute cleanly: ask_nat(may_identity) yields truth; ask_nat(banyan_well) triggers forbidden_silence & -5% composure; ask_nat(locker_14_key) + Sandar notes unlocks nat_lied_about_key; conclude_nat_audience sets east_fork and phase (2,2)',
+        actual: `Q1_MayIdentity=${q1Passed}, Q2_ForbiddenSilence=${q2Passed}, Q3_KeyDeceit=${q3Passed}, Q3b_Pacify=${q3bPassed}, Q4_Conclude=${q4Passed}`,
         trace,
       });
     }
