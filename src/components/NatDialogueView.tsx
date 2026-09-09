@@ -1,8 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
-import { StatementVeracity, NatInquiryOption } from '../types';
-import { Sparkles, AlertTriangle, ShieldAlert } from 'lucide-react';
+import {
+  StatementVeracity,
+  NatInquiryOption,
+  NatKnowledgeTier,
+  NatTopicDef,
+  NAT_TOPIC_REGISTRY,
+  NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+} from '../types';
+import { ITEM_DATABASE } from '../gameData';
+import { MASTER_CLUES } from './CaseNotesModal';
+import { AlertTriangle } from 'lucide-react';
+
+export {
+  type NatKnowledgeTier,
+  type NatTopicDef,
+  NAT_TOPIC_REGISTRY,
+  type NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+};
+
+export interface CaseNoteItem {
+  id: string;
+  title: string;
+  category?: string;
+  snippet?: string;
+  location?: string;
+  description?: string;
+}
 
 export interface NatDialogueViewProps {
   composure: number;
@@ -11,8 +40,19 @@ export interface NatDialogueViewProps {
   characterName?: string;
   addDiscoveredClue?: (clueId: string) => void;
   discoveredClues?: string[];
+  unlockedClues?: string[];
   initialOpeningComplete?: boolean;
+  askedTopics?: string[];
+  setAskedTopics?: React.Dispatch<React.SetStateAction<string[]>>;
+  applyComposureShock?: (amount: number) => void;
+  // Item / Clue Presentation Cross-Examination props
+  inventory?: string[];
+  caseNotes?: CaseNoteItem[];
+  onSelectTarget?: (targetId: string, type: 'item' | 'clue') => void;
+  activeResponse?: string;
 }
+
+export type NatDialogueProps = NatDialogueViewProps;
 
 export interface NatInquiryWithClue extends NatInquiryOption {
   clueId: string;
@@ -103,7 +143,7 @@ export const OPENING_SEQUENCE: OpeningSequenceItem[] = [
   },
   {
     speaker: 'Hostel Guardian Nat',
-    text: 'Ask what you will. Yet know this: the laws of this threshold bind my tongue. For every truth I bestow upon you, the shadows weave a falsehood. Believe blindly, and you will share her grave.',
+    text: 'Present what you carry or what you have unearthed. Yet know this: the laws of this threshold bind my tongue. For every truth I bestow upon you, the shadows weave a falsehood. Believe blindly, and you will share her grave.',
     pose: 'warning',
   },
 ];
@@ -115,22 +155,68 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
   characterName = 'Moe',
   addDiscoveredClue,
   discoveredClues = [],
+  unlockedClues,
   initialOpeningComplete = false,
+  askedTopics: externalAskedTopics,
+  setAskedTopics: externalSetAskedTopics,
+  applyComposureShock: propApplyComposureShock,
+  inventory = [],
+  caseNotes,
+  onSelectTarget,
+  activeResponse,
 }) => {
   const [openingStep, setOpeningStep] = useState<number>(0);
   const [isOpeningComplete, setIsOpeningComplete] = useState<boolean>(initialOpeningComplete);
   const [currentPose, setCurrentPose] = useState<'neutral' | 'pensive' | 'warning'>(
     initialOpeningComplete ? 'warning' : OPENING_SEQUENCE[0].pose
   );
-  const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'inventory' | 'clues'>('inventory');
+  const [selectedTargetId, setSelectedTargetId] = useState<string | null>(null);
   const [activeResponseText, setActiveResponseText] = useState<string>(
-    'Ask what you will. Yet know this: the laws of this threshold bind my tongue. For every truth I bestow upon you, the shadows weave a falsehood. Believe blindly, and you will share her grave.'
+    activeResponse || 'Mortals who tread the forgotten halls of 1998... What have you brought before this altar?'
   );
   const [isShuddering, setIsShuddering] = useState<boolean>(false);
   const [isScreenGlitching, setIsScreenGlitching] = useState<boolean>(false);
-  const [interrogatedInquiryIds, setInterrogatedInquiryIds] = useState<string[]>([]);
+  const [localAskedTopics, setLocalAskedTopics] = useState<string[]>([]);
+
+  const askedTopics = externalAskedTopics ?? localAskedTopics;
+  const effectiveClues = unlockedClues ?? discoveredClues;
+
+  // Build effective Case Notes list from props or discovered clues
+  const effectiveCaseNotes: CaseNoteItem[] = React.useMemo(() => {
+    if (caseNotes && caseNotes.length > 0) {
+      return caseNotes;
+    }
+    // Deduplicate and map discovered clue IDs to CaseNote items
+    const clueList: string[] = effectiveClues.filter((id, i, arr) => arr.indexOf(id) === i);
+    return clueList.map((cId: string) => {
+      const def = MASTER_CLUES[cId];
+      return {
+        id: cId,
+        title: def ? def.title : cId.replace(/_/g, ' '),
+        category: def ? def.category : 'primary',
+        description: def ? def.description : '',
+        location: def ? def.location : 'Hostel',
+      };
+    });
+  }, [caseNotes, effectiveClues]);
 
   const [isDialogueActive, setIsDialogueActive] = useState<boolean>(initialOpeningComplete);
+
+  // Sync external activeResponse if provided
+  useEffect(() => {
+    if (activeResponse) {
+      setActiveResponseText(activeResponse);
+    }
+  }, [activeResponse]);
+
+  // Shock damage application helper
+  const applyComposureShock = (damage: number) => {
+    if (propApplyComposureShock) {
+      propApplyComposureShock(damage);
+    }
+    setComposure((prev) => Math.max(0, prev - damage));
+  };
 
   useEffect(() => {
     if (!isDialogueActive) {
@@ -152,7 +238,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
     return () => clearInterval(timer);
   }, [isOpeningComplete, setComposure]);
 
-  // Handle advancing through the scripted opening sequence
+  // Advance scripted opening sequence
   const handleAdvanceOpening = () => {
     sound.playMenuSelect();
     const nextStep = openingStep + 1;
@@ -165,54 +251,137 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
     }
   };
 
-  // Handle player selecting an inquiry
-  const handleSelectInquiry = (inq: NatInquiryWithClue) => {
-    sound.playMenuSelect();
-    setSelectedInquiryId(inq.id);
+  // Active list computed for current tab
+  const activeList = React.useMemo(() => {
+    if (activeTab === 'inventory') {
+      return inventory.map((itemId) => {
+        const itemDef = (ITEM_DATABASE as Record<string, any>)[itemId];
+        const label = itemDef?.shortLabel || itemDef?.name || itemId;
+        return {
+          id: itemId,
+          shortLabel: label,
+          title: itemDef?.name || label,
+        };
+      });
+    }
+    return effectiveCaseNotes.map((note) => ({
+      id: note.id,
+      shortLabel: note.title,
+      title: note.title,
+    }));
+  }, [activeTab, inventory, effectiveCaseNotes]);
 
-    if (!interrogatedInquiryIds.includes(inq.id)) {
-      setInterrogatedInquiryIds((prev) => [...prev, inq.id]);
+  // Repeatable cross-examination presentation evaluation with 0.8% question strain
+  const handlePresentTarget = (targetId: string, type: 'inventory' | 'clues') => {
+    setSelectedTargetId(targetId);
+    onSelectTarget?.(targetId, type === 'inventory' ? 'item' : 'clue');
+
+    // Track repeatable inquiries without locking
+    const updated = [...askedTopics, targetId];
+    if (externalSetAskedTopics) {
+      externalSetAskedTopics(updated);
+    }
+    setLocalAskedTopics(updated);
+
+    // 1. Calculate and deduct the 0.8% question strain
+    const questionTax = 0.8;
+    setComposure((prev) => Math.max(0, Number((prev - questionTax).toFixed(1))));
+    if (propApplyComposureShock) {
+      propApplyComposureShock(questionTax);
     }
 
-    const response = inq.natResponses[0];
-    if (response) {
-      setActiveResponseText(response.text);
-      if (response.spritePose) {
-        setCurrentPose(response.spritePose);
+    // 2. Fetch Nat response from knowledge base
+    const knowledge = getNatKnowledge(targetId);
+
+    if (!knowledge || knowledge.tier === 'unknown') {
+      try {
+        sound.playEerieHum();
+      } catch {}
+      setActiveResponseText(knowledge?.response || '...');
+      setCurrentPose('neutral');
+      return;
+    }
+
+    if (knowledge.tier === 'forbidden_taboo') {
+      try {
+        sound.playGhostScreech();
+      } catch {}
+      const tabooShock = knowledge.shockDamage || 5;
+      setComposure((prev) => Math.max(0, Number((prev - tabooShock).toFixed(1))));
+      if (propApplyComposureShock) {
+        propApplyComposureShock(tabooShock);
       }
+      setIsShuddering(true);
+      setIsScreenGlitching(true);
+      setActiveResponseText(knowledge.response);
+      setCurrentPose('warning');
+      setTimeout(() => {
+        setIsShuddering(false);
+        setIsScreenGlitching(false);
+      }, 900);
+      return;
+    }
 
-      // Handle Question 4 Forbidden Silence penalty & visual shock
-      if (response.veracity === 'forbidden_silence') {
-        sound.playStaticGlitch();
-        sound.playDamage();
-        setIsShuddering(true);
-        setIsScreenGlitching(true);
+    // Handle Truth / Deceit
+    try {
+      sound.playMenuSelect();
+    } catch {}
+    setActiveResponseText(knowledge.response);
+    setCurrentPose(knowledge.spritePose);
 
-        // Immediate -5% Composure penalty clamped at 5%
-        setComposure((prev) => Math.max(5, prev - 5));
-
-        setTimeout(() => {
-          setIsShuddering(false);
-          setIsScreenGlitching(false);
-        }, 750);
-      }
-
-      // Auto-log case note to discoveredClues
-      if (inq.clueId && addDiscoveredClue && !discoveredClues.includes(inq.clueId)) {
-        addDiscoveredClue(inq.clueId);
+    if (knowledge.caseNoteUnlock && addDiscoveredClue) {
+      const testimonyKey = `nat_testimony_${targetId}`;
+      if (!effectiveClues.includes(testimonyKey)) {
+        addDiscoveredClue(testimonyKey);
       }
     }
   };
 
-  // Handle concluding audience with the Nat
-  const handleEndAudience = () => {
-    sound.playMenuSelect();
-    // Ensure all revealed clues from questions asked are logged
-    NAT_INQUIRIES.forEach((inq) => {
-      if (inq.clueId && addDiscoveredClue) {
-        addDiscoveredClue(inq.clueId);
+  // Backward-compatibility wrapper for target selection
+  const handleSelectTarget = (targetId: string, type: 'item' | 'clue') => {
+    handlePresentTarget(targetId, type === 'item' ? 'inventory' : 'clues');
+  };
+
+  // Backward-compatibility wrapper for NatTopicDef
+  const handleSelectTopic = (topic: NatTopicDef) => {
+    handlePresentTarget(topic.topicId, 'clues');
+  };
+
+  // Global dialogue advance for Enter / Space keys
+  const handleAdvanceDialogue = () => {
+    if (!isOpeningComplete) {
+      handleAdvanceOpening();
+    } else {
+      handleEndAudience();
+    }
+  };
+
+  // Keyboard navigation: Enter / Space advances opening; keys 1-9 select active list items
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        if (!isOpeningComplete) {
+          e.preventDefault();
+          handleAdvanceOpening();
+        }
+      } else if (isOpeningComplete && e.key >= '1' && e.key <= '9') {
+        const index = parseInt(e.key, 10) - 1;
+        if (activeList[index]) {
+          e.preventDefault();
+          handlePresentTarget(activeList[index].id, activeTab);
+        }
       }
-    });
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpeningComplete, openingStep, activeTab, activeList, askedTopics]);
+
+  // Conclude audience with the Nat
+  const handleEndAudience = () => {
+    try {
+      sound.playMenuSelect();
+    } catch {}
     onConcludeAudience();
   };
 
@@ -220,10 +389,10 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
   return (
     <div className="fixed inset-0 z-30 select-none animate-fade-in overflow-hidden pointer-events-none">
-      {/* Subtle Ambient Dimming Overlay (Full Viewport, 15% Darkness) */}
-      <div className="fixed inset-0 z-20 bg-black/15 backdrop-blur-[1px] pointer-events-none transition-opacity duration-700" />
+      {/* Ambient Dimming Overlay */}
+      <div className="fixed inset-0 z-20 bg-black/20 backdrop-blur-[1px] pointer-events-none transition-opacity duration-700" />
 
-      {/* Glitch & Static Overlay for Forbidden Silence */}
+      {/* Glitch & Static Overlay for Forbidden Silence / Taboo */}
       {isScreenGlitching && (
         <div className="fixed inset-0 z-50 pointer-events-none bg-rose-950/40 mix-blend-screen animate-pulse flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500/20 via-black/60 to-transparent" />
@@ -249,7 +418,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         }
       `}</style>
 
-      {/* Character Baseline Staging (Aligned Eye-Levels & Imposing Nat) */}
+      {/* Character Baseline Staging */}
       <div className="fixed inset-x-0 bottom-0 top-14 z-30 pointer-events-none flex justify-between items-end px-8 md:px-16 pb-28">
         {/* Left: Player Character (Moe) */}
         <div
@@ -258,12 +427,12 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
           }`}
         >
           <img
-            src="/assets/characters/moe_bust_thinking.png"
+            src="/assets/characters/moe_fear_bust.png"
             onError={(e) => {
               e.currentTarget.src = '/assets/characters/moe_fear_bust.png';
             }}
             alt={characterName || 'Moe'}
-            className="h-[52vh] max-h-[500px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.02] brightness-95"
+            className="h-[60vh] max-h-[600px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.02] brightness-85"
           />
           <div className="mt-1 px-3 py-0.5 rounded bg-[#0b120e]/85 border border-[#22352b] text-center">
             <span className="font-mono text-xs text-[#a3c2b2] tracking-wider uppercase block">
@@ -275,7 +444,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
           </div>
         </div>
 
-        {/* Right: Imposing Guardian Nat (Zoomed In, Elevated) */}
+        {/* Right: Imposing Guardian Nat */}
         <div
           className={`relative flex flex-col items-center pointer-events-auto transition-all duration-700 ease-out ${
             isDialogueActive ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
@@ -303,33 +472,33 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         </div>
       </div>
 
-      {/* Bottom Zone: Refined Dialogue Box Component */}
+      {/* Bottom Zone: Interrogation Dialogue Box */}
       {!isOpeningComplete ? (
-        /* Opening Exchange Dialogue Box */
+        /* Opening Scripted Exchange */
         <div className="fixed bottom-4 inset-x-0 z-40 px-4 flex justify-center pointer-events-none">
           <div
             onClick={handleAdvanceOpening}
             className="w-full max-w-4xl bg-[#0b120e]/92 border border-[#22352b] rounded-xl p-5 shadow-2xl backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[140px] cursor-pointer group"
           >
-            {/* Header: Speaker & Progress */}
+            {/* Header: Speaker & Step */}
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#1b2b22]">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4a7a60] animate-pulse" />
                 <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                   {currentOpening.speaker}
                 </span>
-                <span className="font-mono text-[10px] text-[#5a7a69]">
+                <span className="font-mono text-[10px] text-[#4e6b5c]">
                   • Step {openingStep + 1} of {OPENING_SEQUENCE.length}
                 </span>
               </div>
               <span className="font-mono text-[10px] tracking-widest text-[#4d6b5c] uppercase group-hover:text-[#78b394] transition-colors">
-                [Click to advance]
+                [Press Enter ↵ or Space to advance]
               </span>
             </div>
 
-            {/* Spoken Dialogue Line */}
-            <div className="my-auto py-1">
-              <p className="font-serif italic text-base md:text-lg text-[#d8eae0] font-normal leading-relaxed select-none">
+            {/* Spoken Response Container */}
+            <div className="py-2 px-1 my-auto">
+              <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none">
                 "{currentOpening.text}"
               </p>
             </div>
@@ -337,65 +506,103 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
             {/* Footer Navigation */}
             <div className="flex items-center justify-end pt-2 mt-1">
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAdvanceOpening();
                 }}
-                className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer"
+                className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
               >
-                {openingStep === OPENING_SEQUENCE.length - 1 ? 'Begin Interrogation ❯' : 'Continue ❯'}
+                {openingStep === OPENING_SEQUENCE.length - 1 ? 'Begin Interrogation [Enter ↵]' : 'Continue [Enter ↵]'}
               </button>
             </div>
           </div>
         </div>
       ) : (
-        /* Split Inquiries & Response Log Box */
+        /* Cross-Examination Presentation & Response Box */
         <div className="fixed bottom-4 inset-x-0 z-40 px-4 flex justify-center pointer-events-none">
-          <div className="w-full max-w-4xl bg-[#0b120e]/92 border border-[#22352b] rounded-xl p-5 shadow-2xl backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[190px]">
+          <div className="w-full max-w-4xl bg-[#0b120e]/95 border border-[#22352b] rounded-xl p-5 shadow-2xl backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[220px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Left: Player Inquiry Choices */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between pb-1 mb-1 border-b border-[#1b2b22]">
+              {/* Left Column: Two-Tab Presentation Selector */}
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-center justify-between pb-1 mb-2 border-b border-[#1b2b22]">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#4a7a60] animate-pulse" />
                     <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
-                      Select Inquiry
+                      Cross-Examination
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-[#5a7a69]">
-                    {interrogatedInquiryIds.length}/4 Explored
+                  <span className="font-mono text-[10px] text-[#4e6b5c]">
+                    {askedTopics.length} Presented • Keys [1-9]
                   </span>
                 </div>
 
-                <div className="space-y-1.5">
-                  {NAT_INQUIRIES.map((inq) => {
-                    const isSelected = selectedInquiryId === inq.id;
-                    const isAsked = interrogatedInquiryIds.includes(inq.id);
-                    return (
+                {/* Tab Switcher */}
+                <div className="flex gap-2 border-b border-[#1b2b22] pb-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        sound.playMenuSelect();
+                      } catch {}
+                      setActiveTab('inventory');
+                    }}
+                    className={`px-3 py-1 rounded text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+                      activeTab === 'inventory'
+                        ? 'bg-[#18291f] text-emerald-300 border border-[#2b4737]'
+                        : 'text-[#628070] hover:text-[#9bc2ad]'
+                    }`}
+                  >
+                    Present Item ({inventory.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try {
+                        sound.playMenuSelect();
+                      } catch {}
+                      setActiveTab('clues');
+                    }}
+                    className={`px-3 py-1 rounded text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+                      activeTab === 'clues'
+                        ? 'bg-[#18291f] text-emerald-300 border border-[#2b4737]'
+                        : 'text-[#628070] hover:text-[#9bc2ad]'
+                    }`}
+                  >
+                    Inquire on Clue ({effectiveCaseNotes.length})
+                  </button>
+                </div>
+
+                {/* Dynamic Inquiry Buttons List */}
+                <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                  {activeList.length === 0 ? (
+                    <div className="p-3 text-center font-mono text-xs text-[#52705f] italic border border-dashed border-[#1f2d25] rounded-lg">
+                      {activeTab === 'inventory'
+                        ? '[No carried items in inventory to present]'
+                        : '[No case notes or clues discovered yet to inquire about]'}
+                    </div>
+                  ) : (
+                    activeList.map((entry) => (
                       <button
-                        key={inq.id}
-                        onClick={() => handleSelectInquiry(inq)}
-                        className={`w-full text-left p-2.5 rounded-lg border text-xs font-mono transition-all cursor-pointer flex items-center justify-between gap-2 ${
-                          isSelected
-                            ? 'bg-[#1c2e24] border-[#4a7a60] text-emerald-300 shadow-md ring-1 ring-emerald-500/30'
-                            : isAsked
-                            ? 'bg-[#101914]/90 hover:bg-[#16241c] border-[#1e2e25] text-[#8fa89b]'
-                            : 'bg-[#131f18]/90 hover:bg-[#1a2c22] border-[#273a2f] text-[#cce0d5]'
-                        }`}
+                        key={entry.id}
+                        type="button"
+                        onClick={() => handlePresentTarget(entry.id, activeTab)}
+                        className="w-full text-left p-2.5 rounded-lg bg-[#121c16] hover:bg-[#1c2d23] border border-[#23382b] hover:border-[#3d5e48] text-xs font-mono text-[#d1e6dc] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99]"
                       >
-                        <span className="line-clamp-1">❯ {inq.label}</span>
-                        {isAsked && (
-                          <span className="text-[9px] font-mono text-[#5a7a69] uppercase shrink-0">
-                            [Asked]
-                          </span>
-                        )}
+                        <span className="group-hover:text-emerald-300 transition-colors">
+                          ❯ {activeTab === 'inventory' ? `Ask about item: ${entry.shortLabel}` : `Ask about note: ${entry.title}`}
+                        </span>
+                        <span className="text-[10px] font-mono text-red-400/60 group-hover:text-red-300 transition-colors">
+                          -0.8%
+                        </span>
                       </button>
-                    );
-                  })}
+                    ))
+                  )}
                 </div>
               </div>
 
-              {/* Right: Active Spoken Response */}
+              {/* Right Column: Active Spoken Response & Controls */}
               <div className="flex flex-col justify-between pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-[#1b2b22]">
                 <div>
                   <div className="flex items-center justify-between pb-1 mb-2 border-b border-[#1b2b22]">
@@ -405,28 +612,31 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                         Hostel Guardian Nat
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] tracking-widest text-[#4d6b5c] uppercase">
+                    <span className="font-mono text-[10px] text-[#4e6b5c] uppercase">
                       Spoken Response
                     </span>
                   </div>
-                  <div className="py-1">
-                    <p className="font-serif italic text-base text-[#d8eae0] font-normal leading-relaxed select-none min-h-[64px]">
+
+                  {/* Spoken Response Container */}
+                  <div className="py-2 px-1">
+                    <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none min-h-[64px]">
                       "{activeResponseText}"
                     </p>
                   </div>
                 </div>
 
-                {/* Footer info & exit */}
+                {/* Footer Controls */}
                 <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#1b2b22]">
                   <div className="flex items-center gap-1.5 text-[10px] font-mono text-red-400/80">
                     <AlertTriangle className="w-3.5 h-3.5 text-red-400 animate-pulse" />
                     <span>Composure -1% / 8s</span>
                   </div>
                   <button
+                    type="button"
                     onClick={handleEndAudience}
                     className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
                   >
-                    Conclude Audience ❯
+                    Conclude Audience [Enter ↵]
                   </button>
                 </div>
               </div>

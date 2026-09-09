@@ -35,7 +35,12 @@ export interface PrayerAltarViewProps {
   setHasConsultedNat?: React.Dispatch<React.SetStateAction<boolean>>;
   addDiscoveredClue?: (clueId: string) => void;
   discoveredClues?: string[];
+  unlockedClues?: string[];
   setDiscoveredClues?: React.Dispatch<React.SetStateAction<string[]>>;
+  onNatDialogueActiveChange?: (active: boolean) => void;
+  askedTopics?: string[];
+  setAskedTopics?: React.Dispatch<React.SetStateAction<string[]>>;
+  applyComposureShock?: (amount: number) => void;
 }
 
 export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
@@ -43,6 +48,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   setComposure,
   inventory,
   setInventory,
+  onNatDialogueActiveChange,
   hasBlackCandlesCount,
   setHasBlackCandlesCount,
   hasMatchesCount,
@@ -66,16 +72,26 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   setHasConsultedNat,
   addDiscoveredClue,
   discoveredClues = [],
+  unlockedClues,
   setDiscoveredClues,
+  askedTopics,
+  setAskedTopics,
+  applyComposureShock,
 }) => {
-  // State Tracking as specified
+  // State Tracking with persistent manifestation support
   const [candlesPlaced, setCandlesPlaced] = useState<boolean[]>([
-    altarCandlesPlaced >= 1,
-    altarCandlesPlaced >= 2,
-    altarCandlesPlaced >= 3,
+    altarCandlesPlaced >= 1 || Boolean(natSummoned),
+    altarCandlesPlaced >= 2 || Boolean(natSummoned),
+    altarCandlesPlaced >= 3 || Boolean(natSummoned),
   ]);
-  const [candlesLit, setCandlesLit] = useState<boolean[]>([false, false, false]);
-  const [hasPlacedBell, setHasPlacedBell] = useState<boolean>(Boolean(altarBellPlaced));
+  const [candlesLit, setCandlesLit] = useState<boolean[]>([
+    Boolean(natSummoned),
+    Boolean(natSummoned),
+    Boolean(natSummoned),
+  ]);
+  const [hasPlacedBell, setHasPlacedBell] = useState<boolean>(
+    Boolean(altarBellPlaced) || Boolean(natSummoned)
+  );
   const [failedMatchAttempts, setFailedMatchAttempts] = useState<number>(0);
   const [matchesRemaining, setMatchesRemaining] = useState<number>(
     hasMatchesCount > 0 ? hasMatchesCount : 3
@@ -86,11 +102,16 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     y: number;
   } | null>(null);
 
-  // Guardian Nat Manifestation State
+  // Guardian Nat Manifestation State (persistent once summoned)
   const [isNatManifested, setIsNatManifested] = useState<boolean>(Boolean(natSummoned));
   const [natAppearing, setNatAppearing] = useState<boolean>(false);
   const [isRoomDimmed, setIsRoomDimmed] = useState<boolean>(false);
   const [isNatDialogueOpen, setIsNatDialogueOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    onNatDialogueActiveChange?.(isNatDialogueOpen);
+  }, [isNatDialogueOpen, onNatDialogueActiveChange]);
+
   const [dialogueState, setDialogueState] = useState<{
     speaker: string;
     line: string;
@@ -376,11 +397,16 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <img
             src="/assets/characters/guardian_nat_neutral.png"
             alt="Hostel Guardian Nat"
+            title="Inquire with Guardian Nat"
+            onClick={() => {
+              sound.playGhostWhisper();
+              setIsNatDialogueOpen(true);
+            }}
             className={`
               h-[75%] max-h-[580px] w-auto object-contain
               filter drop-shadow-[0_0_18px_rgba(74,122,96,0.45)]
               contrast-95 brightness-90
-              transition-all duration-1000 ease-in-out
+              transition-all duration-1000 ease-in-out cursor-pointer pointer-events-auto hover:brightness-105 hover:scale-[1.01]
               ${natAppearing ? 'opacity-0 translate-y-4 scale-95 blur-sm' : 'opacity-90 translate-y-0 scale-100 blur-0'}
             `}
             style={{
@@ -748,7 +774,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                       }}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-[#1a2b22] hover:bg-[#253d30] border border-[#3f5c4c] text-[#a8cdb9] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
                     >
-                      <span>Hear Nat</span>
+                      <span>Inquire of Nat</span>
                     </button>
                     <button
                       onClick={() => {
@@ -797,10 +823,16 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <NatDialogueView
             composure={composure}
             setComposure={setComposure}
+            inventory={inventory}
             characterName="Moe"
             onConcludeAudience={handleConcludeNatAudience}
             addDiscoveredClue={addDiscoveredClue}
             discoveredClues={discoveredClues}
+            unlockedClues={unlockedClues ?? discoveredClues}
+            initialOpeningComplete={Boolean(hasConsultedNat || natSummoned)}
+            askedTopics={askedTopics}
+            setAskedTopics={setAskedTopics}
+            applyComposureShock={applyComposureShock}
           />
         )}
       </AnimatePresence>

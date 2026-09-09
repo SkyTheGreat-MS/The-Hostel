@@ -3,7 +3,7 @@ import { MCId, MCCharacter } from '../types';
 import { CHARACTERS } from '../gameData';
 import { InkPortrait } from './InkPortrait';
 import { sound } from '../audioEngine';
-import { ChevronRight, Check } from 'lucide-react';
+import { ChevronRight, Check, Zap, Shield } from 'lucide-react';
 
 export interface CharacterSelectModalProps {
   onSelectCharacter?: (characterId: MCId) => void;
@@ -147,25 +147,21 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                 </div>
               </div>
 
-              {/* Multiplier Badges */}
-              <div className="mt-2 pt-2 border-t border-[#223028] grid grid-cols-3 gap-1 text-[9px] font-mono text-center">
+              {/* Stat Badges: Tension (Amber Zap) & Resolve (Cyan Shield) */}
+              <div className="mt-2 pt-2 border-t border-[#223028] grid grid-cols-2 gap-1.5 text-[10px] font-mono text-center">
                 <div
-                  title="Supernatural Vulnerability"
-                  className="bg-[#1a2420] text-[#7d998b] border border-[#26362e] rounded px-1 py-0.5"
+                  title="Tension: Drain speed & blunder shock"
+                  className="bg-[#1a2420] text-amber-400 border border-amber-900/40 rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
                 >
-                  ⚡{char.multipliers.supernatural_direct}x
+                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>{char.tensionMultiplier ?? 1.0}x</span>
                 </div>
                 <div
-                  title="Physical Threat Resistance"
-                  className="bg-[#1a2420] text-[#7d998b] border border-[#26362e] rounded px-1 py-0.5"
+                  title="Resolve: Relief surges & chapter recovery"
+                  className="bg-[#1a2420] text-cyan-400 border border-cyan-900/40 rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
                 >
-                  🛡️{char.multipliers.physical_threat}x
-                </div>
-                <div
-                  title="Betrayal Vulnerability"
-                  className="bg-[#1a2420] text-[#7d998b] border border-[#26362e] rounded px-1 py-0.5"
-                >
-                  🗡️{char.multipliers.betrayal}x
+                  <Shield className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <span>{char.resolveMultiplier ?? 1.0}x</span>
                 </div>
               </div>
             </div>
@@ -180,10 +176,20 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
             <InkPortrait characterId={activeChar.id} isSpeaking={true} size="full" />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] uppercase font-mono font-bold px-2 py-0.5 bg-[#1a2420] text-[#82a996] border border-[#26362e] rounded">
                 {activeChar.archetype}
               </span>
+              <div className="flex items-center gap-1.5 font-mono text-[11px]">
+                <span className="flex items-center gap-1 text-amber-400 font-bold bg-[#1a2420] px-2 py-0.5 rounded border border-amber-900/40">
+                  <Zap className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Tension {activeChar.tensionMultiplier ?? 1.0}x</span>
+                </span>
+                <span className="flex items-center gap-1 text-cyan-400 font-bold bg-[#1a2420] px-2 py-0.5 rounded border border-cyan-900/40">
+                  <Shield className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Resolve {activeChar.resolveMultiplier ?? 1.0}x</span>
+                </span>
+              </div>
               <h2
                 className="text-2xl sm:text-3xl font-black text-[#d1e3da] tracking-wider truncate"
                 style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}

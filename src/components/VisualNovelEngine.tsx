@@ -73,6 +73,7 @@ import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
+import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
 export {
   Locker32ZoomView,
   Locker09ZoomView,
@@ -81,6 +82,8 @@ export {
   CaretakerOfficeView,
   TopInventoryBar,
   InventoryDrawerModal,
+  CaretakerLockModal,
+  CaretakerKeypadModal,
 };
 
 interface InitialDialogueStep {
@@ -724,6 +727,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [altarBellPlaced, setAltarBellPlaced] = useState<boolean>(false);
   const [natSummoned, setNatSummoned] = useState<boolean>(false);
   const [hasConsultedNat, setHasConsultedNat] = useState<boolean>(false);
+  const [askedNatTopics, setAskedNatTopics] = useState<string[]>([]);
   const [corridorShadowScareTriggered, setCorridorShadowScareTriggered] = useState<boolean>(false);
   const [chapter1Completed, setChapter1Completed] = useState<boolean>(false);
   const [keypadInput, setKeypadInput] = useState<string>('');
@@ -734,6 +738,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
+  const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -786,9 +791,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   };
 
   // 10-Minute Countdown Clock Hook
-  // Ensure the timer only suspends when isSystemPaused is true:
+  // Ensure the timer only suspends when isPaused is true or outside gameplay:
   useEffect(() => {
-    if (isSystemPaused || timerSeconds <= 0) return;
+    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0) return;
 
     const timerInterval = setInterval(() => {
       setTimerSeconds((prev) => {
@@ -802,20 +807,24 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [isSystemPaused, timerSeconds]);
+  }, [isPaused, currentScreen, timerSeconds]);
 
   // Ambient Composure Attrition Hook
-  // Ensure mental drain continues ticking even while the player is reading notes, checking clues, or inspecting items:
+  // Base rate: 1% per 18s (accelerated to 8s during Nat dialogue), scaled by active investigator tensionMultiplier
+  // Continues ticking while player checks case notes or inventory; halts when system is paused (isPaused)
   useEffect(() => {
-    if (isSystemPaused || composure <= 5) return;
+    if (isPaused || currentScreen !== 'gameplay' || composure <= 0) return;
 
-    // Passive ambient decay (e.g., 1% every 15s in haunted corridors)
+    const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
+    const tension = selectedCharacter.tensionMultiplier || 1.0;
+    const decayIntervalMs = Math.max(500, Math.round(basePeriodMs / tension));
+
     const composureInterval = setInterval(() => {
-      setComposure((prev) => Math.max(5, prev - 1));
-    }, 15000);
+      setComposure((prev) => Math.max(0, prev - 1));
+    }, decayIntervalMs);
 
     return () => clearInterval(composureInterval);
-  }, [isSystemPaused, composure]);
+  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier]);
 
   // Monitor composure zero game over condition
   useEffect(() => {
@@ -909,6 +918,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setAltarBellPlaced(Boolean(save.altarBellPlaced));
       setNatSummoned(Boolean(save.natSummoned));
       setHasConsultedNat(Boolean(save.hasConsultedNat));
+      if (Array.isArray(save.askedNatTopics)) setAskedNatTopics(save.askedNatTopics);
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       if (typeof save.composure === 'number') setComposure(save.composure);
@@ -983,6 +993,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         altarBellPlaced,
         natSummoned,
         hasConsultedNat,
+        askedNatTopics,
         corridorShadowScareTriggered,
         chapter1Completed: false,
       });
@@ -1009,6 +1020,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           altarBellPlaced,
           natSummoned,
           hasConsultedNat,
+          askedNatTopics,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1046,6 +1058,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     altarBellPlaced,
     natSummoned,
     hasConsultedNat,
+    askedNatTopics,
     corridorShadowScareTriggered,
     chapter1Completed,
   ]);
@@ -1703,6 +1716,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   const handleContinueToChapterTwo = () => {
     setIsChapterTransitionOpen(false);
+    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+    const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
+    const rolloverTime = 600 + Math.max(0, timeLeft);
+    setComposure(recoveredComposure);
+    setTimeLeft(rolloverTime);
     setCurrentChapter(2);
     setPhase(2);
     setPhase3Location('east_fork');
@@ -1728,6 +1746,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       'small_brass_key_32',
       'coiled_nylon_rope',
       'black_beeswax_candle',
+      'black_beeswax_candle',
+      'black_beeswax_candle',
       'matchbox_three_stars',
       'bronze_prayer_bell',
     ]);
@@ -1741,8 +1761,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleSaveAndExit = () => {
     setIsChapterTransitionOpen(false);
     sound.stopAllAmbience();
-    // 1. Persist Chapter 2 checkpoint
-    lockChapterOneAndSave(selectedCharacter.id, composure);
+    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+    // 1. Persist Chapter 2 checkpoint with rollover time & recovered composure
+    lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, resolve);
     // 2. Route directly to Chapter Selection page
     navigate('/chapters');
   };
@@ -1780,10 +1801,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setPhase3Location('east_fork');
       setCaretakerDoorLocked(true);
 
-      // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY
+      // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY with Time Bank rollover and Resolve recovery
+      const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
+      const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
+      const rolloverTime = 600 + Math.max(0, timeLeft);
+
+      setComposure(recoveredComposure);
+      setTimeLeft(rolloverTime);
       setChapter1Completed(true);
       completeChapter(1);
-      lockChapterOneAndSave(selectedCharacter.id, composure);
+      lockChapterOneAndSave(selectedCharacter.id, recoveredComposure, inventory, timeLeft, resolve);
       setShowChapterTransitionModal(true);
     }, 1800);
   };
@@ -1827,9 +1854,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
       if (phase3Location === 'caretaker_door_keypad') return PHASE_3_ASSETS.caretakerKeypadZoom;
-      if (phase3Location === 'caretaker_office_main') {
-        if (currentChapter >= 2 || chapter1Completed) return '';
-        if (spectralClimaxActive) return PHASE_3_ASSETS.caretakerSpectralClimax;
+      if (phase3Location === 'caretaker_office_main' || phase3Location === 'caretaker_office') {
+        if (spectralClimaxActive || currentChapter >= 2 || chapter1Completed) return PHASE_3_ASSETS.caretakerSpectralClimax;
         return PHASE_3_ASSETS.caretakerOfficeOverview;
       }
       return PHASE_3_ASSETS.pathwayThreshold;
@@ -1873,7 +1899,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               : 'scale-100 filter brightness-90 contrast-105'
           }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+        {phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+        )}
 
       {/* 2. Supernatural Glitch Flicker Effect */}
       {currentStep.isGlitch && (
@@ -1920,7 +1948,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+      <div className="fixed top-0 inset-x-0 p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Phase Badge */}
           <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2">
@@ -2744,7 +2772,38 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       {/* ======================================================== */}
       {/* 6.8. MODE: PHASE 3 - PATHWAY 326 (WEST WING & COMMUNAL WASHROOM) */}
       {/* ======================================================== */}
-      {mode === 'phase3' && (
+      {mode === 'phase3' && (phase3Location === 'caretaker_office_main' || phase3Location === 'caretaker_office') && (
+        <CaretakerOfficeView
+          currentChapter={currentChapter}
+          chapter1Completed={chapter1Completed}
+          setPhase3Location={setPhase3Location}
+          hasCaretakerCandles={hasCaretakerCandles}
+          setHasCaretakerCandles={setHasCaretakerCandles}
+          setHasBlackCandlesCount={setHasBlackCandlesCount}
+          setInventory={setInventory}
+          hasBronzeBell={hasBronzeBell}
+          setHasBronzeBell={setHasBronzeBell}
+          addInventoryItem={addInventoryItem}
+          natSummoned={natSummoned}
+          hasBlackCandlesCount={hasBlackCandlesCount}
+          altarCandlesPlaced={altarCandlesPlaced}
+          handleCaretakerClimax={handleCaretakerClimax}
+          activeMonologue={activeMonologue}
+          setActiveMonologue={setActiveMonologue}
+          caretakerSpectralClimax={spectralClimaxActive}
+          onStepBack={() => {
+            try {
+              sound.playDoorCreak();
+            } catch {
+              sound.playPaperRustle();
+            }
+            setPhase3Location('east_fork');
+            setActiveMonologue('— Stepped out of the suffocating office back into the damp corridor fork. —');
+          }}
+        />
+      )}
+
+      {mode === 'phase3' && phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Top-Left Return Button */}
           {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
@@ -2810,9 +2869,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   } else if (phase3Location === 'caretaker_door_keypad') {
                     sound.playPaperRustle();
                     setPhase3Location('east_fork');
-                  } else if (phase3Location === 'caretaker_office_main') {
-                    sound.playPaperRustle();
-                    setPhase3Location('east_fork');
                   } else if (phase3Location === 'prayer_altar') {
                     sound.playPaperRustle();
                     setPhase3Location('prayer_room_main');
@@ -2840,8 +2896,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     ? 'EXIT TO EAST WING FORK'
                     : phase3Location === 'caretaker_door_keypad'
                     ? 'STEP BACK TO EAST WING FORK'
-                    : phase3Location === 'caretaker_office_main'
-                    ? 'EXIT CARETAKER OFFICE'
                     : phase3Location === 'prayer_altar'
                     ? 'STEP BACK TO PRAYER ROOM'
                     : phase3Location === 'prayer_room_main'
@@ -2891,9 +2945,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   : phase3Location === 'locker_spider'
                   ? 'Rusted Locker Vent'
                   : phase3Location === 'caretaker_door_keypad'
-                  ? 'Caretaker Office Push-Latch Keypad'
-                  : phase3Location === 'caretaker_office_main'
-                  ? "Caretaker's Old Office"
+                  ? 'Caretaker Office Brass Padlock'
                   : phase3Location === 'prayer_room_main'
                   ? 'Communal Prayer Sanctuary'
                   : 'Guardian Nat Prayer Altar'}
@@ -3305,7 +3357,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                           </span>
                         ) : (
                           <span className="text-stone-400 flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-stone-400" /> KEYPAD LOCKED
+                            <Lock className="w-3 h-3 text-stone-400" /> PADLOCK LOCKED
                           </span>
                         )}
                       </div>
@@ -3316,7 +3368,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         CARETAKER ARCHIVE
                       </h3>
                       <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
-                        Warden's locked records office secured by a push-latch electronic keypad.
+                        Warden's locked records office secured by a heavy brass tumbler combination lock.
                       </p>
                     </div>
                   </motion.div>
@@ -3462,6 +3514,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     setActiveMonologue(
                       "— Locked tight with a small barrel cylinder. May's personal locker... the key is nowhere here. —"
                     );
+                    addDiscoveredClue('clue_locker_14_found');
                   }}
                 />
               </>
@@ -3487,114 +3540,28 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               </>
             )}
 
-            {/* SUB-SCENE 7: CARETAKER DOOR KEYPAD */}
+            {/* SUB-SCENE 7: CARETAKER DOOR VINTAGE COMBINATION PADLOCK */}
             {phase3Location === 'caretaker_door_keypad' && (
-              <div className="absolute inset-0 flex items-center justify-center p-4 z-20 pointer-events-none">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="w-full max-w-sm bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-md p-6 pointer-events-auto text-[#c2d6cc]"
-                >
-                  <div className="flex items-center justify-between pb-3 border-b border-[#26382f]">
-                    <div className="flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-[#82a996]" />
-                      <span className="text-xs font-mono font-bold tracking-wider text-[#82a996] uppercase">
-                        PUSH-LATCH OVERWRITE
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-mono text-stone-500 uppercase">MODEL 1998-E</span>
-                  </div>
-
-                  {/* Screen Display */}
-                  <div className="my-4 p-3 rounded-xl bg-[#0b100e] border border-[#202e26] text-center">
-                    <span className="text-[10px] font-mono text-stone-500 block mb-1 uppercase tracking-widest">
-                      SECURITY SEQUENCE INPUT
-                    </span>
-                    <div className="text-2xl font-mono font-black tracking-[0.35em] text-[#6ee7b7] min-h-[36px] flex items-center justify-center">
-                      {keypadInput ? keypadInput : <span className="text-stone-700 animate-pulse">_ _ _ _ _ _</span>}
-                    </div>
-                  </div>
-
-                  {/* 0-9 Keypad Grid */}
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
-                      <button
-                        key={digit}
-                        onClick={() => {
-                          sound.playKeyClick();
-                          if (keypadInput.length < 8) {
-                            setKeypadInput((prev) => prev + digit);
-                          }
-                        }}
-                        className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
-                      >
-                        {digit}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => {
-                        sound.playPaperRustle();
-                        setKeypadInput('');
-                      }}
-                      className="h-12 rounded-xl bg-[#141b17] hover:bg-[#1a241e] border border-[#233329] text-stone-400 hover:text-stone-200 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
-                    >
-                      CLEAR
-                    </button>
-                    <button
-                      onClick={() => {
-                        sound.playKeyClick();
-                        if (keypadInput.length < 8) {
-                          setKeypadInput((prev) => prev + '0');
-                        }
-                      }}
-                      className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
-                    >
-                      0
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (keypadInput === '290418') {
-                          sound.playSuccessTune();
-                          setCaretakerDoorUnlocked(true);
-                          setActiveMonologue(
-                            "— Heavy metallic clunk! The internal solenoid retracts, unlocking the caretaker office door. —"
-                          );
-                          setPhase3Location('caretaker_office_main');
-                        } else {
-                          sound.playError();
-                          setKeypadInput('');
-                          setActiveMonologue("— The keypad emits a dull rejected buzz. Incorrect sequence. —");
-                        }
-                      }}
-                      className="h-12 rounded-xl bg-[#22352b] hover:bg-[#2d4639] active:scale-95 border border-[#3f5c4c] text-[#6ee7b7] font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
-                    >
-                      ENTER
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
-            )}
-
-            {/* SUB-SCENE 8: CARETAKER'S OFFICE ARCHIVE */}
-            {phase3Location === 'caretaker_office_main' && (
-              <CaretakerOfficeView
-                currentChapter={currentChapter}
-                chapter1Completed={chapter1Completed}
-                setPhase3Location={setPhase3Location}
-                hasCaretakerCandles={hasCaretakerCandles}
-                setHasCaretakerCandles={setHasCaretakerCandles}
-                setHasBlackCandlesCount={setHasBlackCandlesCount}
-                setInventory={setInventory}
-                hasBronzeBell={hasBronzeBell}
-                setHasBronzeBell={setHasBronzeBell}
-                addInventoryItem={addInventoryItem}
-                natSummoned={natSummoned}
-                hasBlackCandlesCount={hasBlackCandlesCount}
-                altarCandlesPlaced={altarCandlesPlaced}
-                handleCaretakerClimax={handleCaretakerClimax}
-                setActiveMonologue={setActiveMonologue}
+              <CaretakerLockModal
+                isOpen={true}
+                onClose={() => {
+                  sound.playPaperRustle();
+                  setPhase3Location('east_fork');
+                }}
+                onUnlockSuccess={() => {
+                  sound.playSuccessTune();
+                  setCaretakerDoorUnlocked(true);
+                  setActiveMonologue(
+                    "— Heavy metallic clank! The weathered brass latch drops open, unlocking the caretaker office door. —"
+                  );
+                  setPhase3Location('caretaker_office_main');
+                }}
+                onCombinationAttemptFailed={() => {
+                  setActiveMonologue("— The lock shackle rattles stubbornly. Incorrect tumbler combination. —");
+                }}
               />
             )}
+
 
             {/* SUB-SCENE 9: COMMUNAL PRAYER ROOM */}
             {phase3Location === 'prayer_room_main' && (
@@ -3624,6 +3591,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setComposure={setComposure}
                 inventory={inventory}
                 setInventory={setInventory}
+                onNatDialogueActiveChange={setIsNatDialogueActive}
                 hasBlackCandlesCount={hasBlackCandlesCount}
                 setHasBlackCandlesCount={setHasBlackCandlesCount}
                 hasMatchesCount={hasMatchesCount}
@@ -3645,6 +3613,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 addDiscoveredClue={addDiscoveredClue}
                 discoveredClues={discoveredClues}
                 setDiscoveredClues={setDiscoveredClues}
+                askedTopics={askedNatTopics}
+                setAskedTopics={setAskedNatTopics}
               />
             )}
           </div>

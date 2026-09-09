@@ -366,6 +366,40 @@ class AudioEngine {
     } catch {}
   }
 
+  public playDoorCreak() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      // Low friction pitch ramp characteristic of heavy door creak
+      osc.frequency.setValueAtTime(130, now);
+      osc.frequency.linearRampToValueAtTime(190, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(85, now + 0.45);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(450, now);
+      filter.Q.setValueAtTime(3.5, now);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.045, now + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } catch {}
+  }
+
   public playGhostWhisper() {
     if (this.isMuted) return;
     this.initCtx();
@@ -636,6 +670,86 @@ class AudioEngine {
     } catch {}
   }
 
+  public playMetallicTumblerClick() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Crisp mechanical rotary tumbler notch click
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1600, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.04);
+
+      gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.05);
+    } catch {}
+  }
+
+  public playHeavyLatchClank() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Deep heavy iron/brass padlock latch release & spring clank
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(180, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.28);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(1100, this.ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(220, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.32);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 0.32);
+      osc2.stop(this.ctx.currentTime + 0.15);
+    } catch {}
+  }
+
+  public playLockStuckRattle() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Dull heavy shackle stuck rattle
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(240, this.ctx.currentTime);
+      osc.frequency.setValueAtTime(160, this.ctx.currentTime + 0.06);
+      osc.frequency.setValueAtTime(110, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
+    } catch {}
+  }
+
   public playCreepInsect() {
     if (this.isMuted) return;
     this.initCtx();
@@ -889,6 +1003,100 @@ class AudioEngine {
       osc.start();
       osc.stop(this.ctx.currentTime + 0.5);
     } catch {}
+  }
+
+  public playGhostScreech() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Piercing spectral screech with distorted harmonic spikes & rapid pitch bend
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'sawtooth';
+      osc1.frequency.setValueAtTime(880, this.ctx.currentTime);
+      osc1.frequency.linearRampToValueAtTime(1760, this.ctx.currentTime + 0.15);
+      osc1.frequency.exponentialRampToValueAtTime(220, this.ctx.currentTime + 0.8);
+
+      osc2.type = 'square';
+      osc2.frequency.setValueAtTime(895, this.ctx.currentTime);
+      osc2.frequency.linearRampToValueAtTime(1820, this.ctx.currentTime + 0.15);
+      osc2.frequency.exponentialRampToValueAtTime(210, this.ctx.currentTime + 0.8);
+
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.85);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 0.85);
+      osc2.stop(this.ctx.currentTime + 0.85);
+    } catch {}
+  }
+
+  public playHollowChime() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Low resonant hollow chime (164Hz -> 110Hz with eerie decay)
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(164.81, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(110, this.ctx.currentTime + 1.2);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(247.23, this.ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(165, this.ctx.currentTime + 1.2);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1.2);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 1.2);
+      osc2.stop(this.ctx.currentTime + 1.2);
+    } catch {}
+  }
+
+  public playEerieHum() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Deep ominous hum / drone with slow sine sweep
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(92.5, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(65.4, this.ctx.currentTime + 1.0);
+
+      gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1.0);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start();
+      osc.stop(this.ctx.currentTime + 1.0);
+    } catch {
+      this.playHollowChime();
+    }
   }
 }
 

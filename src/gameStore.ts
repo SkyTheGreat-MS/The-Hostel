@@ -1,5 +1,28 @@
 // State Reducer & Store for Chapter 1 Flow & Reset Routine
-import { MCId, Phase3Location, Room4BSubScene, ChapterProgressSave, ActiveSaveState } from './types';
+import {
+  MCId,
+  Phase3Location,
+  Room4BSubScene,
+  ChapterProgressSave,
+  ActiveSaveState,
+  NatKnowledgeTier,
+  NatTopicDef,
+  NAT_TOPIC_REGISTRY,
+  NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+} from './types';
+import { sound } from './audioEngine';
+import { CHARACTER_ROSTER } from './characterData';
+
+export {
+  type NatKnowledgeTier,
+  type NatTopicDef,
+  NAT_TOPIC_REGISTRY,
+  type NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+};
 
 // Helper to evaluate system pausing status: ONLY true pause freezes world clock and mental attrition
 export const getIsSystemPaused = (isPaused: boolean, currentScreen: string = 'gameplay'): boolean => {
@@ -48,6 +71,13 @@ export interface ChapterOneState {
   altarBellPlaced: boolean;
   natSummoned: boolean;
   hasConsultedNat: boolean;
+  askedNatTopics?: string[];
+  activeNatDialogue?: {
+    speaker: string;
+    text: string;
+    pose: 'neutral' | 'pensive' | 'warning';
+  } | null;
+  selectedCharacterId?: string | null;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
 }
@@ -89,12 +119,16 @@ export const initialChapterOneState: ChapterOneState = {
   altarBellPlaced: false,
   natSummoned: false,
   hasConsultedNat: false,
+  askedNatTopics: [],
+  activeNatDialogue: null,
+  selectedCharacterId: 'moe_stheinkha',
   corridorShadowScareTriggered: false,
   chapter1Completed: false,
 };
 
 export type GameStoreAction =
   | { type: 'RESET_CHAPTER_ONE' }
+  | { type: 'SET_SELECTED_CHARACTER_ID'; payload: string | null }
   | { type: 'SET_PHASE'; payload: number }
   | { type: 'SET_CURRENT_SCENE'; payload: string }
   | { type: 'SET_CURRENT_SUBSCENE'; payload: string | null }
@@ -122,7 +156,23 @@ export type GameStoreAction =
   | { type: 'SET_HAS_READ_SANDAR_LETTERS'; payload: boolean }
   | { type: 'SET_HAS_LOCKER_09_CANDLE'; payload: boolean }
   | { type: 'SET_HAS_LOCKER_09_MATCHBOX'; payload: boolean }
-  | { type: 'SET_HAS_CONSULTED_NAT'; payload: boolean };
+  | { type: 'SET_HAS_CONSULTED_NAT'; payload: boolean }
+  | { type: 'SET_NAT_SUMMONED'; payload: boolean }
+  | { type: 'SET_ASKED_NAT_TOPICS'; payload: string[] }
+  | { type: 'ADD_ASKED_NAT_TOPIC'; payload: string }
+  | { type: 'PRESENT_TARGET_TO_NAT'; payload: string }
+  | {
+      type: 'SET_ACTIVE_NAT_DIALOGUE';
+      payload: {
+        speaker: string;
+        text: string;
+        pose: 'neutral' | 'pensive' | 'warning';
+      } | null;
+    }
+  | { type: 'TICK_TIMER' }
+  | { type: 'APPLY_COMPOSURE_SHOCK'; payload: { baseDamage: number; tensionMultiplier?: number } }
+  | { type: 'APPLY_RELIEF_SURGE'; payload: { baseRecovery: number; resolveMultiplier?: number } }
+  | { type: 'ADVANCE_CHAPTER_WITH_ROLLOVER'; payload?: { resolveMultiplier?: number } };
 
 export function chapterOneReducer(
   state: ChapterOneState = initialChapterOneState,
@@ -267,9 +317,290 @@ export function chapterOneReducer(
     case 'SET_HAS_CONSULTED_NAT':
       return { ...state, hasConsultedNat: action.payload };
 
+    case 'SET_NAT_SUMMONED':
+      return { ...state, natSummoned: action.payload };
+
+    case 'SET_ASKED_NAT_TOPICS':
+      return { ...state, askedNatTopics: action.payload };
+
+    case 'ADD_ASKED_NAT_TOPIC': {
+      const current = state.askedNatTopics || [];
+      if (current.includes(action.payload)) return state;
+      return { ...state, askedNatTopics: [...current, action.payload] };
+    }
+
+    case 'SET_SELECTED_CHARACTER_ID':
+      return { ...state, selectedCharacterId: action.payload };
+
+    case 'SET_ACTIVE_NAT_DIALOGUE':
+      return { ...state, activeNatDialogue: action.payload };
+
+    case 'PRESENT_TARGET_TO_NAT': {
+      const targetId = action.payload;
+      const knowledge = getNatKnowledge(targetId);
+      const charId = state.selectedCharacterId || 'moe_stheinkha';
+      const char = CHARACTER_ROSTER[charId] || CHARACTER_ROSTER.moe_stheinkha;
+      const tensionMultiplier = char?.tensionMultiplier ?? 1.0;
+
+      // 1. Calculate and deduct the 0.8% question strain
+      const questionTax = 0.8 * tensionMultiplier;
+      let additionalShock = 0;
+      let text = knowledge.response;
+      let pose = knowledge.spritePose;
+      let addedClues = state.discoveredClues;
+
+      if (!knowledge || knowledge.tier === 'unknown') {
+        try {
+          sound.playEerieHum();
+        } catch {}
+        text = knowledge?.response || '...';
+        pose = 'neutral';
+      } else if (knowledge.tier === 'forbidden_taboo') {
+        try {
+          sound.playGhostScreech();
+        } catch {}
+        additionalShock = (knowledge.shockDamage || 5) * tensionMultiplier;
+        pose = 'warning';
+      } else if (knowledge.caseNoteUnlock) {
+        try {
+          sound.playMenuSelect();
+        } catch {}
+        const clueKey = `nat_testimony_${targetId}`;
+        if (!addedClues.includes(clueKey)) {
+          addedClues = [...addedClues, clueKey];
+        }
+      } else {
+        try {
+          sound.playMenuSelect();
+        } catch {}
+      }
+
+      const totalDrain = questionTax + additionalShock;
+      const nextComp = Math.max(0, Number((state.composure - totalDrain).toFixed(1)));
+      const asked = state.askedNatTopics || [];
+      const nextAsked = [...asked, targetId]; // Track repeatable inquiries without locking
+
+      return {
+        ...state,
+        composure: nextComp,
+        discoveredClues: addedClues,
+        askedNatTopics: nextAsked,
+        activeNatDialogue: {
+          speaker: 'Hostel Guardian Nat',
+          text,
+          pose,
+        },
+      };
+    }
+
+    case 'TICK_TIMER': {
+      if (state.isPaused || state.timerSeconds <= 0) return state;
+      return { ...state, timerSeconds: Math.max(0, state.timerSeconds - 1) };
+    }
+
+    case 'APPLY_COMPOSURE_SHOCK': {
+      const tension = action.payload.tensionMultiplier ?? 1.0;
+      const damage = Math.round(action.payload.baseDamage * tension);
+      return { ...state, composure: Math.max(0, state.composure - damage) };
+    }
+
+    case 'APPLY_RELIEF_SURGE': {
+      const resolve = action.payload.resolveMultiplier ?? 1.0;
+      const recovery = Math.round(action.payload.baseRecovery * resolve);
+      return { ...state, composure: Math.min(100, state.composure + recovery) };
+    }
+
+    case 'ADVANCE_CHAPTER_WITH_ROLLOVER': {
+      const resolve = action.payload?.resolveMultiplier ?? 1.0;
+      const nextTimer = calculateRolloverTime(state.timerSeconds);
+      const nextComposure = calculateComposureRecovery(state.composure, resolve);
+      return {
+        ...state,
+        timerSeconds: nextTimer,
+        composure: nextComposure,
+        chapter1Completed: true,
+      };
+    }
+
     default:
       return state;
   }
+}
+
+export function getAvailableNatTopics(unlockedClues: string[] = []): NatTopicDef[] {
+  return Object.values(NAT_TOPIC_REGISTRY).filter((topic) => {
+    if (!topic.requiredClueId) return true;
+    return unlockedClues.includes(topic.requiredClueId);
+  });
+}
+
+export interface NatDialogueOutput {
+  speaker: string;
+  text: string;
+  pose: 'neutral' | 'pensive' | 'warning';
+}
+
+export interface NatCaseNoteUnlock {
+  id: string;
+  title: string;
+  category: string;
+  snippet: string;
+  unlockedAt: string;
+}
+
+export interface PresentTargetResult {
+  knowledge: NatKnowledgeEntry;
+  dialogue: NatDialogueOutput;
+  shockDamage: number;
+  caseNoteUnlock?: NatCaseNoteUnlock;
+}
+
+export function presentTargetToNat(
+  targetId: string,
+  typeOrCallback?:
+    | 'inventory'
+    | 'clue'
+    | {
+        selectedCharacterId?: string | null;
+        applyComposureShock?: (amount: number) => void;
+        addCaseNote?: (note: NatCaseNoteUnlock) => void;
+        addDiscoveredClue?: (clueId: string) => void;
+        setActiveNatDialogue?: (dialogue: NatDialogueOutput) => void;
+        setComposure?: ((val: number | ((prev: number) => number)) => void);
+      },
+  callbacksParam?: {
+    selectedCharacterId?: string | null;
+    applyComposureShock?: (amount: number) => void;
+    addCaseNote?: (note: NatCaseNoteUnlock) => void;
+    addDiscoveredClue?: (clueId: string) => void;
+    setActiveNatDialogue?: (dialogue: NatDialogueOutput) => void;
+    setComposure?: ((val: number | ((prev: number) => number)) => void);
+  }
+): PresentTargetResult {
+  const callbacks = typeof typeOrCallback === 'object' ? typeOrCallback : callbacksParam;
+  const charId = callbacks?.selectedCharacterId || 'moe_stheinkha';
+  const char = CHARACTER_ROSTER[charId] || CHARACTER_ROSTER.moe_stheinkha;
+  const tensionMultiplier = char?.tensionMultiplier ?? 1.0;
+
+  // 1. Calculate and deduct the 0.8% question strain
+  const questionTax = Number((0.8 * tensionMultiplier).toFixed(2));
+  if (callbacks?.applyComposureShock) {
+    callbacks.applyComposureShock(questionTax);
+  } else if (callbacks?.setComposure) {
+    callbacks.setComposure((prev) => Math.max(0, Number((prev - questionTax).toFixed(1))));
+  }
+
+  // 2. Fetch Nat response from knowledge base
+  const knowledge = getNatKnowledge(targetId);
+
+  if (!knowledge || knowledge.tier === 'unknown') {
+    try {
+      sound.playEerieHum();
+    } catch {}
+    const fallbackText = knowledge?.response || '...';
+    const dialogue: NatDialogueOutput = {
+      speaker: 'Hostel Guardian Nat',
+      text: fallbackText,
+      pose: 'neutral',
+    };
+    callbacks?.setActiveNatDialogue?.(dialogue);
+    return {
+      knowledge,
+      dialogue,
+      shockDamage: questionTax,
+    };
+  }
+
+  if (knowledge.tier === 'forbidden_taboo') {
+    try {
+      sound.playGhostScreech();
+    } catch {}
+    // Additional shock penalty for breaking sacred taboo
+    const tabooShock = Number(((knowledge.shockDamage || 5) * tensionMultiplier).toFixed(2));
+    if (callbacks?.applyComposureShock) {
+      callbacks.applyComposureShock(tabooShock);
+    } else if (callbacks?.setComposure) {
+      callbacks.setComposure((prev) => Math.max(0, Number((prev - tabooShock).toFixed(1))));
+    }
+    const dialogue: NatDialogueOutput = {
+      speaker: 'Hostel Guardian Nat',
+      text: knowledge.response,
+      pose: 'warning',
+    };
+    callbacks?.setActiveNatDialogue?.(dialogue);
+    return {
+      knowledge,
+      dialogue,
+      shockDamage: Number((questionTax + tabooShock).toFixed(2)),
+    };
+  }
+
+  // Handle Truth / Deceit
+  let caseNoteUnlock: NatCaseNoteUnlock | undefined;
+  if (knowledge.caseNoteUnlock) {
+    caseNoteUnlock = {
+      id: `nat_testimony_${targetId}`,
+      title: `Nat's Account: ${targetId}`,
+      category: 'Spiritual Testimony',
+      snippet: knowledge.caseNoteUnlock,
+      unlockedAt: new Date().toLocaleTimeString(),
+    };
+    callbacks?.addCaseNote?.(caseNoteUnlock);
+    callbacks?.addDiscoveredClue?.(`nat_testimony_${targetId}`);
+  }
+
+  try {
+    sound.playMenuSelect();
+  } catch {}
+  const dialogue: NatDialogueOutput = {
+    speaker: 'Hostel Guardian Nat',
+    text: knowledge.response,
+    pose: knowledge.spritePose,
+  };
+  callbacks?.setActiveNatDialogue?.(dialogue);
+
+  return {
+    knowledge,
+    dialogue,
+    shockDamage: questionTax,
+    caseNoteUnlock,
+  };
+}
+
+export const BASE_CHAPTER_TIME_SECONDS = 600;
+
+export function calculateRolloverTime(timeRemaining: number): number {
+  return BASE_CHAPTER_TIME_SECONDS + Math.max(0, timeRemaining);
+}
+
+export function calculateComposureRecovery(
+  currentComposure: number,
+  resolveMultiplier: number = 1.0
+): number {
+  const recovery = Math.round(20 * resolveMultiplier);
+  return Math.min(100, currentComposure + recovery);
+}
+
+export function calculateComposureShock(
+  baseDamage: number,
+  tensionMultiplier: number = 1.0
+): number {
+  return Math.round(baseDamage * tensionMultiplier);
+}
+
+export function calculateReliefSurge(
+  baseRelief: number,
+  resolveMultiplier: number = 1.0
+): number {
+  return Math.round(baseRelief * resolveMultiplier);
+}
+
+export function tickTimer(
+  currentTimer: number,
+  isPaused: boolean = false
+): number {
+  if (isPaused || currentTimer <= 0) return currentTimer;
+  return Math.max(0, currentTimer - 1);
 }
 
 /**
@@ -333,28 +664,39 @@ export const ACTIVE_SAVE_KEY = 'spirits_labyrinth_active_save';
 
 export function lockChapterOneAndSave(
   selectedCharacterId: string = 'thazin',
-  currentComposure: number = 100
+  currentComposure: number = 100,
+  customInventory?: string[],
+  timeRemaining: number = 0,
+  resolveMultiplier: number = 1.0
 ): ActiveSaveState {
+  const defaultInventory = [
+    'bobby_pin',
+    'wooden_bat',
+    'small_brass_key_32',
+    'coiled_nylon_rope',
+    'black_beeswax_candle',
+    'black_beeswax_candle',
+    'black_beeswax_candle',
+    'matchbox_three_stars',
+    'bronze_prayer_bell',
+  ];
+
+  const rolloverTime = calculateRolloverTime(timeRemaining);
+  const recoveredComposure = calculateComposureRecovery(currentComposure, resolveMultiplier);
+
   const chapterTwoSaveState: ActiveSaveState = {
     chapter: 2,
     currentPhase: 1, // Chapter 2, Phase 1 (The Prayer Room Rite)
     phase3Location: 'east_fork',
     chapter1Completed: true,
     selectedCharacterId,
-    inventory: [
-      'bobby_pin',
-      'wooden_bat',
-      'small_brass_key_32',
-      'coiled_nylon_rope',
-      'black_beeswax_candle', // x3 acquired
-      'matchbox_three_stars',
-      'bronze_prayer_bell',
-    ],
+    inventory: customInventory && customInventory.length > 0 ? customInventory : defaultInventory,
     hasMatchesCount: 3,
     hasBlackCandlesCount: 3,
     hasBronzeBell: true,
     caretakerDoorUnlocked: true,
-    composure: currentComposure,
+    composure: recoveredComposure,
+    timerSeconds: rolloverTime,
     timestamp: Date.now(),
   };
 
