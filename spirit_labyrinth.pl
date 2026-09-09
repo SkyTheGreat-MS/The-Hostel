@@ -58,7 +58,12 @@
     init_investigation/1,
     advance_chapter_with_rollover/1,
     apply_fear_shock/1,
-    apply_relief_recovery/1
+    apply_relief_recovery/1,
+    % Section 9: Caretaker Mechanical Padlock & Nat Dialogue Step exports
+    caretaker_latch_unlocked/0,
+    nat_dialogue_step/1,
+    attempt_caretaker_combination/1,
+    advance_nat_dialogue/0
 ]).
 
 :- dynamic current_location/1.
@@ -96,12 +101,17 @@
 :- dynamic player_time_remaining/1.
 :- dynamic player_composure/1.
 
+% Caretaker Mechanical Latch & Nat Dialogue Step Tracking
+:- dynamic caretaker_latch_unlocked/0.
+:- dynamic nat_dialogue_step/1.
+
 % Top-level defaults for interactive evaluation & bridge queries
 :- assertz(nat_summoned).
 :- assertz(composure(100)).
 :- assertz(current_location(prayer_altar)).
 :- assertz(chapter(2)).
 :- assertz(chapter_phase(2, 1)).
+:- assertz(nat_dialogue_step(1)).
 
 % ==============================================================================
 % 1. WORLD TOPOLOGY (Phase 1, 2, and 3 Navigation Graph)
@@ -253,6 +263,8 @@ init_game_state :-
     retractall(caretaker_power_killed),
     retractall(room_state(_, _)),
     retractall(player_has(_)),
+    retractall(caretaker_latch_unlocked),
+    retractall(nat_dialogue_step(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
@@ -262,6 +274,7 @@ init_game_state :-
     assertz(altar_candle_count(0)),
     assertz(altar_bell_placed(false)),
     assertz(nat_summoned(false)),
+    assertz(nat_dialogue_step(1)),
     assertz(chapter(1)),
     assertz(chapter_phase(1, 1)),
     assertz(composure(100)),
@@ -665,3 +678,21 @@ apply_relief_recovery(BaseRecovery) :-
     assertz(player_composure(NewComp)),
     retractall(composure(_)),
     assertz(composure(NewComp)).
+
+% ==============================================================================
+% 9. CARETAKER MECHANICAL LATCH & NAT DIALOGUE STEP TRACKING
+% ==============================================================================
+
+% Validate 6-digit mechanical combination
+attempt_caretaker_combination([2, 9, 0, 4, 1, 8]) :-
+    \+ caretaker_latch_unlocked,
+    assertz(caretaker_latch_unlocked),
+    retractall(caretaker_door(_)),
+    assertz(caretaker_door(unlocked)).
+
+% Advance Nat dialogue step
+advance_nat_dialogue :-
+    (nat_dialogue_step(Current) -> true ; Current = 1),
+    Next is Current + 1,
+    retractall(nat_dialogue_step(_)),
+    assertz(nat_dialogue_step(Next)).

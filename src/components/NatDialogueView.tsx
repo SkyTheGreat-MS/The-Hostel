@@ -165,6 +165,40 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
     }
   };
 
+  // Global dialogue advance for Enter / Space keys
+  const handleAdvanceDialogue = () => {
+    if (!isOpeningComplete) {
+      handleAdvanceOpening();
+    } else {
+      // If Nat is mid-speech or on inquiry screen, advance to next unexplored inquiry or conclude
+      const nextUnasked = NAT_INQUIRIES.find((inq) => !interrogatedInquiryIds.includes(inq.id));
+      if (nextUnasked) {
+        handleSelectInquiry(nextUnasked);
+      } else {
+        handleEndAudience();
+      }
+    }
+  };
+
+  // Keyboard navigation: Enter / Space advances dialogue; keys 1-4 select inquiries
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleAdvanceDialogue();
+      } else if (isOpeningComplete && e.key >= '1' && e.key <= '4') {
+        const inqIndex = parseInt(e.key, 10) - 1;
+        if (NAT_INQUIRIES[inqIndex]) {
+          e.preventDefault();
+          handleSelectInquiry(NAT_INQUIRIES[inqIndex]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpeningComplete, openingStep, interrogatedInquiryIds]);
+
   // Handle player selecting an inquiry
   const handleSelectInquiry = (inq: NatInquiryWithClue) => {
     sound.playMenuSelect();
@@ -318,18 +352,18 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                 <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                   {currentOpening.speaker}
                 </span>
-                <span className="font-mono text-[10px] text-[#5a7a69]">
+                <span className="font-mono text-[10px] text-[#4e6b5c]">
                   • Step {openingStep + 1} of {OPENING_SEQUENCE.length}
                 </span>
               </div>
               <span className="font-mono text-[10px] tracking-widest text-[#4d6b5c] uppercase group-hover:text-[#78b394] transition-colors">
-                [Click to advance]
+                [Press Enter ↵ or Space to advance]
               </span>
             </div>
 
-            {/* Spoken Dialogue Line */}
-            <div className="my-auto py-1">
-              <p className="font-serif italic text-base md:text-lg text-[#d8eae0] font-normal leading-relaxed select-none">
+            {/* Spoken Response Container */}
+            <div className="py-2 px-1 my-auto">
+              <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none">
                 "{currentOpening.text}"
               </p>
             </div>
@@ -337,13 +371,14 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
             {/* Footer Navigation */}
             <div className="flex items-center justify-end pt-2 mt-1">
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAdvanceOpening();
                 }}
-                className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer"
+                className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
               >
-                {openingStep === OPENING_SEQUENCE.length - 1 ? 'Begin Interrogation ❯' : 'Continue ❯'}
+                {openingStep === OPENING_SEQUENCE.length - 1 ? 'Begin Interrogation [Enter ↵]' : 'Continue [Enter ↵]'}
               </button>
             </div>
           </div>
@@ -362,18 +397,19 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                       Select Inquiry
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-[#5a7a69]">
-                    {interrogatedInquiryIds.length}/4 Explored
+                  <span className="font-mono text-[10px] text-[#4e6b5c]">
+                    {interrogatedInquiryIds.length}/4 Explored • Keys [1-4]
                   </span>
                 </div>
 
                 <div className="space-y-1.5">
-                  {NAT_INQUIRIES.map((inq) => {
+                  {NAT_INQUIRIES.map((inq, inqIdx) => {
                     const isSelected = selectedInquiryId === inq.id;
                     const isAsked = interrogatedInquiryIds.includes(inq.id);
                     return (
                       <button
                         key={inq.id}
+                        type="button"
                         onClick={() => handleSelectInquiry(inq)}
                         className={`w-full text-left p-2.5 rounded-lg border text-xs font-mono transition-all cursor-pointer flex items-center justify-between gap-2 ${
                           isSelected
@@ -383,7 +419,10 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                             : 'bg-[#131f18]/90 hover:bg-[#1a2c22] border-[#273a2f] text-[#cce0d5]'
                         }`}
                       >
-                        <span className="line-clamp-1">❯ {inq.label}</span>
+                        <span className="line-clamp-1 flex items-center gap-1.5">
+                          <span className="text-[#5a7a69] font-bold">[{inqIdx + 1}]</span>
+                          <span>{inq.label}</span>
+                        </span>
                         {isAsked && (
                           <span className="text-[9px] font-mono text-[#5a7a69] uppercase shrink-0">
                             [Asked]
@@ -405,12 +444,13 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                         Hostel Guardian Nat
                       </span>
                     </div>
-                    <span className="font-mono text-[10px] tracking-widest text-[#4d6b5c] uppercase">
+                    <span className="font-mono text-[10px] text-[#4e6b5c] uppercase">
                       Spoken Response
                     </span>
                   </div>
-                  <div className="py-1">
-                    <p className="font-serif italic text-base text-[#d8eae0] font-normal leading-relaxed select-none min-h-[64px]">
+                  {/* Spoken Response Container */}
+                  <div className="py-2 px-1">
+                    <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none min-h-[64px]">
                       "{activeResponseText}"
                     </p>
                   </div>
@@ -423,10 +463,11 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                     <span>Composure -1% / 8s</span>
                   </div>
                   <button
+                    type="button"
                     onClick={handleEndAudience}
                     className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
                   >
-                    Conclude Audience ❯
+                    Conclude Audience [Enter ↵]
                   </button>
                 </div>
               </div>

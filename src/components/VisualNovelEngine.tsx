@@ -73,6 +73,7 @@ import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
+import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
 export {
   Locker32ZoomView,
   Locker09ZoomView,
@@ -81,6 +82,8 @@ export {
   CaretakerOfficeView,
   TopInventoryBar,
   InventoryDrawerModal,
+  CaretakerLockModal,
+  CaretakerKeypadModal,
 };
 
 interface InitialDialogueStep {
@@ -2932,7 +2935,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   : phase3Location === 'locker_spider'
                   ? 'Rusted Locker Vent'
                   : phase3Location === 'caretaker_door_keypad'
-                  ? 'Caretaker Office Push-Latch Keypad'
+                  ? 'Caretaker Office Brass Padlock'
                   : phase3Location === 'prayer_room_main'
                   ? 'Communal Prayer Sanctuary'
                   : 'Guardian Nat Prayer Altar'}
@@ -3344,7 +3347,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                           </span>
                         ) : (
                           <span className="text-stone-400 flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-stone-400" /> KEYPAD LOCKED
+                            <Lock className="w-3 h-3 text-stone-400" /> PADLOCK LOCKED
                           </span>
                         )}
                       </div>
@@ -3355,7 +3358,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         CARETAKER ARCHIVE
                       </h3>
                       <p className="text-[11px] font-mono text-stone-400 line-clamp-2">
-                        Warden's locked records office secured by a push-latch electronic keypad.
+                        Warden's locked records office secured by a heavy brass tumbler combination lock.
                       </p>
                     </div>
                   </motion.div>
@@ -3526,92 +3529,26 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               </>
             )}
 
-            {/* SUB-SCENE 7: CARETAKER DOOR KEYPAD */}
+            {/* SUB-SCENE 7: CARETAKER DOOR VINTAGE COMBINATION PADLOCK */}
             {phase3Location === 'caretaker_door_keypad' && (
-              <div className="absolute inset-0 flex items-center justify-center p-4 z-20 pointer-events-none">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="w-full max-w-sm bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-md p-6 pointer-events-auto text-[#c2d6cc]"
-                >
-                  <div className="flex items-center justify-between pb-3 border-b border-[#26382f]">
-                    <div className="flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-[#82a996]" />
-                      <span className="text-xs font-mono font-bold tracking-wider text-[#82a996] uppercase">
-                        PUSH-LATCH OVERWRITE
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-mono text-stone-500 uppercase">MODEL 1998-E</span>
-                  </div>
-
-                  {/* Screen Display */}
-                  <div className="my-4 p-3 rounded-xl bg-[#0b100e] border border-[#202e26] text-center">
-                    <span className="text-[10px] font-mono text-stone-500 block mb-1 uppercase tracking-widest">
-                      SECURITY SEQUENCE INPUT
-                    </span>
-                    <div className="text-2xl font-mono font-black tracking-[0.35em] text-[#6ee7b7] min-h-[36px] flex items-center justify-center">
-                      {keypadInput ? keypadInput : <span className="text-stone-700 animate-pulse">_ _ _ _ _ _</span>}
-                    </div>
-                  </div>
-
-                  {/* 0-9 Keypad Grid */}
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
-                      <button
-                        key={digit}
-                        onClick={() => {
-                          sound.playKeyClick();
-                          if (keypadInput.length < 8) {
-                            setKeypadInput((prev) => prev + digit);
-                          }
-                        }}
-                        className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
-                      >
-                        {digit}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => {
-                        sound.playPaperRustle();
-                        setKeypadInput('');
-                      }}
-                      className="h-12 rounded-xl bg-[#141b17] hover:bg-[#1a241e] border border-[#233329] text-stone-400 hover:text-stone-200 font-mono text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
-                    >
-                      CLEAR
-                    </button>
-                    <button
-                      onClick={() => {
-                        sound.playKeyClick();
-                        if (keypadInput.length < 8) {
-                          setKeypadInput((prev) => prev + '0');
-                        }
-                      }}
-                      className="h-12 rounded-xl bg-[#16241d] hover:bg-[#1f3328] active:scale-95 border border-[#2b4235] text-[#d1e3da] font-mono text-lg font-bold transition-all shadow cursor-pointer"
-                    >
-                      0
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (keypadInput === '290418') {
-                          sound.playSuccessTune();
-                          setCaretakerDoorUnlocked(true);
-                          setActiveMonologue(
-                            "— Heavy metallic clunk! The internal solenoid retracts, unlocking the caretaker office door. —"
-                          );
-                          setPhase3Location('caretaker_office_main');
-                        } else {
-                          sound.playError();
-                          setKeypadInput('');
-                          setActiveMonologue("— The keypad emits a dull rejected buzz. Incorrect sequence. —");
-                        }
-                      }}
-                      className="h-12 rounded-xl bg-[#22352b] hover:bg-[#2d4639] active:scale-95 border border-[#3f5c4c] text-[#6ee7b7] font-mono text-xs font-black uppercase tracking-wider transition-all shadow-md cursor-pointer"
-                    >
-                      ENTER
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+              <CaretakerLockModal
+                isOpen={true}
+                onClose={() => {
+                  sound.playPaperRustle();
+                  setPhase3Location('east_fork');
+                }}
+                onUnlockSuccess={() => {
+                  sound.playSuccessTune();
+                  setCaretakerDoorUnlocked(true);
+                  setActiveMonologue(
+                    "— Heavy metallic clank! The weathered brass latch drops open, unlocking the caretaker office door. —"
+                  );
+                  setPhase3Location('caretaker_office_main');
+                }}
+                onCombinationAttemptFailed={() => {
+                  setActiveMonologue("— The lock shackle rattles stubbornly. Incorrect tumbler combination. —");
+                }}
+              />
             )}
 
 

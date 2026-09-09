@@ -636,6 +636,86 @@ class AudioEngine {
     } catch {}
   }
 
+  public playMetallicTumblerClick() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Crisp mechanical rotary tumbler notch click
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1600, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.04);
+
+      gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.05);
+    } catch {}
+  }
+
+  public playHeavyLatchClank() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Deep heavy iron/brass padlock latch release & spring clank
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(180, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.28);
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(1100, this.ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(220, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.32);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 0.32);
+      osc2.stop(this.ctx.currentTime + 0.15);
+    } catch {}
+  }
+
+  public playLockStuckRattle() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Dull heavy shackle stuck rattle
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(240, this.ctx.currentTime);
+      osc.frequency.setValueAtTime(160, this.ctx.currentTime + 0.06);
+      osc.frequency.setValueAtTime(110, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
+    } catch {}
+  }
+
   public playCreepInsect() {
     if (this.isMuted) return;
     this.initCtx();
