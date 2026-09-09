@@ -11,9 +11,11 @@ import {
   FileText,
   AlertTriangle,
   Flame,
-  Clock,
-  Shield,
-  Eye,
+  Target,
+  Brain,
+  Skull,
+  Lightbulb,
+  ArrowRight,
 } from 'lucide-react';
 
 export interface MainMenuProps {
@@ -444,7 +446,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 <div className="flex items-center gap-2.5">
                   <FileText className="w-5 h-5 text-amber-400" />
                   <div>
-                    <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200">
+                    <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200 uppercase">
                       Investigative Field Guide &amp; Spirit Rules
                     </h2>
                     <p className="text-xs text-stone-400 font-mono">
@@ -462,59 +464,112 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
               {/* Guide Contents */}
               <div className="space-y-4 text-xs leading-relaxed max-h-[60vh] overflow-y-auto pr-2 text-stone-300">
-                <div className="p-3 bg-stone-950/80 rounded-lg border border-amber-900/40">
-                  <h3 className="font-bold text-amber-300 text-sm mb-1 flex items-center gap-1.5">
-                    <Flame className="w-4 h-4 text-amber-400" />
-                    1. The Premise: Echoes of August 1998
-                  </h3>
-                  <p className="text-stone-300">
-                    Six college friends performed a Burmese nat-calling ritual that went wrong.
-                    When the séance glass shattered, you fell into a 1998 spectral memory of the hostel.
-                    Your five friends in 2026 are desperately attempting to wake you up before your 20-turn anchor dissolves forever.
-                  </p>
-                </div>
-
+                {/* How to Play & Your Mission */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-stone-950/80 rounded-lg border border-rose-900/40">
-                    <h4 className="font-bold text-rose-300 mb-1 flex items-center gap-1.5">
-                      <Eye className="w-3.5 h-3.5 text-rose-400" />
-                      Mama May (Victim Spirit)
-                    </h4>
+                  <div className="p-3 bg-stone-950/80 rounded-lg border border-amber-900/40">
+                    <h3 className="font-bold text-amber-300 text-sm mb-1 flex items-center gap-1.5 uppercase">
+                      <Flame className="w-4 h-4 text-amber-400" />
+                      How to Play
+                    </h3>
                     <p className="text-stone-400 text-[11px]">
-                      <strong>CANNOT lie</strong>, but never speaks plain facts. Every utterance is a symbolic riddle.
-                      Misinterpreting her utterances elevates her <em>Grief</em> (+15%), accelerating poltergeist destabilization.
+                      Uncover the past. Escape 1998.
                     </p>
                   </div>
 
                   <div className="p-3 bg-stone-950/80 rounded-lg border border-amber-900/40">
-                    <h4 className="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
-                      <Shield className="w-3.5 h-3.5 text-amber-400" />
-                      Guardian Nat (Hostel Spirit)
-                    </h4>
+                    <h3 className="font-bold text-amber-300 text-sm mb-1 flex items-center gap-1.5 uppercase">
+                      <Target className="w-4 h-4 text-amber-400" />
+                      Your Mission
+                    </h3>
                     <p className="text-stone-400 text-[11px]">
-                      Presents statements in <strong>paired half-truths</strong>. Exactly ONE statement in each pair is true;
-                      the other is a deliberate deception. Choosing false statements inflicts Betrayal Composure damage.
+                      Find out what happened to &quot;Mama May&quot; and complete the ritual before time runs out.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-stone-950/80 rounded-lg border border-sky-900/40">
-                  <h4 className="font-bold text-sky-300 mb-1 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-sky-400" />
-                    Turn &amp; Composure Engine
-                  </h4>
-                  <p className="text-stone-400 text-[11px]">
-                    Exploration costs 1–2 turns per room. Communing with spirits costs 1 turn.
-                    Maintain player composure (100% → 0%) through disciplined deduction to avoid ending in psychosis or permanent entrapment.
-                  </p>
+                {/* Game Flow */}
+                <div className="p-3 bg-stone-950/80 rounded-lg border border-stone-700">
+                  <h3 className="font-bold text-amber-300 text-sm mb-2 uppercase">
+                    Game Flow
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">①</span> CHOOSE
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Character selection</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">②</span> EXPLORE
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Search the hostel</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">③</span> FIND CLUES
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Examine objects</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">④</span> INVESTIGATE
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Connect the clues</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">⑤</span> RITUAL
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Use the right items</p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
+                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
+                          <span className="text-amber-400">⑥</span> ESCAPE
+                        </p>
+                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Solve mystery</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Composure & Grief */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-3 bg-stone-950/80 rounded-lg border border-sky-900/40">
+                    <h4 className="font-bold text-sky-300 mb-1 flex items-center gap-1.5 uppercase">
+                      <Brain className="w-3.5 h-3.5 text-sky-400" />
+                      Composure
+                    </h4>
+                    <p className="text-stone-400 text-[11px]">Don&apos;t reach 0</p>
+                  </div>
+
+                  <div className="p-3 bg-stone-950/80 rounded-lg border border-rose-900/40">
+                    <h4 className="font-bold text-rose-300 mb-1 flex items-center gap-1.5 uppercase">
+                      <Skull className="w-3.5 h-3.5 text-rose-400" />
+                      Grief
+                    </h4>
+                    <p className="text-stone-400 text-[11px]">Don&apos;t reach 100%</p>
+                  </div>
                 </div>
               </div>
 
-              {/* Close Button */}
-              <div className="mt-6 pt-4 border-t border-stone-800 flex justify-end">
+              {/* Tip Box & Close Button */}
+              <div className="mt-6 pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex items-start gap-2 p-3 bg-stone-950/80 rounded-lg border border-stone-700 text-[11px] text-stone-400 sm:flex-1">
+                  <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <p>Search everywhere. Read carefully. Trust the evidence, not assumptions.</p>
+                </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-lg text-xs transition-colors"
+                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-lg text-xs transition-colors shrink-0"
                 >
                   Return to Menu
                 </button>
