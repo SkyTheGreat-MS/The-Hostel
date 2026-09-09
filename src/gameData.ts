@@ -51,12 +51,14 @@ export const ITEMS: Record<string, Item> = {
   bobby_pin: {
     id: 'bobby_pin',
     name: 'Bobby Pin',
+    shortLabel: 'Pin 4B',
     description: 'A bent steel bobby pin found in a ceramic tray on the study desk.',
     usageHint: 'Can rake small cylinder pins in simple locks silently.',
   },
   wooden_bat: {
     id: 'wooden_bat',
     name: 'Heavy Teak Timber',
+    shortLabel: 'Wood',
     type: 'tool',
     icon: '/assets/items/wooden_bat.png',
     description: 'A weathered piece of solid teak planking salvaged from the wardrobe base.',
@@ -65,6 +67,7 @@ export const ITEMS: Record<string, Item> = {
   magnetic_compass: {
     id: 'magnetic_compass',
     name: 'Magnetic Compass',
+    shortLabel: 'Compass',
     description:
       'An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.',
     isSpecial: true,
@@ -73,34 +76,41 @@ export const ITEMS: Record<string, Item> = {
   small_brass_key_32: {
     id: 'small_brass_key_32',
     name: 'Small Brass Key (32)',
+    shortLabel: 'Key 32',
     description: "A small tarnished brass key bearing a round metallic tag marked '32', recovered from a soaked uniform pocket.",
     usageHint: 'A numbered locker or cabinet key; unlikely to turn industrial padlocks.',
   },
   coiled_nylon_rope: {
     id: 'coiled_nylon_rope',
     name: 'Coiled Nylon Rope',
+    shortLabel: 'Rope',
     description: 'A length of sturdy weathered nylon rope taken from the overhead drainage pipe.',
     usageHint: 'Tough enough to bear body weight or secure broken latches.',
   },
   black_beeswax_candle: {
     id: 'black_beeswax_candle',
     name: 'Black Beeswax Candle',
+    shortLabel: 'Candle',
     description: 'Thick black beeswax candle used in traditional guardian rites.',
     usageHint: 'An essential offering element on the Guardian Nat prayer altar.',
   },
   matchbox_three_stars: {
     id: 'matchbox_three_stars',
     name: 'Matchbox (Three Stars)',
+    shortLabel: 'Match',
     description: "A vintage Burmese 'Three-Shooting-Stars' safety matchbox containing 3 matches.",
     usageHint: 'Used to strike a flame on ritual candles. High dread causes trembling hands.',
   },
   bronze_prayer_bell: {
     id: 'bronze_prayer_bell',
     name: 'Bronze Prayer Bell',
+    shortLabel: 'Bell',
     description: 'A ceremonial hand bell cast with traditional spirit runes.',
     usageHint: 'Rung to summon and awaken the Guardian Nat at the altar.',
   },
 };
+
+export const ITEM_DATABASE = ITEMS;
 
 export const CHARACTERS: MCCharacter[] = [
   {

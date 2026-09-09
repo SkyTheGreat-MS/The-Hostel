@@ -42,10 +42,12 @@ export interface ChapterOneState {
   hasReadSandarLetters: boolean;
   hasLocker09Candle: boolean;
   hasLocker09Matchbox: boolean;
+  hasCaretakerCandles?: boolean;
   caretakerDoorUnlocked: boolean;
   altarCandlesPlaced: number;
   altarBellPlaced: boolean;
   natSummoned: boolean;
+  hasConsultedNat: boolean;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
 }
@@ -81,10 +83,12 @@ export const initialChapterOneState: ChapterOneState = {
   hasReadSandarLetters: false,
   hasLocker09Candle: false,
   hasLocker09Matchbox: false,
+  hasCaretakerCandles: false,
   caretakerDoorUnlocked: false,
   altarCandlesPlaced: 0,
   altarBellPlaced: false,
   natSummoned: false,
+  hasConsultedNat: false,
   corridorShadowScareTriggered: false,
   chapter1Completed: false,
 };
@@ -117,7 +121,8 @@ export type GameStoreAction =
   | { type: 'SET_HAS_READ_LOCKER_32_NOTE'; payload: boolean }
   | { type: 'SET_HAS_READ_SANDAR_LETTERS'; payload: boolean }
   | { type: 'SET_HAS_LOCKER_09_CANDLE'; payload: boolean }
-  | { type: 'SET_HAS_LOCKER_09_MATCHBOX'; payload: boolean };
+  | { type: 'SET_HAS_LOCKER_09_MATCHBOX'; payload: boolean }
+  | { type: 'SET_HAS_CONSULTED_NAT'; payload: boolean };
 
 export function chapterOneReducer(
   state: ChapterOneState = initialChapterOneState,
@@ -258,6 +263,9 @@ export function chapterOneReducer(
 
     case 'SET_HAS_LOCKER_09_MATCHBOX':
       return { ...state, hasLocker09Matchbox: action.payload };
+
+    case 'SET_HAS_CONSULTED_NAT':
+      return { ...state, hasConsultedNat: action.payload };
 
     default:
       return state;
