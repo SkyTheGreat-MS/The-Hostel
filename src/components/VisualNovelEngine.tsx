@@ -727,6 +727,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [altarBellPlaced, setAltarBellPlaced] = useState<boolean>(false);
   const [natSummoned, setNatSummoned] = useState<boolean>(false);
   const [hasConsultedNat, setHasConsultedNat] = useState<boolean>(false);
+  const [askedNatTopics, setAskedNatTopics] = useState<string[]>([]);
   const [corridorShadowScareTriggered, setCorridorShadowScareTriggered] = useState<boolean>(false);
   const [chapter1Completed, setChapter1Completed] = useState<boolean>(false);
   const [keypadInput, setKeypadInput] = useState<string>('');
@@ -917,6 +918,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setAltarBellPlaced(Boolean(save.altarBellPlaced));
       setNatSummoned(Boolean(save.natSummoned));
       setHasConsultedNat(Boolean(save.hasConsultedNat));
+      if (Array.isArray(save.askedNatTopics)) setAskedNatTopics(save.askedNatTopics);
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       if (typeof save.composure === 'number') setComposure(save.composure);
@@ -991,6 +993,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         altarBellPlaced,
         natSummoned,
         hasConsultedNat,
+        askedNatTopics,
         corridorShadowScareTriggered,
         chapter1Completed: false,
       });
@@ -1017,6 +1020,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           altarBellPlaced,
           natSummoned,
           hasConsultedNat,
+          askedNatTopics,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1054,6 +1058,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     altarBellPlaced,
     natSummoned,
     hasConsultedNat,
+    askedNatTopics,
     corridorShadowScareTriggered,
     chapter1Completed,
   ]);
@@ -1849,7 +1854,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
       if (phase3Location === 'caretaker_door_keypad') return PHASE_3_ASSETS.caretakerKeypadZoom;
-      if (phase3Location === 'caretaker_office_main') {
+      if (phase3Location === 'caretaker_office_main' || phase3Location === 'caretaker_office') {
         if (spectralClimaxActive || currentChapter >= 2 || chapter1Completed) return PHASE_3_ASSETS.caretakerSpectralClimax;
         return PHASE_3_ASSETS.caretakerOfficeOverview;
       }
@@ -1894,7 +1899,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               : 'scale-100 filter brightness-90 contrast-105'
           }`}
         />
-        {phase3Location !== 'caretaker_office_main' && (
+        {phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
         )}
 
@@ -2767,7 +2772,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       {/* ======================================================== */}
       {/* 6.8. MODE: PHASE 3 - PATHWAY 326 (WEST WING & COMMUNAL WASHROOM) */}
       {/* ======================================================== */}
-      {mode === 'phase3' && phase3Location === 'caretaker_office_main' && (
+      {mode === 'phase3' && (phase3Location === 'caretaker_office_main' || phase3Location === 'caretaker_office') && (
         <CaretakerOfficeView
           currentChapter={currentChapter}
           chapter1Completed={chapter1Completed}
@@ -2787,13 +2792,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           setActiveMonologue={setActiveMonologue}
           caretakerSpectralClimax={spectralClimaxActive}
           onStepBack={() => {
-            sound.playPaperRustle();
+            try {
+              sound.playDoorCreak();
+            } catch {
+              sound.playPaperRustle();
+            }
             setPhase3Location('east_fork');
+            setActiveMonologue('— Stepped out of the suffocating office back into the damp corridor fork. —');
           }}
         />
       )}
 
-      {mode === 'phase3' && phase3Location !== 'caretaker_office_main' && (
+      {mode === 'phase3' && phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Top-Left Return Button */}
           {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
@@ -3504,6 +3514,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     setActiveMonologue(
                       "— Locked tight with a small barrel cylinder. May's personal locker... the key is nowhere here. —"
                     );
+                    addDiscoveredClue('clue_locker_14_found');
                   }}
                 />
               </>
@@ -3602,6 +3613,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 addDiscoveredClue={addDiscoveredClue}
                 discoveredClues={discoveredClues}
                 setDiscoveredClues={setDiscoveredClues}
+                askedTopics={askedNatTopics}
+                setAskedTopics={setAskedNatTopics}
               />
             )}
           </div>

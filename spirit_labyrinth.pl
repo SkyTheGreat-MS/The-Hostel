@@ -21,6 +21,18 @@
     nat_summoned/1,
     chapter/1,
     % Chapter 2 Phase 1 Interrogation & Law of Reality exports
+    topic_unlocked/1,
+    topic_exhausted/1,
+    nat_persistent_state/1,
+    unlock_topic_by_clue/2,
+    evaluate_nat_query/3,
+    nat_topic_meta/3,
+    nat_knows/3,
+    query_nat_about/3,
+    query_nat/3,
+    inquiry_count/1,
+    apply_inquiry_strain/0,
+    increment_inquiry_counter/0,
     nat_summoned/0,
     nat_consulted/0,
     nat_inquiry_made/1,
@@ -63,7 +75,10 @@
     caretaker_latch_unlocked/0,
     nat_dialogue_step/1,
     attempt_caretaker_combination/1,
-    advance_nat_dialogue/0
+    advance_nat_dialogue/0,
+    % Section 10: Chapter 2 Caretaker Return & Movement exports
+    path/2,
+    leave_caretaker_office/0
 ]).
 
 :- dynamic current_location/1.
@@ -81,12 +96,17 @@
 :- dynamic chapter_phase/2.
 
 % Chapter 2 Guardian Nat Interrogation & Law of Reality Dynamic State
+:- dynamic topic_unlocked/1.
+:- dynamic topic_exhausted/1.
+:- dynamic nat_persistent_state/1.
+:- dynamic nat_knows/3.
 :- dynamic nat_summoned/0.
 :- dynamic nat_consulted/0.
 :- dynamic nat_inquiry_made/1.
 :- dynamic learned_clue/1.
 :- dynamic taboo_triggered/1.
 :- dynamic deduction_unlocked/1.
+:- dynamic inquiry_count/1.
 
 % Chapter 2 Caretaker Blackout & Inventory Dynamic State
 :- dynamic caretaker_power_killed/0.
@@ -107,11 +127,13 @@
 
 % Top-level defaults for interactive evaluation & bridge queries
 :- assertz(nat_summoned).
+:- assertz(nat_persistent_state(summoned)).
 :- assertz(composure(100)).
 :- assertz(current_location(prayer_altar)).
 :- assertz(chapter(2)).
 :- assertz(chapter_phase(2, 1)).
 :- assertz(nat_dialogue_step(1)).
+:- assertz(inquiry_count(0)).
 
 % ==============================================================================
 % 1. WORLD TOPOLOGY (Phase 1, 2, and 3 Navigation Graph)
@@ -213,12 +235,17 @@ can_traverse(caretaker_door_keypad, east_fork).
 can_traverse(caretaker_door_keypad, caretaker_office_main) :-
     caretaker_door(unlocked).
 can_traverse(caretaker_office_main, east_fork).
+can_traverse(caretaker_office, east_fork).
 
 can_traverse(east_fork, prayer_room_main).
 can_traverse(prayer_room_main, east_fork).
 
 can_traverse(prayer_room_main, prayer_altar).
 can_traverse(prayer_altar, prayer_room_main).
+
+% Path-based traversal for chapter movements
+can_traverse(From, To) :-
+    path(From, To).
 
 % Fallback traversal for standard connections
 can_traverse(From, To) :-
@@ -265,6 +292,10 @@ init_game_state :-
     retractall(player_has(_)),
     retractall(caretaker_latch_unlocked),
     retractall(nat_dialogue_step(_)),
+    retractall(topic_unlocked(_)),
+    retractall(topic_exhausted(_)),
+    retractall(nat_persistent_state(_)),
+    retractall(inquiry_count(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
@@ -273,8 +304,10 @@ init_game_state :-
     assertz(caretaker_door(locked)),
     assertz(altar_candle_count(0)),
     assertz(altar_bell_placed(false)),
+    assertz(nat_persistent_state(summoned)),
     assertz(nat_summoned(false)),
     assertz(nat_dialogue_step(1)),
+    assertz(inquiry_count(0)),
     assertz(chapter(1)),
     assertz(chapter_phase(1, 1)),
     assertz(composure(100)),
@@ -407,47 +440,138 @@ perform_nat_awakening :-
 % 8. CHAPTER 2: GUARDIAN NAT INTERROGATION & LAW OF REALITY
 % ==============================================================================
 
-% "Law of Reality" Knowledge Base
-% nat_statement(TopicId, Veracity, ClueAtom, SpokenText)
-nat_statement(
-    may_identity,
-    truth,
-    clue_may_strangled_1998,
-    'Her name was May. A warden\'s favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.'
-).
+% Initial knowledge base
+nat_persistent_state(summoned).
 
-nat_statement(
-    locker_14_key,
-    deceit,
-    clue_key_incinerator_lie,
-    'The key was thrown into the incinerator behind the mess hall. You will never open it.'
-).
+% Clue discovery unlocks topics
+unlock_topic_by_clue(clue_locker_14_found, locker_14_key).
+unlock_topic_by_clue(clue_broken_locket_found, broken_locket).
+unlock_topic_by_clue(clue_warden_notes_found, warden_ledger).
+unlock_topic_by_clue(clue_well_rumor, banyan_well).
 
-nat_statement(
-    caretaker_attack,
-    truth,
-    clue_may_mistaken_identity,
-    'She guards what was taken from her. The one who silenced her fled toward the courtyard. Until her neck is freed of shame, every living soul looks like her murderer.'
-).
+% Topic availability rules
+topic_unlocked(may_identity).
+topic_unlocked(TopicId) :-
+    unlock_topic_by_clue(ClueId, TopicId),
+    (clue_discovered(ClueId) ; learned_clue(ClueId)).
 
-nat_statement(
-    banyan_well,
-    forbidden_silence,
-    taboo_banyan_well_invoked,
-    '...The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.'
-).
+% Question evaluation rules
+evaluate_nat_query(TopicId, Tier, ResponseText) :-
+    nat_persistent_state(summoned),
+    nat_topic_meta(TopicId, Tier, ResponseText),
+    assertz(topic_exhausted(TopicId)),
+    (   Tier == unknown
+    ->  apply_fear_shock(2)
+    ;   Tier == forbidden_taboo
+    ->  apply_fear_shock(5)
+    ;   true
+    ),
+    (   TopicId == locker_14_key
+    ->  assertz(learned_clue(clue_key_incinerator_lie))
+    ;   TopicId == broken_locket
+    ->  assertz(learned_clue(clue_shame_of_the_neck))
+    ;   TopicId == may_identity
+    ->  assertz(learned_clue(clue_may_strangled_1998))
+    ;   TopicId == banyan_well
+    ->  assertz(taboo_triggered(taboo_banyan_well_invoked))
+    ;   true
+    ),
+    check_deductions.
 
-% ask_nat(+TopicId, -Veracity, -ResponseText)
+% Prolog Knowledge Meta
+nat_topic_meta(may_identity, truth, 'Her name was May. A warden\'s favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.').
+nat_topic_meta(locker_14_key, deceit, 'The key was cast into the incinerator behind the mess hall. You will never hold it.').
+nat_topic_meta(broken_locket, truth, 'The pendant of appeasement... He ripped it from her collar before the silence took her. Return it to her sight, and her fury will pause.').
+nat_topic_meta(warden_ledger, unknown, '...The ink of mortal bureaucrats does not echo in the spirit veil. I know nothing of his papers.').
+nat_topic_meta(banyan_well, forbidden_taboo, '...The dry mouth beneath the roots cannot be named! Utter it again and I shall leave you to her claws!').
+
+% ==============================================================================
+% GUARDIAN NAT CROSS-EXAMINATION & EPISTEMIC KNOWLEDGE BASE
+% ==============================================================================
+
+% nat_knows(TargetId, Tier, ResponseText)
+nat_knows(compass, unknown, '...The spin of cold needles means nothing to the unseen. Take that toy away.').
+nat_knows(magnetic_compass, unknown, '...The spin of cold needles means nothing to the unseen. Take that toy away.').
+nat_knows(bobby_pin, unknown, '...').
+nat_knows(brass_key, deceit, 'That tooth of brass belongs to the dead girl’s locker, yet its sister key was melted to ash behind the mess hall. You chase hollow metal.').
+nat_knows(small_brass_key_32, deceit, 'That tooth of brass belongs to the dead girl’s locker, yet its sister key was melted to ash behind the mess hall. You chase hollow metal.').
+nat_knows(clue_ko_zaw_letters, truth, 'Stolen words written in hurried ink... May looked where her eyes should have turned away. The bond between dorm sisters withered the night those letters were uncovered.').
+nat_knows(sandar_kozaw_letters, truth, 'Stolen words written in hurried ink... May looked where her eyes should have turned away. The bond between dorm sisters withered the night those letters were uncovered.').
+nat_knows(clue_physics_chem_notes_1998, truth, 'Formulas written by a trembling hand. She spent her final study hours plotting an escape beyond the curfew gate... before the corridor was barricaded.').
+nat_knows(clue_banyan_well, forbidden_taboo, '...DO NOT SPEAK OF THE WELL! The roots drink deep from the dark. Name it again and I will extinguish these candles myself!').
+nat_knows(clue_well_rumor, forbidden_taboo, '...DO NOT SPEAK OF THE WELL! The roots drink deep from the dark. Name it again and I will extinguish these candles myself!').
+
+% Interrogate Nat (repeatable)
+query_nat(TargetId, Tier, ResponseText) :-
+    nat_knows(TargetId, Tier, ResponseText), !,
+    apply_inquiry_strain,
+    (   Tier == forbidden_taboo
+    ->  apply_fear_shock(5)
+    ;   Tier == unknown
+    ->  apply_fear_shock(2)
+    ;   assertz(learned_clue(TargetId))
+    ),
+    increment_inquiry_counter,
+    check_deductions.
+
+% Fallback when target is not in the Nat's knowledge base at all
+query_nat(_UnknownTarget, unknown, '...') :-
+    apply_inquiry_strain,
+    apply_fear_shock(2),
+    increment_inquiry_counter.
+
+% Deduct 0.8% base composure per question (scaled by Tension)
+apply_inquiry_strain :-
+    (
+        selected_investigator(CharId),
+        investigator_stat(CharId, Tension, _)
+    ->
+        Strain is 0.8 * Tension
+    ;
+        Strain is 0.8
+    ),
+    (player_composure(Current) -> true ; (composure(C) -> Current = C ; Current = 100)),
+    NewComp is max(0, Current - Strain),
+    retractall(player_composure(_)),
+    assertz(player_composure(NewComp)),
+    retractall(composure(_)),
+    assertz(composure(NewComp)).
+
+increment_inquiry_counter :-
+    (   inquiry_count(C)
+    ->  Next is C + 1,
+        retractall(inquiry_count(_)),
+        assertz(inquiry_count(Next))
+    ;   assertz(inquiry_count(1))
+    ).
+
+% Bridge for query_nat_about/3 compatibility
+query_nat_about(TargetId, Tier, ResponseText) :-
+    query_nat(TargetId, Tier, ResponseText).
+
+
+% Legacy nat_statement/4 mapping for backward compatibility
+nat_statement(may_identity, truth, clue_may_strangled_1998, 'Her name was May. A warden\'s favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.').
+nat_statement(locker_14_key, deceit, clue_key_incinerator_lie, 'The key was thrown into the incinerator behind the mess hall. You will never open it.').
+nat_statement(caretaker_attack, truth, clue_may_mistaken_identity, 'She guards what was taken from her. The one who silenced her fled toward the courtyard. Until her neck is freed of shame, every living soul looks like her murderer.').
+nat_statement(broken_locket, truth, clue_shame_of_the_neck, 'The pendant of appeasement... He ripped it from her collar before the silence took her. Return it to her sight, and her fury will pause.').
+nat_statement(warden_ledger, unknown, clue_warden_notes_found, '...The ink of mortal bureaucrats does not echo in the spirit veil. I know nothing of his papers.').
+nat_statement(banyan_well, forbidden_silence, taboo_banyan_well_invoked, '...The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.').
+
+% ask_nat(+TopicId, -Veracity, -ResponseText) - backward compatible bridge
 ask_nat(TopicId, Veracity, ResponseText) :-
     nat_summoned,
     nat_statement(TopicId, Veracity, ClueAtom, ResponseText),
     assertz(nat_inquiry_made(TopicId)),
-    (   Veracity == forbidden_silence
+    assertz(topic_exhausted(TopicId)),
+    (   (Veracity == forbidden_silence ; Veracity == forbidden_taboo)
     ->  assertz(taboo_triggered(ClueAtom)),
         apply_composure_damage(5, supernatural_shock)
+    ;   Veracity == unknown
+    ->  apply_composure_damage(2, supernatural_shock),
+        assertz(learned_clue(ClueAtom))
     ;   assertz(learned_clue(ClueAtom))
     ),
-    % Evaluate if this new information yields immediate deductions
     check_deductions.
 
 % Audience Conclusion: locks chapter phase and routes player to East Fork
@@ -543,6 +667,22 @@ scene_background(caretaker_office, 'assets/scenes/caretaker_office_normal.jpg').
 
 scene_background(caretaker_office_main, Asset) :-
     scene_background(caretaker_office, Asset).
+
+% Permitted travel paths for Chapter 2
+path(caretaker_office, east_fork) :-
+    ( current_chapter(2) ; (chapter(C), C >= 2) ).
+path(caretaker_office_main, east_fork) :-
+    ( current_chapter(2) ; (chapter(C), C >= 2) ).
+
+% Action to leave caretaker office
+leave_caretaker_office :-
+    current_location(caretaker_office),
+    retractall(current_location(_)),
+    assertz(current_location(east_fork)).
+leave_caretaker_office :-
+    current_location(caretaker_office_main),
+    retractall(current_location(_)),
+    assertz(current_location(east_fork)).
 
 % Inventory quick-slot helper (first 3 items)
 get_quickslot_inventory(QuickList) :-

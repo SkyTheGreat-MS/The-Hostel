@@ -166,6 +166,55 @@ export const MASTER_CLUES: Record<string, ClueData> = {
     description:
       '[NOTE: The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.]',
   },
+  clue_locker_14_found: {
+    id: 'clue_locker_14_found',
+    title: "Locker 14 Barrel Lock",
+    location: 'Dorm Lockers',
+    category: 'side',
+    description: "May's personal locker 14 is sealed with a barrel lock. The key is missing.",
+  },
+  clue_broken_locket_found: {
+    id: 'clue_broken_locket_found',
+    title: 'Shattered Jade Fragment',
+    location: 'Hostel Ground',
+    category: 'item',
+    description: 'A fragment of shattered jade from an appeasement pendant.',
+  },
+  clue_warden_notes_found: {
+    id: 'clue_warden_notes_found',
+    title: "Caretaker's Hidden Ledger",
+    location: "Caretaker's Archive",
+    category: 'side',
+    description: 'Bribe notes and hidden receipts kept by the caretaker.',
+  },
+  clue_well_rumor: {
+    id: 'clue_well_rumor',
+    title: 'Whispers of the Banyan Well',
+    location: 'Courtyard Grounds',
+    category: 'side',
+    description: 'Superstitious student rumors about the dried well under the roots of the banyan tree.',
+  },
+  clue_ko_zaw_letters: {
+    id: 'clue_ko_zaw_letters',
+    title: 'Folded Love Letters (Ko Zaw)',
+    location: 'Locker 32 (Sandar)',
+    category: 'primary',
+    description: 'Stolen letters between Sandar and Ko Zaw exposing a secret affair that drove a violent wedge between dorm sisters.',
+  },
+  clue_physics_chem_notes_1998: {
+    id: 'clue_physics_chem_notes_1998',
+    title: 'Physics & Chemistry Notes (1998)',
+    location: 'Study Desk',
+    category: 'side',
+    description: 'Formulas written by a trembling hand. May spent her final study hours plotting an escape beyond the curfew gate before the corridor was barricaded.',
+  },
+  clue_banyan_well: {
+    id: 'clue_banyan_well',
+    title: 'The Dried Banyan Well',
+    location: 'Courtyard Grounds',
+    category: 'primary',
+    description: 'The forbidden dried well beneath the sacred banyan tree. The roots drink deep from the dark.',
+  },
 };
 
 export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({

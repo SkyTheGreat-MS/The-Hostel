@@ -119,7 +119,8 @@ export type Phase3Location =
   | 'prayer_room_main'
   | 'prayer_altar'
   | 'caretaker_door_keypad'
-  | 'caretaker_office_main';
+  | 'caretaker_office_main'
+  | 'caretaker_office';
 
 export interface GameState {
   chapter: number;
@@ -172,7 +173,76 @@ export interface GameState {
   hasConsultedNat?: boolean;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
+  askedNatTopics?: string[];
 }
+
+import {
+  type NatKnowledgeTier,
+  type NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+} from './natKnowledge';
+
+export {
+  type NatKnowledgeTier,
+  type NatKnowledgeEntry,
+  NAT_KNOWLEDGE_BASE,
+  getNatKnowledge,
+};
+
+export interface NatTopicDef {
+  topicId: string;
+  label: string; // Display text in the question menu
+  requiredClueId?: string; // Must find this clue in hostel before question appears
+  knowledgeTier: NatKnowledgeTier;
+  responseLine: string;
+  spritePose: 'neutral' | 'pensive' | 'warning';
+  shockDamage?: number;
+}
+
+export const NAT_TOPIC_REGISTRY: Record<string, NatTopicDef> = {
+  may_identity: {
+    topicId: 'may_identity',
+    label: 'Who is the woman haunting this wing?',
+    knowledgeTier: 'truth',
+    responseLine: 'Her name was May. A warden\'s favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.',
+    spritePose: 'neutral',
+  },
+  locker_14_key: {
+    topicId: 'locker_14_key',
+    label: 'Where is the key to Locker 14?',
+    requiredClueId: 'clue_locker_14_found',
+    knowledgeTier: 'deceit',
+    responseLine: 'The key was cast into the incinerator behind the mess hall. You will never hold it.',
+    spritePose: 'warning',
+  },
+  broken_locket: {
+    topicId: 'broken_locket',
+    label: 'Show the shattered jade fragment',
+    requiredClueId: 'clue_broken_locket_found',
+    knowledgeTier: 'truth',
+    responseLine: 'The pendant of appeasement... He ripped it from her collar before the silence took her. Return it to her sight, and her fury will pause.',
+    spritePose: 'pensive',
+  },
+  warden_ledger: {
+    topicId: 'warden_ledger',
+    label: 'Ask about the caretaker\'s hidden ledger',
+    requiredClueId: 'clue_warden_notes_found',
+    knowledgeTier: 'unknown',
+    responseLine: '...The ink of mortal bureaucrats does not echo in the spirit veil. I know nothing of his papers.',
+    spritePose: 'neutral',
+    shockDamage: 2,
+  },
+  banyan_well: {
+    topicId: 'banyan_well',
+    label: 'Ask about the dried well outside',
+    requiredClueId: 'clue_well_rumor',
+    knowledgeTier: 'forbidden_taboo',
+    responseLine: '...The dry mouth beneath the roots cannot be named! Utter it again and I shall leave you to her claws!',
+    spritePose: 'warning',
+    shockDamage: 5,
+  },
+};
 
 export type StatementVeracity = 'truth' | 'deceit' | 'forbidden_silence';
 
@@ -212,6 +282,7 @@ export interface ActiveSaveState {
   hasWoodenBat?: boolean;
   hasSmallBrassKey?: boolean;
   hasNylonRope?: boolean;
+  askedNatTopics?: string[];
   timestamp: number;
 }
 
@@ -245,6 +316,7 @@ export interface ChapterProgressSave {
   altarBellPlaced?: boolean;
   natSummoned?: boolean;
   hasConsultedNat?: boolean;
+  askedNatTopics?: string[];
   corridorShadowScareTriggered?: boolean;
   chapter1Completed?: boolean;
 }

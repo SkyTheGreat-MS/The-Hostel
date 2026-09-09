@@ -62,11 +62,18 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
   }, [currentChapter, chapter1Completed, caretakerSpectralClimax]);
 
   const handleBack = () => {
-    sound.playPaperRustle();
+    try {
+      sound.playDoorCreak();
+    } catch {
+      sound.playPaperRustle();
+    }
     if (onStepBack) {
       onStepBack();
     } else if (setPhase3Location) {
       setPhase3Location('east_fork');
+      if (setActiveMonologue) {
+        setActiveMonologue('— Stepped out of the suffocating office back into the damp corridor fork. —');
+      }
     }
   };
 
@@ -89,15 +96,58 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
 
-        {/* 2. Top Action Bar: Clean Standard Exit */}
-        <div className="absolute top-4 left-4 z-40">
+        {/* Ambient Click Guard for Post-Climax Office: Click empty space */}
+        <div
+          className="absolute inset-0 z-10 cursor-pointer"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              try { sound.playPaperRustle(); } catch {}
+              setActiveMonologue?.("— The office power is dead. May's lingering chill is all that remains. I should return to the fork. —");
+            }
+          }}
+        />
+
+        {/* Navigation Anchor: Step back to East Wing Fork */}
+        <div className="fixed top-16 left-6 z-40 pointer-events-auto">
           <button
-            onClick={handleBack}
-            className="px-3.5 py-1.5 rounded-lg bg-[#0b120e]/85 hover:bg-[#16241c] border border-[#273d30] text-xs font-mono tracking-wider text-[#a3c2b2] uppercase transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
+            onClick={() => {
+              try { sound.playDoorCreak(); } catch {}
+              if (onStepBack) {
+                onStepBack();
+              } else {
+                setPhase3Location?.('east_fork');
+                setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+              }
+            }}
+            className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0b120e]/90 hover:bg-[#16241c] border border-[#23382b] hover:border-[#3d5e48] shadow-2xl transition-all cursor-pointer"
           >
-            ← Exit Caretaker Office
+            <span className="text-[#688a77] group-hover:text-[#a2c9b4] text-xs transition-colors">←</span>
+            <span className="font-mono text-[11px] tracking-wider text-[#a2c9b4] group-hover:text-[#d3e8dc] uppercase transition-colors">
+              Step Back to East Fork
+            </span>
           </button>
         </div>
+
+        {/* Hotspot Inspection Guard: Dark Doorway on bottom-left edge */}
+        <InteractiveHotspot
+          id="caretaker_dark_doorway"
+          name="Dark Doorway"
+          x={3}
+          y={55}
+          width={22}
+          height={42}
+          shape="rect"
+          cursorTooltip="[Dark Doorway: Return to East Fork]"
+          onClick={() => {
+            try { sound.playDoorCreak(); } catch {}
+            if (onStepBack) {
+              onStepBack();
+            } else {
+              setPhase3Location?.('east_fork');
+              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+            }
+          }}
+        />
 
         {/* 3. Subdued Narrative Thoughts (Bottom Docked) */}
         {currentThought && (
@@ -131,13 +181,24 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
 
-      {/* 2. Top Action Bar: Clean Standard Exit */}
-      <div className="absolute top-4 left-4 z-40">
+      {/* Navigation Anchor: Step back to East Wing Fork */}
+      <div className="fixed top-16 left-6 z-40 pointer-events-auto">
         <button
-          onClick={handleBack}
-          className="px-3.5 py-1.5 rounded-lg bg-[#0b120e]/85 hover:bg-[#16241c] border border-[#273d30] text-xs font-mono tracking-wider text-[#a3c2b2] uppercase transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
+          onClick={() => {
+            try { sound.playDoorCreak(); } catch {}
+            if (onStepBack) {
+              onStepBack();
+            } else {
+              setPhase3Location?.('east_fork');
+              setActiveMonologue?.('— Stepped out of the office back into the corridor fork. —');
+            }
+          }}
+          className="group flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0b120e]/90 hover:bg-[#16241c] border border-[#23382b] hover:border-[#3d5e48] shadow-2xl transition-all cursor-pointer"
         >
-          ← Exit Caretaker Office
+          <span className="text-[#688a77] group-hover:text-[#a2c9b4] text-xs transition-colors">←</span>
+          <span className="font-mono text-[11px] tracking-wider text-[#a2c9b4] group-hover:text-[#d3e8dc] uppercase transition-colors">
+            Step Back to East Fork
+          </span>
         </button>
       </div>
 
