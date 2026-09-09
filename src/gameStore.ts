@@ -333,23 +333,28 @@ export const ACTIVE_SAVE_KEY = 'spirits_labyrinth_active_save';
 
 export function lockChapterOneAndSave(
   selectedCharacterId: string = 'thazin',
-  currentComposure: number = 100
+  currentComposure: number = 100,
+  customInventory?: string[]
 ): ActiveSaveState {
+  const defaultInventory = [
+    'bobby_pin',
+    'wooden_bat',
+    'small_brass_key_32',
+    'coiled_nylon_rope',
+    'black_beeswax_candle',
+    'black_beeswax_candle',
+    'black_beeswax_candle',
+    'matchbox_three_stars',
+    'bronze_prayer_bell',
+  ];
+
   const chapterTwoSaveState: ActiveSaveState = {
     chapter: 2,
     currentPhase: 1, // Chapter 2, Phase 1 (The Prayer Room Rite)
     phase3Location: 'east_fork',
     chapter1Completed: true,
     selectedCharacterId,
-    inventory: [
-      'bobby_pin',
-      'wooden_bat',
-      'small_brass_key_32',
-      'coiled_nylon_rope',
-      'black_beeswax_candle', // x3 acquired
-      'matchbox_three_stars',
-      'bronze_prayer_bell',
-    ],
+    inventory: customInventory && customInventory.length > 0 ? customInventory : defaultInventory,
     hasMatchesCount: 3,
     hasBlackCandlesCount: 3,
     hasBronzeBell: true,

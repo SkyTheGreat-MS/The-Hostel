@@ -1,81 +1,146 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { sound } from '../audioEngine';
+import { PHASE_3_ASSETS } from '../gameData';
 
 export interface CaretakerOfficeViewProps {
-  currentChapter: number;
-  chapter1Completed: boolean;
-  setPhase3Location: (location: any) => void;
-  hasCaretakerCandles: boolean;
-  setHasCaretakerCandles: React.Dispatch<React.SetStateAction<boolean>>;
-  setHasBlackCandlesCount: React.Dispatch<React.SetStateAction<number>>;
-  setInventory: React.Dispatch<React.SetStateAction<string[]>>;
-  hasBronzeBell: boolean;
-  setHasBronzeBell: React.Dispatch<React.SetStateAction<boolean>>;
-  addInventoryItem: (item: string) => void;
-  natSummoned: boolean;
-  hasBlackCandlesCount: number;
-  altarCandlesPlaced: number;
-  handleCaretakerClimax: () => void;
-  setActiveMonologue: (msg: string | null) => void;
+  currentChapter?: number;
+  chapter1Completed?: boolean;
+  setPhase3Location?: (location: any) => void;
+  hasCaretakerCandles?: boolean;
+  setHasCaretakerCandles?: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasBlackCandlesCount?: React.Dispatch<React.SetStateAction<number>>;
+  setInventory?: React.Dispatch<React.SetStateAction<string[]>>;
+  hasBronzeBell?: boolean;
+  setHasBronzeBell?: React.Dispatch<React.SetStateAction<boolean>>;
+  addInventoryItem?: (item: string) => void;
+  natSummoned?: boolean;
+  hasBlackCandlesCount?: number;
+  altarCandlesPlaced?: number;
+  handleCaretakerClimax?: () => void;
+  activeMonologue?: string | null;
+  setActiveMonologue?: (msg: string | null) => void;
+  caretakerSpectralClimax?: boolean;
+  onStepBack?: () => void;
 }
 
+export type CaretakerViewProps = CaretakerOfficeViewProps;
+
 export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
-  currentChapter,
-  chapter1Completed,
+  currentChapter = 1,
+  chapter1Completed = false,
   setPhase3Location,
-  hasCaretakerCandles,
+  hasCaretakerCandles = false,
   setHasCaretakerCandles,
   setHasBlackCandlesCount,
   setInventory,
-  hasBronzeBell,
+  hasBronzeBell = false,
   setHasBronzeBell,
   addInventoryItem,
-  natSummoned,
-  hasBlackCandlesCount,
-  altarCandlesPlaced,
+  natSummoned = false,
+  hasBlackCandlesCount = 0,
+  altarCandlesPlaced = 0,
   handleCaretakerClimax,
+  activeMonologue,
   setActiveMonologue,
+  caretakerSpectralClimax,
+  onStepBack,
 }) => {
   const [isRoomBlackedOut, setIsRoomBlackedOut] = useState<boolean>(
-    currentChapter >= 2 || chapter1Completed
+    currentChapter >= 2 || chapter1Completed || Boolean(caretakerSpectralClimax)
   );
   const [deskInteractable, setDeskInteractable] = useState<boolean>(
-    !(currentChapter >= 2 || chapter1Completed)
+    !(currentChapter >= 2 || chapter1Completed || Boolean(caretakerSpectralClimax))
   );
 
   useEffect(() => {
-    // If already in Chapter 2, render the pitch-black abandoned state
-    if (currentChapter >= 2 || chapter1Completed) {
+    // If already in Chapter 2 or post-climax, render the pitch-black abandoned state
+    if (currentChapter >= 2 || chapter1Completed || caretakerSpectralClimax) {
       setIsRoomBlackedOut(true);
       setDeskInteractable(false);
     }
-  }, [currentChapter, chapter1Completed]);
+  }, [currentChapter, chapter1Completed, caretakerSpectralClimax]);
 
-  // In the render block:
+  const handleBack = () => {
+    sound.playPaperRustle();
+    if (onStepBack) {
+      onStepBack();
+    } else if (setPhase3Location) {
+      setPhase3Location('east_fork');
+    }
+  };
+
+  const currentThought =
+    activeMonologue !== undefined
+      ? activeMonologue
+      : "The push-latch power is dead, and cold draft seeps through the shuttered boards. The air still reeks of rancid jasmine and wet earth... May's presence lingers near the rafters. The desk offers nothing more.";
+
+  // In the render block for Chapter 2 / Post-Climax Abandoned Office:
   if (currentChapter >= 2 || chapter1Completed || isRoomBlackedOut) {
     return (
-      <div className="relative w-full h-full min-h-[70vh] bg-[#050806] flex flex-col items-center justify-center p-8 text-center pointer-events-auto">
-        <div className="max-w-md space-y-4">
-          <p className="font-serif italic text-base md:text-lg text-[#8fa89b] leading-relaxed select-none">
-            "The caretaker's office is plunged into dead silence. The push-latch power is dead, and cold air seeps through the cracked window. Nothing more remains to be found here."
-          </p>
+      <div className="relative w-full h-screen overflow-hidden select-none bg-black pointer-events-auto">
+        {/* 1. Single Unified Background Image */}
+        <img
+          src="assets/scenes/caretaker_spectral_climax.jpg"
+          onError={(e) => {
+            e.currentTarget.src = '/assets/scenes/caretaker_spectral_climax.jpg';
+          }}
+          alt="Caretaker's Archive - Spectral Climax"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+        />
+
+        {/* 2. Top Action Bar: Clean Standard Exit */}
+        <div className="absolute top-4 left-4 z-40">
           <button
-            onClick={() => {
-              sound.playPaperRustle();
-              setPhase3Location('east_fork');
-            }}
-            className="px-4 py-2 rounded-lg bg-[#141f19] hover:bg-[#1f3027] border border-[#2e4739] text-xs font-mono tracking-wider text-[#a3c2b2] uppercase transition-all cursor-pointer shadow-lg hover:scale-105 active:scale-95"
+            onClick={handleBack}
+            className="px-3.5 py-1.5 rounded-lg bg-[#0b120e]/85 hover:bg-[#16241c] border border-[#273d30] text-xs font-mono tracking-wider text-[#a3c2b2] uppercase transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
           >
-            ← Return to East Wing Fork
+            ← Exit Caretaker Office
           </button>
         </div>
+
+        {/* 3. Subdued Narrative Thoughts (Bottom Docked) */}
+        {currentThought && (
+          <div className="absolute bottom-6 inset-x-0 z-40 flex justify-center px-4 pointer-events-none">
+            <div
+              onClick={() => setActiveMonologue && setActiveMonologue(null)}
+              className="max-w-xl p-3.5 rounded-xl bg-[#0b120e]/90 border border-[#23382b] backdrop-blur-md shadow-2xl text-center pointer-events-auto cursor-pointer group hover:border-[#385443] transition-all"
+            >
+              <p className="font-serif italic text-xs md:text-sm text-[#c5ded0] leading-relaxed select-none">
+                "{currentThought}"
+              </p>
+              <span className="block mt-1 text-[9px] font-mono tracking-widest text-[#4d6b5c] group-hover:text-[#78a38c] uppercase">
+                [Click to Dismiss]
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <>
+    <div className="relative w-full h-screen overflow-hidden select-none bg-black pointer-events-auto">
+      {/* 1. Single Unified Background Image for Investigation */}
+      <img
+        src="assets/scenes/caretaker_office_normal.jpg"
+        onError={(e) => {
+          e.currentTarget.src = PHASE_3_ASSETS.caretakerOfficeOverview || '/assets/scenes/caretaker_office_overview.jpg';
+        }}
+        alt="Caretaker's Archive - Investigation"
+        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+      />
+
+      {/* 2. Top Action Bar: Clean Standard Exit */}
+      <div className="absolute top-4 left-4 z-40">
+        <button
+          onClick={handleBack}
+          className="px-3.5 py-1.5 rounded-lg bg-[#0b120e]/85 hover:bg-[#16241c] border border-[#273d30] text-xs font-mono tracking-wider text-[#a3c2b2] uppercase transition-all shadow-lg flex items-center gap-1.5 cursor-pointer"
+        >
+          ← Exit Caretaker Office
+        </button>
+      </div>
+
       {/* 1. Wooden Supply Shelf (2 candles) */}
       <InteractiveHotspot
         id="caretaker_supply_shelf"
@@ -88,16 +153,17 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         cursorTooltip={!hasCaretakerCandles ? '[Take 2 Black Beeswax Candles]' : '[Supply Shelf (Empty)]'}
         onClick={() => {
           if (!hasCaretakerCandles) {
-            setHasCaretakerCandles(true);
-            setHasBlackCandlesCount((prev) => prev + 2);
-            setInventory((prev) => [...prev, 'black_beeswax_candle', 'black_beeswax_candle']);
+            setHasCaretakerCandles && setHasCaretakerCandles(true);
+            setHasBlackCandlesCount && setHasBlackCandlesCount((prev) => prev + 2);
+            setInventory && setInventory((prev) => [...prev, 'black_beeswax_candle', 'black_beeswax_candle']);
             sound.playPaperRustle();
-            setActiveMonologue(
-              '— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —'
-            );
+            setActiveMonologue &&
+              setActiveMonologue(
+                '— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —'
+              );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue('— The supply shelf is bare now. Nothing remains except dried cobwebs. —');
+            setActiveMonologue && setActiveMonologue('— The supply shelf is bare now. Nothing remains except dried cobwebs. —');
           }
         }}
       />
@@ -114,15 +180,16 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         cursorTooltip={!hasBronzeBell ? '[Take Bronze Prayer Bell]' : '[Glass Cabinet (Empty)]'}
         onClick={() => {
           if (!hasBronzeBell) {
-            addInventoryItem('bronze_prayer_bell');
-            setHasBronzeBell(true);
+            addInventoryItem && addInventoryItem('bronze_prayer_bell');
+            setHasBronzeBell && setHasBronzeBell(true);
             sound.playPaperRustle();
-            setActiveMonologue(
-              '— Inside the glass display: an ornate cast bronze hand bell with traditional spirit runes etched into the lip. Acquired: Bronze Prayer Bell. —'
-            );
+            setActiveMonologue &&
+              setActiveMonologue(
+                '— Inside the glass display: an ornate cast bronze hand bell with traditional spirit runes etched into the lip. Acquired: Bronze Prayer Bell. —'
+              );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue('— The glass display cabinet is empty. —');
+            setActiveMonologue && setActiveMonologue('— The glass display cabinet is empty. —');
           }
         }}
       />
@@ -144,16 +211,17 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         onClick={() => {
           if (!deskInteractable) return;
           if (natSummoned || (hasBlackCandlesCount + altarCandlesPlaced >= 3 && hasBronzeBell)) {
-            handleCaretakerClimax();
+            handleCaretakerClimax && handleCaretakerClimax();
           } else {
             sound.playPaperRustle();
-            setActiveMonologue(
-              '— The Caretaker\'s ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies and awaken the Guardian Nat first. —'
-            );
+            setActiveMonologue &&
+              setActiveMonologue(
+                '— The Caretaker\'s ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies and awaken the Guardian Nat first. —'
+              );
           }
         }}
       />
-    </>
+    </div>
   );
 };
 

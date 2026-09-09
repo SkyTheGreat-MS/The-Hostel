@@ -38,13 +38,17 @@
     chapter_phase/2,
     % Chapter 2 Caretaker Room Blackout & Quickslot Inventory exports
     caretaker_power_killed/0,
+    caretaker_spectral_climax/0,
+    trigger_caretaker_climax/0,
+    can_perform_altar_rite/0,
     room_state/2,
     inspect_location/2,
     get_quickslot_inventory/1,
     player_has/1,
     prefix_up_to/3,
     item_display_meta/3,
-    get_player_inventory_labels/1
+    get_player_inventory_labels/1,
+    scene_background/2
 ]).
 
 :- dynamic current_location/1.
@@ -71,6 +75,7 @@
 
 % Chapter 2 Caretaker Blackout & Inventory Dynamic State
 :- dynamic caretaker_power_killed/0.
+:- dynamic caretaker_spectral_climax/0.
 :- dynamic room_state/2.
 :- dynamic player_has/1.
 
@@ -463,19 +468,51 @@ detect_pacification_method :-
 % 6. CHAPTER 2 CARETAKER ROOM BLACKOUT & EXPANDED INVENTORY RULES
 % ==============================================================================
 
-% Room inspection in Chapter 2
-inspect_location(caretaker_office, Outcome) :-
-    chapter(CurrentChapter),
-    CurrentChapter >= 2,
-    Outcome = state_abandoned_blackout,
-    assertz(caretaker_power_killed).
+% Climax trigger in Caretaker's Office
+trigger_caretaker_climax :-
+    assertz(caretaker_spectral_climax),
+    assertz(caretaker_power_killed),
+    retractall(current_location(_)),
+    assertz(current_location(east_fork)).
 
-inspect_location(caretaker_office, Outcome) :-
-    chapter(1),
-    Outcome = state_chapter_1_active.
+% Room inspection in Caretaker's Office (supports dark_abandoned_office and state_abandoned_blackout)
+inspect_location(caretaker_office, dark_abandoned_office) :-
+    (caretaker_spectral_climax ; (chapter(CurrentChapter), CurrentChapter >= 2)),
+    !,
+    (caretaker_power_killed -> true ; assertz(caretaker_power_killed)).
+
+inspect_location(caretaker_office, state_abandoned_blackout) :-
+    (caretaker_spectral_climax ; (chapter(CurrentChapter), CurrentChapter >= 2)),
+    !,
+    (caretaker_power_killed -> true ; assertz(caretaker_power_killed)).
+
+inspect_location(caretaker_office, active_investigation) :-
+    \+ caretaker_spectral_climax.
+
+inspect_location(caretaker_office, state_chapter_1_active) :-
+    \+ caretaker_spectral_climax.
 
 inspect_location(caretaker_office_main, Outcome) :-
     inspect_location(caretaker_office, Outcome).
+
+% Verification of altar rite readiness (requires 3 candles, bronze bell, and matchbox)
+can_perform_altar_rite :-
+    (player_has(bronze_prayer_bell) ; has_item(bronze_prayer_bell)),
+    (player_has(matchbox_three_stars) ; has_item(matchbox_three_stars)),
+    (
+        (findall(C, (player_has(black_beeswax_candle) ; has_item(black_beeswax_candle)), Candles), length(Candles, N), N >= 3)
+    ;
+        (altar_candle_count(Count), Count >= 3)
+    ).
+
+% Scene asset mapping for caretaker office post-climax
+scene_background(caretaker_office, 'assets/scenes/caretaker_spectral_climax.jpg') :-
+    caretaker_spectral_climax, !.
+
+scene_background(caretaker_office, 'assets/scenes/caretaker_office_normal.jpg').
+
+scene_background(caretaker_office_main, Asset) :-
+    scene_background(caretaker_office, Asset).
 
 % Inventory quick-slot helper (first 3 items)
 get_quickslot_inventory(QuickList) :-

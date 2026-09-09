@@ -1728,6 +1728,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       'small_brass_key_32',
       'coiled_nylon_rope',
       'black_beeswax_candle',
+      'black_beeswax_candle',
+      'black_beeswax_candle',
       'matchbox_three_stars',
       'bronze_prayer_bell',
     ]);
@@ -1783,7 +1785,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY
       setChapter1Completed(true);
       completeChapter(1);
-      lockChapterOneAndSave(selectedCharacter.id, composure);
+      lockChapterOneAndSave(selectedCharacter.id, composure, inventory);
       setShowChapterTransitionModal(true);
     }, 1800);
   };
@@ -1828,8 +1830,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
       if (phase3Location === 'caretaker_door_keypad') return PHASE_3_ASSETS.caretakerKeypadZoom;
       if (phase3Location === 'caretaker_office_main') {
-        if (currentChapter >= 2 || chapter1Completed) return '';
-        if (spectralClimaxActive) return PHASE_3_ASSETS.caretakerSpectralClimax;
+        if (spectralClimaxActive || currentChapter >= 2 || chapter1Completed) return PHASE_3_ASSETS.caretakerSpectralClimax;
         return PHASE_3_ASSETS.caretakerOfficeOverview;
       }
       return PHASE_3_ASSETS.pathwayThreshold;
@@ -1873,7 +1874,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               : 'scale-100 filter brightness-90 contrast-105'
           }`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+        {phase3Location !== 'caretaker_office_main' && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+        )}
 
       {/* 2. Supernatural Glitch Flicker Effect */}
       {currentStep.isGlitch && (
@@ -1920,7 +1923,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       </AnimatePresence>
 
       {/* 5. Top Header Status Bar */}
-      <div className="relative w-full p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
+      <div className="fixed top-0 inset-x-0 p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-auto bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Phase Badge */}
           <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2">
@@ -2744,7 +2747,33 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       {/* ======================================================== */}
       {/* 6.8. MODE: PHASE 3 - PATHWAY 326 (WEST WING & COMMUNAL WASHROOM) */}
       {/* ======================================================== */}
-      {mode === 'phase3' && (
+      {mode === 'phase3' && phase3Location === 'caretaker_office_main' && (
+        <CaretakerOfficeView
+          currentChapter={currentChapter}
+          chapter1Completed={chapter1Completed}
+          setPhase3Location={setPhase3Location}
+          hasCaretakerCandles={hasCaretakerCandles}
+          setHasCaretakerCandles={setHasCaretakerCandles}
+          setHasBlackCandlesCount={setHasBlackCandlesCount}
+          setInventory={setInventory}
+          hasBronzeBell={hasBronzeBell}
+          setHasBronzeBell={setHasBronzeBell}
+          addInventoryItem={addInventoryItem}
+          natSummoned={natSummoned}
+          hasBlackCandlesCount={hasBlackCandlesCount}
+          altarCandlesPlaced={altarCandlesPlaced}
+          handleCaretakerClimax={handleCaretakerClimax}
+          activeMonologue={activeMonologue}
+          setActiveMonologue={setActiveMonologue}
+          caretakerSpectralClimax={spectralClimaxActive}
+          onStepBack={() => {
+            sound.playPaperRustle();
+            setPhase3Location('east_fork');
+          }}
+        />
+      )}
+
+      {mode === 'phase3' && phase3Location !== 'caretaker_office_main' && (
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Top-Left Return Button */}
           {(currentScene === 'pathway_326_main' || phase3Location === 'hallway_threshold') && (
@@ -2810,9 +2839,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   } else if (phase3Location === 'caretaker_door_keypad') {
                     sound.playPaperRustle();
                     setPhase3Location('east_fork');
-                  } else if (phase3Location === 'caretaker_office_main') {
-                    sound.playPaperRustle();
-                    setPhase3Location('east_fork');
                   } else if (phase3Location === 'prayer_altar') {
                     sound.playPaperRustle();
                     setPhase3Location('prayer_room_main');
@@ -2840,8 +2866,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     ? 'EXIT TO EAST WING FORK'
                     : phase3Location === 'caretaker_door_keypad'
                     ? 'STEP BACK TO EAST WING FORK'
-                    : phase3Location === 'caretaker_office_main'
-                    ? 'EXIT CARETAKER OFFICE'
                     : phase3Location === 'prayer_altar'
                     ? 'STEP BACK TO PRAYER ROOM'
                     : phase3Location === 'prayer_room_main'
@@ -2892,8 +2916,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   ? 'Rusted Locker Vent'
                   : phase3Location === 'caretaker_door_keypad'
                   ? 'Caretaker Office Push-Latch Keypad'
-                  : phase3Location === 'caretaker_office_main'
-                  ? "Caretaker's Old Office"
                   : phase3Location === 'prayer_room_main'
                   ? 'Communal Prayer Sanctuary'
                   : 'Guardian Nat Prayer Altar'}
@@ -3575,26 +3597,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               </div>
             )}
 
-            {/* SUB-SCENE 8: CARETAKER'S OFFICE ARCHIVE */}
-            {phase3Location === 'caretaker_office_main' && (
-              <CaretakerOfficeView
-                currentChapter={currentChapter}
-                chapter1Completed={chapter1Completed}
-                setPhase3Location={setPhase3Location}
-                hasCaretakerCandles={hasCaretakerCandles}
-                setHasCaretakerCandles={setHasCaretakerCandles}
-                setHasBlackCandlesCount={setHasBlackCandlesCount}
-                setInventory={setInventory}
-                hasBronzeBell={hasBronzeBell}
-                setHasBronzeBell={setHasBronzeBell}
-                addInventoryItem={addInventoryItem}
-                natSummoned={natSummoned}
-                hasBlackCandlesCount={hasBlackCandlesCount}
-                altarCandlesPlaced={altarCandlesPlaced}
-                handleCaretakerClimax={handleCaretakerClimax}
-                setActiveMonologue={setActiveMonologue}
-              />
-            )}
 
             {/* SUB-SCENE 9: COMMUNAL PRAYER ROOM */}
             {phase3Location === 'prayer_room_main' && (
