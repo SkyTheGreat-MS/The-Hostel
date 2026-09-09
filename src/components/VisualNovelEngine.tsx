@@ -3432,7 +3432,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   <InteractiveHotspot
                     id="locker-09-empty"
                     name="Locker 09 (Emptied)"
-                    polygonPoints="45,25 90,25 90,88 45,88"
+                    polygonPoints="36,0 90,0 90,84 36,84"
                     cursorTooltip="Locker 09 (Emptied)"
                     onClick={() => {
                       sound.playPaperRustle();
@@ -3603,9 +3603,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="prayer_room_altar_approach"
                   name="Guardian Nat Altar"
                   x={32}
-                  y={25}
+                  y={5}
                   width={36}
-                  height={55}
+                  height={70}
                   shape="rect"
                   cursorTooltip="[Approach Guardian Nat Altar]"
                   onClick={() => {
