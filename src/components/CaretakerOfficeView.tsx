@@ -205,11 +205,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
       {/* 1. Wooden Supply Shelf (2 candles) */}
       <InteractiveHotspot
         id="caretaker_supply_shelf"
-        name="Wooden Supply Shelf"
-        x={8}
-        y={18}
-        width={22}
-        height={45}
+        name="2 Black Candles on the shelf"
+        x={89}
+        y={45}
+        width={10}
+        height={22}
         shape="rect"
         cursorTooltip={!hasCaretakerCandles ? '[Take 2 Black Beeswax Candles]' : '[Supply Shelf (Empty)]'}
         onClick={() => {
@@ -233,10 +233,10 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
       <InteractiveHotspot
         id="caretaker_glass_cabinet"
         name="Glass Display Cabinet"
-        x={70}
-        y={25}
-        width={22}
-        height={50}
+        x={5}
+        y={56}
+        width={18}
+        height={30}
         shape="rect"
         cursorTooltip={!hasBronzeBell ? '[Take Bronze Prayer Bell]' : '[Glass Cabinet (Empty)]'}
         onClick={() => {
@@ -259,11 +259,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
       <InteractiveHotspot
         id="caretaker_desk_ledger"
         name="Caretaker 1998 Ledger"
-        x={34}
-        y={46}
-        width={32}
-        height={38}
-        shape="rect"
+        polygonPoints="50,54 80,60 83,85 39,65"
         cursorTooltip={
           natSummoned || (hasBlackCandlesCount + altarCandlesPlaced >= 3 && hasBronzeBell)
             ? '[Examine Open Ledger on Desk]'
