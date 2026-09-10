@@ -3180,7 +3180,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="landing_communal_washroom"
                   name="Communal Washroom Entrance"
-                  polygonPoints="0,0 44,0 44,73 0,98"
+                  polygonPoints="0,10 44,15 44,80 0,98"
                   cursorTooltip="[Enter Communal Washroom]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3193,7 +3193,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="landing_downstairs_stairwell"
                   name="Downstairs Concrete Stairwell"
-                  polygonPoints="70,35 85,35 78,67 57,60"
+                  polygonPoints="70,40 85,40 78,77 57,70"
                   cursorTooltip="[Descend Stairwell]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3210,7 +3210,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="stairwell_gate_padlock"
                   name="Padlock & Scissor Gate"
-                  polygonPoints="55,22 64,22 60,45 55,45"
+                  polygonPoints="55,32 64,32 60,55 55,55"
                   cursorTooltip="[Examine Heavy Padlock & Chain]"
                   onClick={() => {
                     setStairwellGateInspected(true);
@@ -3230,7 +3230,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_basin_trough"
                   name="Cement Wash Basin & Soaked Uniforms"
-                  polygonPoints="12,48 18,48 30,66 9,78"
+                  polygonPoints="12,55 18,55 34,73 9,80"
                   cursorTooltip="[Inspect Wash Basin]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3243,7 +3243,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_stall_cubicle"
                   name="Third Cubicle Stall Door"
-                  polygonPoints="48,18 56,13 56.5,73 48,66"
+                  polygonPoints="48,30 57,26 56.5,77.5 48,74"
                   cursorTooltip="[Inspect Bloodstained Stall]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3257,7 +3257,7 @@ onTuned={() => {
                   id="washroom_overhead_pipe"
                   name="Overhead Pipe & Coiled Rope"
                   x={60}
-                  y={0}
+                  y={8}
                   width={8}
                   height={20}
                   shape="rect"
@@ -3273,7 +3273,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_cracked_mirror"
                   name="Cracked Wall Mirror & Sinks"
-                  polygonPoints="70,20 94,19 95,50 70,49"
+                  polygonPoints="71,33 94,29 95,53 71,52"
                   cursorTooltip="[Inspect Mirror & Sinks]"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3290,7 +3290,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_basin_pocket"
                   name="Floating Cotton Shirt Pocket"
-                  polygonPoints="60,40 66,40 68,56 55,60"
+                  polygonPoints="60,50 66,50 68,66 57,66"
                   cursorTooltip={
                     !hasSmallBrassKey
                       ? '[Search Soaked Shirt Pocket]'
@@ -3321,7 +3321,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_stall_details"
                   name="Bloodstained Stall Echo"
-                  polygonPoints="58,53 75,53 75,87 58,87"
+                  polygonPoints="58,55 75,55 75,89 58,89"
                   cursorTooltip="[Examine Stall Echo & Hair Ribbon]"
                   onClick={() => {
                     sound.playDramaticSting();
@@ -3339,7 +3339,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_rope_drainage"
                   name="Overhead Coiled Rope"
-                  polygonPoints="55,1 75,1 78,85 55,85"
+                  polygonPoints="55,10 75,10 75,85 55,85"
                   cursorTooltip={
                     !hasNylonRope
                       ? '[Take Coiled Nylon Rope]'
@@ -3370,7 +3370,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="washroom_mirror_etching"
                   name="Bottom Mirror Frame"
-                  polygonPoints="15,65 85,65 88,82 12,82"
+                  polygonPoints="15,71 85,71 88,79 12,79"
                   cursorTooltip={
                     !washroomMirrorScratched
                       ? '[Wipe Bottom Mirror Frame]'
@@ -3584,7 +3584,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="locker-32-pink-slip"
                   name="Pink Hostel Overwrite Slip"
-                  polygonPoints="62,12 75,12 74,48 60,42"
+                  polygonPoints="62,22 75,24 74,55 60,52"
                   cursorTooltip="Examine Pinned Slip"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3600,7 +3600,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="locker-32-letters"
                   name="Folded Love Letters"
-                  polygonPoints="63,53 75,46 84,60 68,75"
+                  polygonPoints="63,63 75,56 82,64 68,75"
                   cursorTooltip="Read Folded Letters"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3616,7 +3616,7 @@ onTuned={() => {
                 <InteractiveHotspot
                   id="locker-32-books"
                   name="Old Engineering Textbooks"
-                  polygonPoints="39.5,48.5 46,39 61,39 58,54"
+                  polygonPoints="39.5,56 46,47 61,48 58,59"
                   cursorTooltip="Inspect Books"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3636,7 +3636,7 @@ onTuned={() => {
                   <InteractiveHotspot
                     id="locker-09-candle"
                     name="Black Beeswax Candle"
-                    polygonPoints="47,29 55,29 55,69 47,69"
+                    polygonPoints="47,39 55,39 55,75 47,75"
                     cursorTooltip="Take Black Candle"
                     onClick={() => {
                       sound.playItemPickup();
@@ -3655,7 +3655,7 @@ onTuned={() => {
                   <InteractiveHotspot
                     id="locker-09-matchbox"
                     name="Three-Shooting-Stars Matchbox"
-                    polygonPoints="59,25 72,28 72,69 59,66"
+                    polygonPoints="59,35 72,38 72,75 59,70"
                     cursorTooltip="Take Matchbox"
                     onClick={() => {
                       sound.playPaperRustle();
@@ -3770,9 +3770,9 @@ onTuned={() => {
                   id="prayer_room_altar_approach"
                   name="Guardian Nat Altar"
                   x={32}
-                  y={5}
+                  y={10}
                   width={36}
-                  height={70}
+                  height={66}
                   shape="rect"
                   cursorTooltip="[Approach Guardian Nat Altar]"
                   onClick={() => {

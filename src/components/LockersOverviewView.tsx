@@ -47,7 +47,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 1. Locker 14 (Top-Left Tier, marked '14') */}
         <polygon
           id="hotspot-locker-14"
-          points="14,0 21.5,0 21.5,47 14,47"
+          points="14,10 21.5,10 21.5,57 14,57"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -69,7 +69,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 2. Locker 32 (Bottom-Left Tier, marked '32') */}
         <polygon
           id="hotspot-locker-32"
-          points="13.5,57 19.5,59.5 19.5,95 13.5,110"
+          points="13.5,65 19.5,63 19.5,97 13.5,107"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -96,7 +96,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 3. Locker 09 (Top-Right Tier, marked '09') */}
         <polygon
           id="hotspot-locker-09"
-          points="86.8,0 95.5,0 95.8,55 86.8,54"
+          points="86.8,10 95.5,7 95.8,65 86.8,63"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -142,7 +142,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
         <polygon
           id="hotspot-locker-spider"
-          points="31.2,13 34.2,15 34.2,47 31.2,49"
+          points="31.2,23 34.2,28 34.2,55 31.2,57"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-red-950/20 stroke-transparent hover:stroke-red-500/40 stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
