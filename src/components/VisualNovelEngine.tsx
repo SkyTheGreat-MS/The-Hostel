@@ -69,9 +69,11 @@ import { InteractiveHotspot } from './InteractiveHotspot';
 import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
+import { Locker10InspectionView } from './Locker10InspectionView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
 import { BalconySceneView } from './BalconySceneView';
+import { RadioBenchInspectionView } from './RadioBenchInspectionView';
 import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
@@ -83,6 +85,7 @@ export const CaretakerArchiveView = CaretakerOfficeView;
 export {
   Locker32ZoomView,
   Locker09ZoomView,
+  Locker10InspectionView,
   LockersOverviewView,
   PrayerAltarView,
   CaretakerOfficeView,
@@ -748,6 +751,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
   const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
   const [natAudienceConcluded, setNatAudienceConcluded] = useState<boolean>(false);
+  const [radioHasBatteries, setRadioHasBatteries] = useState<boolean>(false);
+  const [radioTuned, setRadioTuned] = useState<boolean>(false);
 
   // 10-Minute Timer & Composure State
   const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
@@ -867,28 +872,31 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasBlackCandlesCount(3);
       setHasMatchesCount(3);
       setHasBronzeBell(true);
-      setHasBobbyPin(true);
-      setHasWoodenBat(true);
-      setHasSmallBrassKey(true);
-      setHasNylonRope(true);
-      setHasLocker09Candle(true);
-      setHasLocker09Matchbox(true);
-      setHasCaretakerCandles(true);
       setHasReadLocker32Note(true);
       setHasReadSandarLetters(true);
       setDoorUnlocked(true);
       if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
-      setInventory([
-        'bobby_pin',
-        'wooden_bat',
-        'small_brass_key_32',
-        'coiled_nylon_rope',
-        'black_beeswax_candle',
-        'black_beeswax_candle',
-        'black_beeswax_candle',
-        'matchbox_three_stars',
-        'bronze_prayer_bell',
-      ]);
+      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
+      if (activeSave?.radioTuned) setRadioTuned(true);
+      if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
+      if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
+      if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
+      if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
+      setInventory(
+        activeSave?.inventory && activeSave.inventory.length > 0
+          ? activeSave.inventory
+          : [
+              'bobby_pin',
+              'wooden_bat',
+              'small_brass_key_32',
+              'coiled_nylon_rope',
+              'black_beeswax_candle',
+              'black_beeswax_candle',
+              'black_beeswax_candle',
+              'matchbox_three_stars',
+              'bronze_prayer_bell',
+            ]
+      );
       sound.startAmbient();
       return;
     }
@@ -932,6 +940,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       setNatAudienceConcluded(Boolean(save.natAudienceConcluded));
+      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
+      if (activeSave?.radioTuned) setRadioTuned(true);
       if (typeof save.composure === 'number') setComposure(save.composure);
       if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
 
@@ -964,7 +974,17 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   useEffect(() => {
     if (isChapterFinished || isGameOver) return;
     if (currentChapter === 2) {
-      lockChapterOneAndSave(selectedCharacter.id, composure);
+      lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, selectedCharacter.resolveMultiplier ?? 1.0, {
+        natAudienceConcluded,
+        radioHasBatteries,
+        radioTuned,
+        discoveredClues,
+        askedNatTopics,
+        hasReadLocker32Note,
+        hasReadSandarLetters,
+        hasCaretakerCandles,
+        altarCandlesPlaced,
+      });
       return;
     }
     if (
@@ -1032,6 +1052,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           natSummoned,
           hasConsultedNat,
           askedNatTopics,
+          natAudienceConcluded,
+          radioHasBatteries,
+          radioTuned,
+          hasReadLocker32Note,
+          hasReadSandarLetters,
+          hasCaretakerCandles,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1072,6 +1098,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     askedNatTopics,
     corridorShadowScareTriggered,
     chapter1Completed,
+    natAudienceConcluded,
+    radioHasBatteries,
+    radioTuned,
+    hasCaretakerCandles,
   ]);
 
   // Current active dialogue line for Phase 1 & 2
@@ -1741,31 +1771,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setMode('phase3');
     setChapter1Completed(true);
     setCaretakerDoorUnlocked(true);
-    setHasBlackCandlesCount(3);
-    setHasMatchesCount(3);
-    setHasBronzeBell(true);
-    setHasBobbyPin(true);
-    setHasWoodenBat(true);
-    setHasSmallBrassKey(true);
-    setHasNylonRope(true);
-    setHasLocker09Candle(true);
-    setHasLocker09Matchbox(true);
-    setHasReadLocker32Note(true);
-    setHasReadSandarLetters(true);
-    setInventory([
-      'bobby_pin',
-      'wooden_bat',
-      'small_brass_key_32',
-      'coiled_nylon_rope',
-      'black_beeswax_candle',
-      'black_beeswax_candle',
-      'black_beeswax_candle',
-      'matchbox_three_stars',
-      'bronze_prayer_bell',
-    ]);
     sound.startAmbient();
     setActiveMonologue(
-      "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. Seven ritual items are in hand. The communal prayer room altar awaits. —"
+      "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. The communal prayer room altar awaits. —"
     );
     navigate('/chapters/2');
   };
@@ -1820,11 +1828,14 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
       setComposure(recoveredComposure);
       setTimeLeft(rolloverTime);
+      // The cinematic thought is replaced by the transition card; never layer a
+      // legacy dialogue/monologue panel over the Chapter 2 hand-off.
+      setActiveMonologue(null);
       setChapter1Completed(true);
       completeChapter(1);
       lockChapterOneAndSave(selectedCharacter.id, recoveredComposure, inventory, timeLeft, resolve);
       setShowChapterTransitionModal(true);
-    }, 1800);
+    }, 900);
   };
 
   const toggleMute = () => {
@@ -1862,6 +1873,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'lockers_main') return PHASE_3_ASSETS.lockersOverview;
       if (phase3Location === 'locker_32') return PHASE_3_ASSETS.locker32Zoom;
       if (phase3Location === 'locker_09') return PHASE_3_ASSETS.locker09Zoom;
+      if (phase3Location === 'locker_10') return '/assets/scenes/locker_10_interior.jpg';
       if (phase3Location === 'locker_14') return PHASE_3_ASSETS.locker14Zoom;
       if (phase3Location === 'locker_spider') return PHASE_3_ASSETS.lockerSpiderZoom;
       if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
@@ -1920,6 +1932,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           return 'LOCKER BAY • LOCKER 32';
         case 'locker_09':
           return 'LOCKER BAY • LOCKER 09';
+        case 'locker_10':
+          return 'LOCKER BAY • LOCKER 10';
         case 'locker_14':
           return 'LOCKER BAY • LOCKER 14';
         case 'locker_spider':
@@ -1963,6 +1977,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     } else if (
       phase3Location === 'locker_32' ||
       phase3Location === 'locker_09' ||
+      phase3Location === 'locker_10' ||
       phase3Location === 'locker_14' ||
       phase3Location === 'locker_spider'
     ) {
@@ -2066,6 +2081,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         return { zone: 'LOCKER BAY', name: 'LOCKER 32' };
       case 'locker_09':
         return { zone: 'LOCKER BAY', name: 'LOCKER 09' };
+      case 'locker_10':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 10' };
       case 'locker_14':
         return { zone: 'LOCKER BAY', name: 'LOCKER 14' };
       case 'locker_spider':
@@ -3023,6 +3040,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           composure={composure}
           setComposure={setComposure}
           discoveredClues={discoveredClues}
+          radioTuned={radioTuned}
           onStepBack={() => {
             try {
               sound.playDoorCreak();
@@ -3035,6 +3053,22 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             }
             setPhase3Location('east_fork');
             setActiveMonologue('— Stepped off the rain-swept balcony back into the East Fork corridor. —');
+          }}
+        />
+      )}
+
+      {mode === 'phase3' && phase3Location === 'radio_bench_inspection' && (
+        <RadioBenchInspectionView
+          inventory={inventory}
+          setInventory={setInventory}
+          radioHasBatteries={radioHasBatteries}
+          setRadioHasBatteries={setRadioHasBatteries}
+          setActiveMonologue={setActiveMonologue}
+          onReturn={() => setPhase3Location('balcony_326')}
+onTuned={() => {
+            sound.playGhostWhisper();
+            setRadioTuned(true);
+            setPhase3Location('balcony_326');
           }}
         />
       )}
@@ -3651,6 +3685,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   />
                 )}
               </>
+            )}
+            {phase3Location === 'locker_10' && (
+              <Locker10InspectionView
+                inventory={inventory}
+                setInventory={setInventory}
+                discoveredClues={discoveredClues}
+                addDiscoveredClue={addDiscoveredClue}
+                setActiveMonologue={setActiveMonologue}
+                onReturn={() => setPhase3Location('lockers_main')}
+              />
             )}
 
             {/* ZOOM: LOCKER 14 PADLOCK */}

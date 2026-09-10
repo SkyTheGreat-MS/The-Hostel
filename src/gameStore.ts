@@ -679,7 +679,18 @@ export function lockChapterOneAndSave(
   currentComposure: number = 100,
   customInventory?: string[],
   timeRemaining: number = 0,
-  resolveMultiplier: number = 1.0
+  resolveMultiplier: number = 1.0,
+  extraFlags?: {
+    natAudienceConcluded?: boolean;
+    radioHasBatteries?: boolean;
+    radioTuned?: boolean;
+    discoveredClues?: string[];
+    askedNatTopics?: string[];
+    hasReadLocker32Note?: boolean;
+    hasReadSandarLetters?: boolean;
+    hasCaretakerCandles?: boolean;
+    altarCandlesPlaced?: number;
+  }
 ): ActiveSaveState {
   const defaultInventory = [
     'bobby_pin',
@@ -703,12 +714,22 @@ export function lockChapterOneAndSave(
     chapter1Completed: true,
     selectedCharacterId,
     inventory: customInventory && customInventory.length > 0 ? customInventory : defaultInventory,
+    discoveredClues: extraFlags?.discoveredClues,
     hasMatchesCount: 3,
     hasBlackCandlesCount: 3,
     hasBronzeBell: true,
     caretakerDoorUnlocked: true,
     composure: recoveredComposure,
     timerSeconds: rolloverTime,
+    natAudienceConcluded: extraFlags?.natAudienceConcluded,
+    radioHasBatteries: extraFlags?.radioHasBatteries,
+    radioTuned: extraFlags?.radioTuned,
+    askedNatTopics: extraFlags?.askedNatTopics,
+    hasReadLocker32Note: extraFlags?.hasReadLocker32Note,
+    hasReadSandarLetters: extraFlags?.hasReadSandarLetters,
+    hasCaretakerCandles: extraFlags?.hasCaretakerCandles,
+    altarCandlesPlaced: extraFlags?.altarCandlesPlaced,
+    currentChapter: 2,
     timestamp: Date.now(),
   };
 

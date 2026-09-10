@@ -139,12 +139,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (setNatAudienceConcluded) {
       setNatAudienceConcluded(true);
     }
-    if (setCurrentChapter) {
-      setCurrentChapter(2);
-    }
-    if (setChapter1Completed) {
-      setChapter1Completed(true);
-    }
+    // The altar audience never unlocks Chapter 2.  That hand-off is owned by
+    // the Caretaker ledger, so revisiting this scene cannot complete Chapter 1.
     setPhase3Location('east_fork');
     setActiveMonologue(
       '— "The rain falls heaviest where the girls used to gather for secret music. Seek the terrace where wire catches the sky… she waits where the wind never settles." —'

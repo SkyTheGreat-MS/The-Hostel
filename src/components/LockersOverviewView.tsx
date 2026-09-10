@@ -116,6 +116,29 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           <title>Inspect Locker 09 (Supplies)</title>
         </polygon>
 
+        {/* 4. Locker 10 (Bottom-Right Tier, marked '10') */}
+        <polygon
+          id="hotspot-locker-10"
+          points="86.8,58 95.5,56 95.8,95 86.8,98"
+          className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
+          onMouseEnter={() => {
+            sound.playMenuHover();
+            setHoveredLocker({
+              text: 'Open Locker 10',
+              x: 88.0,
+              y: 60.0,
+              align: 'right',
+            });
+          }}
+          onMouseLeave={() => setHoveredLocker(null)}
+          onClick={() => {
+            sound.playLockerCreak();
+            setPhase3Location('locker_10');
+          }}
+        >
+          <title>Open Locker 10</title>
+        </polygon>
+
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
         <polygon
           id="hotspot-locker-spider"

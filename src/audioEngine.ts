@@ -8,6 +8,20 @@ class AudioEngine {
   private rainNode: AudioBufferSourceNode | null = null;
   private rainGain: GainNode | null = null;
   private isRainRunning: boolean = false;
+  private radioBallad: HTMLAudioElement | null = null;
+
+  private playAsset(src: string, options: { loop?: boolean; volume?: number } = {}) {
+    if (this.isMuted || typeof Audio === 'undefined') return null;
+    try {
+      const audio = new Audio(src);
+      audio.loop = Boolean(options.loop);
+      audio.volume = options.volume ?? 0.45;
+      void audio.play().catch(() => undefined);
+      return audio;
+    } catch {
+      return null;
+    }
+  }
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -138,6 +152,72 @@ class AudioEngine {
       this.rainNode = null;
     }
     this.isRainRunning = false;
+  }
+
+public playBenchInspect() {
+    this.playAsset('/assets/audio/sfx/bench_inspect.mp3', { volume: 0.45 });
+  }
+
+  public playLockerCreak() {
+    this.playAsset('/assets/audio/sfx/locker_creak.mp3', { volume: 0.5 });
+  }
+
+  public playItemPickup() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(587.33, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(880, this.ctx.currentTime);
+      osc2.frequency.exponentialRampToValueAtTime(1174.66, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.25);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(this.ctx.currentTime + 0.25);
+      osc2.stop(this.ctx.currentTime + 0.25);
+    } catch {}
+  }
+
+  public playBatteryInsert() {
+    this.playAsset('/assets/audio/sfx/battery_insert.mp3', { volume: 0.55 });
+  }
+
+  public playRadioStaticBurst() {
+    this.playAsset('/assets/audio/sfx/radio_static.mp3', { volume: 0.25 });
+  }
+
+  public playDialClick() {
+    this.playAsset('/assets/audio/sfx/dial_click.mp3', { volume: 0.4 });
+  }
+
+  public playRadioBallad() {
+    this.stopRadioBallad();
+    this.radioBallad = this.playAsset('/assets/audio/bgm/ballad_1998.mp3', { loop: true, volume: 0.5 });
+  }
+
+  public stopRadioBallad() {
+    if (!this.radioBallad) return;
+    try {
+      this.radioBallad.pause();
+      this.radioBallad.currentTime = 0;
+    } catch {}
+    this.radioBallad = null;
   }
 
   public playDoorPush() {
@@ -559,35 +639,27 @@ class AudioEngine {
     } catch {}
   }
 
-  public playItemPickup() {
+  public playItemLooted() {
     if (this.isMuted) return;
     this.initCtx();
     if (!this.ctx) return;
 
     try {
-      const osc1 = this.ctx.createOscillator();
-      const osc2 = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-
-      osc1.type = 'triangle';
-      osc1.frequency.setValueAtTime(587.33, this.ctx.currentTime);
-      osc1.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
-
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(880, this.ctx.currentTime);
-      osc2.frequency.exponentialRampToValueAtTime(1174.66, this.ctx.currentTime + 0.12);
-
-      gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.25);
-
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc1.start();
-      osc2.start();
-      osc1.stop(this.ctx.currentTime + 0.25);
-      osc2.stop(this.ctx.currentTime + 0.25);
+      // Triumphant item acquisition jingle - ascending major triad
+      const frequencies = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+      frequencies.forEach((freq, i) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.08);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + i * 0.08 + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(this.ctx.currentTime + i * 0.08);
+        osc.stop(this.ctx.currentTime + i * 0.08 + 0.3);
+      });
     } catch {}
   }
 

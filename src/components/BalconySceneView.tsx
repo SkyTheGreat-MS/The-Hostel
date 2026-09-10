@@ -1,9 +1,18 @@
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { sound } from '../audioEngine';
 import { Phase3Location } from '../types';
 import { ArrowLeft, MapPin, CloudRain } from 'lucide-react';
 import { SceneNavBar } from './SceneNavBar';
+import { InteractiveHotspot } from './InteractiveHotspot';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any;
+    }
+  }
+}
 
 export interface BalconySceneViewProps {
   setPhase3Location?: (location: Phase3Location) => void;
@@ -16,6 +25,7 @@ export interface BalconySceneViewProps {
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
   discoveredClues?: string[];
   onStepBack?: () => void;
+  radioTuned?: boolean;
 }
 
 export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
@@ -29,6 +39,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
   setComposure,
   discoveredClues = [],
   onStepBack,
+  radioTuned = false,
 }) => {
   // 1. Ambient: Start looping outdoor monsoon rain audio cue on mount, cleanup on unmount
   useEffect(() => {
@@ -84,28 +95,27 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
         areaName="THE OVERLOOK BALCONY"
       />
 
-      {/* 4. Subdued Narrative Monologue (Bottom Docked) */}
-      <AnimatePresence>
-        {activeMonologue && (
-          <div className="absolute bottom-6 inset-x-0 z-40 flex justify-center px-4 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 15 }}
-              onClick={() => setActiveMonologue?.(null)}
-              className="max-w-xl p-3.5 rounded-xl bg-[#0b120e]/90 border border-[#23382b] backdrop-blur-md shadow-2xl text-center pointer-events-auto cursor-pointer group hover:border-[#385443] transition-all"
-            >
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#8fa89b]/80 uppercase tracking-wider border-b border-[#1f2d26] pb-1 mb-1.5">
-                <span>Observation</span>
-                <span className="group-hover:text-[#6ee7b7] transition-colors">[Click to Dismiss]</span>
-              </div>
-              <p className="font-serif italic text-xs md:text-sm text-[#c5ded0] leading-relaxed select-none">
-                "{activeMonologue}"
-              </p>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <InteractiveHotspot
+        id="balcony_transistor_radio"
+        name="Transistor Radio"
+        polygonPoints="60,51 73,53 73,70 60,70"
+        cursorTooltip="[Inspect Transistor Radio]"
+        onClick={() => {
+          sound.playBenchInspect();
+          setActiveMonologue?.(null);
+          setPhase3Location?.('radio_bench_inspection');
+        }}
+      />
+
+      {radioTuned && (
+        <motion.img
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          src="/assets/characters/may_spectral_balcony.png"
+          alt="Spectral May"
+          className="absolute bottom-0 left-[7%] z-10 h-[68%] max-w-[38%] object-contain pointer-events-none drop-shadow-[0_0_24px_rgba(177,235,206,0.7)]"
+        />
+      )}
     </div>
   );
 };

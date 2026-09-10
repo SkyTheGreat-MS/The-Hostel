@@ -78,11 +78,6 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
     }
   };
 
-  const currentThought =
-    activeMonologue !== undefined
-      ? activeMonologue
-      : "The push-latch power is dead, and cold draft seeps through the shuttered boards. The air still reeks of rancid jasmine and wet earth... May's presence lingers near the rafters. The desk offers nothing more.";
-
   // In the render block for Chapter 2 / Post-Climax Abandoned Office:
   if (currentChapter >= 2 || chapter1Completed || isRoomBlackedOut) {
     return (
@@ -145,22 +140,6 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           }}
         />
 
-        {/* 3. Subdued Narrative Thoughts (Bottom Docked) */}
-        {currentThought && (
-          <div className="absolute bottom-6 inset-x-0 z-40 flex justify-center px-4 pointer-events-none">
-            <div
-              onClick={() => setActiveMonologue && setActiveMonologue(null)}
-              className="max-w-xl p-3.5 rounded-xl bg-[#0b120e]/90 border border-[#23382b] backdrop-blur-md shadow-2xl text-center pointer-events-auto cursor-pointer group hover:border-[#385443] transition-all"
-            >
-              <p className="font-serif italic text-xs md:text-sm text-[#c5ded0] leading-relaxed select-none">
-                "{currentThought}"
-              </p>
-              <span className="block mt-1 text-[9px] font-mono tracking-widest text-[#4d6b5c] group-hover:text-[#78a38c] uppercase">
-                [Click to Dismiss]
-              </span>
-            </div>
-          </div>
-        )}
       </div>
     );
   }
@@ -246,25 +225,35 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         }}
       />
 
-      {/* 3. Center Desk Ledger (Spectral Encounter) */}
+      {/* 3. Center Desk Ledger (Chapter 1 Conclusion Trigger) */}
       <InteractiveHotspot
         id="caretaker_desk_ledger"
         name="Caretaker 1998 Ledger"
         polygonPoints="50,54 80,60 83,85 39,65"
         cursorTooltip={
-          natSummoned || (hasBlackCandlesCount + altarCandlesPlaced >= 3 && hasBronzeBell)
-            ? '[Examine Open Ledger on Desk]'
+          hasCaretakerCandles && hasBronzeBell
+            ? '[Read the Open Ledger — Conclude Chapter 1]'
             : '[Examine Caretaker Desk]'
         }
         onClick={() => {
           if (!deskInteractable) return;
-          if (natSummoned || (hasBlackCandlesCount + altarCandlesPlaced >= 3 && hasBronzeBell)) {
-            handleCaretakerClimax && handleCaretakerClimax();
-          } else {
+          if (hasCaretakerCandles && hasBronzeBell) {
+            // Case B: Holding both ritual items — trigger Chapter 2 transition directly
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— The Caretaker\'s ledger lies open on the desk... dust covers yellowed entries from August 1998. I should search the room for supplies and awaken the Guardian Nat first. —'
+                '— August 1998... The entries end abruptly on the night May disappeared. I have what I need to awaken the shrine. —'
+              );
+            // Give the thought a beat, then begin the transition while still in this room.
+            setTimeout(() => {
+              handleCaretakerClimax && handleCaretakerClimax();
+            }, 700);
+          } else {
+            // Case A: Missing ritual items — ambient thought line only
+            sound.playPaperRustle();
+            setActiveMonologue &&
+              setActiveMonologue(
+                "— The warden's ledger details the secret shrine... but I still need the bell and the offering candles from this room before confronting the Nat. —"
               );
           }
         }}

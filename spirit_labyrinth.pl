@@ -16,6 +16,8 @@
     unlock_caretaker_office/1,
     perform_nat_awakening/0,
     caretaker_door/1,
+    chapter_1_completed/0,
+    unlocked_location/1,
     altar_candle_count/1,
     altar_bell_placed/1,
     nat_summoned/1,
@@ -95,6 +97,8 @@
 :- dynamic nat_summoned/1.
 :- dynamic chapter/1.
 :- dynamic chapter_phase/2.
+:- dynamic chapter_1_completed/0.
+:- dynamic unlocked_location/1.
 
 % Chapter 2 Guardian Nat Interrogation & Law of Reality Dynamic State
 :- dynamic topic_unlocked/1.
@@ -266,6 +270,10 @@ item(coiled_nylon_rope, washroom_rope, 'Weathered nylon-jute packing rope looped
 item(black_beeswax_candle, locker_09, 'A heavy taper molded from dark beeswax.').
 item(matchbox_three_stars, locker_09, 'A damp wooden matchbox with red phosphorus striking strip.').
 item(bronze_prayer_bell, caretaker_office_main, 'A ceremonial temple bell made of cast bronze.').
+% Chapter 1's conclusion has its own authoritative ritual items.  They are
+% deliberately distinct from Locker Bay supplies.
+item(brass_bell, caretaker_office_main, 'A ceremonial altar bell from the Caretaker archive.').
+item(tallow_candles_black, caretaker_office_main, 'Black altar tallow candles from the Caretaker archive.').
 
 % ==============================================================================
 % 3. INITIALIZATION & RESTART ROUTINES
@@ -292,6 +300,9 @@ init_game_state :-
     retractall(deduction_unlocked(_)),
     retractall(chapter(_)),
     retractall(chapter_phase(_, _)),
+    retractall(current_chapter(_)),
+    retractall(chapter_1_completed),
+    retractall(unlocked_location(_)),
     retractall(caretaker_power_killed),
     retractall(room_state(_, _)),
     retractall(player_has(_)),
@@ -315,6 +326,7 @@ init_game_state :-
     assertz(inquiry_count(0)),
     assertz(chapter(1)),
     assertz(chapter_phase(1, 1)),
+    assertz(current_chapter(1)),
     assertz(composure(100)),
     assertz(time_remaining(600)), % 10:00 Countdown
     assertz(subscene_state(desk_mug_moved, false)),
@@ -630,6 +642,26 @@ detect_pacification_method :-
 % ==============================================================================
 % 6. CHAPTER 2 CARETAKER ROOM BLACKOUT & EXPANDED INVENTORY RULES
 % ==============================================================================
+
+% The Caretaker ledger is the sole Chapter 1 completion gate.  Locker Bay
+% candles and notes are intentionally not part of this rule.
+inspect_target(caretaker_ledger, chapter_1_concluded) :-
+    current_location(Location),
+    member(Location, [caretaker_office, caretaker_office_main]),
+    has_item(brass_bell),
+    has_item(tallow_candles_black),
+    (clue_discovered(caretaker_ledger) -> true ; assertz(clue_discovered(caretaker_ledger))),
+    retractall(chapter(_)),
+    assertz(chapter(2)),
+    retractall(current_chapter(_)),
+    assertz(current_chapter(2)),
+    (chapter_1_completed -> true ; assertz(chapter_1_completed)),
+    (unlocked_location(altar_room) -> true ; assertz(unlocked_location(altar_room))).
+
+inspect_target(caretaker_ledger, ritual_items_missing) :-
+    current_location(Location),
+    member(Location, [caretaker_office, caretaker_office_main]),
+    (\+ has_item(brass_bell) ; \+ has_item(tallow_candles_black)).
 
 % Climax trigger in Caretaker's Office
 trigger_caretaker_climax :-

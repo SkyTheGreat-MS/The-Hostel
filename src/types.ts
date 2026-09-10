@@ -114,6 +114,7 @@ export type Phase3Location =
   | 'lockers_main'
   | 'locker_32'
   | 'locker_09'
+  | 'locker_10'
   | 'locker_14'
   | 'locker_spider'
   | 'prayer_room_main'
@@ -122,7 +123,8 @@ export type Phase3Location =
   | 'caretaker_office_main'
   | 'caretaker_office'
   | 'balcony_326'
-  | 'balcony';
+  | 'balcony'
+  | 'radio_bench_inspection';
 
 export interface GameState {
   chapter: number;
@@ -286,6 +288,13 @@ export interface ActiveSaveState {
   hasNylonRope?: boolean;
   askedNatTopics?: string[];
   natAudienceConcluded?: boolean;
+  radioHasBatteries?: boolean;
+  radioTuned?: boolean;
+  currentChapter?: number;
+  hasReadLocker32Note?: boolean;
+  hasReadSandarLetters?: boolean;
+  hasCaretakerCandles?: boolean;
+  altarCandlesPlaced?: number;
   timestamp: number;
 }
 
