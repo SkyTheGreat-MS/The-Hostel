@@ -705,9 +705,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
-                  className="p-3 rounded-xl bg-[#0f1713]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-2 pointer-events-auto"
+                  className="p-3 rounded-xl bg-[#0f1713]/90 border-2 border-[#273830] backdrop-blur-md shadow-2xl space-y-2 pointer-events-auto"
                 >
-                  <div className="flex items-center justify-between text-[11px] font-mono tracking-wider text-[#8fa89b] uppercase">
+                  <div className="flex items-center justify-between text-[13px] font-mono tracking-wider text-[#8fa89b] uppercase">
                     <span className="flex items-center gap-1.5 font-bold">
                       <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                       Ritual Ignition
@@ -718,7 +718,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   </div>
 
                   {/* Fail rate & composure stat bar */}
-                  <div className="flex items-center justify-between text-[10px] font-mono text-stone-400 bg-black/40 px-2 py-1 rounded">
+                  <div className="flex items-center justify-between text-[12px] font-mono text-stone-400 bg-black/40 px-2 py-1 rounded">
                     <span>
                       Composure: <strong className="text-amber-300">{composure}%</strong>
                     </span>
@@ -729,7 +729,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
 
                   <button
                     onClick={handleStrikeMatch}
-                    className="w-full py-2 px-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
+                    className="w-full py-2 px-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
                   >
                     <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-400" />
                     <span>Strike Match ({litCount}/3 Lit)</span>
@@ -822,13 +822,13 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
                   onClick={() => setActiveMonologue(null)}
-                  className="p-3.5 rounded-xl bg-[#0b0f0d]/90 border border-[#273830] backdrop-blur-md shadow-2xl space-y-1.5 cursor-pointer hover:border-[#3f5c4c] transition-all group"
+                  className="p-3.5 rounded-xl bg-[#0b0f0d]/90 border-2 border-[#273830] backdrop-blur-md shadow-2xl space-y-1.5 cursor-pointer hover:border-[#3f5c4c] transition-all group"
                 >
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8fa89b]/80 uppercase tracking-wider border-b border-[#1f2d26] pb-1">
+                  <div className="flex items-center justify-between text-[12px] font-mono text-[#8fa89b]/80 uppercase tracking-wider border-b border-[#1f2d26] pb-1">
                     <span>Inner Monologue</span>
                     <span className="group-hover:text-[#6ee7b7] transition-colors">[Click to Dismiss]</span>
                   </div>
-                  <p className="text-xs text-[#c2d6cc] italic font-serif leading-relaxed line-clamp-4 select-none">
+                  <p className="text-base text-[#c2d6cc] font-mono leading-relaxed line-clamp-4 select-none">
                     "{activeMonologue}"
                   </p>
                 </motion.div>
