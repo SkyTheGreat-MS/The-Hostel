@@ -442,7 +442,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         {/* Candle Prong 1 (Left Spike on Bronze Bowl) */}
         <polygon
           id="altar-socket-candle-1"
-          points="51.2,36.0 53.8,36.0 54.0,54.0 51.0,54.0"
+          points="51.2,40.0 53.8,40.0 54.0,53.0 51.0,53.0"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#476756]/30 stroke-[#4a7a60]/50 hover:stroke-[#8fa89b] stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -471,7 +471,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         {/* Candle Prong 2 (Center Spike on Bronze Bowl) */}
         <polygon
           id="altar-socket-candle-2"
-          points="56.2,36.0 58.8,36.0 59.0,54.0 56.0,54.0"
+          points="56.2,40.0 58.8,40.0 59.0,53.0 56.0,53.0"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#476756]/30 stroke-[#4a7a60]/50 hover:stroke-[#8fa89b] stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -500,7 +500,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         {/* Candle Prong 3 (Right Spike on Bronze Bowl) */}
         <polygon
           id="altar-socket-candle-3"
-          points="61.2,36.0 63.8,36.0 64.0,54.0 61.0,54.0"
+          points="61.2,40.0 63.8,40.0 64.0,53.0 61.0,53.0"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#476756]/30 stroke-[#4a7a60]/50 hover:stroke-[#8fa89b] stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -529,7 +529,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         {/* Ceremonial Altar Offering Bowl */}
         <polygon
           id="altar-socket-bowl"
-          points="50.0,54.0 65.0,54.0 63.5,63.0 51.5,63.0"
+          points="50.0,58.0 65.0,58.0 63.5,70.0 51.5,70.0"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#476756]/20 stroke-[#4a7a60]/30 hover:stroke-[#8fa89b] stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
