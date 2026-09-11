@@ -38,6 +38,7 @@ export interface NatDialogueViewProps {
   setComposure: React.Dispatch<React.SetStateAction<number>>;
   onConcludeAudience: () => void;
   characterName?: string;
+  characterPortrait?: string;
   addDiscoveredClue?: (clueId: string) => void;
   discoveredClues?: string[];
   unlockedClues?: string[];
@@ -153,6 +154,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
   setComposure,
   onConcludeAudience,
   characterName = 'Moe',
+  characterPortrait = '/assets/characters/moe_fear_bust.png',
   addDiscoveredClue,
   discoveredClues = [],
   unlockedClues,
@@ -418,50 +420,42 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         }
       `}</style>
 
-      {/* Character Baseline Staging */}
-      <div className="fixed inset-x-0 bottom-0 top-14 z-30 pointer-events-none flex justify-between items-end px-8 md:px-16 pb-28">
-        {/* Left: Player Character (Moe) */}
+      {/* Character Staging — Same Ground Plane, Leveled, Standing in Room */}
+      <div className="fixed inset-x-0 bottom-0 top-14 z-30 pointer-events-none flex justify-between items-end px-8 md:px-16">
+        {/* Left: Player Character (Selected Character) — No label box */}
         <div
-          className={`relative flex flex-col items-center pointer-events-auto transition-all duration-700 ease-out ${
+          className={`relative mb-40 pointer-events-auto transition-all duration-700 ease-out ${
             isDialogueActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
           }`}
         >
           <img
-            src="/assets/characters/moe_fear_bust.png"
+            src={characterPortrait}
             onError={(e) => {
-              e.currentTarget.src = '/assets/characters/moe_fear_bust.png';
+              e.currentTarget.src = '/assets/msk_2.png';
             }}
             alt={characterName || 'Moe'}
-            className="h-[60vh] max-h-[600px] w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.02] brightness-85"
+            className="h-[50vh] max-h-[520px] w-auto object-contain object-bottom -scale-x-100 drop-shadow-[0_12px_24px_rgba(0,0,0,0.85)] filter contrast-[1.05] brightness-75 saturate-[0.85]"
           />
-          <div className="mt-1 px-3 py-0.5 rounded bg-[#0b120e]/85 border border-[#22352b] text-center">
-            <span className="font-mono text-xs text-[#a3c2b2] tracking-wider uppercase block">
-              {characterName || 'Moe'}
-            </span>
-            <span className="font-mono text-[10px] text-[#5a7a69]">
-              Composure: {composure}%
-            </span>
-          </div>
         </div>
 
-        {/* Right: Imposing Guardian Nat */}
+        {/* Right: Guardian Nat — Larger, Upper Body / Bust Crop */}
         <div
           className={`relative flex flex-col items-center pointer-events-auto transition-all duration-700 ease-out ${
             isDialogueActive ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
           } ${isShuddering ? 'animate-shudder' : ''}`}
         >
-          <div className="absolute top-1/4 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-          <div className="h-[62vh] max-h-[600px] overflow-hidden flex items-start justify-center">
+          <div className="absolute top-1/3 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+          <div className="h-[70vh] max-h-[680px] overflow-hidden flex items-start justify-center">
             <img
               src={`/assets/characters/guardian_nat_${currentPose || 'warning'}.png`}
               onError={(e) => {
                 e.currentTarget.src = '/assets/characters/guardian_nat_neutral.png';
               }}
               alt="Hostel Guardian Nat"
-              className="h-[85vh] max-h-[780px] w-auto object-cover object-top filter drop-shadow-[0_0_25px_rgba(74,122,96,0.45)] brightness-95"
+              className="h-[95vh] max-h-[900px] w-auto object-cover object-top filter drop-shadow-[0_0_25px_rgba(74,122,96,0.45)] brightness-95"
             />
           </div>
-          <div className="mt-1 px-3 py-0.5 rounded bg-[#0b120e]/85 border border-[#2d4538] text-center">
+          <div className="mt-2 px-3 py-1 rounded bg-[#0b120e]/85 border border-[#2d4538] text-center">
             <span className="font-serif italic text-xs text-[#78b394] tracking-widest block">
               Hostel Guardian Nat
             </span>
@@ -485,7 +479,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4a7a60] animate-pulse" />
                 <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
-                  {currentOpening.speaker}
+                  {currentOpening.speaker === 'Moe' ? characterName : currentOpening.speaker}
                 </span>
                 <span className="font-mono text-[10px] text-[#4e6b5c]">
                   • Step {openingStep + 1} of {OPENING_SEQUENCE.length}
@@ -498,7 +492,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
             {/* Spoken Response Container */}
             <div className="py-2 px-1 my-auto">
-              <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none">
+              <p className="font-serif italic font-extralight text-base md:text-lg text-[#dceddf] tracking-wide leading-relaxed select-none">
                 "{currentOpening.text}"
               </p>
             </div>
@@ -590,7 +584,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                         onClick={() => handlePresentTarget(entry.id, activeTab)}
                         className="w-full text-left p-2.5 rounded-lg bg-[#121c16] hover:bg-[#1c2d23] border border-[#23382b] hover:border-[#3d5e48] text-xs font-mono text-[#d1e6dc] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99]"
                       >
-                        <span className="group-hover:text-emerald-300 transition-colors">
+                        <span className="group-hover:text-white transition-colors">
                           ❯ {activeTab === 'inventory' ? `Ask about item: ${entry.shortLabel}` : `Ask about note: ${entry.title}`}
                         </span>
                         <span className="text-[10px] font-mono text-red-400/60 group-hover:text-red-300 transition-colors">
@@ -607,7 +601,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                 <div>
                   <div className="flex items-center justify-between pb-1 mb-2 border-b border-[#1b2b22]">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span className="w-2 h-2 rounded-full bg-[#4a7a60]" />
                       <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                         Hostel Guardian Nat
                       </span>
@@ -619,7 +613,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
                   {/* Spoken Response Container */}
                   <div className="py-2 px-1">
-                    <p className="font-serif italic text-base md:text-lg text-[#dceddf] font-normal tracking-wide leading-relaxed select-none min-h-[64px]">
+                    <p className="font-serif italic font-extralight text-base md:text-lg text-[#dceddf] tracking-wide leading-relaxed select-none min-h-[64px]">
                       "{activeResponseText}"
                     </p>
                   </div>

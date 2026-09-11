@@ -4,6 +4,8 @@ import { sound } from '../audioEngine';
 import { Phase3Location } from '../types';
 import { Flame, Bell, Sparkles } from 'lucide-react';
 import { NatDialogueView } from './NatDialogueView';
+import { getCharacterProfile } from '../characterData';
+import { getCharacterFearBustSrc } from './InkPortrait';
 
 export interface PrayerAltarViewProps {
   composure: number;
@@ -599,20 +601,20 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
               className="absolute -translate-x-1/2 flex flex-col items-center pointer-events-none transition-all duration-500"
               style={{ left: leftOffsets[index], top: '44.5%' }}
             >
-              {/* Animated Pale Blue/Gold Flame */}
+              {/* Animated Pale Blue/Gold Flame — centered directly on wick tip */}
               {isLit && (
-                <div className="relative -mb-1 flex items-center justify-center animate-pulse">
+                <div className="relative flex flex-col items-center justify-end h-5 -mb-1">
                   {/* Outer flame glow */}
-                  <div className="absolute w-6 h-6 rounded-full bg-cyan-400/20 blur-sm" />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-cyan-400/20 blur-sm" />
                   {/* Inner flame teardrop */}
-                  <div className="w-2 h-4 rounded-full bg-gradient-to-t from-amber-400 via-yellow-200 to-cyan-100 shadow-[0_0_8px_rgba(100,220,255,0.8)] animate-bounce" />
+                  <div className="relative w-2 h-4 rounded-full bg-gradient-to-t from-amber-400 via-yellow-200 to-cyan-100 shadow-[0_0_8px_rgba(100,220,255,0.8)] animate-pulse" />
                 </div>
               )}
 
               {/* Black Beeswax Candle Body */}
               <div className="w-2.5 h-11 bg-gradient-to-r from-[#1c1c1b] via-[#2c2e2c] to-[#141514] rounded-t-sm shadow-md border-t border-white/10 relative">
-                {/* Wick */}
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-0.5 h-1.5 bg-neutral-900" />
+                {/* Wick — centered on candle top */}
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0.5 h-1.5 bg-neutral-900 rounded-sm" />
               </div>
             </div>
           );
@@ -841,7 +843,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             composure={composure}
             setComposure={setComposure}
             inventory={inventory}
-            characterName="Moe"
+            characterName={getCharacterProfile(selectedCharacterId || 'moe_stheinkha').name}
+            characterPortrait={getCharacterFearBustSrc(selectedCharacterId || 'moe_stheinkha')}
             onConcludeAudience={handleConcludeNatAudience}
             addDiscoveredClue={addDiscoveredClue}
             discoveredClues={discoveredClues}

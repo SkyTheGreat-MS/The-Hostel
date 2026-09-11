@@ -39,6 +39,28 @@ export const getCharacterPortraitSrc = (characterId?: string): string => {
   return portraitByCharacter[normalizedId] || mjPortrait;
 };
 
+// Fear / scared bust resolver using each character's <code>_2.png shocked asset.
+export const getCharacterFearBustSrc = (characterId?: string): string => {
+  const normalizedId = (characterId || '').toLowerCase();
+  const codeByCharacter: Record<string, string> = {
+    ye_yint_hein: 'yyh',
+    kyaw_swar: 'yyh',
+    moe_stheinkha: 'msk',
+    thazin: 'msk',
+    hsu_myat_shein: 'hms',
+    aye_aye: 'hms',
+    yin_min_htike: 'ymh',
+    htet: 'ymh',
+    may_jewel: 'mj',
+    su_su: 'mj',
+    mona: 'mt',
+    min_khant: 'mt',
+    mama_may: 'mj',
+  };
+  const code = codeByCharacter[normalizedId] || 'mj';
+  return `/assets/${code}_2.png`;
+};
+
 export const InkPortrait: React.FC<InkPortraitProps> = ({
   characterId = 'may_jewel',
   speakerName,
