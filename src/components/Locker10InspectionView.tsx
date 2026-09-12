@@ -65,7 +65,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
       <InteractiveHotspot
         id="locker10_batteries"
         name="Dry-Cell Batteries"
-        polygonPoints="42,58 58,58 58,78 42,78"
+        polygonPoints="50,44 63,45 63,65 50,63"
         cursorTooltip={batteriesTooltip}
         onClick={handleBatteriesClick}
       />
@@ -73,7 +73,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
       <InteractiveHotspot
         id="locker10_notebook"
         name="Chemistry Notebook"
-        polygonPoints="60,62 75,62 75,82 60,82"
+        polygonPoints="48,24 55,24 61,42 53,42"
         cursorTooltip={notebookTooltip}
         onClick={handleNotebookClick}
       />

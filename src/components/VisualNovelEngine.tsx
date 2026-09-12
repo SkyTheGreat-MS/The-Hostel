@@ -141,7 +141,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'May Jewel',
     characterId: 'may_jewel',
     pos: 'left',
-    text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက မှော်ပညာစာအုပ်ဟောင်းတစ်ခု တွေ့ခဲ့တယ်။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားကြည့်ရအောင်။',
+    text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက စာအုပ်ဟောင်းတစ်ခု တွေ့ထားတယ်တဲ့။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားရအောင်။',
     soundCue: 'paper',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
@@ -161,7 +161,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Hsu Myat Shein',
     characterId: 'hsu_myat_shein',
     pos: 'right',
-    text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတာ နာမည်ကြီးတယ်။',
+    text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတယ်လို့ ကြားဖူးတယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -180,7 +180,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Mona',
     characterId: 'mona',
     pos: 'right',
-    text: 'ကြောက်နေရင် ပြန်လိုရတယ်။ အမှန်တရားသိချင်ရင်တော့ ကစားကြည့်မယ်။',
+    text: 'ကြောက်နေရင် ပြန်လိုရတယ်။ အမှန်တရားသိချင်ရင်တော့ ကစားကြမယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -189,7 +189,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'May Jewel',
     characterId: 'may_jewel',
     pos: 'left',
-    text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ၁၉၉၈ က ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
+    text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ဒီအခန်းထဲမှာ ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
 
@@ -212,7 +212,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Mona & Hsu Myat Shein',
     characterId: 'mona',
     pos: 'right',
-    text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးစက်စက် လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
+    text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးအေးကြီး လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -292,7 +292,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'Pathway 326... The air in this corridor smells of stagnant water and old cedar. The lights are dead, replaced by flickering kerosene shadows.',
+          text: 'စင်္ကြံလမ်း ၃၂၆... ဒီစစင်္ကြံလမ်းထဲမှာ ရေပုပ်နံ့နဲ့ သစ်သားဟောင်းနံ့တွေ ကြီးပဲ။ မီးတွေလည်းမရှိတော့ဘူး၊ ယိမ်းထိုးနေတဲ့ ရေနံဆီမီးအိမ် အရိပ်တွေပဲ ကျန်တော့တယ်။',
           soundCue: 'paper',
         },
         {
@@ -303,12 +303,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'Look at the doorframe to Room 304... There are deep, desperate fingernail claw marks gouged into the wood. Pinned beside it is an August 1998 Missing Notice for Mama May.',
+          text: 'အခန်း ၃၀၄ ရဲ့ တံခါးဘောင်ကို ကြည့်လိုက်စမ်း... သစ်သားပေါ်မှာ လက်သည်းနဲ့ အသည်းအသန် ကုတ်ခြစ်ထားတဲ့ အရာတွေ ကြီးပဲ။ အဲဒီဘေးမှာ ဩဂုတ်လ ၁၉၉၈ ခုနှစ်က ပျောက်ဆုံးသွားတဲ့ မမမေ ရဲ့ အကြောင်း ကြော်ငြာစာရွက်ကို စိုက်ထားတယ်...။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'The draft is flowing toward the administrative wing downstairs... That is the only way down to ground level!',
+          text: 'လေတွေက အောက်ထပ် ရုံးခန်းဘက်ဆီကို တိုက်နေတာပဲ... အဲဒီလမ်းကပဲ မြေညီထပ်ကို ဆင်းလို့ရတဲ့ တစ်ခုတည်းသော လမ်းထင်တယ်!"',
         },
       ],
     },
@@ -334,7 +334,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The east stairs... I can barely breathe in here. The air is stagnant, thick with the smell of rusted iron and old kerosene.',
+          text: 'အရှေ့ဘက်လှေကားပဲ ငါကောင်းကောင်းအသက်ရှုလို့ မရတော့ဘူး။ သံချေးနံ့နဲ့ ရေနံဆီဟောင်းနံ့တွေကြီးပဲ။',
         },
         {
           speakerType: 'environment',
@@ -344,12 +344,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The gate is padlocked from the outside! Pinned to the wire is the caretaker’s August 1998 curfew log—he locked this wing before midnight! This way is impassable.',
+          text: 'တံခါးအပြင်ကနေ သော့ခတ်ထားတယ်! ဇကာမှာ ၁၉၉၈ ဩဂုတ်လက ညမထွက်ရ လို့အစောင့်ရေးထားတယ်... သူ ညသန်းခေါင် မတိုင်ခင် ဒီဘက်အဆောင်ကို ခတ်သွားခဲ့တာပဲ! ဒီလမ်းတော့ သွားလို့မရတော့ဘူး။',
           soundCue: 'paper',
         },
         {
           speakerType: 'player',
-          text: 'I wasted precious time coming here... My pulse is racing. I must turn back and find an unblocked path!',
+          text: 'အချိန်တွေ အလကား ကုန်သွားပြီ... ရင်တွေလည်း တော်တော်ခုန်နေပြီ။ မြန်မြန်အနောက်ပြန်ပြီး သော့မခတ်ထားတဲ့ လမ်းကို မြန်မြန် ရှာရမယ်!"',
         },
       ],
     },
@@ -375,7 +375,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The communal washroom... The mirrors over the porcelain basins are shattered into jagged cobwebs of silver.',
+          text: 'အများသုံးရေချိုးခန်း… မှန်တွေက အစိတ်စိတ်အမြွှာမြွှာ ကွဲနေတာပဲ…',
         },
         {
           speakerType: 'environment',
@@ -385,12 +385,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'AHHH! S-she vanished! But look in the cracked drain... A bloodstained carved jasmine hairpin! It belonged to Mama May!',
+          text: 'အာ့! သူ… သူပျောက်သွားပြီ!ဟိုမှာ… ရေမြောင်းထဲက သွေးစွန်းနေတဲ့ စံပယ်ပန်းဆံထိုး! မမမေရဲ့ ပစ္စည်းပဲ။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'She struggled with someone right here before they dragged her away. There is no exterior exit here... I need to get out of this room now!',
+          text: 'ဒီမှာ တစ်ယောက်ယောက်နဲ့ ရုန်းရင်းဆန်ခတ်ဖြစ်ခဲ့တာပဲ။ထွက်ပေါက်လည်း မရှိဘူး… ဒီကနေ အမြန်ထွက်မှဖြစ်မယ်!',
         },
       ],
     },
@@ -422,7 +422,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The caretaker’s office... The room has been ransacked, with old student dossiers and rent sheets strewn across the floor.',
+          text: 'အဆောင်မှူးရုံး…အခန်းထဲက ပစ္စည်းတွေ အကုန်ရှုပ်ပွနေတယ်… ကျောင်းသားမှတ်တမ်းတွေလည်း ကြမ်းပြင်ပေါ် ပြန့်ကျဲနေတယ်။',
           soundCue: 'paper',
         },
         {
@@ -433,12 +433,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'Inside an overturned steel lockbox, there’s an official cash receipt dated August 14, 1998. It confirms a 5,000 Kyats bribe paid to seal off the courtyard well with concrete!',
+          text: 'ဟော… သံသေတ္တာထဲမှာ ၁၉၉၈၊ ဩဂုတ် ၁၄ ရက်နေ့က ငွေလက်ခံဖြတ်ပိုင်း!၅,၀၀၀ လာဘ်ပေးပြီး ခြံဝင်းထဲက ရေတွင်းကို ဘိလပ်မြေနဲ့ ပိတ်ခိုင်းထားတာပဲ…',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'The back door leads straight into the courtyard where the well is located. The draft is blowing the door open!',
+          text: 'နောက်တံခါးက ရေတွင်းရှိတဲ့ ခြံဝင်းကို တန်းရောက်တယ်။ဟာ… လေတိုက်ပြီး တံခါးပွင့်လာပြီ!',
         },
       ],
     },
@@ -464,7 +464,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The old study hall... The benches are overturned and covered in thick mold. Every single window is reinforced with iron bars.',
+          text: 'စာကြည့်ခန်းဟောင်း…ခုံတွေအကုန်လဲကျပြီး မှိုတွေနဲ့ ဖုံးနေတယ်။ ပြတင်းပေါက်တွေလည်း သံတိုင်တွေနဲ့ ပိတ်ထားတယ်…',
         },
         {
           speakerType: 'environment',
@@ -474,12 +474,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'These are Mama May’s occult notes on guardian spirits... The text reads: "The Nat does not protect the dead; it holds the curse bound inside the stones."',
+          text: 'ဒါ မမေ့ရဲ့ နတ်စောင့်တွေအကြောင်း မှတ်စုတွေပဲ…"နတ်က လူသေကို မကာကွယ်ဘူး… ကျိန်စာကို ကျောက်တုံးတွေထဲမှာ ချည်နှောင်ထားတာ…"',
           soundCue: 'paper',
         },
         {
           speakerType: 'player',
-          text: 'All doors in this study hall are deadbolted. I cannot escape through here!',
+          text: 'တံခါးတွေအကုန် သော့ခတ်ထားတယ်။ ဒီကနေ ထွက်လို့မရဘူး!',
         },
       ],
     },
@@ -509,18 +509,18 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Splaaash! From the black depths of the hatch, a pale, waterlogged hand thrusts upward, clawing at the wooden frame before sinking back into the murky deep!',
+          text: 'မြေအောက်ခန်းပေါက်?! တံခါးနည်းနည်းပွင့်ပြီး အနက်ရောင်ရေတွေ စီးနေတယ်…',
           soundCue: 'drone',
           isGlitch: true,
         },
         {
           speakerType: 'player',
-          text: 'WHAT WAS THAT?! Beside the opening sits an empty sack of quick-dry cement and a rusted masonry trowel from August 1998.',
+          text: 'ဟာ! ဘာကြီးလဲ?!ဘေးမှာ ဘိလပ်မြေအိတ်အဟောင်းနဲ့ သံချေးတက်နေတဲ့ ပန်းရန်သမားတံတောင်… ၁၉၉၈ ခုနှစ်ကပဲ!',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'This chute is completely flooded and dangerous. I must step back immediately!',
+          text: 'အောက်က ရေပြည့်နေတာ… အန္တရာယ်များတယ်။ အမြန်နောက်ဆုတ်ရမယ်!',
         },
       ],
     },
@@ -552,7 +552,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The courtyard... The torrential rain is pounding against the cracked flagstones. At the center stands an ancient brick well wrapped in rusted iron chains and barbed wire.',
+          text: 'ခြံဝင်း…မိုးတွေသည်းထန်နေတယ်… အလယ်မှာ သံချေးတက်သံကြိုးတွေနဲ့ ဆူးကြိုးတွေ ပတ်ထားတဲ့ ရေတွင်းဟောင်းကြီးရှိတယ်။',
           soundCue: 'drone',
         },
         {
@@ -563,21 +563,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'mama_may',
-          text: 'They threw me into this well alive in August 1998... and poured wet concrete over my cries. But the seal is cracking. The killer still walks freely in the city.',
+          text: '၁၉၉၈ ဩဂုတ်မှာ သူတို့က ငါ့ကို အသက်ရှင်လျက် ဒီရေတွင်းထဲ ပစ်ချပြီး ဘိလပ်မြေနဲ့ ဖုံးပိတ်ခဲ့တာ…ဒါပေမဲ့ အခု အဖုံးက အက်လာပြီ… လူသတ်သမားကတော့ အပြင်မှာ လွတ်လွတ်လပ်လပ် ရှိနေတုန်းပဲ။',
           soundCue: 'drone',
         },
         {
           speakerType: 'player',
-          text: 'Her corpse... it was sealed right here inside the dried well! And the Guardian Nat was placed here to bind her restless soul! The entire hostel is cursed!',
+          text: 'မမမေအလောင်းကို ဒီရေတွင်းထဲမှာပဲ ပိတ်ထားတာ… သူ့ဝိညာဉ်ကို ချည်နှောင်ဖို့ နတ်စောင့်ကိုပါ ဒီမှာထားခဲ့တယ်။ဒီအဆောင်တစ်ခုလုံး ကျိန်စာသင့်နေပြီ!',
         },
         {
           speakerType: 'mama_may',
-          text: 'If you want to survive and escape this hostel alive, take my brass key. In Chapter 2, you must decipher the nat’s four directions and open the well.',
+          text: 'အသက်ရှင်လွတ်မြောက်ချင်ရင် ဒီကြေးဝါသော့ကိုယူ။ အခန်း ၂ မှာ နတ်ရဲ့ အရပ်လေးမျက်နှာကို ဖော်ထုတ်ပြီး ရေတွင်းကို ဖွင့်ရမယ်။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'I understand now... I have to escape this 1998 temporal echo and uncover the full truth in Chapter 2 before the entity claims my soul!',
+          text: 'နားလည်ပြီ… ဒီ ၁၉၉၈ ခုနှစ်ရဲ့ အချိန်ပဲ့တင်သံထဲက လွတ်ပြီး အမှန်တရားအကုန် ဖော်ထုတ်ရမယ်… မဟုတ်ရင် ဒီအရာက ငါ့ဝိညာဉ်ကို သိမ်းသွားလိမ့်မယ်!',
         },
       ],
     },
@@ -603,7 +603,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The bicycle shed in the corner of the courtyard... A dozen rusted 1990s bicycles are tangled in thick, impenetrable bramble vines.',
+          text: 'ခြံထောင့်က စက်ဘီးရုံ…၉၀ ခုနှစ်က စက်ဘီးအဟောင်းတွေနဲ့ ဆူးတွေ ပိတ်နေတယ်။ ဒီဘက်ကလည်း လမ်းမရှိဘူး!',
         },
         {
           speakerType: 'environment',
@@ -613,11 +613,11 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The back perimeter wall here has collapsed into jagged brick rubble and razor wire. There is no passage through this barrier!',
+          text: 'စက်ဘီးအဟောင်းတွေနဲ့ ဆူးတွေ ပိတ်နေတယ်။ ဒီဘက်ကလည်း လမ်းမရှိဘူး!',
         },
         {
           speakerType: 'player',
-          text: 'The dried well in the center of the courtyard is the only place radiating supernatural energy.',
+          text: 'အလယ်က ရေတွင်းကပဲ ထူးဆန်းတဲ့စွမ်းအင် ထွက်နေတယ်… ဒါ ငါ့ရဲ့ တစ်ခုတည်းသောလမ်းပဲ။',
         },
       ],
     },
@@ -643,7 +643,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The front entrance gate of the hostel... Towering black iron spikes reach into the rainy night.',
+          text: 'အဆောင်ရှေ့တံခါး…မိုးရေထဲမှာ အမြင့်ကြီးတဲ့ သံချွန်တံခါးကြီးက ကြောက်စရာကောင်းအောင် ရှိနေတယ်…',
         },
         {
           speakerType: 'environment',
@@ -653,11 +653,11 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The gate is triple-chained with a heavy government padlock from the outside! Nobody can leave through the front gate!',
+          text: 'သံတံခါးကို သံကြိုးသုံးထပ်နဲ့ အပြင်က သော့ခတ်ထားတယ်။ ဒီကနေ ထွက်လို့မရဘူး!',
         },
         {
           speakerType: 'player',
-          text: 'The supernatural rupture originates from the dried well near the banyan tree. That is my only path!',
+          text: 'ထူးဆန်းတဲ့စွမ်းအင်က ညောင်ပင်နားက ရေတွင်းကနေ ထွက်နေတာ… ငါသွားရမယ့်နေရာက အဲဒီမှာပဲ!',
         },
       ],
     },
@@ -2869,7 +2869,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="main_door"
                   name="Room Door 4B"
                   cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
-                  polygonPoints="79,5 99.5,5 99.5,95 79,95"
+                  polygonPoints="80,8 99.5,5 99.5,98 79,93"
                   onClick={() => {
                     if (doorUnlocked) {
                       sound.playPaperRustle();
@@ -2970,11 +2970,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="wardrobe_baseboard"
                   name="Wardrobe Baseboard"
                   cursorTooltip="Wardrobe Baseboard"
-                  x={10}
-                  y={75}
-                  width={80}
-                  height={22}
-                  shape="rect"
+                  polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(
@@ -3570,7 +3566,7 @@ onTuned={() => {
                       setHasSmallBrassKey(true);
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— Waterlogged student shirts from twenty-eight years ago. Wait... there's something hard tucked into the seam of this pocket. —"
+                        "— လွန်ခဲ့တဲ့ ၂၈ နှစ်ကတည်းက ရေစိုနေတဲ့ ရှပ်အင်္ကျီတွေ။နေပါဦး...ဒီအိတ်ကပ်ထဲမှာ မာတဲ့ပစ္စည်းတစ်ခုခု ထိုးထည့်ထားတာပဲ။—"
                       );
                     } else {
                       sound.playPaperRustle();
@@ -3594,7 +3590,7 @@ onTuned={() => {
                   onClick={() => {
                     sound.playDramaticSting();
                     setActiveMonologue(
-                      "— Dried smear marks on the latch... and cold water dripping down my neck. Someone was trying to claw their way out. —"
+                      "—တံခါးဂျက်ပေါ်မှာ ခြောက်သွားတဲ့ သွေးကွက်တွေ ပြီးတော့ ငါ့လည်ပင်းပေါ်ကို အေးစက်စက်ကျလာတဲ့ ရေစက်တွေ။တစ်ယောက်ယောက်က အတင်းအပြင်ထွက်ဖို အသည်းအသန်ကြိုးစားခဲ့တာပဲ။—"
                     );
                   }}
                 />
@@ -3619,7 +3615,7 @@ onTuned={() => {
                       setHasNylonRope(true);
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— A coiled nylon rope dangling from the rusty drainage pipe... This might hold my weight. Acquired: Coiled Nylon Rope. —"
+                        "—ခွေထားတဲ့ နိုင်လွန်ကြိုးခွေကြီး... ငါ့ကိုယ်အလေးချိန်လောက်တော့ ခံနိုင်လောက်တယ်—"
                       );
                     } else {
                       sound.playPaperRustle();
@@ -3634,13 +3630,26 @@ onTuned={() => {
 
             {/* ZOOM 4: CRACKED WALL MIRROR */}
             {phase3Location === 'washroom_mirror' && (
-              <WashroomMirrorView
-                onReturn={() => setPhase3Location('washroom_main')}
-                setActiveMonologue={setActiveMonologue}
-                addDiscoveredClue={addDiscoveredClue}
-                washroomMirrorScratched={washroomMirrorScratched}
-                setWashroomMirrorScratched={setWashroomMirrorScratched}
-              />
+              <>
+                <InteractiveHotspot
+                  id="washroom_mirror_etching"
+                  name="Bottom Mirror Frame"
+                  polygonPoints="15,71 85,71 88,79 12,79"
+                  cursorTooltip={
+                    !washroomMirrorScratched
+                      ? '[Wipe Bottom Mirror Frame]'
+                      : '[Read Etched Scrawl: Locker 14 - 1998]'
+                  }
+                  onClick={() => {
+                    setWashroomMirrorScratched(true);
+                    addDiscoveredClue('mirror_locker_scrawl');
+                    sound.playPaperRustle();
+                    setActiveMonologue(
+                      "— 'Locker 14 - 1998' scratched into the frame. Someone left this note before the mirrors shattered. —"
+                    );
+                  }}
+                />
+              </>
             )}
 
             {/* SUB-SCENE 5: EAST WING FORK - CHOICE CARDS */}
@@ -3753,7 +3762,7 @@ onTuned={() => {
                   onClick={() => {
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "An official hostel maintenance slip: 'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2.' Below it in faint pencil: 'Note: Caretaker mirrors all sequence inputs for emergency security.'"
+                      "အဆောင်ပြုပြင်ထိန်းသိမ်းရေးစလစ်ပြေစာတစ်ခု... 'အဆောင်မှူးရုံးခန်း အီလက်ထရောနစ်ကုဒ် - ၈ ၁ ၄ ၀ ၉ ၂'...အဆောင်စောင့်က နံပါတ်တိုင်းကို မှတ်ထားတာပဲ။"
                     );
                     setHasReadLocker32Note(true);
                     addDiscoveredClue('cipher_note_32');
@@ -3769,7 +3778,7 @@ onTuned={() => {
                   onClick={() => {
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.'"
+                      "စန္ဒာဆီ ပိုထားတဲ့ ‘K.Z.’လို လက်မှတ်ထိုးထားတဲ့ စာခေါက်လေးတွေ... 'ငါတိုအကြောင်း မေသိသွားရင်တော့ ငါတိုနှစ်ယောက်စလုံး ဒီအဆောင်မှာနေလိုရမှာမဟုတ်တော့ဘူး' တဲ့။"
                     );
                     setHasReadSandarLetters(true);
                     addDiscoveredClue('sandar_kozaw_letters');
@@ -3785,7 +3794,7 @@ onTuned={() => {
                   onClick={() => {
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "Heavy textbooks belonging to Sandar. The covers are warped with moisture and smelling of damp mildew."
+                      "သန္တာရဲ့ စာအုပ်အထူကြီးတွေ… စိုထိုင်းလို့ အဖုံးတွေကွေးနေပြီး မှိုနံ့စွဲနေတယ်။"
                     );
                   }}
                 />
@@ -3808,7 +3817,7 @@ onTuned={() => {
                       setHasBlackCandlesCount((prev) => prev + 1);
                       setInventory((prev) => [...prev, 'black_beeswax_candle']);
                       setActiveMonologue(
-                        "A thick black beeswax candle. Heavy, cold, and smells faintly of sweet oil. Ideal for the prayer altar."
+                        "ဖယောင်းတိုင်အမည်းအတုတ်ကြီးတစ်တိုင်။ တော်တော်လေးပြီး အေးစက်နေတာပဲ၊ ဆီနံ့ သင်းသင်းလေးလည်း ရတယ်။ ဘုရားစင်မှာ ပူဇော်ဖိုတော့ အဆင်ပြေပြီပဲ။"
                       );
                     }}
                   />
@@ -3827,7 +3836,7 @@ onTuned={() => {
                       setHasMatchesCount(3);
                       setInventory((prev) => [...prev, 'matchbox_three_stars']);
                       setActiveMonologue(
-                        "A box of 'Three-Shooting-Stars' safety matches. There are only three dry matches left inside."
+                        "ကြယ်တံခွန်သုံးလုံး' မီးခြစ်ဆံဗူးပဲ။ အထဲမှာ မီးခြစ်လိုရမယ့် မီးခြစ်ဆံခြောက်က သုံးချောင်းပဲ ကျန်တော့တယ်။"
                       );
                     }}
                   />
@@ -3838,7 +3847,7 @@ onTuned={() => {
                   <InteractiveHotspot
                     id="locker-09-empty"
                     name="Locker 09 (Emptied)"
-                    polygonPoints="36,0 90,0 90,84 36,84"
+                    polygonPoints="36,8 90,8 90,84 36,84"
                     cursorTooltip="Locker 09 (Emptied)"
                     onClick={() => {
                       sound.playPaperRustle();

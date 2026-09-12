@@ -79,7 +79,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
         <InteractiveHotspot
           id="washroom_mirror_glass"
           name="Shattered Wall Mirror"
-          polygonPoints="22,12 78,12 82,68 18,68"
+          polygonPoints="16.5,6 86.5,6 86.5,68 17.5,68"
           cursorTooltip="[Inspect Shattered Glass]"
           onClick={handleInspectGlass}
         />
@@ -88,7 +88,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
         <InteractiveHotspot
           id="washroom_mirror_etching"
           name="Bottom Mirror Frame"
-          polygonPoints="15,71 85,71 88,79 12,79"
+          polygonPoints="30,71 70,71 70,79 30,79"
           cursorTooltip={
             !isScratched
               ? '[Wipe Bottom Mirror Frame]'
