@@ -1,4 +1,4 @@
-﻿export interface InventoryItemDef {
+export interface InventoryItemDef {
   id: string;
   shortLabel: string; // Punchy, scannable name
   icon: string;
@@ -59,6 +59,16 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
     id: 'magnetic_compass',
     shortLabel: 'Compass',
     icon: 'compass',
+  },
+  /**
+   * battery_pair — Two zinc-carbon D-cell batteries acquired from Locker 10.
+   * Required to power the transistor radio on the Overlook Balcony.
+   * Consumed on insertion (removed from inventory by RadioBenchInspectionView).
+   */
+  battery_pair: {
+    id: 'battery_pair',
+    shortLabel: 'Batts',
+    icon: 'zap',
   },
 };
 

@@ -7,7 +7,6 @@ import { MCId, MCCharacter, Room4BSubScene, Phase3Location } from '../types';
 import { CHARACTERS, ROOM_4B_ASSETS, PHASE_3_ASSETS, ITEMS } from '../gameData';
 import { InkPortrait, getCharacterPortraitSrc } from './InkPortrait';
 import { CharacterSelectModal } from './CharacterSelectModal';
-import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
 import { DialogueOverlay, ThoughtMonologueOverlay } from './DialogueOverlay';
@@ -78,6 +77,10 @@ import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
+import { ThoughtLine } from './common/ThoughtLine';
+import { RouteCard } from './common/RouteCard';
+export { ThoughtLine } from './common/ThoughtLine';
+export { RouteCard } from './common/RouteCard';
 
 export const LockerBayView = LockersOverviewView;
 export const CaretakerArchiveView = CaretakerOfficeView;
@@ -869,34 +872,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setMode('phase3');
       setChapter1Completed(true);
       setCaretakerDoorUnlocked(true);
-      setHasBlackCandlesCount(3);
-      setHasMatchesCount(3);
-      setHasBronzeBell(true);
-      setHasReadLocker32Note(true);
-      setHasReadSandarLetters(true);
-      setDoorUnlocked(true);
+      // CRITICAL FIX: Trust activeSave fields — never force-set ritual item counts
+      if (typeof activeSave?.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(activeSave.hasBlackCandlesCount);
+      if (typeof activeSave?.hasMatchesCount === 'number') setHasMatchesCount(activeSave.hasMatchesCount);
+      if (activeSave?.hasBronzeBell) setHasBronzeBell(true);
+      if (activeSave?.hasReadLocker32Note) setHasReadLocker32Note(true);
+      if (activeSave?.hasReadSandarLetters) setHasReadSandarLetters(true);
+      if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
+      if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
       if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
       if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
       if (activeSave?.radioTuned) setRadioTuned(true);
-      if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
-      if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
       if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
       if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
-      setInventory(
-        activeSave?.inventory && activeSave.inventory.length > 0
-          ? activeSave.inventory
-          : [
-              'bobby_pin',
-              'wooden_bat',
-              'small_brass_key_32',
-              'coiled_nylon_rope',
-              'black_beeswax_candle',
-              'black_beeswax_candle',
-              'black_beeswax_candle',
-              'matchbox_three_stars',
-              'bronze_prayer_bell',
-            ]
-      );
+      // CRITICAL FIX: Trust the saved inventory exactly — no phantom item fallback
+      if (activeSave?.inventory) {
+        setInventory(activeSave.inventory);
+      }
       sound.startAmbient();
       return;
     }
@@ -984,6 +976,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasReadSandarLetters,
         hasCaretakerCandles,
         altarCandlesPlaced,
+        // Pass actual ritual item counts so they persist across browser refreshes
+        hasMatchesCount,
+        hasBlackCandlesCount,
+        hasBronzeBell,
       });
       return;
     }
@@ -3399,75 +3395,44 @@ onTuned={() => {
                   }`}
                 >
                   {/* Card A: Lockers */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR A • LOCKERS"
+                    title="STUDENT LOCKER BAY"
+                    description="Metal lockers from 1998. Belongings of May, Sandar, and dorm residents."
+                    imagePath={PHASE_3_ASSETS.cardEastLockers}
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
                       setPhase3Location('lockers_main');
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastLockers}
-                      alt="Lockers Area"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        SECTOR A • LOCKERS
-                      </span>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        STUDENT LOCKER BAY
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Metal lockers from 1998. Belongings of May, Sandar, and dorm residents.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card B: Prayer Room */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR B • SANCTUARY"
+                    title="PRAYER ROOM & ALTAR"
+                    description="Ancient Burmese Nat shrine with offering bowls and incense tiers."
+                    imagePath={PHASE_3_ASSETS.cardEastPrayer}
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
                       setPhase3Location('prayer_room_main');
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastPrayer}
-                      alt="Prayer Room"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        SECTOR B • SANCTUARY
-                      </span>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        PRAYER ROOM & ALTAR
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Ancient Burmese Nat shrine with offering bowls and incense tiers.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card C: Caretaker Archive */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR C • ARCHIVE"
+                    title="CARETAKER ARCHIVE"
+                    description="Warden's locked records office secured by a heavy brass tumbler combination lock."
+                    imagePath={PHASE_3_ASSETS.cardEastCaretaker}
+                    lockState={
+                      currentChapter >= 2 || chapter1Completed
+                        ? 'abandoned'
+                        : caretakerDoorUnlocked
+                        ? 'unlocked'
+                        : 'locked'
+                    }
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
@@ -3477,91 +3442,30 @@ onTuned={() => {
                         setPhase3Location('caretaker_office_main');
                       }
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastCaretaker}
-                      alt="Caretaker Office"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-widest uppercase">
-                        {currentChapter >= 2 || chapter1Completed ? (
-                          <span className="text-[#8fa89b] flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-[#5a7a69]" /> ABANDONED (CH. 2)
-                          </span>
-                        ) : caretakerDoorUnlocked ? (
-                          <span className="text-[#6ee7b7] flex items-center gap-1">
-                            <Unlock className="w-3 h-3 text-[#6ee7b7]" /> UNLOCKED
-                          </span>
-                        ) : (
-                          <span className="text-stone-400 flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-stone-400" /> PADLOCK LOCKED
-                          </span>
-                        )}
-                      </div>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        CARETAKER ARCHIVE
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Warden's locked records office secured by a heavy brass tumbler combination lock.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card D: Pathway 326 (The Overlook Balcony) - Dynamically revealed when currentChapter >= 2 && natAudienceConcluded */}
-                  {currentChapter >= 2 && natAudienceConcluded && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 0.4 }}
-                      whileHover={{ scale: 1.03, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
+                  <RouteCard
+                    visible={currentChapter >= 2 && natAudienceConcluded}
+                    sectorLabel="PATHWAY 326"
+                    title="THE OVERLOOK BALCONY"
+                    description="Padlocked fire door forced ajar. Monsoon rain lashing the eaves."
+                    imagePath="/assets/scenes/balcony_rain_night.jpg"
+                    isSpecial
+                    onClick={() => {
+                      try {
+                        sound.playDoorPush();
+                      } catch {
                         try {
-                          sound.playDoorPush();
+                          sound.playDoorCreak();
                         } catch {
-                          try {
-                            sound.playDoorCreak();
-                          } catch {
-                            sound.playMenuSelect();
-                          }
+                          sound.playMenuSelect();
                         }
-                        setPhase3Message(null);
-                        setPhase3Location('balcony_326');
-                      }}
-                      className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-emerald-500/60 hover:border-emerald-400 bg-[#121815]/95 cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4 ring-1 ring-emerald-500/40"
-                    >
-                      <img
-                        src="/assets/scenes/balcony_rain_night.jpg"
-                        onError={(e) => {
-                          e.currentTarget.src = 'assets/scenes/balcony_rain_night.jpg';
-                        }}
-                        alt="Pathway 326"
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                      <div className="relative z-10 space-y-1 text-left">
-                        <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                          PATHWAY 326
-                        </span>
-                        <h3
-                          className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-emerald-300 transition-colors"
-                          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                        >
-                          THE OVERLOOK BALCONY
-                        </h3>
-                        <p className="text-[10px] sm:text-[11px] font-mono text-stone-300 line-clamp-2 leading-tight">
-                          Padlocked fire door forced ajar. Monsoon rain lashing the eaves.
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
+                      }
+                      setPhase3Message(null);
+                      setPhase3Location('balcony_326');
+                    }}
+                  />
                 </div>
               </div>
             )}
@@ -3941,17 +3845,11 @@ onTuned={() => {
         )
       )}
 
-      {/* Universal "Thought Monologue" Component for Object Examinations & Observations */}
-      <AnimatePresence>
-        {activeMonologue && phase3Location !== 'prayer_altar' && (
-          <ThoughtMonologueOverlay
-            key="universal-thought-monologue"
-            text={activeMonologue}
-            onDismiss={() => setActiveMonologue(null)}
-            hintText="[click to dismiss]"
-          />
-        )}
-      </AnimatePresence>
+      {/* Universal "ThoughtLine" Monologue Component for Object Examinations & Observations */}
+      <ThoughtLine
+        message={phase3Location !== 'prayer_altar' ? activeMonologue : null}
+        onDismiss={() => setActiveMonologue(null)}
+      />
 
       {/* Close 16:9 Strict Aspect Ratio Letterbox Stage */}
       </div>

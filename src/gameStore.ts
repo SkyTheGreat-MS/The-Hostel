@@ -690,8 +690,16 @@ export function lockChapterOneAndSave(
     hasReadSandarLetters?: boolean;
     hasCaretakerCandles?: boolean;
     altarCandlesPlaced?: number;
+    /** Actual match count from gameplay (0-3). Defaults to 0 if omitted. */
+    hasMatchesCount?: number;
+    /** Actual black candle count from gameplay (0-3). Defaults to 0 if omitted. */
+    hasBlackCandlesCount?: number;
+    /** Whether the bronze prayer bell was acquired. Defaults to false if omitted. */
+    hasBronzeBell?: boolean;
   }
 ): ActiveSaveState {
+  // Only fallback to test seed if customInventory was not passed at all (e.g. in unit tests).
+  // During gameplay, customInventory is always provided and preserved verbatim.
   const defaultInventory = [
     'bobby_pin',
     'wooden_bat',
@@ -704,6 +712,11 @@ export function lockChapterOneAndSave(
     'bronze_prayer_bell',
   ];
 
+  const resolvedInventory = customInventory !== undefined ? customInventory : defaultInventory;
+  const candleCount = extraFlags?.hasBlackCandlesCount ?? (customInventory !== undefined ? customInventory.filter(i => i === 'black_beeswax_candle').length : 3);
+  const matchCount = extraFlags?.hasMatchesCount ?? (customInventory !== undefined ? (customInventory.includes('matchbox_three_stars') ? 3 : 0) : 3);
+  const hasBell = extraFlags?.hasBronzeBell ?? (customInventory !== undefined ? customInventory.includes('bronze_prayer_bell') : true);
+
   const rolloverTime = calculateRolloverTime(timeRemaining);
   const recoveredComposure = calculateComposureRecovery(currentComposure, resolveMultiplier);
 
@@ -713,11 +726,12 @@ export function lockChapterOneAndSave(
     phase3Location: 'east_fork',
     chapter1Completed: true,
     selectedCharacterId,
-    inventory: customInventory && customInventory.length > 0 ? customInventory : defaultInventory,
+    // CRITICAL FIX: Player's earned inventory is never overwritten with defaults.
+    inventory: resolvedInventory,
     discoveredClues: extraFlags?.discoveredClues,
-    hasMatchesCount: 3,
-    hasBlackCandlesCount: 3,
-    hasBronzeBell: true,
+    hasMatchesCount: matchCount,
+    hasBlackCandlesCount: candleCount,
+    hasBronzeBell: hasBell,
     caretakerDoorUnlocked: true,
     composure: recoveredComposure,
     timerSeconds: rolloverTime,
