@@ -77,7 +77,8 @@ import { BalconySceneView } from './BalconySceneView';
 import { RadioBenchInspectionView } from './RadioBenchInspectionView';
 import { DeskInspectionView } from './DeskInspectionView';
 import { StairwayGateInspectionView, BalconyStairwayGateView } from './StairwayGateInspectionView';
-import { OuterGroundsView } from './OuterGroundsView';
+import { OuterGroundsView, HostelOuterGroundsView } from './OuterGroundsView';
+import { WashroomMirrorView, CrackedMirrorInspectionView } from './WashroomMirrorView';
 import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
@@ -105,6 +106,9 @@ export {
   StairwayGateInspectionView,
   BalconyStairwayGateView,
   OuterGroundsView,
+  HostelOuterGroundsView,
+  WashroomMirrorView,
+  CrackedMirrorInspectionView,
   SceneNavBar,
   TopInventoryBar,
   InventoryDrawerModal,
@@ -1396,6 +1400,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           ) {
             e.preventDefault();
             sound.playPaperRustle();
+            setPhase3Location('washroom_main');
           } else if (
             phase3Location === 'stairwell_gate' ||
             phase3Location === 'stairway_gate_inspection' ||
@@ -1999,7 +2004,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (mode === 'phase3') {
       if (phase3Location === 'hallway_threshold') return PHASE_3_ASSETS.pathwayThreshold;
       if (phase3Location === 'west_split_landing') return PHASE_3_ASSETS.westSplitLanding;
-      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
       if (phase3Location === 'hostel_outer_grounds') return PHASE_3_ASSETS.hostelOuterGrounds || '/assets/scenes/hostel_outer_grounds_rain.jpg';
       if (phase3Location === 'washroom_main') return PHASE_3_ASSETS.washroomOverview;
       if (phase3Location === 'washroom_basin') return PHASE_3_ASSETS.washroomBasinZoom;
@@ -2053,6 +2058,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           return 'WEST WING • SPLIT LANDING';
         case 'stairwell_gate':
         case 'stairway_gate_inspection':
+        case 'stairway_exit_gate':
           return 'GROUND FLOOR • STAIRWAY EXIT GATE';
         case 'hostel_outer_grounds':
           return 'GROUND FLOOR • HOSTEL COURTYARD & COMPOUND GATE';
@@ -2109,6 +2115,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       phase3Location === 'washroom_mirror'
     ) {
       sound.playPaperRustle();
+      setPhase3Location('washroom_main');
     } else if (
       phase3Location === 'stairwell_gate' ||
       phase3Location === 'stairway_gate_inspection' ||
@@ -3301,7 +3308,7 @@ onTuned={() => {
             )}
 
             {/* SUB-SCENE 3: STAIRWAY EXIT ACCORDION GATE & PADLOCK */}
-            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection') && (
+            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate') && (
               <StairwayGateInspectionView
                 inventory={inventory}
                 setInventory={setInventory}
@@ -3322,11 +3329,11 @@ onTuned={() => {
 
             {/* SUB-SCENE: HOSTEL OUTER GROUNDS / COURTYARD (CHAPTER 3) */}
             {phase3Location === 'hostel_outer_grounds' && (
-              <OuterGroundsView
+              <HostelOuterGroundsView
                 setActiveMonologue={setActiveMonologue}
                 addDiscoveredClue={addDiscoveredClue}
                 setPhase3Location={setPhase3Location}
-                onReturn={() => setPhase3Location('stairway_gate_inspection')}
+                onReturn={() => setPhase3Location('stairway_exit_gate')}
               />
             )}
 
@@ -3488,7 +3495,7 @@ onTuned={() => {
                     addDiscoveredClue('mirror_locker_scrawl');
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "—ဘောင်ပေါ်မှာ 'Locker 14 - 1998' ဆိုပြီးခြစ်ရေးထားတာပဲ။ မှန်တွေ အကုန်မကွဲခင်ကတည်းက တစ်ယောက်ယောက် ဒါကိုရေးသွားခဲ့တာဖြစ်မယ်။—"
+                      "— 'Locker 14 - 1998' scratched into the frame. Someone left this note before the mirrors shattered. —"
                     );
                   }}
                 />
@@ -3496,7 +3503,7 @@ onTuned={() => {
             )}
 
             {/* SUB-SCENE 5: EAST WING FORK - CHOICE CARDS */}
-            {phase3Location === 'east_fork' && currentChapter < 3 && (
+            {phase3Location === 'east_fork' && (
               <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
                 <div
                   className={`w-full grid gap-3 sm:gap-4 md:gap-5 pointer-events-auto items-center justify-center ${

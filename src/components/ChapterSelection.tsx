@@ -9,10 +9,11 @@ export interface ChapterCardProps {
   title: string;
   subtitle?: string;
   chapterNumber: number;
-  status: string;
-  buttonText: string;
+  status?: string;
+  buttonText?: string;
   isLocked: boolean;
   isCompleted?: boolean;
+  isActive?: boolean;
   isSelected?: boolean;
   onAction: () => void;
   onSelect?: () => void;
@@ -29,26 +30,26 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   buttonText,
   isLocked,
   isCompleted = false,
+  isActive = false,
   isSelected = false,
   onAction,
   onSelect,
-  hasActiveSave = false,
-  activeSavePhase = 1,
-  onRestart,
 }) => {
   const cardClass = isLocked
-    ? 'bg-[#0b100e]/80 border border-[#1a261f] opacity-50 cursor-not-allowed text-stone-600 rounded-xl'
-    : isSelected
-    ? 'bg-[#141f19]/95 border-2 border-[#476756] shadow-[0_0_25px_rgba(71,103,86,0.35)] text-[#c2d6cc] backdrop-blur-md rounded-xl'
+    ? 'bg-[#0b100e]/80 border border-[#1a261f] opacity-40 cursor-not-allowed text-stone-600 rounded-xl pointer-events-none'
+    : isCompleted
+    ? 'bg-[#0e1411]/70 border border-[#1f2d24] text-stone-500 opacity-60 rounded-xl pointer-events-none select-none'
+    : isSelected || isActive
+    ? 'bg-[#141f19]/95 border-2 border-[#476756] shadow-[0_0_25px_rgba(71,103,86,0.35)] text-[#c2d6cc] backdrop-blur-md rounded-xl cursor-pointer'
     : 'bg-[#101613]/90 border border-[#2b4235] hover:border-[#40614f] shadow-[0_0_15px_rgba(43,66,53,0.3)] hover:shadow-[0_0_22px_rgba(64,97,79,0.45)] text-stone-400 backdrop-blur-md rounded-xl cursor-pointer';
 
   return (
     <motion.div
       id={`chapter-card-${chapterNumber}`}
       onClick={() => {
-        if (onSelect) onSelect();
+        if (!isCompleted && !isLocked && onSelect) onSelect();
       }}
-      whileHover={!isLocked ? { y: -4 } : undefined}
+      whileHover={!isLocked && !isCompleted ? { y: -4 } : undefined}
       className={`relative flex-1 max-w-[280px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[310px] h-[400px] sm:h-[430px] p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 overflow-hidden ${
         isSelected ? 'flex scale-105 z-20' : 'hidden sm:flex scale-95 hover:opacity-95'
       } ${cardClass}`}
@@ -69,13 +70,18 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
 
         {/* Status Pill */}
         {isCompleted ? (
-          <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-            <CheckCircle2 className="w-3 h-3 text-[#8fa89b]" />
-            COMPLETED
+          <span className="inline-flex items-center gap-1 bg-[#131b16] border border-[#212f26] text-[#718579] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
+            <CheckCircle2 className="w-3 h-3 text-[#586c62]" />
+            CHAPTER {chapterNumber} COMPLETED
+          </span>
+        ) : isActive ? (
+          <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#a4c2b2] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded shadow-[0_0_10px_rgba(53,76,63,0.4)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            ACTIVE INVESTIGATION
           </span>
         ) : !isLocked ? (
           <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
-            {status || (chapterNumber === 2 ? 'AVAILABLE / ACTIVE' : 'AVAILABLE')}
+            {status || 'AVAILABLE'}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 bg-[#121715] border border-[#1e2621] text-stone-500 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
@@ -94,6 +100,8 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           className={`text-3xl sm:text-4xl font-black tracking-wider uppercase transition-colors ${
             isLocked
               ? 'text-stone-600'
+              : isCompleted
+              ? 'text-stone-500'
               : isSelected
               ? 'text-[#d1e3da]'
               : 'text-stone-300'
@@ -105,7 +113,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
         {subtitle && (
           <p
             className={`mt-1 font-mono text-[10px] sm:text-xs tracking-widest uppercase ${
-              isLocked ? 'text-stone-600' : 'text-[#8fa89b]'
+              isLocked || isCompleted ? 'text-stone-600' : 'text-[#8fa89b]'
             }`}
           >
             {subtitle}
@@ -120,41 +128,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
             <Lock className="w-5 h-5 mb-1 text-stone-600" />
             <span>Finish Chapter {chapterNumber - 1} to unlock</span>
           </div>
-        ) : chapterNumber === 1 && isCompleted ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onRestart) onRestart(e);
-            }}
-            className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <RotateCcw className="w-4 h-4" />
-            <span>RESTART CHAPTER 1</span>
-          </button>
-        ) : chapterNumber === 1 && hasActiveSave ? (
-          <div className="flex flex-col gap-2 w-full">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onAction();
-              }}
-              className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Play className="w-4 h-4 fill-current" />
-              <span>CONTINUE (PHASE 0{activeSavePhase})</span>
-            </button>
-            {onRestart && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRestart(e);
-                }}
-                className="w-full py-2 rounded-lg bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-400 hover:text-[#c2d6cc] font-mono text-xs tracking-wider transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>RESTART CHAPTER</span>
-              </button>
-            )}
+        ) : isCompleted ? (
+          <div className="py-2.5 flex items-center justify-center gap-1.5 bg-[#121915]/60 border border-[#1c2720] rounded-lg text-[#63776c] font-mono text-xs tracking-wider uppercase">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#4e6056]" />
+            <span>CHAPTER {chapterNumber} COMPLETED</span>
           </div>
         ) : (
           <button
@@ -162,10 +139,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
               e.stopPropagation();
               onAction();
             }}
-            className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.98]"
           >
             <Play className="w-4 h-4 fill-current" />
-            <span>{buttonText}</span>
+            <span>{buttonText || `CONTINUE CHAPTER ${chapterNumber}`}</span>
           </button>
         )}
       </div>
@@ -204,10 +181,10 @@ export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> =
             <RotateCcw className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-bold font-mono tracking-wider text-[#d1e3da] mb-2 uppercase">
-            Restart Chapter 1?
+            Restart Investigation (Chapter 1)?
           </h3>
           <p className="text-xs text-[#8fa89b] mb-6 leading-relaxed font-mono">
-            Replaying Chapter 1 will purge your Chapter 2 investigation checkpoint. You will start completely from the 2026 seance. Proceed?
+            Starting a new investigation will reset all story progress, purge inventory, and return you to Chapter 1. Proceed?
           </p>
           <div className="flex gap-3 justify-center">
             <button
@@ -220,7 +197,7 @@ export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> =
               onClick={onProceed}
               className="px-4 py-2.5 rounded-lg bg-[#24382c] hover:bg-[#2f493a] border border-[#446652] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-lg"
             >
-              Proceed
+              [ Restart from Chapter 1 ]
             </button>
           </div>
         </motion.div>

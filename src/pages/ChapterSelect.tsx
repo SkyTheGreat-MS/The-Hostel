@@ -47,7 +47,7 @@ const CHAPTERS: ChapterItem[] = [
     number: 3,
     title: 'CHAPTER 03',
     subtitle: 'ESCAPE / THE OUTSIDE GROUNDS',
-    route: '/chapters/2',
+    route: '/game',
   },
 ];
 
@@ -115,16 +115,16 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     setIsChapter2Unlocked(done || highestChapterCompleted >= 1 || (maxUnlockedChapter && maxUnlockedChapter >= 2));
   }, [highestChapterCompleted, maxUnlockedChapter]);
 
-  // Auto-focus on highest available chapter on load
+  const effectiveMaxChapter: number = isChapter3Unlocked
+    ? 3
+    : isChapter2Unlocked
+    ? 2
+    : 1;
+
+  // Auto-focus on highest available active chapter on load
   useEffect(() => {
-    if (isChapter3Unlocked) {
-      setSelectedChapter(3);
-    } else if (isChapter2Unlocked) {
-      setSelectedChapter(2);
-    } else {
-      setSelectedChapter(1);
-    }
-  }, [isChapter3Unlocked, isChapter2Unlocked]);
+    setSelectedChapter(effectiveMaxChapter);
+  }, [effectiveMaxChapter]);
 
   // Audio cue when user newly unlocks a chapter
   useEffect(() => {
@@ -137,14 +137,75 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     }
   }, [justUnlockedChapter, clearJustUnlocked]);
 
-  // Handle entering chapter
-  const handleSelectChapter = (chapterNum: number) => {
-    const unlocked = isChapterUnlocked(chapterNum);
-    setSelectedChapter(chapterNum);
+  const handleSelectChapterThree = () => {
+    sound.playMenuSelect();
 
-    if (!unlocked) {
+    // 1. Authoritative chapter & scene assignment
+    try {
+      const act = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
+      act.currentChapter = 3;
+      act.chapter = 3;
+      act.currentLocation = 'hostel_outer_grounds';
+      act.phase3Location = 'hostel_outer_grounds';
+      act.chapter2Completed = true;
+      act.chapter3Unlocked = true;
+      act.stairwayGateUnlocked = true;
+      act.stairwayGateKeyTaken = true;
+      act.maxUnlockedChapter = Math.max(act.maxUnlockedChapter || 0, 3);
+      act.highestChapterCompleted = Math.max(act.highestChapterCompleted || 0, 2);
+      localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(act));
+      localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
+
+      const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+      prog.chapter2Completed = true;
+      prog.chapter3Unlocked = true;
+      prog.maxUnlockedChapter = Math.max(prog.maxUnlockedChapter || 0, 3);
+      prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 2);
+      prog.stairwayGateUnlocked = true;
+      prog.currentLocation = 'hostel_outer_grounds';
+      prog.phase3Location = 'hostel_outer_grounds';
+      localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+    } catch {}
+
+    useGameStore.setState({
+      currentChapter: 3,
+      currentLocation: 'hostel_outer_grounds',
+      phase3Location: 'hostel_outer_grounds',
+      stairwayGateUnlocked: true,
+      chapter3Unlocked: true,
+      chapter2Completed: true,
+      maxUnlockedChapter: 3,
+      highestChapterCompleted: 2,
+    });
+
+    // 2. Synchronize Prolog state facts
+    try {
+      if (typeof window !== 'undefined' && (window as any).prologEngine) {
+        (window as any).prologEngine.query?.(
+          "retractall(current_chapter(_)), assertz(current_chapter(3)), assertz(stairway_gate_unlocked)."
+        );
+      }
+    } catch {}
+
+    // 3. Close modal and navigate directly to the game viewport
+    if (onClose) {
+      onClose();
+    }
+
+    navigate('/game');
+  };
+
+  const startLocations: Record<number, string> = {
+    1: 'room_101',
+    2: 'east_fork',
+    3: 'hostel_outer_grounds',
+  };
+
+  const handleContinueActiveChapter = (chapterId: number) => {
+    if (chapterId < effectiveMaxChapter) return;
+    if (chapterId > effectiveMaxChapter) {
       sound.playError();
-      const requiredChapter = chapterNum - 1;
+      const requiredChapter = chapterId - 1;
       setLockedNotice(`Finish Chapter ${requiredChapter} to unlock.`);
       setTimeout(() => setLockedNotice(null), 3000);
       return;
@@ -152,79 +213,48 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
 
     sound.playMenuSelect();
 
-    if (chapterNum === 3) {
+    if (chapterId === 3) {
+      handleSelectChapterThree();
+      return;
+    }
+
+    if (chapterId === 1) {
+      useGameStore.setState({
+        currentChapter: 1,
+        currentLocation: 'room_101',
+      });
+      if (onClose) {
+        onClose();
+      }
+      navigate('/chapters/1');
+      return;
+    }
+
+    if (chapterId === 2) {
       try {
         const act = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
-        act.currentChapter = 3;
-        act.chapter = 3;
-        act.currentLocation = 'hostel_outer_grounds';
-        act.phase3Location = 'hostel_outer_grounds';
-        act.chapter2Completed = true;
-        act.chapter3Unlocked = true;
-        act.stairwayGateUnlocked = true;
-        act.stairwayGateKeyTaken = true;
-        act.maxUnlockedChapter = Math.max(act.maxUnlockedChapter || 0, 3);
-        act.highestChapterCompleted = Math.max(act.highestChapterCompleted || 0, 2);
+        act.currentChapter = 2;
+        act.chapter = 2;
+        act.currentLocation = 'east_fork';
+        act.phase3Location = 'east_fork';
         localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(act));
-        localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
-
-        const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
-        prog.chapter2Completed = true;
-        prog.chapter3Unlocked = true;
-        prog.maxUnlockedChapter = Math.max(prog.maxUnlockedChapter || 0, 3);
-        prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 2);
-        prog.stairwayGateUnlocked = true;
-        prog.currentLocation = 'hostel_outer_grounds';
-        prog.phase3Location = 'hostel_outer_grounds';
-        localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
-      } catch {}
-
-      try {
-        if (typeof window !== 'undefined' && (window as any).prologEngine) {
-          (window as any).prologEngine.query?.(
-            'retractall(current_chapter(_)), assertz(current_chapter(3)), assertz(stairway_gate_unlocked).'
-          );
-        }
       } catch {}
 
       useGameStore.setState({
-        currentChapter: 3,
-        currentLocation: 'hostel_outer_grounds',
-        phase3Location: 'hostel_outer_grounds',
-        stairwayGateUnlocked: true,
-        chapter3Unlocked: true,
-        chapter2Completed: true,
-        maxUnlockedChapter: 3,
-        highestChapterCompleted: 2,
+        currentChapter: 2,
+        currentLocation: 'east_fork',
+        phase3Location: 'east_fork',
       });
 
       if (onClose) {
         onClose();
       }
-
-      navigate('/chapters/2');
+      navigate('/game');
       return;
-    }
-
-    const chap = CHAPTERS.find((c) => c.number === chapterNum);
-    if (chap) {
-      navigate(chap.route);
     }
   };
 
-  // Handle starting Chapter 2
-  const handleStartChapterTwo = () => {
-    if (!isChapter2Unlocked) {
-      sound.playError();
-      setLockedNotice('Finish Chapter 1 to unlock.');
-      setTimeout(() => setLockedNotice(null), 3000);
-      return;
-    }
-    sound.playMenuSelect();
-    navigate('/chapters/2');
-  };
-
-  // Full Storage and State Wipe on Confirmation (Execute Chapter Reset)
+  // Full Storage and State Wipe on Confirmation ("New Investigation")
   const handleExecuteChapterReset = () => {
     // 1. Clear all persistent save keys
     localStorage.removeItem('spirits_labyrinth_active_save');
@@ -238,6 +268,38 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     resetProgress();
     resetChapterOneProgress();
     clearChapterOneProgress();
+
+    useGameStore.setState({
+      currentChapter: 1,
+      maxUnlockedChapter: 1,
+      unlockedChapters: [1],
+      highestChapterCompleted: 0,
+      chapter1Completed: false,
+      chapter2Completed: false,
+      chapter3Unlocked: false,
+      currentLocation: 'room_101',
+      phase3Location: 'hallway_threshold',
+      stairwayGateUnlocked: false,
+      stairwayGateKeyTaken: false,
+      locker14Unlocked: false,
+      radioTuned: false,
+      radioHasBatteries: false,
+      mayResolved: false,
+      key14OnFloor: false,
+      key14Collected: false,
+      inventory: [],
+      discoveredClues: [],
+      composure: 100,
+    });
+
+    try {
+      if (typeof window !== 'undefined' && (window as any).prologEngine) {
+        (window as any).prologEngine.query?.(
+          "retractall(current_chapter(_)), assertz(current_chapter(1)), retractall(stairway_gate_unlocked), retractall(chapter2_completed), retractall(chapter1_completed)."
+        );
+      }
+    } catch {}
+
     setChapter(1);
     setSelectedChapter(1);
     setChapter1Completed(false);
@@ -245,12 +307,16 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     setActiveSave(null);
     setCh1Save(null);
 
-    // 3. Close modal and force immediate UI re-render
+    // 3. Close modal and route player directly into Chapter 1 starting scene
     setShowRestartConfirm(false);
     sound.playPaperRustle();
+    if (onClose) {
+      onClose();
+    }
+    navigate('/chapters/1');
   };
 
-  // Keyboard navigation: Left/Right to select, 1-3 to jump, Enter to play
+  // Keyboard navigation: Enter to continue active chapter
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (showRestartConfirm) return;
@@ -269,31 +335,13 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
         setSelectedChapter(num);
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        if (selectedChapter === 2) {
-          if (!isChapter2Unlocked) {
-            sound.playError();
-            setLockedNotice('Finish Chapter 1 to unlock.');
-            setTimeout(() => setLockedNotice(null), 3000);
-            return;
-          }
-          handleStartChapterTwo();
-        } else if (selectedChapter === 3) {
-          if (!isChapter3Unlocked) {
-            sound.playError();
-            setLockedNotice('Finish Chapter 2 to unlock.');
-            setTimeout(() => setLockedNotice(null), 3000);
-            return;
-          }
-          handleSelectChapter(3);
-        } else {
-          handleSelectChapter(selectedChapter);
-        }
+        handleContinueActiveChapter(effectiveMaxChapter);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedChapter, isChapter2Unlocked, isChapter3Unlocked, highestChapterCompleted, showRestartConfirm]);
+  }, [effectiveMaxChapter, showRestartConfirm]);
 
   return (
     <AtmosphericLayout
@@ -367,23 +415,24 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               title="BLIND START"
               subtitle="1998 SEANCE"
               chapterNumber={1}
-              status={chapter1Completed ? 'COMPLETED' : 'AVAILABLE / ACTIVE'}
+              status={1 < effectiveMaxChapter ? 'CHAPTER 1 COMPLETED' : 'ACTIVE INVESTIGATION'}
               buttonText={
-                chapter1Completed
-                  ? 'REVISIT'
-                  : ch1Save &&
+                1 === effectiveMaxChapter
+                  ? ch1Save &&
                     (ch1Save.currentPhase > 1 ||
                       (ch1Save.inventory && ch1Save.inventory.length > 0) ||
                       (ch1Save.discoveredClues && ch1Save.discoveredClues.length > 0) ||
                       ch1Save.doorUnlocked)
-                  ? `CONTINUE (PHASE 0${ch1Save.currentPhase})`
-                  : 'START'
+                    ? `CONTINUE (PHASE 0${ch1Save.currentPhase})`
+                    : 'START CHAPTER 1'
+                  : undefined
               }
-              isLocked={false}
-              isCompleted={chapter1Completed}
+              isLocked={1 > effectiveMaxChapter}
+              isCompleted={1 < effectiveMaxChapter}
+              isActive={1 === effectiveMaxChapter}
               isSelected={selectedChapter === 1}
               hasActiveSave={
-                !chapter1Completed &&
+                1 === effectiveMaxChapter &&
                 Boolean(
                   ch1Save &&
                     (ch1Save.currentPhase > 1 ||
@@ -398,7 +447,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
                 setSelectedChapter(1);
               }}
               onAction={() => {
-                handleSelectChapter(1);
+                handleContinueActiveChapter(1);
               }}
               onRestart={() => {
                 setShowRestartConfirm(true);
@@ -410,23 +459,24 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               title="UNDERSTANDING"
               subtitle="EAST WING INVESTIGATION"
               chapterNumber={2}
-              status={isChapter2Unlocked ? 'AVAILABLE / ACTIVE' : 'LOCKED'}
-              buttonText={isChapter2Unlocked ? 'CONTINUE' : 'LOCKED'}
-              isLocked={!isChapter2Unlocked}
-              isCompleted={highestChapterCompleted >= 2}
+              status={
+                2 < effectiveMaxChapter
+                  ? 'CHAPTER 2 COMPLETED'
+                  : 2 === effectiveMaxChapter
+                  ? 'ACTIVE INVESTIGATION'
+                  : 'LOCKED'
+              }
+              buttonText={2 === effectiveMaxChapter ? 'CONTINUE CHAPTER 2' : undefined}
+              isLocked={2 > effectiveMaxChapter}
+              isCompleted={2 < effectiveMaxChapter}
+              isActive={2 === effectiveMaxChapter}
               isSelected={selectedChapter === 2}
               onSelect={() => {
                 sound.playMenuHover();
                 setSelectedChapter(2);
               }}
               onAction={() => {
-                if (!isChapter2Unlocked) {
-                  sound.playError();
-                  setLockedNotice('Finish Chapter 1 to unlock.');
-                  setTimeout(() => setLockedNotice(null), 3000);
-                  return;
-                }
-                handleStartChapterTwo();
+                handleContinueActiveChapter(2);
               }}
             />
 
@@ -435,23 +485,24 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               title="CHAPTER 03"
               subtitle="ESCAPE / THE OUTSIDE GROUNDS"
               chapterNumber={3}
-              status={isChapter3Unlocked ? 'AVAILABLE / ACTIVE' : 'LOCKED'}
-              buttonText={isChapter3Unlocked ? 'PLAY' : 'LOCKED'}
-              isLocked={!isChapter3Unlocked}
-              isCompleted={highestChapterCompleted >= 3}
+              status={
+                3 < effectiveMaxChapter
+                  ? 'CHAPTER 3 COMPLETED'
+                  : 3 === effectiveMaxChapter
+                  ? 'ACTIVE INVESTIGATION'
+                  : 'LOCKED'
+              }
+              buttonText={3 === effectiveMaxChapter ? 'CONTINUE CHAPTER 3' : undefined}
+              isLocked={3 > effectiveMaxChapter}
+              isCompleted={3 < effectiveMaxChapter}
+              isActive={3 === effectiveMaxChapter}
               isSelected={selectedChapter === 3}
               onSelect={() => {
                 sound.playMenuHover();
                 setSelectedChapter(3);
               }}
               onAction={() => {
-                if (!isChapter3Unlocked) {
-                  sound.playError();
-                  setLockedNotice('Finish Chapter 2 to unlock.');
-                  setTimeout(() => setLockedNotice(null), 3000);
-                  return;
-                }
-                handleSelectChapter(3);
+                handleContinueActiveChapter(3);
               }}
             />
           </div>
@@ -496,8 +547,22 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
           onProceed={handleExecuteChapterReset}
         />
 
+        {/* Global Reset Action Button */}
+        <div className="mt-8 flex justify-center z-30">
+          <button
+            onClick={() => {
+              sound.playMenuHover();
+              setShowRestartConfirm(true);
+            }}
+            className="px-6 py-2.5 rounded-lg bg-[#121915]/90 hover:bg-[#1a2620] border border-[#2b3e32] hover:border-[#40614f] text-[#8fa89b] hover:text-[#d1e3da] font-mono text-xs tracking-widest uppercase transition-all duration-200 shadow-xl flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-[#738f80]" />
+            <span>[ RESTART INVESTIGATION (CHAPTER 1) ]</span>
+          </button>
+        </div>
+
         {/* Bottom Pagination / Indicator Row */}
-        <div className="flex items-center justify-center gap-3 mt-6 z-30">
+        <div className="flex items-center justify-center gap-3 mt-4 z-30">
           <span
             onClick={() => {
               sound.playMenuHover();
@@ -525,15 +590,6 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               selectedChapter === 3 ? 'w-6 bg-[#3d5749]' : 'w-1.5 bg-[#1b2620]'
             }`}
           />
-
-          {/* Global Reset Chapter Progress Button */}
-          <button
-            onClick={() => setShowRestartConfirm(true)}
-            title="Reset Chapter Progress"
-            className="p-1.5 rounded-full hover:bg-[#1d2b23] border border-transparent hover:border-[#385244] text-[#7d998b] hover:text-[#b8d4c6] transition-all duration-200 cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
         </div>
       </div>
     </AtmosphericLayout>
