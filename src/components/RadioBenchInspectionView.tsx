@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
 
 export interface RadioBenchInspectionViewProps {
   inventory: string[];
@@ -155,12 +154,6 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-      <SceneNavBar
-        onReturn={onReturn}
-        returnDestination="BALCONY"
-        areaZone="PATHWAY 326"
-        areaName="RADIO BENCH"
-      />
 
       <div className="absolute inset-0 z-30 pointer-events-none">
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">

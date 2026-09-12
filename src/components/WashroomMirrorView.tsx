@@ -1,6 +1,5 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { ThoughtLine } from './common/ThoughtLine';
 
@@ -74,15 +73,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />
 
-      {/* 2. Standardized Scene Navigation Bar */}
-      <SceneNavBar
-        returnDestination="WASHROOM"
-        areaZone="WASHROOM"
-        areaName="CRACKED MIRROR"
-        onReturn={handleReturn}
-      />
-
-      {/* 3. Interactive Hotspots Layer */}
+      {/* 2. Interactive Hotspots Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none">
         {/* Mirror Shattered Glass Surface */}
         <InteractiveHotspot

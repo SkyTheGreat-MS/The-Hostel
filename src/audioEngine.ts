@@ -974,6 +974,79 @@ public playBenchInspect() {
     this.playMonsoonOutdoorAmbience();
   }
 
+  public playGateRattle() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/gate_rattle.mp3', { volume: 0.5 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      this.playLockStuckRattle();
+    } catch {}
+  }
+
+  public playFootstep() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/footstep_wet.mp3', { volume: 0.4 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(110, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.08);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } catch {}
+  }
+
+  public playMetalCreak() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/metal_creak.mp3', { volume: 0.5 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      this.playLockerCreak();
+    } catch {}
+  }
+
+  public playDrip() {
+    this.playWaterDrop();
+  }
+
+  public playItemCollect() {
+    this.playItemPickup();
+  }
+
+  public playInventoryAdd() {
+    this.playItemLooted();
+  }
+
+  public playWoodChop() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } catch {}
+  }
+
   public playPhaseComplete() {
     if (this.isMuted) return;
     this.playAsset('/assets/audio/sfx/phase_complete.mp3', { volume: 0.6 });

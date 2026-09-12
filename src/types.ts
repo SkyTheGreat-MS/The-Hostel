@@ -128,7 +128,14 @@ export type Phase3Location =
   | 'radio_bench_inspection'
   | 'stairway_gate_inspection'
   | 'stairway_exit_gate'
-  | 'hostel_outer_grounds';
+  | 'balcony_stairway_gate'
+  | 'hostel_outer_grounds'
+  | 'seance_climax_flashback'
+  | 'compound_iron_gate'
+  | 'garage_subterranean'
+  | 'banyan_wellhead'
+  | 'well_interior_deep'
+  | 'room_101_seance_flashback';
 
 export interface GameState {
   chapter: number;

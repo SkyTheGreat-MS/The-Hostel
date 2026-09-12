@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MCId, Room4BSubScene, Phase3Location } from '../types';
+import { PrologBridge } from '../services/PrologBridge';
 
 export interface GameProgressContextType {
   highestChapterCompleted: number;
@@ -63,6 +64,8 @@ export interface GameProgressContextType {
   setKey14Collected: (val: boolean | ((prev: boolean) => boolean)) => void;
   locker14Unlocked: boolean;
   setLocker14Unlocked: (val: boolean | ((prev: boolean) => boolean)) => void;
+  locker14Looted: boolean;
+  setLocker14Looted: (val: boolean | ((prev: boolean) => boolean)) => void;
   stairwayGateKeyTaken: boolean;
   setStairwayGateKeyTaken: (val: boolean | ((prev: boolean) => boolean)) => void;
   stairwayGateUnlocked: boolean;
@@ -71,14 +74,35 @@ export interface GameProgressContextType {
   setChapter3Unlocked: (val: boolean | ((prev: boolean) => boolean)) => void;
   chapter2Completed: boolean;
   setChapter2Completed: (val: boolean | ((prev: boolean) => boolean)) => void;
+  chapter3IntroSeen: boolean;
+  setChapter3IntroSeen: (val: boolean | ((prev: boolean) => boolean)) => void;
+  garageDrained: boolean;
+  setGarageDrained: (val: boolean | ((prev: boolean) => boolean)) => void;
+  wellRootsSevered: boolean;
+  setWellRootsSevered: (val: boolean | ((prev: boolean) => boolean)) => void;
+  wellPulleyRigged: boolean;
+  setWellPulleyRigged: (val: boolean | ((prev: boolean) => boolean)) => void;
+  wellRopeRigged: boolean;
+  setWellRopeRigged: (val: boolean | ((prev: boolean) => boolean)) => void;
+  cassetteInserted: boolean;
+  setCassetteInserted: (val: boolean | ((prev: boolean) => boolean)) => void;
+  cassettePlayed: boolean;
+  setCassettePlayed: (val: boolean | ((prev: boolean) => boolean)) => void;
+  conduitUnlocked: boolean;
+  setConduitUnlocked: (val: boolean | ((prev: boolean) => boolean)) => void;
   maxUnlockedChapter: number;
   setMaxUnlockedChapter: (val: number | ((prev: number) => number)) => void;
   unlockedChapters: number[];
   addItem: (itemId: string) => void;
+  addToInventory: (itemId: string) => void;
   removeItem: (itemId: string) => void;
   removeInventoryItem: (itemId: string) => void;
+  removeFromInventory: (itemId: string) => void;
   advanceToChapter: (chapterNumber: number) => void;
   resetChapterOneProgress: () => void;
+  drainGarage: () => Promise<void>;
+  pickupGarageItem: (itemId: string) => Promise<void>;
+  pickupLockerTape: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'spirits_labyrinth_progress_v1';
@@ -242,6 +266,21 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return false;
   });
 
+  const [locker14Looted, setLocker14Looted] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.locker14Looted === 'boolean') {
+          return parsed.locker14Looted;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
   const [stairwayGateKeyTaken, setStairwayGateKeyTaken] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -307,6 +346,182 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         const parsedAct = JSON.parse(active);
         if (typeof parsedAct.chapter2Completed === 'boolean') return parsedAct.chapter2Completed;
         if (parsedAct.chapter === 3 || parsedAct.chapter3Unlocked) return true;
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [chapter3IntroSeen, setChapter3IntroSeen] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.chapter3IntroSeen === 'boolean') {
+          return parsed.chapter3IntroSeen;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.chapter3IntroSeen === 'boolean') {
+          return parsedAct.chapter3IntroSeen;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [garageDrained, setGarageDrained] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.garageDrained === 'boolean') {
+          return parsed.garageDrained;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.garageDrained === 'boolean') {
+          return parsedAct.garageDrained;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [wellRootsSevered, setWellRootsSevered] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.wellRootsSevered === 'boolean') {
+          return parsed.wellRootsSevered;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.wellRootsSevered === 'boolean') {
+          return parsedAct.wellRootsSevered;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [wellPulleyRigged, setWellPulleyRigged] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.wellPulleyRigged === 'boolean') {
+          return parsed.wellPulleyRigged;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.wellPulleyRigged === 'boolean') {
+          return parsedAct.wellPulleyRigged;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [wellRopeRigged, setWellRopeRigged] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.wellRopeRigged === 'boolean') {
+          return parsed.wellRopeRigged;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.wellRopeRigged === 'boolean') {
+          return parsedAct.wellRopeRigged;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [cassetteInserted, setCassetteInserted] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.cassetteInserted === 'boolean') {
+          return parsed.cassetteInserted;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.cassetteInserted === 'boolean') {
+          return parsedAct.cassetteInserted;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [cassettePlayed, setCassettePlayed] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.cassettePlayed === 'boolean') {
+          return parsed.cassettePlayed;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.cassettePlayed === 'boolean') {
+          return parsedAct.cassettePlayed;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [conduitUnlocked, setConduitUnlocked] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.conduitUnlocked === 'boolean') {
+          return parsed.conduitUnlocked;
+        }
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.conduitUnlocked === 'boolean') {
+          return parsedAct.conduitUnlocked;
+        }
       }
     } catch {
       // ignore
@@ -520,10 +735,12 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           key14OnFloor,
           key14Collected,
           locker14Unlocked,
+          locker14Looted,
           stairwayGateKeyTaken,
           stairwayGateUnlocked,
           chapter3Unlocked,
           chapter2Completed,
+          chapter3IntroSeen,
           maxUnlockedChapter,
           unlockedChapters,
           hasMagneticCompass,
@@ -535,6 +752,13 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           washroomStallChecked,
           washroomMirrorScratched,
           stairwellGateInspected,
+          garageDrained,
+          wellRootsSevered,
+          wellPulleyRigged,
+          wellRopeRigged,
+          cassetteInserted,
+          cassettePlayed,
+          conduitUnlocked,
         })
       );
     } catch {
@@ -552,10 +776,19 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     key14OnFloor,
     key14Collected,
     locker14Unlocked,
+    locker14Looted,
     stairwayGateKeyTaken,
     stairwayGateUnlocked,
     chapter3Unlocked,
     chapter2Completed,
+    chapter3IntroSeen,
+    garageDrained,
+    wellRootsSevered,
+    wellPulleyRigged,
+    wellRopeRigged,
+    cassetteInserted,
+    cassettePlayed,
+    conduitUnlocked,
     maxUnlockedChapter,
     unlockedChapters,
     hasMagneticCompass,
@@ -600,6 +833,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setKey14OnFloor(false);
     setKey14Collected(false);
     setLocker14Unlocked(false);
+    setLocker14Looted(false);
     setStairwayGateKeyTaken(false);
     setStairwayGateUnlocked(false);
     setChapter3Unlocked(false);
@@ -612,6 +846,13 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    setGarageDrained(false);
+    setWellRootsSevered(false);
+    setWellPulleyRigged(false);
+    setWellRopeRigged(false);
+    setCassetteInserted(false);
+    setCassettePlayed(false);
+    setConduitUnlocked(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
@@ -637,6 +878,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setKey14OnFloor(false);
     setKey14Collected(false);
     setLocker14Unlocked(false);
+    setLocker14Looted(false);
     setStairwayGateKeyTaken(false);
     setStairwayGateUnlocked(false);
     setChapter3Unlocked(false);
@@ -649,6 +891,13 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    setGarageDrained(false);
+    setWellRootsSevered(false);
+    setWellPulleyRigged(false);
+    setWellRopeRigged(false);
+    setCassetteInserted(false);
+    setCassettePlayed(false);
+    setConduitUnlocked(false);
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
@@ -717,6 +966,28 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return inventory.includes(itemId);
   };
 
+  const drainGarage = async () => {
+    try {
+      await PrologBridge.drainGarage();
+    } catch {}
+    setGarageDrained(true);
+  };
+
+  const pickupGarageItem = async (itemId: string) => {
+    try {
+      await PrologBridge.takeGarageItem(itemId as any);
+    } catch {}
+    addInventoryItem(itemId);
+  };
+
+  const pickupLockerTape = async () => {
+    try {
+      await PrologBridge.takeLockerTape();
+    } catch {}
+    setLocker14Looted(true);
+    addInventoryItem('cassette_tape_may');
+  };
+
   return (
     <GameProgressContext.Provider
       value={{
@@ -757,6 +1028,8 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setKey14Collected,
         locker14Unlocked,
         setLocker14Unlocked,
+        locker14Looted,
+        setLocker14Looted,
         stairwayGateKeyTaken,
         setStairwayGateKeyTaken,
         stairwayGateUnlocked,
@@ -765,11 +1038,32 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setChapter3Unlocked,
         chapter2Completed,
         setChapter2Completed,
+        chapter3IntroSeen,
+        setChapter3IntroSeen,
+        garageDrained,
+        setGarageDrained,
+        wellRootsSevered,
+        setWellRootsSevered,
+        wellPulleyRigged,
+        setWellPulleyRigged,
+        wellRopeRigged,
+        setWellRopeRigged,
+        cassetteInserted,
+        setCassetteInserted,
+        cassettePlayed,
+        setCassettePlayed,
+        conduitUnlocked,
+        setConduitUnlocked,
+        addToInventory: addInventoryItem,
+        drainGarage,
+        pickupGarageItem,
+        pickupLockerTape,
         maxUnlockedChapter,
         setMaxUnlockedChapter,
         unlockedChapters,
         addItem: addInventoryItem,
         removeItem: removeInventoryItem,
+        removeFromInventory: removeInventoryItem,
         advanceToChapter,
         hasMagneticCompass,
         setHasMagneticCompass,
@@ -815,9 +1109,15 @@ export function useGameStore() {
       inventory: [] as string[],
       addItem: (_itemId: string) => {},
       addInventoryItem: (_itemId: string) => {},
+      addToInventory: (_itemId: string) => {},
       removeItem: (_itemId: string) => {},
       removeInventoryItem: (_itemId: string) => {},
+      removeFromInventory: (_itemId: string) => {},
       hasInventoryItem: (_itemId: string) => false,
+      locker14Unlocked: false,
+      setLocker14Unlocked: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      locker14Looted: false,
+      setLocker14Looted: (_val: boolean | ((prev: boolean) => boolean)) => {},
       stairwayGateKeyTaken: false,
       setStairwayGateKeyTaken: (_val: boolean | ((prev: boolean) => boolean)) => {},
       stairwayGateUnlocked: false,
@@ -826,6 +1126,37 @@ export function useGameStore() {
       setChapter3Unlocked: (_val: boolean | ((prev: boolean) => boolean)) => {},
       chapter2Completed: false,
       setChapter2Completed: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      chapter3IntroSeen: false,
+      setChapter3IntroSeen: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      garageDrained: false,
+      setGarageDrained: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      wellRootsSevered: false,
+      setWellRootsSevered: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      wellPulleyRigged: false,
+      setWellPulleyRigged: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      wellRopeRigged: false,
+      setWellRopeRigged: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      cassetteInserted: false,
+      setCassetteInserted: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      cassettePlayed: false,
+      setCassettePlayed: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      conduitUnlocked: false,
+      setConduitUnlocked: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      drainGarage: async () => {
+        try {
+          await PrologBridge.drainGarage();
+        } catch {}
+      },
+      pickupGarageItem: async (itemId: string) => {
+        try {
+          await PrologBridge.takeGarageItem(itemId as any);
+        } catch {}
+      },
+      pickupLockerTape: async () => {
+        try {
+          await PrologBridge.takeLockerTape();
+        } catch {}
+      },
       maxUnlockedChapter: 1,
       setMaxUnlockedChapter: (_val: number | ((prev: number) => number)) => {},
       unlockedChapters: [1],
@@ -839,7 +1170,9 @@ export function useGameStore() {
   return {
     ...context,
     addItem: context.addInventoryItem,
+    addToInventory: context.addInventoryItem,
     removeItem: context.removeInventoryItem,
+    removeFromInventory: context.removeInventoryItem,
   };
 }
 
@@ -855,7 +1188,76 @@ useGameStore.getState = () => {
 
     return {
       ...parsed,
+      inventory: parsed.inventory || active.inventory || [],
+      locker14Unlocked: Boolean(parsed.locker14Unlocked || active.locker14Unlocked),
+      setLocker14Unlocked: (val: boolean) => {
+        useGameStore.setState({ locker14Unlocked: val });
+      },
+      locker14Looted: Boolean(parsed.locker14Looted || active.locker14Looted),
+      setLocker14Looted: (val: boolean) => {
+        useGameStore.setState({ locker14Looted: val });
+      },
+      garageDrained: Boolean(parsed.garageDrained || active.garageDrained),
+      setGarageDrained: (drained: boolean) => {
+        useGameStore.setState({ garageDrained: drained });
+      },
+      wellRootsSevered: Boolean(parsed.wellRootsSevered || active.wellRootsSevered),
+      setWellRootsSevered: (severed: boolean) => {
+        useGameStore.setState({ wellRootsSevered: severed });
+      },
+      wellPulleyRigged: Boolean(parsed.wellPulleyRigged || active.wellPulleyRigged),
+      setWellPulleyRigged: (rigged: boolean) => {
+        useGameStore.setState({ wellPulleyRigged: rigged });
+      },
+      wellRopeRigged: Boolean(parsed.wellRopeRigged || active.wellRopeRigged),
+      setWellRopeRigged: (rigged: boolean) => {
+        useGameStore.setState({ wellRopeRigged: rigged });
+      },
+      cassetteInserted: Boolean(parsed.cassetteInserted || active.cassetteInserted),
+      setCassetteInserted: (val: boolean) => {
+        useGameStore.setState({ cassetteInserted: val });
+      },
+      cassettePlayed: Boolean(parsed.cassettePlayed || active.cassettePlayed),
+      setCassettePlayed: (val: boolean) => {
+        useGameStore.setState({ cassettePlayed: val });
+      },
+      conduitUnlocked: Boolean(parsed.conduitUnlocked || active.conduitUnlocked),
+      setConduitUnlocked: (val: boolean) => {
+        useGameStore.setState({ conduitUnlocked: val });
+      },
+      removeFromInventory: (itemId: string) => {
+        const inv = (parsed.inventory || active.inventory || []).filter((i: string) => i !== itemId);
+        useGameStore.setState({ inventory: inv });
+      },
+      addToInventory: (itemId: string) => {
+        const inv = parsed.inventory || active.inventory || [];
+        if (!inv.includes(itemId)) {
+          useGameStore.setState({ inventory: [...inv, itemId] });
+        }
+      },
+      drainGarage: async () => {
+        await PrologBridge.drainGarage();
+        useGameStore.setState({ garageDrained: true });
+      },
+      pickupGarageItem: async (itemId: string) => {
+        await PrologBridge.takeGarageItem(itemId as any);
+        const inv = parsed.inventory || active.inventory || [];
+        if (!inv.includes(itemId)) {
+          useGameStore.setState({ inventory: [...inv, itemId] });
+        }
+      },
+      pickupLockerTape: async () => {
+        await PrologBridge.takeLockerTape();
+        const inv = parsed.inventory || active.inventory || [];
+        if (!inv.includes('cassette_tape_may')) {
+          useGameStore.setState({ inventory: [...inv, 'cassette_tape_may'] });
+        }
+      },
       chapter2Completed: isCh2Done,
+      chapter3IntroSeen: Boolean(parsed.chapter3IntroSeen || active.chapter3IntroSeen),
+      setChapter3IntroSeen: (seen: boolean) => {
+        useGameStore.setState({ chapter3IntroSeen: seen });
+      },
       maxUnlockedChapter: maxUnlocked,
       unlockedChapters: unlocked,
       advanceToChapter: (chapterNumber: number) => {

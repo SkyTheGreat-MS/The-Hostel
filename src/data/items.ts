@@ -69,6 +69,24 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
     icon: 'key',
     displayName: 'Stairway Gate Key',
   },
+  iron_pulley: {
+    id: 'iron_pulley',
+    shortLabel: 'Pulley',
+    icon: 'anchor',
+    displayName: 'Heavy Cast-Iron Pulley',
+  },
+  rusty_machete: {
+    id: 'rusty_machete',
+    shortLabel: 'Blade',
+    icon: 'sword',
+    displayName: "Groundskeeper's Machete",
+  },
+  cassette_tape_may: {
+    id: 'cassette_tape_may',
+    shortLabel: 'Tape 1998',
+    icon: 'disc',
+    displayName: "May's Micro-Cassette Tape (1998.08.12)",
+  },
 };
 
 export default ITEM_DATABASE;

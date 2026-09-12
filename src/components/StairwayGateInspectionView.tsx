@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Key } from 'lucide-react';
 import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
 import { OuterGroundsView } from './OuterGroundsView';
 import { ChapterTransitionModal } from './ChapterTransitionModal';
 import { Phase3Location } from '../types';
@@ -255,15 +254,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />
 
-      {/* 2. Standardized Scene Navigation Bar */}
-      <SceneNavBar
-        onReturn={handleReturn}
-        returnDestination="LANDING"
-        areaZone="GROUND FLOOR LANDING"
-        areaName="STAIRWAY EXIT ACCORDION GATE"
-      />
-
-      {/* 3. Interactive Padlock & Chains Hotspot */}
+      {/* 2. Interactive Padlock & Chains Hotspot */}
       <div
         className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none group"
         data-hotspot-id="stairway-gate-padlock"

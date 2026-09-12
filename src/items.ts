@@ -93,6 +93,21 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
     shortLabel: 'Gate Key',
     icon: 'key',
   },
+  iron_pulley: {
+    id: 'iron_pulley',
+    shortLabel: 'Pulley',
+    icon: 'anchor',
+  },
+  rusty_machete: {
+    id: 'rusty_machete',
+    shortLabel: 'Blade',
+    icon: 'sword',
+  },
+  cassette_tape_may: {
+    id: 'cassette_tape_may',
+    shortLabel: 'Tape 1998',
+    icon: 'disc',
+  },
 };
 
 export default ITEM_DATABASE;

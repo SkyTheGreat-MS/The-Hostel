@@ -1,6 +1,5 @@
 import React from 'react';
 import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
 import { InteractiveHotspot } from './InteractiveHotspot';
 
 export interface Locker10InspectionViewProps {
@@ -62,12 +61,6 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-      <SceneNavBar
-        onReturn={onReturn}
-        returnDestination="LOCKERS"
-        areaZone="EAST WING"
-        areaName="STUDENT LOCKER BAY"
-      />
 
       <InteractiveHotspot
         id="locker10_batteries"

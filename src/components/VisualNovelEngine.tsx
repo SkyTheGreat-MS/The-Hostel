@@ -69,7 +69,6 @@ import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
 import { Locker10InspectionView } from './Locker10InspectionView';
-import { Locker14InspectionView } from './Locker14InspectionView';
 import { Locker14InteriorView } from './Locker14InteriorView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
@@ -77,7 +76,12 @@ import { BalconySceneView } from './BalconySceneView';
 import { RadioBenchInspectionView } from './RadioBenchInspectionView';
 import { DeskInspectionView } from './DeskInspectionView';
 import { StairwayGateInspectionView, BalconyStairwayGateView } from './StairwayGateInspectionView';
-import { OuterGroundsView, HostelOuterGroundsView } from './OuterGroundsView';
+import { HostelOuterGroundsView, OuterGroundsView } from './HostelOuterGroundsView';
+import { CompoundGateInspectionView } from './CompoundGateInspectionView';
+import { GarageSubterraneanView } from './GarageSubterraneanView';
+import { BanyanWellheadView } from './BanyanWellheadView';
+import { WellInteriorDeepView } from './WellInteriorDeepView';
+import { Room101SeanceClimaxView } from './Room101SeanceClimaxView';
 import { WashroomMirrorView, CrackedMirrorInspectionView } from './WashroomMirrorView';
 import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
@@ -95,7 +99,6 @@ export {
   Locker32ZoomView,
   Locker09ZoomView,
   Locker10InspectionView,
-  Locker14InspectionView,
   Locker14InteriorView,
   LockersOverviewView,
   PrayerAltarView,
@@ -723,6 +726,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setStairwayGateUnlocked,
     chapter3Unlocked,
     setChapter3Unlocked,
+    garageDrained,
     removeItem,
     advanceToChapter,
     removeInventoryItem,
@@ -747,7 +751,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
 
   // Room 4B Point-and-Click States
-  const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' } | null>(null);
+  const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' | 'warning' } | null>(null);
   const [isScreenShaking, setIsScreenShaking] = useState<boolean>(false);
   const [isCompassModalOpen, setIsCompassModalOpen] = useState<boolean>(false);
   const [inspectingItem, setInspectingItem] = useState<string | null>(null);
@@ -1058,7 +1062,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       mode === 'location_select' ||
       mode === 'investigating_location'
     ) {
-      const currentPhaseNum: 1 | 2 | 3 = mode === 'room_escape' || mode === 'awakening' ? 2 : 3;
+      const currentPhaseNum: 1 | 2 | 3 = mode === 'room_escape' || (mode as string) === 'awakening' ? 2 : 3;
       saveChapterOneProgress({
         chapter: 1,
         currentPhase: currentPhaseNum,
@@ -2004,7 +2008,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (mode === 'phase3') {
       if (phase3Location === 'hallway_threshold') return PHASE_3_ASSETS.pathwayThreshold;
       if (phase3Location === 'west_split_landing') return PHASE_3_ASSETS.westSplitLanding;
-      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate' || phase3Location === 'balcony_stairway_gate') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'compound_iron_gate') return '/assets/scenes/compound_iron_gate_inspection.jpg';
+      if (phase3Location === 'garage_subterranean') return garageDrained ? '/assets/scenes/garage_subterranean_rain.jpg' : '/assets/scenes/garage_subterranean_rain_submerged.jpg';
+      if (phase3Location === 'banyan_wellhead') return '/assets/scenes/banyan_wellhead_exterior.jpg';
+      if (phase3Location === 'well_interior_deep' || phase3Location === 'room_101_seance_flashback') return '/assets/scenes/well_interior_deep.jpg';
+      if (phase3Location === 'seance_climax_flashback') return PHASE_3_ASSETS.seanceClimaxFlashback || '/assets/scenes/seance_climax_flashback.jpg';
       if (phase3Location === 'hostel_outer_grounds') return PHASE_3_ASSETS.hostelOuterGrounds || '/assets/scenes/hostel_outer_grounds_rain.jpg';
       if (phase3Location === 'washroom_main') return PHASE_3_ASSETS.washroomOverview;
       if (phase3Location === 'washroom_basin') return PHASE_3_ASSETS.washroomBasinZoom;
@@ -2119,13 +2128,33 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     } else if (
       phase3Location === 'stairwell_gate' ||
       phase3Location === 'stairway_gate_inspection' ||
+      phase3Location === 'stairway_exit_gate' ||
+      phase3Location === 'balcony_stairway_gate' ||
       phase3Location === 'washroom_main'
     ) {
       sound.playPaperRustle();
       setPhase3Location('west_split_landing');
     } else if (phase3Location === 'hostel_outer_grounds') {
-      sound.playPaperRustle();
+      try {
+        sound.playDoorCreak();
+      } catch {
+        sound.playPaperRustle();
+      }
       setPhase3Location('stairway_gate_inspection');
+    } else if (phase3Location === 'well_interior_deep') {
+      sound.playPaperRustle();
+      setPhase3Location('banyan_wellhead');
+    } else if (
+      phase3Location === 'compound_iron_gate' ||
+      phase3Location === 'garage_subterranean' ||
+      phase3Location === 'banyan_wellhead' ||
+      phase3Location === 'seance_climax_flashback'
+    ) {
+      sound.playPaperRustle();
+      setPhase3Location('hostel_outer_grounds');
+    } else if (phase3Location === 'radio_bench_inspection') {
+      sound.playPaperRustle();
+      setPhase3Location('balcony_326');
     } else if (phase3Location === 'west_split_landing') {
       sound.playPaperRustle();
       setPhase3Location('hallway_threshold');
@@ -2134,6 +2163,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       phase3Location === 'locker_09' ||
       phase3Location === 'locker_10' ||
       phase3Location === 'locker_14' ||
+      phase3Location === 'locker_14_interior' ||
       phase3Location === 'locker_spider'
     ) {
       sound.playPaperRustle();
@@ -2178,14 +2208,39 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   // Unified Return Destination Label
   const getPhase3ReturnDestination = (): string => {
-    if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
-      return 'LANDING';
+    if (phase3Location === 'hostel_outer_grounds') {
+      return 'STAIRWAY GATE';
+    }
+    if (
+      phase3Location === 'garage_subterranean' ||
+      phase3Location === 'compound_iron_gate' ||
+      phase3Location === 'banyan_wellhead'
+    ) {
+      return 'COURTYARD';
+    }
+    if (phase3Location === 'well_interior_deep') {
+      return 'WELLHEAD';
+    }
+    if (phase3Location === 'room_101_seance_flashback' || phase3Location === 'seance_climax_flashback') {
+      return '';
+    }
+    if (
+      phase3Location === 'stairwell_gate' ||
+      phase3Location === 'stairway_gate_inspection' ||
+      phase3Location === 'stairway_exit_gate' ||
+      phase3Location === 'balcony_stairway_gate' ||
+      phase3Location === 'washroom_main'
+    ) {
+      return 'SPLIT LANDING';
     }
     if (phase3Location === 'west_split_landing') {
       return 'HALLWAY';
     }
     if (phase3Location.startsWith('washroom_')) {
       return 'WASHROOM';
+    }
+    if (phase3Location === 'radio_bench_inspection') {
+      return 'BALCONY';
     }
     if (phase3Location.startsWith('locker_')) {
       return 'LOCKER BAY';
@@ -2217,7 +2272,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       case 'west_split_landing':
         return { zone: 'WEST WING', name: 'SPLIT LANDING' };
       case 'stairwell_gate':
-        return { zone: 'WEST WING', name: 'STAIRWELL GATE' };
+      case 'stairway_gate_inspection':
+      case 'stairway_exit_gate':
+      case 'balcony_stairway_gate':
+        return { zone: 'GROUND FLOOR', name: 'STAIRWAY EXIT GATE' };
+      case 'hostel_outer_grounds':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'HOSTEL COURTYARD & COMPOUND GATE' };
+      case 'compound_iron_gate':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'COMPOUND IRON GATE' };
+      case 'garage_subterranean':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'SUBTERRANEAN GARAGE' };
+      case 'banyan_wellhead':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'BANYAN TREE & WELL' };
+      case 'well_interior_deep':
+        return { zone: 'SUBTERRANEAN CONDUIT', name: 'DEEP WELL SHAFT' };
+      case 'room_101_seance_flashback':
+      case 'seance_climax_flashback':
+        return { zone: 'CONDUIT CLIMAX', name: 'ROOM 101 SEANCE CIRCLE' };
       case 'washroom_main':
         return { zone: 'WEST WING', name: 'COMMUNAL WASHROOM' };
       case 'washroom_basin':
@@ -2240,6 +2311,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         return { zone: 'LOCKER BAY', name: 'LOCKER 10' };
       case 'locker_14':
         return { zone: 'LOCKER BAY', name: 'LOCKER 14' };
+      case 'locker_14_interior':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 14 INTERIOR' };
       case 'locker_spider':
         return { zone: 'LOCKER BAY', name: 'RUSTED VENT' };
       case 'prayer_room_main':
@@ -2254,6 +2327,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       case 'balcony_326':
       case 'balcony':
         return { zone: 'PATHWAY 326', name: 'THE OVERLOOK BALCONY' };
+      case 'radio_bench_inspection':
+        return { zone: 'PATHWAY 326', name: 'RADIO BENCH' };
       default:
         return { zone: 'PATHWAY 326', name: 'CORRIDOR' };
     }
@@ -3308,7 +3383,7 @@ onTuned={() => {
             )}
 
             {/* SUB-SCENE 3: STAIRWAY EXIT ACCORDION GATE & PADLOCK */}
-            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate') && (
+            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate' || phase3Location === 'balcony_stairway_gate') && (
               <StairwayGateInspectionView
                 inventory={inventory}
                 setInventory={setInventory}
@@ -3330,10 +3405,89 @@ onTuned={() => {
             {/* SUB-SCENE: HOSTEL OUTER GROUNDS / COURTYARD (CHAPTER 3) */}
             {phase3Location === 'hostel_outer_grounds' && (
               <HostelOuterGroundsView
+                onNavigate={(target) => {
+                  if (target === 'balcony_stairway_gate' || target === 'stairway_exit_gate' || target === 'stairway_gate_inspection') {
+                    setPhase3Location('stairway_gate_inspection');
+                  } else {
+                    setPhase3Location(target as Phase3Location);
+                    if (target === 'garage_subterranean') {
+                      setActiveMonologue(
+                        "— A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. —"
+                      );
+                    } else if (target === 'banyan_wellhead') {
+                      setActiveMonologue(
+                        "— The twisted roots of the ancient banyan tree encircle the stone well. Deep whispers bubble up from the dark water below... —"
+                      );
+                    }
+                  }
+                }}
                 setActiveMonologue={setActiveMonologue}
                 addDiscoveredClue={addDiscoveredClue}
                 setPhase3Location={setPhase3Location}
-                onReturn={() => setPhase3Location('stairway_exit_gate')}
+                onReturn={() => setPhase3Location('stairway_gate_inspection')}
+              />
+            )}
+
+            {/* SUB-SCENE: COMPOUND IRON GATE CLOSE-UP (CHAPTER 3) */}
+            {phase3Location === 'compound_iron_gate' && (
+              <CompoundGateInspectionView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: SUBTERRANEAN BICYCLE GARAGE (CHAPTER 3) */}
+            {phase3Location === 'garage_subterranean' && (
+              <GarageSubterraneanView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: BANYAN WELLHEAD & RIGGING (CHAPTER 3) */}
+            {phase3Location === 'banyan_wellhead' && (
+              <BanyanWellheadView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                onNavigate={(destination) => setPhase3Location(destination as Phase3Location)}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: DEEP WELL SHAFT & CASSETTE PUZZLE (CHAPTER 3) */}
+            {phase3Location === 'well_interior_deep' && (
+              <WellInteriorDeepView
+                onReturn={() => setPhase3Location('banyan_wellhead')}
+                onNavigate={(destination) => setPhase3Location(destination as Phase3Location)}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: ROOM 101 SEANCE CLIMAX FLASHBACK (CHAPTER 3) */}
+            {phase3Location === 'room_101_seance_flashback' && (
+              <Room101SeanceClimaxView
+                onComplete={() => {
+                  setPhase3Location('seance_climax_flashback');
+                  setActiveMonologue("— You emerge from the trance back on the rain-swept grounds, the curse of Room 101 broken. —");
+                }}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SCENE: SEANCE CLIMAX FLASHBACK / EPILOGUE */}
+            {phase3Location === 'seance_climax_flashback' && (
+              <InteractiveHotspot
+                id="seance_climax_return_grounds"
+                name="Return to Outer Grounds"
+                x={0}
+                y={0}
+                width={100}
+                height={100}
+                shape="rect"
+                cursorTooltip="[Emerge into the Rain-Swept Grounds]"
+                onClick={() => {
+                  sound.playPaperRustle();
+                  setPhase3Location('hostel_outer_grounds');
+                }}
               />
             )}
 
@@ -3707,21 +3861,11 @@ onTuned={() => {
               />
             )}
 
-            {/* ZOOM: LOCKER 14 PADLOCK & INTERIOR */}
+            {/* ZOOM: LOCKER 14 INTERIOR */}
             {(phase3Location === 'locker_14' || phase3Location === 'locker_14_interior') && (
-              <Locker14InspectionView
-                inventory={inventory}
-                setInventory={setInventory}
-                addInventoryItem={addInventoryItem}
-                removeInventoryItem={removeInventoryItem}
-                locker14Unlocked={locker14Unlocked}
-                setLocker14Unlocked={setLocker14Unlocked}
-                stairwayGateKeyTaken={stairwayGateKeyTaken}
-                setStairwayGateKeyTaken={setStairwayGateKeyTaken}
-                setActiveMonologue={setActiveMonologue}
-                addDiscoveredClue={addDiscoveredClue}
-                setPhase3Location={setPhase3Location}
+              <Locker14InteriorView
                 onReturn={() => setPhase3Location('lockers_main')}
+                setActiveMonologue={setActiveMonologue}
               />
             )}
 

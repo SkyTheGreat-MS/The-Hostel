@@ -1,154 +1,137 @@
-import React from 'react';
-import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
-import { InteractiveHotspot } from './InteractiveHotspot';
-import { useGameStore } from '../context/GameProgressContext';
-import { MONOLOGUE_LINES } from '../data/dialogues';
+import React, { useEffect } from 'react';
+import { InteractiveHotspot } from '../components/InteractiveHotspot';
+import { useGameStore } from '../store/useGameStore';
+import { PrologBridge } from '../services/PrologBridge';
+import { sound } from '../utils/audio';
 
-export interface Locker14InteriorViewProps {
-  inventory?: string[];
-  addItem?: (itemId: string) => void;
-  addInventoryItem?: (itemId: string) => void;
-  stairwayGateKeyTaken?: boolean;
-  setStairwayGateKeyTaken?: (val: boolean | ((prev: boolean) => boolean)) => void;
-  setActiveMonologue?: (msg: string | null) => void;
-  addDiscoveredClue?: (clueId: string) => void;
+interface Locker14InteriorViewProps {
   onReturn: () => void;
+  setActiveMonologue: (text: string | null) => void;
 }
 
-/**
- * Locker14InteriorView — Locker 14 Unlocked Interior Scene
- *
- * Displays May's personal locker contents (botany textbooks, folded uniform,
- * and personal keepsakes). Accessible after opening the padlock with Key 14.
- */
 export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
-  inventory: propInventory,
-  addItem: propAddItem,
-  addInventoryItem: propAddInventoryItem,
-  stairwayGateKeyTaken: propStairwayGateKeyTaken,
-  setStairwayGateKeyTaken: propSetStairwayGateKeyTaken,
-  setActiveMonologue,
-  addDiscoveredClue,
   onReturn,
+  setActiveMonologue,
 }) => {
-  const store = useGameStore();
+  const { 
+    inventory, 
+    addToInventory, 
+    locker14Looted, 
+    setLocker14Looted, 
+    setStairwayGateKeyTaken 
+  } = useGameStore();
 
-  const currentInventory = propInventory ?? store.inventory ?? [];
-  const hasKey = currentInventory.includes('key_stairway_gate');
-  const isTaken = Boolean(propStairwayGateKeyTaken ?? store.stairwayGateKeyTaken ?? hasKey);
+  const hasTape = inventory.includes('cassette_tape_may');
+  const hasGateKey = inventory.includes('key_stairway_gate');
 
-  const handleGateKeyClick = () => {
-    // Guard against duplicate looting if already taken or key is held
-    if (isTaken || hasKey) {
-      try {
-        sound.playPaperRustle();
-      } catch {}
-      setActiveMonologue?.(
-        MONOLOGUE_LINES.STAIRWAY_GATE_KEY_ALREADY_TAKEN ??
-          '— The iron key has already been taken. Only rust rings remain on the shelf. —'
+  useEffect(() => {
+    PrologBridge.setLocation?.('locker_14_interior');
+    if (!hasTape && !hasGateKey && !locker14Looted) {
+      setActiveMonologue(
+        "Locker 14's heavy steel door swings open. Inside, resting among moldy student records, is an unlabeled micro-cassette tape."
       );
+    } else if (!hasTape && !locker14Looted) {
+      setActiveMonologue(
+        "Locker 14 interior. An unlabeled micro-cassette tape rests among moldy student records."
+      );
+    } else if (!hasGateKey && !locker14Looted) {
+      setActiveMonologue(
+        "Locker 14 interior. The stairway gate key rests on the lower shelf."
+      );
+    } else {
+      setActiveMonologue(
+        "Locker 14 interior. The shelf is now empty."
+      );
+    }
+  }, [locker14Looted, hasTape, hasGateKey, setActiveMonologue]);
+
+  const handleTakeTape = async () => {
+    if (hasTape) {
+      setActiveMonologue("The micro-cassette tape has already been taken.");
       return;
     }
 
-    // Play item looted audio cue with fallback to paper rustle
     try {
-      sound.playItemLooted();
-    } catch {
-      try {
-        sound.playPaperRustle();
-      } catch {}
+      sound.playItemCollect?.();
+    } catch {}
+
+    try {
+      await PrologBridge.queryOnce?.('take_locker_tape.');
+    } catch {}
+
+    addToInventory('cassette_tape_may');
+
+    if (hasGateKey) {
+      setLocker14Looted(true);
     }
 
-    // Dispatch item addition to store and/or props
-    store.addItem?.('key_stairway_gate');
-    propAddItem?.('key_stairway_gate');
-    propAddInventoryItem?.('key_stairway_gate');
-
-    // Set persistent flag in store and/or props
-    store.setStairwayGateKeyTaken?.(true);
-    propSetStairwayGateKeyTaken?.(true);
-
-    // Append discovered clue
-    addDiscoveredClue?.('clue_stairway_key_found');
-    store.addDiscoveredClue?.('clue_stairway_key_found');
-
-    // Display feedback thought
-    setActiveMonologue?.(
-      MONOLOGUE_LINES.STAIRWAY_GATE_KEY_ACQUIRED ??
-        '— [ITEM ACQUIRED: Stairway Gate Key] — A heavy, blackened iron key. Ko Zaw must have hidden this here so May could bypass the curfew gate to reach the terrace. —'
+    setActiveMonologue(
+      "Acquired [UNLABELED MICRO-CASSETTE TAPE (1998.08.12)]. Dated right before the incident in Room 101."
     );
   };
 
-  const handleReturn = () => {
-    try {
-      sound.playDoorCreak();
-    } catch {
-      try {
-        sound.playPaperRustle();
-      } catch {}
+  const handleTakeKey = async () => {
+    if (hasGateKey) {
+      setActiveMonologue("The stairway gate key has already been taken.");
+      return;
     }
-    onReturn();
+
+    try {
+      sound.playItemCollect?.();
+    } catch {}
+
+    try {
+      await PrologBridge.queryOnce?.('take_stairway_key.');
+    } catch {}
+
+    addToInventory('key_stairway_gate');
+    setStairwayGateKeyTaken?.(true);
+
+    if (hasTape) {
+      setLocker14Looted(true);
+    }
+
+    setActiveMonologue(
+      "Acquired [STAIRWAY GATE KEY]. A heavy iron key stamped with 'STAIRWAY EXTR' for the ground floor security gate."
+    );
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden select-none bg-black pointer-events-auto">
-      {/* 1. Full-viewport fixed background using Locker 14 Interior Artwork */}
+    <div className="relative w-full h-full select-none overflow-hidden bg-black">
+      {/* Background Graphic */}
       <img
         src="/assets/scenes/locker_14_interior.jpg"
-        onError={(e) => {
-          e.currentTarget.src = 'assets/scenes/locker_14_interior.jpg';
-        }}
-        alt="Locker 14 Interior (Mama May)"
-        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+        alt="Locker 14 Interior"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
+
+      {/* Atmospheric Vignette Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />
 
-      {/* 2. Standardized Scene Navigation Bar */}
-      <SceneNavBar
-        onReturn={handleReturn}
-        returnDestination="LOCKERS"
-        areaZone="EAST WING"
-        areaName="STUDENT LOCKER BAY"
-      />
+      {/* Interactive Hotspots Layer */}
+      <div className="absolute inset-0 z-20 pointer-events-auto">
+        {/* Micro-Cassette Tape Hotspot */}
+        {!hasTape && !locker14Looted && (
+          <InteractiveHotspot
+            id="locker_14_cassette_tape"
+            name="Unlabeled Micro-Cassette"
+            cursorTooltip="Take Micro-Cassette Tape"
+            onClick={handleTakeTape}
+            polygonPoints="35,45 65,45 65,75 35,75"
+          />
+        )}
 
-      {/* 3. Interactive Hotspot: May's Folded Uniform & Jasmine Keepsake (Upper Shelf) */}
-      <InteractiveHotspot
-        id="locker14-uniform"
-        name="Folded Cotton Uniform"
-        polygonPoints="30,20 68,20 68,52 30,52"
-        cursorTooltip="Examine May's Folded Uniform"
-        onClick={() => {
-          sound.playPaperRustle();
-          setActiveMonologue?.(
-            "— May's neatly folded floral cotton blouses and hostel uniform. Faint scent of dried jasmine flowers lingers on the fabric. —"
-          );
-        }}
-      />
-
-      {/* 4. Interactive Hotspot: Biology Course Notebooks (Middle Tier) */}
-      <InteractiveHotspot
-        id="locker14-notebooks"
-        name="Biology Notebooks (Roll 14)"
-        polygonPoints="32,56 70,56 70,82 32,82"
-        cursorTooltip="Inspect University Notebooks"
-        onClick={() => {
-          sound.playPaperRustle();
-          setActiveMonologue?.(
-            "— A handwritten syllabus notebook: 'May — Biology III, Roll 14'. The ink is unfaded. Her handwriting is steady and meticulous. —"
-          );
-          addDiscoveredClue?.('clue_locker_14_found');
-        }}
-      />
-
-      {/* 5. Interactive Hotspot: Stairway Gate Key (Lower Shelf) */}
-      <InteractiveHotspot
-        id="locker14-gate-key"
-        name={isTaken ? 'Empty Lower Shelf' : 'Take Stairway Gate Key'}
-        polygonPoints="34,76 66,76 66,94 34,94"
-        cursorTooltip={isTaken ? 'Empty Lower Shelf' : 'Take Stairway Gate Key'}
-        onClick={handleGateKeyClick}
-      />
+        {/* Stairway Gate Key Hotspot */}
+        {!hasGateKey && !locker14Looted && (
+          <InteractiveHotspot
+            id="key_stairway_gate"
+            name="Stairway Gate Key"
+            cursorTooltip="Take Stairway Gate Key"
+            onClick={handleTakeKey}
+            polygonPoints="34,76 66,76 66,94 34,94"
+          />
+        )}
+      </div>
     </div>
   );
 };

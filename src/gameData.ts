@@ -27,6 +27,7 @@ export const PHASE_3_ASSETS = {
   stairwellGateLocked: '/assets/scenes/stairwell_gate_locked.jpg',
   stairwayGateInspection: '/assets/scenes/stairway_gate_inspection.jpg',
   hostelOuterGrounds: '/assets/scenes/hostel_outer_grounds_rain.jpg',
+  seanceClimaxFlashback: '/assets/scenes/seance_climax_flashback.jpg',
   washroomOverview: '/assets/scenes/washroom_overview.jpg',
   washroomBasinZoom: '/assets/scenes/washroom_basin_zoom.jpg',
   washroomStallZoom: '/assets/scenes/washroom_stall_zoom.jpg',
@@ -141,6 +142,27 @@ export const ITEMS: Record<string, Item> = {
     shortLabel: 'Gate Key',
     description: 'A heavy, blackened iron key hidden on the lower shelf of Locker 14.',
     usageHint: 'Used to unlock the iron curfew gate blocking the stairway to the terrace.',
+  },
+  iron_pulley: {
+    id: 'iron_pulley',
+    name: 'Heavy Cast-Iron Pulley',
+    shortLabel: 'Pulley',
+    description: 'A heavy forged iron pulley wheel with an open bronze suspension hook. The bearings are greased and turn freely.',
+    usageHint: 'Can be suspended from a sturdy overhead anchor to rig a hoisting line.',
+  },
+  rusty_machete: {
+    id: 'rusty_machete',
+    name: "Groundskeeper's Machete",
+    shortLabel: 'Blade',
+    description: 'A heavy, blackened steel clearing machete with a rubber-wrapped handle. Dulled from chopping thick vines and brush.',
+    usageHint: 'Heavy enough to hack through thick tropical roots and branches.',
+  },
+  cassette_tape_may: {
+    id: 'cassette_tape_may',
+    name: "May's Micro-Cassette Tape (1998.08.12)",
+    shortLabel: 'Tape 1998',
+    description: 'An unlabeled micro-cassette tape dated 1998.08.12. Left behind by Ko Zaw in Locker 14.',
+    usageHint: 'Can be played in a compatible micro-cassette recorder or deck.',
   },
 };
 
