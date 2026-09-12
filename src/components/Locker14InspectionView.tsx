@@ -188,7 +188,7 @@ export const Locker14InspectionView: React.FC<Locker14InspectionViewProps> = ({
           >
             {/* Padlock Polygon: points="44,10 62,10 64,62 42,62" */}
             <polygon
-              points="44,10 62,10 64,62 42,62"
+              points="43,20 60,20 60,72 42,72"
               className={`fill-transparent stroke-transparent transition-all duration-300 ${
                 hasKey14
                   ? 'group-hover:stroke-emerald-400 group-hover:stroke-[0.6] group-hover:[stroke-dasharray:4,3] group-hover:fill-emerald-500/10 group-hover:filter group-hover:drop-shadow-[0_0_12px_rgba(110,231,183,0.4)]'

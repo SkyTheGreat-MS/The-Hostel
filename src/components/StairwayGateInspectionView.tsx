@@ -279,7 +279,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
             onMouseEnter={() => sound.playMenuHover()}
           >
             <polygon
-              points="50,25 78,25 71,80 50,80"
+              points="55,35 62,35 62,53 55,52"
               className={`fill-transparent stroke-transparent transition-all duration-300 ${
                 hasGateKey
                   ? 'group-hover:stroke-emerald-400 group-hover:stroke-[0.6] group-hover:[stroke-dasharray:4,3] group-hover:fill-emerald-500/10 group-hover:filter group-hover:drop-shadow-[0_0_12px_rgba(110,231,183,0.4)]'

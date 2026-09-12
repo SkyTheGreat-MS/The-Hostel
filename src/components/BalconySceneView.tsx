@@ -248,7 +248,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
       <InteractiveHotspot
         id="balcony_transistor_radio"
         name="Transistor Radio"
-        polygonPoints="60,51 73,53 73,70 60,70"
+        polygonPoints="60,55 73,57 73,74 60,69"
         cursorTooltip="[Inspect Transistor Radio]"
         onClick={() => {
           sound.playBenchInspect();
@@ -275,7 +275,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
             <InteractiveHotspot
               id="balcony_spectral_may"
               name="Spectral May"
-              polygonPoints="8,35 22,35 25,95 6,95"
+              polygonPoints="8,35 22,35 25,99 6,99"
               cursorTooltip="Speak to May"
               onClick={handleMayClick}
             />
@@ -341,7 +341,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
             id="balcony_key_14_floor"
             name="Tarnished Key (14)"
             cursorTooltip="Take Tarnished Key (14)"
-            polygonPoints="46,70 54,70 56,82 45,82"
+            polygonPoints="48,70 54,70 56,82 49,82"
             onClick={handlePickupKey14}
           />
         </>

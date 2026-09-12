@@ -2794,7 +2794,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="main_door"
                   name="Room Door 4B"
                   cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
-                  polygonPoints="79,5 99.5,5 99.5,95 79,95"
+                  polygonPoints="80,8 99.5,5 99.5,98 79,93"
                   onClick={() => {
                     if (doorUnlocked) {
                       sound.playPaperRustle();
@@ -2895,11 +2895,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="wardrobe_baseboard"
                   name="Wardrobe Baseboard"
                   cursorTooltip="Wardrobe Baseboard"
-                  x={10}
-                  y={75}
-                  width={80}
-                  height={22}
-                  shape="rect"
+                  polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(
@@ -3684,7 +3680,7 @@ onTuned={() => {
                   <InteractiveHotspot
                     id="locker-09-empty"
                     name="Locker 09 (Emptied)"
-                    polygonPoints="36,0 90,0 90,84 36,84"
+                    polygonPoints="36,8 90,8 90,84 36,84"
                     cursorTooltip="Locker 09 (Emptied)"
                     onClick={() => {
                       sound.playPaperRustle();

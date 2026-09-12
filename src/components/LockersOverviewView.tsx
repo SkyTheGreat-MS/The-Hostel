@@ -49,14 +49,14 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 1. Locker 14 (Top-Left Tier, marked '14') */}
         <polygon
           id="hotspot-locker-14"
-          points="14,10 21.5,10 21.5,57 14,57"
+          points="14,5 21.5,10 21.5,57 14,57"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
               text: locker14Unlocked ? 'Open Locker 14 (Unlocked)' : 'Inspect Locker 14',
               x: 18.8,
-              y: 9.5,
+              y: 13.5,
             });
           }}
           onMouseLeave={() => setHoveredLocker(null)}
@@ -102,7 +102,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 3. Locker 09 (Top-Right Tier, marked '09') */}
         <polygon
           id="hotspot-locker-09"
-          points="86.8,10 95.5,7 95.8,65 86.8,63"
+          points="86.8,5 95.5,1 95.8,65 86.8,63"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -125,7 +125,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 10 (Bottom-Right Tier, marked '10') */}
         <polygon
           id="hotspot-locker-10"
-          points="86.8,58 95.5,56 95.8,95 86.8,98"
+          points="72,21 76,16 76,57 72,56"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -148,7 +148,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
         <polygon
           id="hotspot-locker-spider"
-          points="31.2,23 34.2,28 34.2,55 31.2,57"
+          points="31.2,24 34.2,28 34.2,55 31.2,56"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-red-950/20 stroke-transparent hover:stroke-red-500/40 stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();

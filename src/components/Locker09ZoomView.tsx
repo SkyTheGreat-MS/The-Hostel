@@ -68,7 +68,7 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
         <InteractiveHotspot
           id="locker-09-empty"
           name="Locker 09 (Emptied)"
-          polygonPoints="0,0 90,0 90,88 0,88"
+          polygonPoints="0,8 90,8 90,88 0,88"
           cursorTooltip="Locker 09 (Emptied)"
           onClick={() => {
             sound.playPaperRustle();

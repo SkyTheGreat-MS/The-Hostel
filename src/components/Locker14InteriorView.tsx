@@ -114,14 +114,14 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
 
       {/* 3. Interactive Hotspot: May's Folded Uniform & Jasmine Keepsake (Upper Shelf) */}
       <InteractiveHotspot
-        id="locker14-uniform"
-        name="Folded Cotton Uniform"
-        polygonPoints="30,20 68,20 68,52 30,52"
-        cursorTooltip="Examine May's Folded Uniform"
+        id="locker14-pic"
+        name="The picture of 3 friends"
+        polygonPoints="76,15 97,21 95,52 73,45"
+        cursorTooltip="Examine The picture of 3 friends"
         onClick={() => {
           sound.playPaperRustle();
           setActiveMonologue?.(
-            "— May's neatly folded floral cotton blouses and hostel uniform. Faint scent of dried jasmine flowers lingers on the fabric. —"
+            "—A photo of three close friends, smiling together. Their initials are written on the back: 'Z.M.S.' —"
           );
         }}
       />
@@ -130,7 +130,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
       <InteractiveHotspot
         id="locker14-notebooks"
         name="Biology Notebooks (Roll 14)"
-        polygonPoints="32,56 70,56 70,82 32,82"
+        polygonPoints="39,44 54,38 65,70 45,76"
         cursorTooltip="Inspect University Notebooks"
         onClick={() => {
           sound.playPaperRustle();
@@ -144,9 +144,9 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
       {/* 5. Interactive Hotspot: Stairway Gate Key (Lower Shelf) */}
       <InteractiveHotspot
         id="locker14-gate-key"
-        name={isTaken ? 'Empty Lower Shelf' : 'Take Stairway Gate Key'}
-        polygonPoints="34,76 66,76 66,94 34,94"
-        cursorTooltip={isTaken ? 'Empty Lower Shelf' : 'Take Stairway Gate Key'}
+        name={isTaken ? 'Empty Tin' : 'Take Stairway Gate Key'}
+        polygonPoints="20,53 37,58 44,73 24,69"
+        cursorTooltip={isTaken ? 'Empty Tin' : 'Take Stairway Gate Key'}
         onClick={handleGateKeyClick}
       />
     </div>
