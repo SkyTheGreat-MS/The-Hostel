@@ -31,6 +31,44 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
    * Consumed on insertion (removed from inventory by RadioBenchInspectionView).
    */
   battery_pair: { id: 'battery_pair', shortLabel: 'Batts', icon: 'zap', displayName: '2x D-Cell Batteries' },
+  /**
+   * letter_ko_zaw - Ko Zaw's Folded Letter retrieved from the study desk in Room 4B.
+   * Addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.
+   * Required for the handover sequence with Spectral May on the Overlook Balcony.
+   */
+  letter_ko_zaw: {
+    id: 'letter_ko_zaw',
+    shortLabel: 'Letter',
+    icon: 'mail',
+    displayName: "Ko Zaw's Folded Letter",
+  },
+  clue_letter_4b: {
+    id: 'clue_letter_4b',
+    shortLabel: 'Letter',
+    icon: 'mail',
+    displayName: "Ko Zaw's Folded Letter",
+  },
+  /**
+   * key_14 - Key 14 dropped by Spectral May on the wet balcony terrace.
+   * A tarnished brass key stamped with the number 14. Tied with frayed nylon string.
+   * Corresponds to Locker 14 in the student locker bay.
+   */
+  key_14: {
+    id: 'key_14',
+    shortLabel: 'Key 14',
+    icon: 'key',
+    displayName: 'Key 14',
+  },
+  /**
+   * key_stairway_gate - Heavy, blackened iron key hidden on the lower shelf of Locker 14.
+   * Ko Zaw hid this here so May could bypass the curfew gate to reach the terrace.
+   */
+  key_stairway_gate: {
+    id: 'key_stairway_gate',
+    shortLabel: 'Gate Key',
+    icon: 'key',
+    displayName: 'Stairway Gate Key',
+  },
 };
 
 export default ITEM_DATABASE;

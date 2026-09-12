@@ -563,6 +563,56 @@ public playBenchInspect() {
     } catch {}
   }
 
+  public playCordSnap() {
+    this.playAsset('/assets/audio/sfx/cord_snap.mp3', { volume: 0.5 });
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Crisp nylon cord tension snap: sudden transient burst + resonant twang
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(820, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.14);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.15);
+    } catch {}
+  }
+
+  public playKeyDrop() {
+    this.playAsset('/assets/audio/sfx/key_drop.mp3', { volume: 0.5 });
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      // Metallic brass key dropping on wet stone floor: initial clatter followed by smaller bounce
+      const now = this.ctx.currentTime;
+      const keyFrequencies = [2400, 3100, 1850];
+      keyFrequencies.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+        gain.gain.setValueAtTime(0.12, now + idx * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.04 + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.04);
+        osc.stop(now + idx * 0.04 + 0.2);
+      });
+    } catch {}
+  }
+
   public playGlassBreak() {
     if (this.isMuted) return;
     this.initCtx();
@@ -641,6 +691,7 @@ public playBenchInspect() {
 
   public playItemLooted() {
     if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/item_looted.mp3', { volume: 0.5 });
     this.initCtx();
     if (!this.ctx) return;
 
@@ -790,6 +841,188 @@ public playBenchInspect() {
       osc2.start(this.ctx.currentTime + 0.04);
       osc1.stop(this.ctx.currentTime + 0.1);
       osc2.stop(this.ctx.currentTime + 0.25);
+    } catch {}
+  }
+
+  public playKeyTurn() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/key_turn.mp3', { volume: 0.5 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Key insertion into brass cylinder & tumbler friction
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1600, this.ctx.currentTime + 0.06);
+      osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.14);
+
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.16);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.16);
+    } catch {}
+  }
+
+  public playPadlockOpen() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/padlock_open.mp3', { volume: 0.55 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Padlock unlatch & spring-loaded shackle snap
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc1.type = 'square';
+      osc1.frequency.setValueAtTime(1850, this.ctx.currentTime);
+      osc1.frequency.exponentialRampToValueAtTime(520, this.ctx.currentTime + 0.07);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(440, this.ctx.currentTime + 0.03);
+      osc2.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.25);
+
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.26);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc1.start();
+      osc2.start(this.ctx.currentTime + 0.03);
+      osc1.stop(this.ctx.currentTime + 0.09);
+      osc2.stop(this.ctx.currentTime + 0.26);
+    } catch {}
+  }
+
+  public playChainDrop() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/chain_drop.mp3', { volume: 0.55 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Heavy iron chain links rattling, colliding, and dropping on hard ground
+      const now = this.ctx.currentTime;
+      const chainFreqs = [1850, 1420, 2400, 980, 720, 310, 140];
+      chainFreqs.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = idx % 2 === 0 ? 'triangle' : 'square';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+        gain.gain.setValueAtTime(0.18 - idx * 0.015, now + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.05 + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.2);
+      });
+    } catch {}
+  }
+
+  public playMetalGateSlide() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/metal_gate_slide.mp3', { volume: 0.55 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Scissor accordion gate screech and heavy metallic rail slide
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(240, now);
+      osc.frequency.linearRampToValueAtTime(460, now + 0.3);
+      osc.frequency.linearRampToValueAtTime(180, now + 0.7);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(800, now);
+      filter.Q.setValueAtTime(3.0, now);
+
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.22, now + 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.85);
+    } catch {}
+  }
+
+  public playMonsoonOutdoorAmbience() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/bgm/monsoon_outdoor_ambience.mp3', { loop: true, volume: 0.5 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      this.playSeanceRainLoop();
+    } catch {}
+  }
+
+  public playRainOutdoor() {
+    this.playMonsoonOutdoorAmbience();
+  }
+
+  public playPhaseComplete() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/phase_complete.mp3', { volume: 0.6 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Triumphant yet eerie phase completion chime / chord (D-F#-A with high overtone)
+      const now = this.ctx.currentTime;
+      const chord = [146.83, 220.0, 293.66, 369.99, 1174.66];
+      chord.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = idx === 4 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.16, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 2.2);
+      });
+    } catch {
+      this.playItemLooted();
+    }
+  }
+
+  public playLockerDoorOpen() {
+    if (this.isMuted) return;
+    this.playAsset('/assets/audio/sfx/locker_door_open.mp3', { volume: 0.5 });
+    this.initCtx();
+    if (!this.ctx) return;
+    try {
+      // Sheet metal locker door swinging open on rusted hinge
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(320, this.ctx.currentTime + 0.2);
+      osc.frequency.linearRampToValueAtTime(140, this.ctx.currentTime + 0.5);
+
+      gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, this.ctx.currentTime + 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.6);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.6);
     } catch {}
   }
 

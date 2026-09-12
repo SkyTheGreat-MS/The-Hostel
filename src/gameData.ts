@@ -25,6 +25,8 @@ export const PHASE_3_ASSETS = {
   cardPathwayRight: '/assets/ui/card_pathway_right.jpg',
   westSplitLanding: '/assets/scenes/west_wing_landing.jpg',
   stairwellGateLocked: '/assets/scenes/stairwell_gate_locked.jpg',
+  stairwayGateInspection: '/assets/scenes/stairway_gate_inspection.jpg',
+  hostelOuterGrounds: '/assets/scenes/hostel_outer_grounds_rain.jpg',
   washroomOverview: '/assets/scenes/washroom_overview.jpg',
   washroomBasinZoom: '/assets/scenes/washroom_basin_zoom.jpg',
   washroomStallZoom: '/assets/scenes/washroom_stall_zoom.jpg',
@@ -39,6 +41,7 @@ export const PHASE_3_ASSETS = {
   locker32Zoom: '/assets/scenes/locker_32_zoom.jpg',
   locker09Zoom: '/assets/scenes/locker_09_zoom.jpg',
   locker14Zoom: '/assets/scenes/locker_14_zoom.jpg',
+  locker14Interior: '/assets/scenes/locker_14_interior.jpg',
   lockerSpiderZoom: '/assets/scenes/locker_spider_zoom.jpg',
   prayerRoomOverview: '/assets/scenes/prayer_room_overview.jpg',
   prayerAltarZoom: '/assets/scenes/prayer_altar_zoom.jpg',
@@ -109,6 +112,35 @@ export const ITEMS: Record<string, Item> = {
     shortLabel: 'Bell',
     description: 'A ceremonial hand bell cast with traditional spirit runes.',
     usageHint: 'Rung to summon and awaken the Guardian Nat at the altar.',
+  },
+  battery_pair: {
+    id: 'battery_pair',
+    name: '2x D-Cell Batteries',
+    shortLabel: 'Batts',
+    description: 'Two zinc-carbon D-cell batteries acquired from Locker 10.',
+    usageHint: 'Powers the transistor radio on the Overlook Balcony.',
+  },
+  letter_ko_zaw: {
+    id: 'letter_ko_zaw',
+    name: "Ko Zaw's Folded Letter",
+    shortLabel: 'Letter',
+    description:
+      'Creased lined paper addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.',
+    usageHint: 'A private letter for May. Required for the balcony handover sequence with Spectral May.',
+  },
+  key_14: {
+    id: 'key_14',
+    name: 'Key 14',
+    shortLabel: 'Key 14',
+    description: 'A tarnished brass key stamped with the number 14. Tied with frayed nylon string.',
+    usageHint: 'Stamped with 14. Corresponds to Locker 14 in the student locker bay.',
+  },
+  key_stairway_gate: {
+    id: 'key_stairway_gate',
+    name: 'Stairway Gate Key',
+    shortLabel: 'Gate Key',
+    description: 'A heavy, blackened iron key hidden on the lower shelf of Locker 14.',
+    usageHint: 'Used to unlock the iron curfew gate blocking the stairway to the terrace.',
   },
 };
 
@@ -376,6 +408,22 @@ export const CLUES: Clue[] = [
     pointsTo: 'room_4b_duty_log',
   },
   {
+    id: 'clue_may_letter',
+    locationId: 'dorm_room_4b',
+    title: "Ko Zaw's Folded Letter",
+    details:
+      "A secret note from Ko Zaw warning May not to let Sandar take her locker key, and revealing a tape hidden behind the vent in 326.",
+    pointsTo: 'balcony_secret_meeting',
+  },
+  {
+    id: 'clue_key_14',
+    locationId: 'balcony_326',
+    title: 'Key 14 (Locker Key)',
+    details:
+      'A tarnished brass key retrieved from the wet balcony terrace tiles after May disappeared. Corresponds to Locker 14 in the dorm bay.',
+    pointsTo: 'locker_14_unlocked',
+  },
+  {
     id: 'curfew_calendar_1998',
     locationId: 'dorm_room_4b',
     title: 'August 1998 Wall Calendar',
@@ -415,6 +463,14 @@ export const CLUES: Clue[] = [
     details:
       "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Reveals the hidden betrayal behind Mama May.",
     pointsTo: 'sandar_kozaw_betrayal',
+  },
+  {
+    id: 'clue_stairway_key_found',
+    locationId: 'lockers_main',
+    title: 'Stairway Gate Key',
+    details:
+      'A heavy, blackened iron key hidden on the lower shelf of Locker 14. Ko Zaw hid this here so May could bypass the curfew gate to reach the terrace.',
+    pointsTo: 'stairway_gate_unlocked',
   },
 ];
 

@@ -1,6 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import { ITEM_DATABASE } from '../items';
-import { Key, Hammer, Wind, Flame, Bell, Compass, Package } from 'lucide-react';
+import { Key, Hammer, Wind, Flame, Bell, Compass, Package, Zap, Mail, FileText } from 'lucide-react';
 
 export { ITEM_DATABASE };
 
@@ -23,6 +23,9 @@ export const ItemIcon: React.FC<{ name: string; className?: string }> = ({
   if (name === 'flame' || name === 'candle' || name === 'match') return <Flame className={className} />;
   if (name === 'bell') return <Bell className={className} />;
   if (name === 'compass') return <Compass className={className} />;
+  if (name === 'zap') return <Zap className={className} />;
+  if (name === 'mail' || name === 'letter') return <Mail className={className} />;
+  if (name === 'paper' || name === 'file-text') return <FileText className={className} />;
   return <Package className={className} />;
 };
 

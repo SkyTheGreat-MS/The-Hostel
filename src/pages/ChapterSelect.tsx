@@ -9,6 +9,7 @@ import {
   clearChapterOneProgress,
   restart_chapter_one,
   resetChapterState,
+  useGameStore,
 } from '../gameStore';
 import { ChapterCard, RestartConfirmationModal } from '../components/ChapterSelection';
 import { ChapterProgressSave } from '../types';
@@ -25,30 +26,40 @@ import {
 interface ChapterItem {
   number: number;
   title: string;
+  subtitle?: string;
   route: string;
 }
 
 const CHAPTERS: ChapterItem[] = [
   {
     number: 1,
-    title: 'Blind Start',
+    title: 'BLIND START',
+    subtitle: '1998 SEANCE',
     route: '/chapters/1',
   },
   {
     number: 2,
-    title: 'Understanding',
+    title: 'UNDERSTANDING',
+    subtitle: 'EAST WING INVESTIGATION',
     route: '/chapters/2',
   },
   {
     number: 3,
-    title: 'The Ritual',
-    route: '/chapters/3',
+    title: 'CHAPTER 03',
+    subtitle: 'ESCAPE / THE OUTSIDE GROUNDS',
+    route: '/chapters/2',
   },
 ];
 
-export const ChapterSelect: React.FC = () => {
+export interface ChapterSelectProps {
+  onClose?: () => void;
+}
+
+export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
   const {
     highestChapterCompleted,
+    maxUnlockedChapter,
+    chapter2Completed: contextChapter2Completed,
     justUnlockedChapter,
     clearJustUnlocked,
     resetProgress,
@@ -73,13 +84,23 @@ export const ChapterSelect: React.FC = () => {
 
   const [activeSave, setActiveSave] = useState<any>(() => getActiveSave());
   const [chapter1Completed, setChapter1Completed] = useState<boolean>(() => Boolean(getActiveSave()?.chapter1Completed));
-  const [isChapter2Unlocked, setIsChapter2Unlocked] = useState<boolean>(() => Boolean(getActiveSave()?.chapter1Completed));
+  const [isChapter2Unlocked, setIsChapter2Unlocked] = useState<boolean>(() => Boolean(getActiveSave()?.chapter1Completed || highestChapterCompleted >= 1 || (maxUnlockedChapter && maxUnlockedChapter >= 2)));
 
-  // Strict Chapter Locking Rules: Chapter 2 strictly requires Chapter 1 completed
+  const isChapter3Unlocked = Boolean(
+    (maxUnlockedChapter && maxUnlockedChapter >= 3) ||
+    contextChapter2Completed ||
+    Boolean(activeSave?.chapter2Completed) ||
+    Boolean(activeSave?.chapter3Unlocked) ||
+    (activeSave?.maxUnlockedChapter && activeSave.maxUnlockedChapter >= 3) ||
+    highestChapterCompleted >= 2 ||
+    localStorage.getItem('spirits_labyrinth_ch3_unlocked') === 'true'
+  );
+
+  // Strict Chapter Locking Rules: Chapter 2 strictly requires Chapter 1 completed; Chapter 3 requires Chapter 2 completed
   const isChapterUnlocked = (num: number): boolean => {
     if (num === 1) return true;
     if (num === 2) return isChapter2Unlocked;
-    if (num === 3) return highestChapterCompleted >= 2;
+    if (num === 3) return isChapter3Unlocked;
     return false;
   };
 
@@ -91,19 +112,19 @@ export const ChapterSelect: React.FC = () => {
     setActiveSave(act);
     const done = Boolean(act?.chapter1Completed);
     setChapter1Completed(done);
-    setIsChapter2Unlocked(done);
-  }, []);
+    setIsChapter2Unlocked(done || highestChapterCompleted >= 1 || (maxUnlockedChapter && maxUnlockedChapter >= 2));
+  }, [highestChapterCompleted, maxUnlockedChapter]);
 
   // Auto-focus on highest available chapter on load
   useEffect(() => {
-    if (highestChapterCompleted >= 2) {
+    if (isChapter3Unlocked) {
       setSelectedChapter(3);
     } else if (isChapter2Unlocked) {
       setSelectedChapter(2);
     } else {
       setSelectedChapter(1);
     }
-  }, [highestChapterCompleted, isChapter2Unlocked]);
+  }, [isChapter3Unlocked, isChapter2Unlocked]);
 
   // Audio cue when user newly unlocks a chapter
   useEffect(() => {
@@ -130,6 +151,61 @@ export const ChapterSelect: React.FC = () => {
     }
 
     sound.playMenuSelect();
+
+    if (chapterNum === 3) {
+      try {
+        const act = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
+        act.currentChapter = 3;
+        act.chapter = 3;
+        act.currentLocation = 'hostel_outer_grounds';
+        act.phase3Location = 'hostel_outer_grounds';
+        act.chapter2Completed = true;
+        act.chapter3Unlocked = true;
+        act.stairwayGateUnlocked = true;
+        act.stairwayGateKeyTaken = true;
+        act.maxUnlockedChapter = Math.max(act.maxUnlockedChapter || 0, 3);
+        act.highestChapterCompleted = Math.max(act.highestChapterCompleted || 0, 2);
+        localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(act));
+        localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
+
+        const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+        prog.chapter2Completed = true;
+        prog.chapter3Unlocked = true;
+        prog.maxUnlockedChapter = Math.max(prog.maxUnlockedChapter || 0, 3);
+        prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 2);
+        prog.stairwayGateUnlocked = true;
+        prog.currentLocation = 'hostel_outer_grounds';
+        prog.phase3Location = 'hostel_outer_grounds';
+        localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+      } catch {}
+
+      try {
+        if (typeof window !== 'undefined' && (window as any).prologEngine) {
+          (window as any).prologEngine.query?.(
+            'retractall(current_chapter(_)), assertz(current_chapter(3)), assertz(stairway_gate_unlocked).'
+          );
+        }
+      } catch {}
+
+      useGameStore.setState({
+        currentChapter: 3,
+        currentLocation: 'hostel_outer_grounds',
+        phase3Location: 'hostel_outer_grounds',
+        stairwayGateUnlocked: true,
+        chapter3Unlocked: true,
+        chapter2Completed: true,
+        maxUnlockedChapter: 3,
+        highestChapterCompleted: 2,
+      });
+
+      if (onClose) {
+        onClose();
+      }
+
+      navigate('/chapters/2');
+      return;
+    }
+
     const chap = CHAPTERS.find((c) => c.number === chapterNum);
     if (chap) {
       navigate(chap.route);
@@ -153,7 +229,9 @@ export const ChapterSelect: React.FC = () => {
     // 1. Clear all persistent save keys
     localStorage.removeItem('spirits_labyrinth_active_save');
     localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+    localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
     localStorage.removeItem('spirits_labyrinth_save_ch1');
+    localStorage.removeItem('spirits_labyrinth_progress_v1');
 
     // 2. Clear store / in-memory state
     resetChapterState();
@@ -199,6 +277,14 @@ export const ChapterSelect: React.FC = () => {
             return;
           }
           handleStartChapterTwo();
+        } else if (selectedChapter === 3) {
+          if (!isChapter3Unlocked) {
+            sound.playError();
+            setLockedNotice('Finish Chapter 2 to unlock.');
+            setTimeout(() => setLockedNotice(null), 3000);
+            return;
+          }
+          handleSelectChapter(3);
         } else {
           handleSelectChapter(selectedChapter);
         }
@@ -207,7 +293,7 @@ export const ChapterSelect: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedChapter, isChapter2Unlocked, highestChapterCompleted, showRestartConfirm]);
+  }, [selectedChapter, isChapter2Unlocked, isChapter3Unlocked, highestChapterCompleted, showRestartConfirm]);
 
   return (
     <AtmosphericLayout
@@ -279,6 +365,7 @@ export const ChapterSelect: React.FC = () => {
             {/* 1. Chapter 1 Card */}
             <ChapterCard
               title="BLIND START"
+              subtitle="1998 SEANCE"
               chapterNumber={1}
               status={chapter1Completed ? 'COMPLETED' : 'AVAILABLE / ACTIVE'}
               buttonText={
@@ -321,6 +408,7 @@ export const ChapterSelect: React.FC = () => {
             {/* 2. Chapter 2 Card */}
             <ChapterCard
               title="UNDERSTANDING"
+              subtitle="EAST WING INVESTIGATION"
               chapterNumber={2}
               status={isChapter2Unlocked ? 'AVAILABLE / ACTIVE' : 'LOCKED'}
               buttonText={isChapter2Unlocked ? 'CONTINUE' : 'LOCKED'}
@@ -344,11 +432,12 @@ export const ChapterSelect: React.FC = () => {
 
             {/* 3. Chapter 3 Card */}
             <ChapterCard
-              title="THE RITUAL"
+              title="CHAPTER 03"
+              subtitle="ESCAPE / THE OUTSIDE GROUNDS"
               chapterNumber={3}
-              status={highestChapterCompleted >= 2 ? 'AVAILABLE' : 'LOCKED'}
-              buttonText="PLAY"
-              isLocked={highestChapterCompleted < 2}
+              status={isChapter3Unlocked ? 'AVAILABLE / ACTIVE' : 'LOCKED'}
+              buttonText={isChapter3Unlocked ? 'PLAY' : 'LOCKED'}
+              isLocked={!isChapter3Unlocked}
               isCompleted={highestChapterCompleted >= 3}
               isSelected={selectedChapter === 3}
               onSelect={() => {
@@ -356,6 +445,12 @@ export const ChapterSelect: React.FC = () => {
                 setSelectedChapter(3);
               }}
               onAction={() => {
+                if (!isChapter3Unlocked) {
+                  sound.playError();
+                  setLockedNotice('Finish Chapter 2 to unlock.');
+                  setTimeout(() => setLockedNotice(null), 3000);
+                  return;
+                }
                 handleSelectChapter(3);
               }}
             />
@@ -445,4 +540,6 @@ export const ChapterSelect: React.FC = () => {
   );
 };
 
+export const ChapterSelectModal = ChapterSelect;
+export const ChapterSelectionView = ChapterSelect;
 export default ChapterSelect;

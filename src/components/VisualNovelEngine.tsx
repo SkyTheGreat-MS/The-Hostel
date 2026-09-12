@@ -69,10 +69,15 @@ import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
 import { Locker10InspectionView } from './Locker10InspectionView';
+import { Locker14InspectionView } from './Locker14InspectionView';
+import { Locker14InteriorView } from './Locker14InteriorView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
 import { BalconySceneView } from './BalconySceneView';
 import { RadioBenchInspectionView } from './RadioBenchInspectionView';
+import { DeskInspectionView } from './DeskInspectionView';
+import { StairwayGateInspectionView, BalconyStairwayGateView } from './StairwayGateInspectionView';
+import { OuterGroundsView } from './OuterGroundsView';
 import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
@@ -89,10 +94,17 @@ export {
   Locker32ZoomView,
   Locker09ZoomView,
   Locker10InspectionView,
+  Locker14InspectionView,
+  Locker14InteriorView,
   LockersOverviewView,
   PrayerAltarView,
   CaretakerOfficeView,
   BalconySceneView,
+  RadioBenchInspectionView,
+  DeskInspectionView,
+  StairwayGateInspectionView,
+  BalconyStairwayGateView,
+  OuterGroundsView,
   SceneNavBar,
   TopInventoryBar,
   InventoryDrawerModal,
@@ -669,6 +681,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setSelectedInventoryItem,
     deskMugMoved,
     setDeskMugMoved,
+    desk4bLooted,
+    setDesk4bLooted,
     hasMagneticCompass,
     setHasMagneticCompass,
     doorSmashed,
@@ -691,6 +705,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setWashroomMirrorScratched,
     stairwellGateInspected,
     setStairwellGateInspected,
+    mayResolved,
+    setMayResolved,
+    key14OnFloor,
+    setKey14OnFloor,
+    key14Collected,
+    setKey14Collected,
+    locker14Unlocked,
+    setLocker14Unlocked,
+    stairwayGateKeyTaken,
+    setStairwayGateKeyTaken,
+    stairwayGateUnlocked,
+    setStairwayGateUnlocked,
+    chapter3Unlocked,
+    setChapter3Unlocked,
+    removeItem,
+    advanceToChapter,
+    removeInventoryItem,
     resetProgress,
     resetChapterOneProgress,
   } = useGameProgress();
@@ -856,7 +887,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
     const activeSave = loadActiveGameProgress();
-    if (initialChapter === 2 || (!initialChapter && activeSave && activeSave.chapter === 2 && activeSave.chapter1Completed)) {
+    if (
+      initialChapter === 2 ||
+      initialChapter === 3 ||
+      (!initialChapter && activeSave && (activeSave.chapter === 2 || activeSave.chapter === 3) && activeSave.chapter1Completed)
+    ) {
       if (activeSave?.selectedCharacterId) {
         const char = CHARACTERS.find((c) => c.id === activeSave.selectedCharacterId);
         if (char) setSelectedCharacter(char);
@@ -864,14 +899,27 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (typeof activeSave?.composure === 'number') {
         setComposure(activeSave.composure);
       }
-      setCurrentChapter(2);
-      setPhase(2);
-      setPhase3Location(activeSave?.phase3Location || 'east_fork');
-      setCurrentScene('pathway_326_main');
+      const isCh3 = activeSave?.chapter === 3 || initialChapter === 3 || Boolean(activeSave?.chapter3Unlocked);
+      setCurrentChapter(isCh3 ? 3 : 2);
+      setPhase(isCh3 ? 3 : 2);
+      const targetPhase3Loc = isCh3
+        ? (activeSave?.chapter === 3 && activeSave?.phase3Location && activeSave.phase3Location !== 'east_fork'
+            ? activeSave.phase3Location
+            : 'hostel_outer_grounds')
+        : (activeSave?.phase3Location || 'east_fork');
+      setPhase3Location(targetPhase3Loc);
+      setCurrentScene(isCh3 ? 'hostel_outer_grounds_main' : 'pathway_326_main');
       setCurrentSubScene(null);
       setMode('phase3');
       setChapter1Completed(true);
       setCaretakerDoorUnlocked(true);
+      if (isCh3) {
+        setChapter3Unlocked(true);
+        setStairwayGateUnlocked(true);
+        setStairwayGateKeyTaken(true);
+        setLocker14Unlocked(true);
+        setMayResolved(true);
+      }
       // CRITICAL FIX: Trust activeSave fields — never force-set ritual item counts
       if (typeof activeSave?.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(activeSave.hasBlackCandlesCount);
       if (typeof activeSave?.hasMatchesCount === 'number') setHasMatchesCount(activeSave.hasMatchesCount);
@@ -883,8 +931,14 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
       if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
       if (activeSave?.radioTuned) setRadioTuned(true);
+      if (activeSave?.mayResolved) setMayResolved(true);
+      if (activeSave?.key14OnFloor) setKey14OnFloor(true);
+      if (activeSave?.key14Collected) setKey14Collected(true);
+      if (activeSave?.locker14Unlocked) setLocker14Unlocked(true);
+      if (activeSave?.stairwayGateKeyTaken) setStairwayGateKeyTaken(true);
       if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
       if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
+      if (activeSave?.desk4bLooted) setDesk4bLooted(true);
       // CRITICAL FIX: Trust the saved inventory exactly — no phantom item fallback
       if (activeSave?.inventory) {
         setInventory(activeSave.inventory);
@@ -914,6 +968,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasSmallBrassKey(Boolean(save.hasSmallBrassKey));
       setHasNylonRope(Boolean(save.hasNylonRope));
       setDeskMugMoved(Boolean(save.deskMugMoved));
+      setDesk4bLooted(Boolean(save.desk4bLooted));
       setDoorUnlocked(Boolean(save.doorUnlocked));
       if (typeof save.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(save.hasBlackCandlesCount);
       if (typeof save.hasMatchesCount === 'number') setHasMatchesCount(save.hasMatchesCount);
@@ -934,6 +989,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setNatAudienceConcluded(Boolean(save.natAudienceConcluded));
       if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
       if (activeSave?.radioTuned) setRadioTuned(true);
+      setMayResolved(Boolean(save.mayResolved));
+      setKey14OnFloor(Boolean(save.key14OnFloor));
+      setKey14Collected(Boolean(save.key14Collected));
+      setLocker14Unlocked(Boolean(save.locker14Unlocked));
+      setStairwayGateKeyTaken(Boolean(save.stairwayGateKeyTaken));
       if (typeof save.composure === 'number') setComposure(save.composure);
       if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
 
@@ -980,6 +1040,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasMatchesCount,
         hasBlackCandlesCount,
         hasBronzeBell,
+        mayResolved,
+        key14OnFloor,
+        key14Collected,
+        locker14Unlocked,
+        stairwayGateKeyTaken,
       });
       return;
     }
@@ -1003,6 +1068,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasSmallBrassKey,
         hasNylonRope,
         deskMugMoved,
+        desk4bLooted,
         doorUnlocked,
         composure,
         timerSeconds: timeLeft,
@@ -1023,6 +1089,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         askedNatTopics,
         corridorShadowScareTriggered,
         chapter1Completed: false,
+        mayResolved,
+        key14OnFloor,
+        key14Collected,
+        locker14Unlocked,
+        stairwayGateKeyTaken,
       });
 
       // Synchronize active save state to maintain Chapter 2 lock while playing Chapter 1
@@ -1054,6 +1125,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           hasReadLocker32Note,
           hasReadSandarLetters,
           hasCaretakerCandles,
+          desk4bLooted,
+          mayResolved,
+          key14OnFloor,
+          key14Collected,
+          locker14Unlocked,
+          stairwayGateKeyTaken,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1069,6 +1146,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     discoveredClues,
     doorUnlocked,
     deskMugMoved,
+    desk4bLooted,
     hasBobbyPin,
     hasWoodenBat,
     hasMagneticCompass,
@@ -1098,6 +1176,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     radioHasBatteries,
     radioTuned,
     hasCaretakerCandles,
+    mayResolved,
+    key14OnFloor,
+    key14Collected,
+    locker14Unlocked,
+    stairwayGateKeyTaken,
   ]);
 
   // Current active dialogue line for Phase 1 & 2
@@ -1313,11 +1396,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           ) {
             e.preventDefault();
             sound.playPaperRustle();
-            setPhase3Location('washroom_main');
-          } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+          } else if (
+            phase3Location === 'stairwell_gate' ||
+            phase3Location === 'stairway_gate_inspection' ||
+            phase3Location === 'washroom_main'
+          ) {
             e.preventDefault();
             sound.playPaperRustle();
             setPhase3Location('west_split_landing');
+          } else if (phase3Location === 'hostel_outer_grounds') {
+            e.preventDefault();
+            sound.playPaperRustle();
+            setPhase3Location('stairway_gate_inspection');
           } else if (phase3Location === 'west_split_landing') {
             e.preventDefault();
             sound.playPaperRustle();
@@ -1481,7 +1571,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: true,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure: method === 'bobby_pin' ? composure : Math.max(0, composure - 15),
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1550,7 +1645,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: false,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure,
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1601,7 +1701,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: false,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure,
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1650,6 +1755,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasWoodenBat: false,
       hasSmallBrassKey: false,
       hasNylonRope: false,
+      desk4bLooted: false,
       hasBlackCandlesCount: 0,
       hasMatchesCount: 0,
       hasBronzeBell: false,
@@ -1658,6 +1764,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       altarBellPlaced: false,
       natSummoned: false,
       hasConsultedNat: false,
+      mayResolved: false,
+      key14OnFloor: false,
+      key14Collected: false,
+      locker14Unlocked: false,
       composure: 100,
       timerSeconds: 600,
       timestamp: Date.now(),
@@ -1694,10 +1804,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setHasSmallBrassKey(false);
     setHasNylonRope(false);
     setDeskMugMoved(false);
+    setDesk4bLooted(false);
     setDoorUnlocked(false);
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    setMayResolved(false);
+    setKey14OnFloor(false);
+    setKey14Collected(false);
+    setLocker14Unlocked(false);
+    setStairwayGateKeyTaken(false);
     setHasBlackCandlesCount(0);
     setHasMatchesCount(0);
     setHasBronzeBell(false);
@@ -1784,6 +1900,31 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     navigate('/chapters');
   };
 
+  const handleContinueToChapterThree = () => {
+    sound.playMenuSelect();
+
+    // 1. Authoritative chapter bump (preserving inventory)
+    advanceToChapter(3);
+    setCurrentChapter(3);
+
+    // 2. Set authoritative scene & location
+    setStairwayGateUnlocked(true);
+    setChapter3Unlocked(true);
+    setPhase3Location('hostel_outer_grounds');
+
+    // 3. Sync Prolog engine
+    try {
+      if (typeof (window as any).prologEngine?.query === 'function') {
+        (window as any).prologEngine.query(
+          'retractall(player_has(key_stairway_gate)), assertz(stairway_gate_unlocked), assertz(escaped_interior).'
+        );
+      }
+    } catch {}
+
+    // 4. Trigger scene transition audio
+    sound.playRainOutdoor();
+  };
+
   // Caretaker Office Climax Handler
   const triggerSpectralBlackout = () => {
     setSpectralClimaxActive(true);
@@ -1858,7 +1999,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (mode === 'phase3') {
       if (phase3Location === 'hallway_threshold') return PHASE_3_ASSETS.pathwayThreshold;
       if (phase3Location === 'west_split_landing') return PHASE_3_ASSETS.westSplitLanding;
-      if (phase3Location === 'stairwell_gate') return PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'hostel_outer_grounds') return PHASE_3_ASSETS.hostelOuterGrounds || '/assets/scenes/hostel_outer_grounds_rain.jpg';
       if (phase3Location === 'washroom_main') return PHASE_3_ASSETS.washroomOverview;
       if (phase3Location === 'washroom_basin') return PHASE_3_ASSETS.washroomBasinZoom;
       if (phase3Location === 'washroom_stall') return PHASE_3_ASSETS.washroomStallZoom;
@@ -1870,7 +2012,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'locker_32') return PHASE_3_ASSETS.locker32Zoom;
       if (phase3Location === 'locker_09') return PHASE_3_ASSETS.locker09Zoom;
       if (phase3Location === 'locker_10') return '/assets/scenes/locker_10_interior.jpg';
-      if (phase3Location === 'locker_14') return PHASE_3_ASSETS.locker14Zoom;
+      if (phase3Location === 'locker_14') return locker14Unlocked ? PHASE_3_ASSETS.locker14Interior : PHASE_3_ASSETS.locker14Zoom;
+      if (phase3Location === 'locker_14_interior') return PHASE_3_ASSETS.locker14Interior;
       if (phase3Location === 'locker_spider') return PHASE_3_ASSETS.lockerSpiderZoom;
       if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
@@ -1909,7 +2052,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         case 'west_split_landing':
           return 'WEST WING • SPLIT LANDING';
         case 'stairwell_gate':
-          return 'WEST WING • STAIRWELL GATE';
+        case 'stairway_gate_inspection':
+          return 'GROUND FLOOR • STAIRWAY EXIT GATE';
+        case 'hostel_outer_grounds':
+          return 'GROUND FLOOR • HOSTEL COURTYARD & COMPOUND GATE';
         case 'washroom_main':
           return 'WEST WING • COMMUNAL WASHROOM';
         case 'washroom_basin':
@@ -1963,10 +2109,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       phase3Location === 'washroom_mirror'
     ) {
       sound.playPaperRustle();
-      setPhase3Location('washroom_main');
-    } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+    } else if (
+      phase3Location === 'stairwell_gate' ||
+      phase3Location === 'stairway_gate_inspection' ||
+      phase3Location === 'washroom_main'
+    ) {
       sound.playPaperRustle();
       setPhase3Location('west_split_landing');
+    } else if (phase3Location === 'hostel_outer_grounds') {
+      sound.playPaperRustle();
+      setPhase3Location('stairway_gate_inspection');
     } else if (phase3Location === 'west_split_landing') {
       sound.playPaperRustle();
       setPhase3Location('hallway_threshold');
@@ -2493,7 +2645,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Sub-scene Header Bar */}
           <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
-            {mode === 'room_escape' && activeInspectSubScene !== 'main' ? (
+            {mode === 'room_escape' && activeInspectSubScene !== 'main' && activeInspectSubScene !== 'desk' ? (
               <button
                 onClick={() => {
                   sound.playPaperRustle();
@@ -2511,19 +2663,19 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               <div />
             )}
 
-            <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
-              {mode === 'awakening' || activeInspectSubScene === 'main'
-                ? 'ROOM 4B • DORMITORY ROOM'
-                : activeInspectSubScene === 'desk'
-                ? 'INSPECTING • STUDY DESK'
-                : activeInspectSubScene === 'stool'
-                ? 'INSPECTING • BEDSIDE STOOL'
-                : activeInspectSubScene === 'wardrobe'
-                ? 'INSPECTING • WARDROBE FOOTING'
-                : activeInspectSubScene === 'calendar'
-                ? 'INSPECTING • WALL CALENDAR'
-                : 'INSPECTING • ROOM DOOR'}
-            </div>
+            {activeInspectSubScene !== 'desk' && (
+              <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
+                {mode === 'awakening' || activeInspectSubScene === 'main'
+                  ? 'ROOM 4B • DORMITORY ROOM'
+                  : activeInspectSubScene === 'stool'
+                  ? 'INSPECTING • BEDSIDE STOOL'
+                  : activeInspectSubScene === 'wardrobe'
+                  ? 'INSPECTING • WARDROBE FOOTING'
+                  : activeInspectSubScene === 'calendar'
+                  ? 'INSPECTING • WALL CALENDAR'
+                  : 'INSPECTING • ROOM DOOR'}
+              </div>
+            )}
           </div>
 
           {/* Observation Feedback Toast */}
@@ -2656,85 +2808,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
             {/* SUB-SCENE 2: STUDY DESK ZOOM (Hover-Discovery Hotspots) */}
             {activeInspectSubScene === 'desk' && (
-              <>
-                {/* Enamel Mug: SVG perspective polygon outline */}
-                <InteractiveHotspot
-                  id="desk_enamel_mug"
-                  name="Chipped Enamel Mug"
-                  cursorTooltip={deskMugMoved ? 'Shifted Enamel Mug' : 'Chipped Enamel Mug (Move Aside)'}
-                  polygonPoints="14.5,23.5 25.5,22 28.5,31 31.5,41 29,52 24.5,56.5 15.5,55 14,35"
-                  onClick={() => {
-                    if (!deskMugMoved) {
-                      setDeskMugMoved(true);
-                      addDiscoveredClue('roster_slip_1998');
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— A 1998 cleaning roster tucked under the mug. Room 4B was assigned to students May and Sandar. Clue logged to Case Notes. —"
-                      );
-                    } else {
-                      sound.playMenuSelect();
-                      setActiveMonologue(
-                        "— The chipped enamel mug has already been shifted aside. Nothing else underneath. —"
-                      );
-                    }
-                  }}
-                />
-
-                {/* Duty Roster Papers: SVG perspective polygon outline */}
-                <InteractiveHotspot
-                  id="desk_roster_slip"
-                  name="1998 Cleaning Roster Slip"
-                  cursorTooltip="Examine Cleaning Duty Roster (Aug 1998)"
-                  polygonPoints="15,42.5 3.5,57.5 22.5,93 39.5,70 33,52 27,56"
-                  onClick={() => {
-                    if (!deskMugMoved) {
-                      setDeskMugMoved(true);
-                      addDiscoveredClue('roster_slip_1998');
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— A 1998 cleaning roster tucked under the mug. Room 4B was assigned to students May and Sandar. Clue logged to Case Notes. —"
-                      );
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— 1998 Cleaning Duty Roster: Room 4B was assigned to May and Sandar for August 1998. —"
-                      );
-                    }
-                  }}
-                />
-
-                {/* Bobby Pin / Clip in Ceramic Tray (hidden when already collected) */}
-                {!hasInventoryItem('bobby_pin') && (
-                  <InteractiveHotspot
-                    id="desk_ceramic_tray"
-                    name="Bent Steel Bobby Pin"
-                    cursorTooltip="Inspect Ceramic Tray (Bent Steel Pin)"
-                    polygonPoints="48.5,28 56.5,28 52,36.5 48.5,36.5"
-                    onClick={() => {
-                      addInventoryItem('bobby_pin');
-                      sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'Searching through dried ink nibs in the ceramic tray, you retrieve a sturdy bent steel bobby pin! Added to inventory.',
-                        type: 'success',
-                      });
-                    }}
-                  />
-                )}
-
-                {/* Lecture Books & Notebook */}
-                <InteractiveHotspot
-                  id="desk_lecture_books"
-                  name="Lecture Notebooks"
-                  cursorTooltip="Physics & Chemistry Lecture Notes (1998)"
-                 polygonPoints="35,83 72,69 79,96 35,96"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "— Physics and chemistry lecture notes from 1998... Someone scribbled: 'Strange voltage drops and vibrations in the hallway past 11 PM...' —"
-                    );
-                  }}
-                />
-              </>
+              <DeskInspectionView
+                deskMugMoved={deskMugMoved}
+                setDeskMugMoved={setDeskMugMoved}
+                desk4bLooted={Boolean(desk4bLooted)}
+                setDesk4bLooted={setDesk4bLooted}
+                inventory={inventory}
+                addInventoryItem={addInventoryItem}
+                addDiscoveredClue={addDiscoveredClue}
+                setActiveMonologue={setActiveMonologue}
+                setRoomBanner={setRoomBanner}
+                onStepBack={() => {
+                  sound.playPaperRustle();
+                  setActiveInspectSubScene('main');
+                  setRoomBanner(null);
+                }}
+                hasBobbyPin={hasBobbyPin}
+              />
             )}
 
             {/* SUB-SCENE 3: BEDSIDE STOOL & COMPASS */}
@@ -3037,6 +3127,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           setComposure={setComposure}
           discoveredClues={discoveredClues}
           radioTuned={radioTuned}
+          mayResolved={mayResolved}
+          setMayResolved={setMayResolved}
+          key14OnFloor={key14OnFloor}
+          setKey14OnFloor={setKey14OnFloor}
+          key14Collected={key14Collected}
+          setKey14Collected={setKey14Collected}
+          addInventoryItem={addInventoryItem}
+          removeInventoryItem={removeInventoryItem}
+          addDiscoveredClue={addDiscoveredClue}
+          setRoomBanner={setRoomBanner}
           onStepBack={() => {
             try {
               sound.playDoorCreak();
@@ -3200,23 +3300,34 @@ onTuned={() => {
               </>
             )}
 
-            {/* SUB-SCENE 3: GROUND FLOOR STAIRWELL LANDING */}
-            {phase3Location === 'stairwell_gate' && (
-              <>
-                <InteractiveHotspot
-                  id="stairwell_gate_padlock"
-                  name="Padlock & Scissor Gate"
-                  polygonPoints="55,32 64,32 60,55 55,55"
-                  cursorTooltip="[Examine Heavy Padlock & Chain]"
-                  onClick={() => {
-                    setStairwellGateInspected(true);
-                    sound.playDramaticSting();
-                    setActiveMonologue(
-                      "— A heavy accordion gate... padlocked with clean chain links from the outside. No brute force will budge this. I need a key, or heavy bolt cutters. —"
-                    );
-                  }}
-                />
-              </>
+            {/* SUB-SCENE 3: STAIRWAY EXIT ACCORDION GATE & PADLOCK */}
+            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection') && (
+              <StairwayGateInspectionView
+                inventory={inventory}
+                setInventory={setInventory}
+                removeInventoryItem={removeInventoryItem}
+                removeItem={removeItem}
+                stairwayGateUnlocked={stairwayGateUnlocked}
+                setStairwayGateUnlocked={setStairwayGateUnlocked}
+                chapter3Unlocked={chapter3Unlocked}
+                setChapter3Unlocked={setChapter3Unlocked}
+                advanceToChapter={advanceToChapter}
+                setActiveMonologue={setActiveMonologue}
+                addDiscoveredClue={addDiscoveredClue}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location('west_split_landing')}
+                onSaveAndExit={handleSaveAndExit}
+              />
+            )}
+
+            {/* SUB-SCENE: HOSTEL OUTER GROUNDS / COURTYARD (CHAPTER 3) */}
+            {phase3Location === 'hostel_outer_grounds' && (
+              <OuterGroundsView
+                setActiveMonologue={setActiveMonologue}
+                addDiscoveredClue={addDiscoveredClue}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location('stairway_gate_inspection')}
+              />
             )}
 
             {/* SUB-SCENE 4: COMMUNAL WASHROOM OVERVIEW */}
@@ -3385,7 +3496,7 @@ onTuned={() => {
             )}
 
             {/* SUB-SCENE 5: EAST WING FORK - CHOICE CARDS */}
-            {phase3Location === 'east_fork' && (
+            {phase3Location === 'east_fork' && currentChapter < 3 && (
               <div className="absolute inset-0 flex items-center justify-center px-4 py-2 z-20 pointer-events-none">
                 <div
                   className={`w-full grid gap-3 sm:gap-4 md:gap-5 pointer-events-auto items-center justify-center ${
@@ -3474,6 +3585,7 @@ onTuned={() => {
             {phase3Location === 'lockers_main' && (
               <LockersOverviewView
                 hasSmallBrassKey={hasSmallBrassKey}
+                locker14Unlocked={locker14Unlocked}
                 setPhase3Location={setPhase3Location}
                 setActiveMonologue={setActiveMonologue}
                 setComposure={setComposure}
@@ -3601,27 +3713,22 @@ onTuned={() => {
               />
             )}
 
-            {/* ZOOM: LOCKER 14 PADLOCK */}
-            {phase3Location === 'locker_14' && (
-              <>
-                <InteractiveHotspot
-                  id="locker_14_cylinder"
-                  name="Barrel Cylinder Lock"
-                  x={40}
-                  y={15}
-                  width={23}
-                  height={48}
-                  shape="rect"
-                  cursorTooltip="[Inspect Barrel Lock]"
-                  onClick={() => {
-                    sound.playDramaticSting();
-                    setActiveMonologue(
-                      "— Locked tight with a small barrel cylinder. May's personal locker... the key is nowhere here. —"
-                    );
-                    addDiscoveredClue('clue_locker_14_found');
-                  }}
-                />
-              </>
+            {/* ZOOM: LOCKER 14 PADLOCK & INTERIOR */}
+            {(phase3Location === 'locker_14' || phase3Location === 'locker_14_interior') && (
+              <Locker14InspectionView
+                inventory={inventory}
+                setInventory={setInventory}
+                addInventoryItem={addInventoryItem}
+                removeInventoryItem={removeInventoryItem}
+                locker14Unlocked={locker14Unlocked}
+                setLocker14Unlocked={setLocker14Unlocked}
+                stairwayGateKeyTaken={stairwayGateKeyTaken}
+                setStairwayGateKeyTaken={setStairwayGateKeyTaken}
+                setActiveMonologue={setActiveMonologue}
+                addDiscoveredClue={addDiscoveredClue}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location('lockers_main')}
+              />
             )}
 
             {/* ZOOM: LOCKER SPIDERS */}

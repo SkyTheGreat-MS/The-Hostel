@@ -81,7 +81,22 @@
     advance_nat_dialogue/0,
     % Section 10: Chapter 2 Caretaker Return & Movement exports
     path/2,
-    leave_caretaker_office/0
+    leave_caretaker_office/0,
+    % Section 11: Room 4B Desk Letter Loot Chain & Balcony Handover
+    desk_4b_looted/0,
+    take_desk_letter/0,
+    may_accepts_handover/0,
+    may_resolved/0,
+    handover_letter/0,
+    pickup_key_14/0,
+    floor_has/1,
+    % Section 12: Locker 14 Padlock & Interior
+    locker_unlocked/1,
+    unlock_locker_14/0,
+    % Section 13: Stairway Exit Accordion Gate & Chapter 3 Escape
+    stairway_gate_unlocked/0,
+    escaped_interior/0,
+    unlock_stairway_gate/0
 ]).
 
 :- dynamic current_location/1.
@@ -97,6 +112,9 @@
 :- dynamic nat_summoned/1.
 :- dynamic chapter/1.
 :- dynamic chapter_phase/2.
+:- dynamic locker_unlocked/1.
+:- dynamic stairway_gate_unlocked/0.
+:- dynamic escaped_interior/0.
 :- dynamic chapter_1_completed/0.
 :- dynamic unlocked_location/1.
 
@@ -130,6 +148,14 @@
 % Caretaker Mechanical Latch & Nat Dialogue Step Tracking
 :- dynamic caretaker_latch_unlocked/0.
 :- dynamic nat_dialogue_step/1.
+
+% Room 4B Desk Letter Loot Chain State & Balcony May Handover
+:- dynamic desk_4b_looted/0.
+:- dynamic may_resolved/0.
+:- dynamic floor_has/1.
+
+% Locker 14 Padlock & Interior Dynamic State
+:- dynamic locker_unlocked/1.
 
 % Top-level defaults for interactive evaluation & bridge queries
 :- assertz(nat_summoned).
@@ -274,12 +300,18 @@ item(bronze_prayer_bell, caretaker_office_main, 'A ceremonial temple bell made o
 % deliberately distinct from Locker Bay supplies.
 item(brass_bell, caretaker_office_main, 'A ceremonial altar bell from the Caretaker archive.').
 item(tallow_candles_black, caretaker_office_main, 'Black altar tallow candles from the Caretaker archive.').
+item(letter_ko_zaw, room_4b_desk, 'Creased lined paper addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.').
+item(key_14, balcony_floor, 'A tarnished brass key stamped with the number 14. Tied with frayed nylon string.').
 
 % ==============================================================================
 % 3. INITIALIZATION & RESTART ROUTINES
 % ==============================================================================
 
 init_game_state :-
+    retractall(desk_4b_looted),
+    retractall(may_resolved),
+    retractall(floor_has(_)),
+    retractall(locker_unlocked(_)),
     retractall(current_location(_)),
     retractall(inventory(_)),
     retractall(clue_discovered(_)),
@@ -368,6 +400,35 @@ inspect_target(ceramic_mug, desk_mug_moved) :-
     retract(subscene_state(desk_mug_moved, false)),
     assertz(subscene_state(desk_mug_moved, true)),
     assertz(clue_discovered(hairpin_revealed)).
+
+% Room 4B Desk Loot Chain: Taking Ko Zaw's secret letter
+take_desk_letter :-
+    \+ desk_4b_looted,
+    assertz(player_has(letter_ko_zaw)),
+    assertz(desk_4b_looted).
+
+% May Handover Prerequisite Check: May only accepts handover if player possesses Ko Zaw's letter
+may_accepts_handover :-
+    player_has(letter_ko_zaw).
+
+% May Handover Execution: Consumes Ko Zaw's letter, resolves May's spirit, drops Key 14 on balcony floor
+handover_letter :-
+    player_has(letter_ko_zaw),
+    retractall(player_has(letter_ko_zaw)),
+    assertz(may_resolved),
+    assertz(floor_has(key_14)).
+
+% Key 14 Pickup Action: Takes Key 14 from the balcony floor into player inventory
+pickup_key_14 :-
+    floor_has(key_14),
+    retractall(floor_has(key_14)),
+    assertz(player_has(key_14)).
+
+% Locker 14 Padlock Unlock Execution: Consumes Key 14, unlocks Locker 14
+unlock_locker_14 :-
+    player_has(key_14),
+    retract(player_has(key_14)),
+    assertz(locker_unlocked(14)).
 
 % Inspecting the bloodstained third stall door
 inspect_target(bloodstained_stall, stall_checked) :-
@@ -891,3 +952,27 @@ advance_nat_dialogue :-
     Next is Current + 1,
     retractall(nat_dialogue_step(_)),
     assertz(nat_dialogue_step(Next)).
+
+% ==============================================================================
+% 12. LOCKER 14 UNLOCK
+% ==============================================================================
+
+unlock_locker_14 :-
+    (player_has(key_14) ; has_item(key_14)),
+    \+ locker_unlocked(14),
+    retractall(player_has(key_14)),
+    retractall(inventory(key_14)),
+    assertz(locker_unlocked(14)).
+
+% ==============================================================================
+% 13. STAIRWAY EXIT ACCORDION GATE & CHAPTER 3 ESCAPE
+% ==============================================================================
+
+unlock_stairway_gate :-
+    (player_has(key_stairway_gate) ; has_item(key_stairway_gate)),
+    \+ stairway_gate_unlocked,
+    retractall(player_has(key_stairway_gate)),
+    retractall(inventory(key_stairway_gate)),
+    assertz(stairway_gate_unlocked),
+    assertz(escaped_interior).
+

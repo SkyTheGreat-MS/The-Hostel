@@ -7,6 +7,7 @@ export type { ChapterPreviewModalProps } from './ChapterPreviewModal';
 
 export interface ChapterCardProps {
   title: string;
+  subtitle?: string;
   chapterNumber: number;
   status: string;
   buttonText: string;
@@ -22,6 +23,7 @@ export interface ChapterCardProps {
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({
   title,
+  subtitle,
   chapterNumber,
   status,
   buttonText,
@@ -38,7 +40,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
     ? 'bg-[#0b100e]/80 border border-[#1a261f] opacity-50 cursor-not-allowed text-stone-600 rounded-xl'
     : isSelected
     ? 'bg-[#141f19]/95 border-2 border-[#476756] shadow-[0_0_25px_rgba(71,103,86,0.35)] text-[#c2d6cc] backdrop-blur-md rounded-xl'
-    : 'bg-[#101613]/90 border border-[#233329] text-stone-400 backdrop-blur-md rounded-xl';
+    : 'bg-[#101613]/90 border border-[#2b4235] hover:border-[#40614f] shadow-[0_0_15px_rgba(43,66,53,0.3)] hover:shadow-[0_0_22px_rgba(64,97,79,0.45)] text-stone-400 backdrop-blur-md rounded-xl cursor-pointer';
 
   return (
     <motion.div
@@ -100,6 +102,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
         >
           {title}
         </h3>
+        {subtitle && (
+          <p
+            className={`mt-1 font-mono text-[10px] sm:text-xs tracking-widest uppercase ${
+              isLocked ? 'text-stone-600' : 'text-[#8fa89b]'
+            }`}
+          >
+            {subtitle}
+          </p>
+        )}
       </div>
 
       {/* Bottom Action Area */}
@@ -221,5 +232,8 @@ export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> =
 export const ChapterSelection: React.FC = () => {
   return <ChapterSelect />;
 };
+
+export { ChapterSelect as ChapterSelectModal };
+export { ChapterSelect as ChapterSelectionView };
 
 export default ChapterSelection;

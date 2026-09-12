@@ -70,6 +70,29 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
     shortLabel: 'Batts',
     icon: 'zap',
   },
+  /**
+   * letter_ko_zaw — Ko Zaw's Folded Letter retrieved from the study desk in Room 4B.
+   */
+  letter_ko_zaw: {
+    id: 'letter_ko_zaw',
+    shortLabel: 'Letter',
+    icon: 'mail',
+  },
+  clue_letter_4b: {
+    id: 'clue_letter_4b',
+    shortLabel: 'Letter',
+    icon: 'mail',
+  },
+  key_14: {
+    id: 'key_14',
+    shortLabel: 'Key 14',
+    icon: 'key',
+  },
+  key_stairway_gate: {
+    id: 'key_stairway_gate',
+    shortLabel: 'Gate Key',
+    icon: 'key',
+  },
 };
 
 export default ITEM_DATABASE;

@@ -14,6 +14,7 @@ import {
 } from './types';
 import { sound } from './audioEngine';
 import { CHARACTER_ROSTER } from './characterData';
+import { useGameStore } from './context/GameProgressContext';
 
 export {
   type NatKnowledgeTier,
@@ -54,6 +55,7 @@ export interface ChapterOneState {
   hasSmallBrassKey: boolean;
   hasNylonRope: boolean;
   deskMugMoved: boolean;
+  desk4bLooted?: boolean;
   doorUnlocked: boolean;
   washroomStallChecked: boolean;
   washroomMirrorScratched: boolean;
@@ -80,8 +82,19 @@ export interface ChapterOneState {
   selectedCharacterId?: string | null;
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
+  chapter2Completed?: boolean;
   natAudienceConcluded?: boolean;
+  mayResolved?: boolean;
+  key14OnFloor?: boolean;
+  key14Collected?: boolean;
+  locker14Unlocked?: boolean;
+  stairwayGateKeyTaken?: boolean;
+  stairwayGateUnlocked?: boolean;
+  chapter3Unlocked?: boolean;
   currentChapter?: number;
+  maxUnlockedChapter?: number;
+  unlockedChapters?: number[];
+  highestChapterCompleted?: number;
 }
 
 export const initialChapterOneState: ChapterOneState = {
@@ -104,6 +117,7 @@ export const initialChapterOneState: ChapterOneState = {
   hasSmallBrassKey: false,
   hasNylonRope: false,
   deskMugMoved: false,
+  desk4bLooted: false,
   doorUnlocked: false,
   washroomStallChecked: false,
   washroomMirrorScratched: false,
@@ -126,8 +140,19 @@ export const initialChapterOneState: ChapterOneState = {
   selectedCharacterId: 'moe_stheinkha',
   corridorShadowScareTriggered: false,
   chapter1Completed: false,
+  chapter2Completed: false,
   natAudienceConcluded: false,
+  mayResolved: false,
+  key14OnFloor: false,
+  key14Collected: false,
+  locker14Unlocked: false,
+  stairwayGateKeyTaken: false,
+  stairwayGateUnlocked: false,
+  chapter3Unlocked: false,
   currentChapter: 1,
+  maxUnlockedChapter: 1,
+  unlockedChapters: [1],
+  highestChapterCompleted: 0,
 };
 
 export type GameStoreAction =
@@ -140,6 +165,13 @@ export type GameStoreAction =
   | { type: 'SET_IS_PAUSED'; payload: boolean }
   | { type: 'SET_ACTIVE_MONOLOGUE'; payload: string | null }
   | { type: 'SET_ACTIVE_ITEM_MODAL'; payload: string | null }
+  | { type: 'SET_LOCKER_14_UNLOCKED'; payload: boolean }
+  | { type: 'SET_STAIRWAY_GATE_KEY_TAKEN'; payload: boolean }
+  | { type: 'SET_STAIRWAY_GATE_UNLOCKED'; payload: boolean }
+  | { type: 'ADVANCE_TO_CHAPTER_THREE' }
+  | { type: 'ADVANCE_TO_CHAPTER'; payload: number }
+  | { type: 'SET_CHAPTER_2_COMPLETED'; payload: boolean }
+  | { type: 'SET_MAX_UNLOCKED_CHAPTER'; payload: number }
   | { type: 'SET_TIMER_SECONDS'; payload: number | ((prev: number) => number) }
   | { type: 'SET_COMPOSURE'; payload: number | ((prev: number) => number) }
   | { type: 'SET_INVENTORY'; payload: string[] | ((prev: string[]) => string[]) }
@@ -152,6 +184,7 @@ export type GameStoreAction =
   | { type: 'SET_HAS_SMALL_BRASS_KEY'; payload: boolean }
   | { type: 'SET_HAS_NYLON_ROPE'; payload: boolean }
   | { type: 'SET_DESK_MUG_MOVED'; payload: boolean }
+  | { type: 'SET_DESK_4B_LOOTED'; payload: boolean }
   | { type: 'SET_DOOR_UNLOCKED'; payload: boolean }
   | { type: 'SET_WASHROOM_STALL_CHECKED'; payload: boolean }
   | { type: 'SET_WASHROOM_MIRROR_SCRATCHED'; payload: boolean }
@@ -174,6 +207,10 @@ export type GameStoreAction =
       } | null;
     }
   | { type: 'TICK_TIMER' }
+  | { type: 'REMOVE_INVENTORY_ITEM'; payload: string }
+  | { type: 'SET_MAY_RESOLVED'; payload: boolean }
+  | { type: 'SET_KEY_14_ON_FLOOR'; payload: boolean }
+  | { type: 'SET_KEY_14_COLLECTED'; payload: boolean }
   | { type: 'APPLY_COMPOSURE_SHOCK'; payload: { baseDamage: number; tensionMultiplier?: number } }
   | { type: 'APPLY_RELIEF_SURGE'; payload: { baseRecovery: number; resolveMultiplier?: number } }
   | { type: 'ADVANCE_CHAPTER_WITH_ROLLOVER'; payload?: { resolveMultiplier?: number } }
@@ -251,6 +288,19 @@ export function chapterOneReducer(
       };
     }
 
+    case 'REMOVE_INVENTORY_ITEM': {
+      const nextInv = state.inventory.filter((item) => item !== action.payload);
+      return {
+        ...state,
+        inventory: nextInv,
+        hasBobbyPin: nextInv.includes('bobby_pin'),
+        hasWoodenBat: nextInv.includes('wooden_bat'),
+        hasMagneticCompass: nextInv.includes('magnetic_compass'),
+        hasSmallBrassKey: nextInv.includes('small_brass_key_32'),
+        hasNylonRope: nextInv.includes('coiled_nylon_rope'),
+      };
+    }
+
     case 'SET_DISCOVERED_CLUES':
       return {
         ...state,
@@ -295,6 +345,83 @@ export function chapterOneReducer(
 
     case 'SET_DESK_MUG_MOVED':
       return { ...state, deskMugMoved: action.payload };
+
+    case 'SET_DESK_4B_LOOTED':
+      return { ...state, desk4bLooted: action.payload };
+
+    case 'SET_MAY_RESOLVED':
+      return { ...state, mayResolved: action.payload };
+
+    case 'SET_KEY_14_ON_FLOOR':
+      return { ...state, key14OnFloor: action.payload };
+
+    case 'SET_KEY_14_COLLECTED':
+      return { ...state, key14Collected: action.payload };
+
+    case 'SET_LOCKER_14_UNLOCKED':
+      return { ...state, locker14Unlocked: action.payload };
+
+    case 'SET_STAIRWAY_GATE_KEY_TAKEN':
+      return { ...state, stairwayGateKeyTaken: action.payload };
+
+    case 'SET_STAIRWAY_GATE_UNLOCKED':
+      return { ...state, stairwayGateUnlocked: action.payload };
+
+    case 'ADVANCE_TO_CHAPTER_THREE':
+      return {
+        ...state,
+        currentChapter: 3,
+        maxUnlockedChapter: Math.max(state.maxUnlockedChapter || 1, 3),
+        unlockedChapters: Array.from(new Set([...(state.unlockedChapters || [1, 2]), 3])),
+        phase3Location: 'hostel_outer_grounds',
+        chapter2Completed: true,
+        chapter3Unlocked: true,
+        stairwayGateUnlocked: true,
+      };
+
+    case 'ADVANCE_TO_CHAPTER': {
+      const target = action.payload;
+      const newMax = Math.max(state.maxUnlockedChapter || 1, target);
+      const unlocked = Array.from(
+        new Set([...(state.unlockedChapters || [1]), ...Array.from({ length: newMax }, (_, i) => i + 1)])
+      );
+      return {
+        ...state,
+        currentChapter: target,
+        maxUnlockedChapter: newMax,
+        unlockedChapters: unlocked,
+        ...(target >= 3
+          ? {
+              chapter2Completed: true,
+              chapter3Unlocked: true,
+              stairwayGateUnlocked: true,
+              phase3Location: 'hostel_outer_grounds' as Phase3Location,
+            }
+          : {}),
+      };
+    }
+
+    case 'SET_CHAPTER_2_COMPLETED':
+      return {
+        ...state,
+        chapter2Completed: action.payload,
+        maxUnlockedChapter: Math.max(state.maxUnlockedChapter || 1, action.payload ? 3 : 1),
+        unlockedChapters: action.payload
+          ? Array.from(new Set([...(state.unlockedChapters || [1, 2]), 3]))
+          : state.unlockedChapters,
+      };
+
+    case 'SET_MAX_UNLOCKED_CHAPTER': {
+      const newMax = Math.max(state.maxUnlockedChapter || 1, action.payload);
+      const unlocked = Array.from(
+        new Set([...(state.unlockedChapters || [1]), ...Array.from({ length: newMax }, (_, i) => i + 1)])
+      );
+      return {
+        ...state,
+        maxUnlockedChapter: newMax,
+        unlockedChapters: unlocked,
+      };
+    }
 
     case 'SET_DOOR_UNLOCKED':
       return { ...state, doorUnlocked: action.payload };
@@ -657,7 +784,13 @@ export function hasActiveChapterOneSave(): boolean {
       (save.inventory && save.inventory.length > 0) ||
       (save.discoveredClues && save.discoveredClues.length > 0) ||
       save.doorUnlocked ||
-      save.deskMugMoved
+      save.deskMugMoved ||
+      Boolean(save.desk4bLooted) ||
+      Boolean(save.mayResolved) ||
+      Boolean(save.key14Collected) ||
+      Boolean(save.locker14Unlocked) ||
+      Boolean(save.stairwayGateKeyTaken) ||
+      Boolean(save.stairwayGateUnlocked)
     );
   }
   const active = loadActiveGameProgress();
@@ -666,7 +799,13 @@ export function hasActiveChapterOneSave(): boolean {
       active.currentPhase > 1 ||
       (active.inventory && active.inventory.length > 0) ||
       (active.discoveredClues && active.discoveredClues.length > 0) ||
-      active.caretakerDoorUnlocked
+      active.caretakerDoorUnlocked ||
+      Boolean(active.desk4bLooted) ||
+      Boolean(active.mayResolved) ||
+      Boolean(active.key14Collected) ||
+      Boolean(active.locker14Unlocked) ||
+      Boolean(active.stairwayGateKeyTaken) ||
+      Boolean(active.stairwayGateUnlocked)
     );
   }
   return false;
@@ -696,6 +835,14 @@ export function lockChapterOneAndSave(
     hasBlackCandlesCount?: number;
     /** Whether the bronze prayer bell was acquired. Defaults to false if omitted. */
     hasBronzeBell?: boolean;
+    desk4bLooted?: boolean;
+    mayResolved?: boolean;
+    key14OnFloor?: boolean;
+    key14Collected?: boolean;
+    locker14Unlocked?: boolean;
+    stairwayGateKeyTaken?: boolean;
+    stairwayGateUnlocked?: boolean;
+    chapter3Unlocked?: boolean;
   }
 ): ActiveSaveState {
   // Only fallback to test seed if customInventory was not passed at all (e.g. in unit tests).
@@ -743,6 +890,14 @@ export function lockChapterOneAndSave(
     hasReadSandarLetters: extraFlags?.hasReadSandarLetters,
     hasCaretakerCandles: extraFlags?.hasCaretakerCandles,
     altarCandlesPlaced: extraFlags?.altarCandlesPlaced,
+    desk4bLooted: extraFlags?.desk4bLooted,
+    mayResolved: extraFlags?.mayResolved,
+    key14OnFloor: extraFlags?.key14OnFloor,
+    key14Collected: extraFlags?.key14Collected,
+    locker14Unlocked: extraFlags?.locker14Unlocked,
+    stairwayGateKeyTaken: extraFlags?.stairwayGateKeyTaken,
+    stairwayGateUnlocked: extraFlags?.stairwayGateUnlocked,
+    chapter3Unlocked: extraFlags?.chapter3Unlocked,
     currentChapter: 2,
     timestamp: Date.now(),
   };
@@ -753,6 +908,75 @@ export function lockChapterOneAndSave(
   } catch {}
 
   return chapterTwoSaveState;
+}
+
+export function advanceToChapterThreeAndSave(
+  selectedCharacterId: string = 'thazin',
+  currentComposure: number = 100,
+  customInventory?: string[],
+  timeRemaining: number = 0,
+  resolveMultiplier: number = 1.0,
+  extraFlags?: {
+    stairwayGateUnlocked?: boolean;
+    discoveredClues?: string[];
+    hasMatchesCount?: number;
+    hasBlackCandlesCount?: number;
+    hasBronzeBell?: boolean;
+    [key: string]: any;
+  }
+): ActiveSaveState {
+  const rolloverTime = calculateRolloverTime(timeRemaining);
+  const recoveredComposure = calculateComposureRecovery(currentComposure, resolveMultiplier);
+
+  const chapterThreeSaveState: ActiveSaveState = {
+    chapter: 3,
+    currentPhase: 1,
+    phase3Location: 'hostel_outer_grounds',
+    chapter1Completed: true,
+    chapter2Completed: true,
+    chapter3Unlocked: true,
+    maxUnlockedChapter: 3,
+    unlockedChapters: [1, 2, 3],
+    highestChapterCompleted: 2,
+    selectedCharacterId,
+    inventory: customInventory !== undefined ? customInventory : [],
+    discoveredClues: extraFlags?.discoveredClues,
+    hasMatchesCount: extraFlags?.hasMatchesCount ?? 0,
+    hasBlackCandlesCount: extraFlags?.hasBlackCandlesCount ?? 0,
+    hasBronzeBell: extraFlags?.hasBronzeBell ?? false,
+    caretakerDoorUnlocked: true,
+    stairwayGateUnlocked: true,
+    stairwayGateKeyTaken: true,
+    composure: recoveredComposure,
+    timerSeconds: rolloverTime,
+    currentChapter: 3,
+    timestamp: Date.now(),
+  };
+
+  try {
+    localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(chapterThreeSaveState));
+    localStorage.setItem('spirits_labyrinth_ch2_unlocked', 'true');
+    localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
+    const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+    prog.chapter2Completed = true;
+    prog.chapter3Unlocked = true;
+    prog.maxUnlockedChapter = Math.max(prog.maxUnlockedChapter || 1, 3);
+    prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 2);
+    prog.stairwayGateUnlocked = true;
+    prog.phase3Location = 'hostel_outer_grounds';
+    localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+  } catch {}
+
+  return chapterThreeSaveState;
+}
+
+export function hasActiveChapterThreeSave(): boolean {
+  try {
+    const rawCh3 = localStorage.getItem('spirits_labyrinth_ch3_unlocked');
+    if (rawCh3 === 'true') return true;
+  } catch {}
+  const save = loadActiveGameProgress();
+  return Boolean(save && (save.chapter === 3 || save.chapter3Unlocked));
 }
 
 export function createFreshChapterOneSave(): ActiveSaveState {
@@ -768,13 +992,16 @@ export function createFreshChapterOneSave(): ActiveSaveState {
     hasWoodenBat: false,
     hasSmallBrassKey: false,
     hasNylonRope: false,
-    hasBlackCandlesCount: 0,
     hasMatchesCount: 0,
+    hasBlackCandlesCount: 0,
     hasBronzeBell: false,
+    hasReadLocker32Note: false,
+    hasReadSandarLetters: false,
+    hasLocker09Candle: false,
+    hasLocker09Matchbox: false,
     caretakerDoorUnlocked: false,
     composure: 100,
     timerSeconds: 600,
-    natAudienceConcluded: false,
     timestamp: Date.now(),
   };
 }
@@ -813,7 +1040,13 @@ export function hasActiveChapterTwoSave(): boolean {
     if (rawCh2 === 'false') return false;
   } catch {}
   const save = loadActiveGameProgress();
-  return Boolean(save && (save.chapter === 2 || save.chapter1Completed));
+  return Boolean(save && (save.chapter === 2 || save.chapter === 3 || save.chapter1Completed));
 }
+
+export function advanceToChapter(targetChapter: number): void {
+  useGameStore.getState().advanceToChapter(targetChapter);
+}
+
+export { useGameStore } from './context/GameProgressContext';
 
 export default chapterOneReducer;

@@ -6,6 +6,7 @@ import { ChapterSelect } from './pages/ChapterSelect';
 import { ChapterOne } from './pages/ChapterOne';
 import { ChapterTwo } from './pages/ChapterTwo';
 import { ChapterStub } from './pages/ChapterStub';
+import { hasActiveChapterThreeSave } from './gameStore';
 
 // Optional Diagnostic Modal components (retained for verification & dev testing)
 import { TestRunner } from './components/TestRunner';
@@ -139,23 +140,30 @@ export default function App() {
           {/* Chapter 2 Gameplay (Playable via Active Save) */}
           <Route path="/chapters/2" element={<ChapterTwo />} />
 
-          {/* Chapter 3 Stub (Guarded) */}
+          {/* Unified Game Route Alias */}
+          <Route path="/game" element={<ChapterTwo />} />
+
+          {/* Chapter 3 Route (Playable when unlocked, else Stub) */}
           <Route
             path="/chapters/3"
             element={
-              <ChapterStub
-                chapterNumber={3}
-                title="Chapter 3"
-                subtitle="Chapter 3 — The Ritual"
-                tagline="THE DRIED WELL CONFRONTATION & TWIST OF KINSHIP"
-                scopeSummary="The dried well ceremony. Perform the ultimate Nat pacification rite, face the killer's bloodline connection, and sever the 28-year curse."
-                plannedFeatures={[
-                  'Descent to the overgrown courtyard Nat shrine and sealed dried well',
-                  'High-stakes psychological confrontation with the Thaye spirit',
-                  'Secret kinship revelation connecting Aye Aye to Aunt Sandar',
-                  'Branching ritual endings: True Rest, Bloodline Twist, or Eternal Loop',
-                ]}
-              />
+              hasActiveChapterThreeSave() ? (
+                <ChapterTwo />
+              ) : (
+                <ChapterStub
+                  chapterNumber={3}
+                  title="Chapter 3"
+                  subtitle="Chapter 3 — The Ritual"
+                  tagline="THE DRIED WELL CONFRONTATION & TWIST OF KINSHIP"
+                  scopeSummary="The dried well ceremony. Perform the ultimate Nat pacification rite, face the killer's bloodline connection, and sever the 28-year curse."
+                  plannedFeatures={[
+                    'Descent to the overgrown courtyard Nat shrine and sealed dried well',
+                    'High-stakes psychological confrontation with the Thaye spirit',
+                    'Secret kinship revelation connecting Aye Aye to Aunt Sandar',
+                    'Branching ritual endings: True Rest, Bloodline Twist, or Eternal Loop',
+                  ]}
+                />
+              )
             }
           />
 

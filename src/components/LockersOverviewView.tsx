@@ -1,9 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { sound } from '../audioEngine';
 import { Phase3Location } from '../types';
 
 export interface LockersOverviewViewProps {
   hasSmallBrassKey: boolean;
+  locker14Unlocked?: boolean;
   setPhase3Location: (loc: Phase3Location) => void;
   setActiveMonologue: (msg: string | null) => void;
   applyComposureDamage?: (amount: number, reason?: string) => void;
@@ -13,6 +14,7 @@ export interface LockersOverviewViewProps {
 
 export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
   hasSmallBrassKey,
+  locker14Unlocked = false,
   setPhase3Location,
   setActiveMonologue,
   applyComposureDamage,
@@ -52,7 +54,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 14',
+              text: locker14Unlocked ? 'Open Locker 14 (Unlocked)' : 'Inspect Locker 14',
               x: 18.8,
               y: 9.5,
             });
@@ -60,7 +62,11 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseLeave={() => setHoveredLocker(null)}
           onClick={() => {
             sound.playPaperRustle();
-            setPhase3Location('locker_14');
+            if (locker14Unlocked) {
+              setPhase3Location('locker_14_interior');
+            } else {
+              setPhase3Location('locker_14');
+            }
           }}
         >
           <title>Inspect Locker 14 (Mama May)</title>
