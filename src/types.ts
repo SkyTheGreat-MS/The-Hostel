@@ -127,6 +127,7 @@ export type Phase3Location =
   | 'balcony'
   | 'radio_bench_inspection'
   | 'stairway_gate_inspection'
+  | 'stairway_exit_gate'
   | 'hostel_outer_grounds';
 
 export interface GameState {
