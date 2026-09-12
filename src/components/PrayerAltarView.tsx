@@ -128,7 +128,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     active: boolean;
   }>({
     speaker: 'Hostel Guardian Nat',
-    line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+    line: 'မင်းက ၁၉၉၈ ခုနှစ်က လူမဟုတ်ဘူး: မင်းရဲ့ ဝိညာဉ်ထဲမှာ အတုအယောင်အနံ့အသက် ရနေတယ်... မင်းက ဒီစင်္ကြံလမ်းနဲ့မထိုက်တန်တဲ့သူပဲ: ဘာလို ငါ့ကို နှိးလိုက်ရတာလဲ',
     active: false,
   });
 
@@ -197,7 +197,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (heldCandles <= 0) {
       sound.playError();
       setActiveMonologue(
-        "— An iron candle spike. I have no more ritual candles to mount. The altar still needs more tallow. —"
+        "—သံဖယောင်းတိုင်စိုက်တံပဲ။ စိုက်စရာ ယဇ်ပူဇော်တဲ့ ဖယောင်းတိုင် ငါ့ဆီမှာ မကျန်တော့ဘူး။ စင်ပေါ်မှာ ဆီမီးပူဇော်တဲ့ဖယောင်းတိုင် ထပ်လိုသေးတယ်။—"
       );
       return;
     }
@@ -231,7 +231,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playGhostWhisper();
       setDialogueState({
         speaker: 'Hostel Guardian Nat',
-        line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+        line: '၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။  ',
         active: true,
       });
       return;
@@ -289,17 +289,17 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playMatchSnap();
       setActiveMonologue(
         nextFails === 1
-          ? "The match snapped in my trembling fingers! The cold dampness here is thick..."
-          : "Another match sputtered out! My hands won't stay steady..."
+          ? "လက်တုန်တုန်နဲ့ မီးခြစ်က မီးငြိမ်းသွားပြီ!ဒီနေရာက စိုစွတ်အေးစက်လွန်းတယ်…"
+          : "နောက်တစ်ချောင်းလည်း ငြိမ်းသွားပြန်ပြီ… လက်တွေ မငြိမ်ဘူး..."
       );
     } else {
       // Successful strike (or forced catch on match 3)
       if (isFinalMatch && roll < failChance) {
         // Final desperate catch: high mental toll
         setComposure((c) => Math.max(5, c - 14));
-        setActiveMonologue("The final match nearly crumbled, but the sulfur finally caught! The flame bites cold...");
+        setActiveMonologue("နောက်ဆုံးမီးခြစ်တစ်ချောင်းလည်း ပျက်တော့မလို… ဒါပေမဲ့ ဆာလဖာက မီးစွဲသွားပြီ!ဟာ… မီးက အေးစက်စက်နဲ့…");
       } else {
-        setActiveMonologue("The sulfur ignites with a hiss, casting pale blue light across the altar.");
+        setActiveMonologue("မီးက ရှူးခနဲ စွဲပြီး ယဇ်ပလ္လင်ကို အပြာဖျော့ဖျော့ အလင်းပေးနေတယ်။");
       }
 
       setMatchesRemaining(0);
@@ -326,7 +326,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playGhostWhisper();
       setDialogueState({
         speaker: 'Hostel Guardian Nat',
-        line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+        line: 'M၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။',
         active: true,
       });
       return;
