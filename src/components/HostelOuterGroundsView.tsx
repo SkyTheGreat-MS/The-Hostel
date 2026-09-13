@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { useGameStore } from '../store/useGameStore';
 import { sound } from '../utils/audio';
@@ -41,10 +41,10 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
     } catch {}
     if (onNavigate) {
       onNavigate('balcony_stairway_gate');
+    } else if (setPhase3Location) {
+      setPhase3Location('west_split_landing');
     } else if (onReturn) {
       onReturn();
-    } else if (setPhase3Location) {
-      setPhase3Location('stairway_gate_inspection');
     }
   };
 
@@ -54,11 +54,12 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
     } catch {}
     if (onNavigate) {
       onNavigate('compound_iron_gate');
-    } else {
-      setActiveMonologue(
-        "â€” The massive iron compound gate is bound in heavy padlocks and overgrown thorns. Beyond lies the unpaved mud road leading toward Mawlamyine. â€”"
-      );
+    } else if (setPhase3Location) {
+      setPhase3Location('compound_iron_gate');
     }
+    setActiveMonologue(
+      "— The massive iron compound gate is bound in heavy padlocks and overgrown thorns. Beyond lies the unpaved mud road leading toward Mawlamyine. —"
+    );
   };
 
   const handleEnterGarage = () => {
@@ -67,11 +68,12 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
     } catch {}
     if (onNavigate) {
       onNavigate('garage_subterranean');
-    } else {
-      setActiveMonologue(
-        "â€” A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. â€”"
-      );
+    } else if (setPhase3Location) {
+      setPhase3Location('garage_subterranean');
     }
+    setActiveMonologue(
+      "— A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. —"
+    );
   };
 
   const handleInspectBanyanWell = () => {
@@ -80,11 +82,12 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
     } catch {}
     if (onNavigate) {
       onNavigate('banyan_wellhead');
-    } else {
-      setActiveMonologue(
-        "â€” The twisted roots of the ancient banyan tree encircle the stone well. Deep whispers bubble up from the dark water below... â€”"
-      );
+    } else if (setPhase3Location) {
+      setPhase3Location('banyan_wellhead');
     }
+    setActiveMonologue(
+      "— The twisted roots of the ancient banyan tree encircle the stone well. Deep whispers bubble up from the dark water below... —"
+    );
   };
 
   return (
@@ -102,14 +105,14 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
       {/* Atmospheric Weather Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/60 pointer-events-none" />
 
-      {/* Interactive Hotspots Layer â€” pointer-events-auto guarantees hitboxes stay active after returning */}
+      {/* Interactive Hotspots Layer — pointer-events-auto guarantees hitboxes stay active after returning */}
       <div className="absolute inset-0 z-20 pointer-events-auto">
         {/* Hotspot 1: Return to Building / Stairway */}
         <InteractiveHotspot
           id="grounds_stairway_exit"
           name="Return to Stairway Entrance"
           cursorTooltip="Return to Stairway Entrance"
-          polygonPoints="0,32 15,30 15,85 0,90"
+          polygonPoints="0,32 15,30 15,65 0,65"
           onClick={handleReturnToStairway}
         />
 
@@ -118,7 +121,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_compound_gate"
           name="Perimeter Compound Gate"
           cursorTooltip="Examine Compound Gate"
-          polygonPoints="34,22 62,22 62,65 34,65"
+          polygonPoints="34,22 57,22 57,65 34,65"
           onClick={handleInspectCompoundGate}
         />
 

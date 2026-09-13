@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { sound } from '../audioEngine';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { ThoughtLine } from './common/ThoughtLine';
+import { SceneNavBar } from './SceneNavBar';
 
 export interface WashroomMirrorViewProps {
   onReturn: () => void;
@@ -62,6 +63,13 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
 
   return (
     <div className="relative w-full h-full overflow-hidden select-none bg-black pointer-events-auto">
+      {/* Navigation Bar */}
+      <SceneNavBar
+        onReturn={handleReturn}
+        returnDestination="COMMUNAL WASHROOM"
+        areaZone="WEST WING"
+        areaName="CRACKED MIRROR"
+      />
       {/* 1. Background Artwork with pointer-events-none */}
       <img
         src="/assets/scenes/washroom_cracked_mirror.jpg"

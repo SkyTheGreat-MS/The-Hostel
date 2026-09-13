@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { sound } from '../utils/audio';
 import { useGameStore } from '../context/GameProgressContext';
@@ -73,14 +73,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         }
         setWellPulleyRigged(true);
         setActiveMonologue(
-          "â€” You hoist the heavy cast-iron pulley and slip it onto the ancient forged eye-bolt. It seats firmly with a dull metallic clank. â€”"
+          "— You hoist the heavy cast-iron pulley and slip it onto the ancient forged eye-bolt. It seats firmly with a dull metallic clank. —"
         );
       } else {
         try {
           (sound as any).playMetalCreak?.();
         } catch {}
         setActiveMonologue(
-          "â€” A heavy forged iron eye-bolt hangs directly over the center of the well shaft. A pulley could be mounted here to support descent into the depths. â€”"
+          "— A heavy forged iron eye-bolt hangs directly over the center of the well shaft. A pulley could be mounted here to support descent into the depths. —"
         );
       }
       return;
@@ -100,14 +100,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         }
         setWellRopeRigged(true);
         setActiveMonologue(
-          "â€” You thread the sturdy nylon climbing rope through the grooved pulley wheel and knot it securely. The weighted line drops straight down into the flooded depths below. â€”"
+          "— You thread the sturdy nylon climbing rope through the grooved pulley wheel and knot it securely. The weighted line drops straight down into the flooded depths below. —"
         );
       } else {
         try {
           (sound as any).playMetalCreak?.();
         } catch {}
         setActiveMonologue(
-          "â€” The cast-iron pulley hangs securely from the overhead limb. You need a strong climbing line or nylon rope to thread through the wheel. â€”"
+          "— The cast-iron pulley hangs securely from the overhead limb. You need a strong climbing line or nylon rope to thread through the wheel. —"
         );
       }
       return;
@@ -117,7 +117,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
       (sound as any).playInventoryAdd?.();
     } catch {}
     setActiveMonologue(
-      "â€” The pulley and braided nylon line are rigged and anchored securely. The line is taut and ready to bear your weight down into the well. â€”"
+      "— The pulley and braided nylon line are rigged and anchored securely. The line is taut and ready to bear your weight down into the well. —"
     );
   };
 
@@ -136,14 +136,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         } catch {}
         setWellRootsSevered(true);
         setActiveMonologue(
-          "â€” You swing the heavy rusted machete into the thick tangle of aerial banyan roots. Splintered tendrils snap away, revealing the open stone wellhead beneath! â€”"
+          "— You swing the heavy rusted machete into the thick tangle of aerial banyan roots. Splintered tendrils snap away, revealing the open stone wellhead beneath! —"
         );
       } else {
         try {
           (sound as any).playDrip?.();
         } catch {}
         setActiveMonologue(
-          "â€” Thick, woody banyan roots have grown across the stone mouth of the well like iron bars. You cannot reach the shaft without cutting them away with a heavy blade. â€”"
+          "— Thick, woody banyan roots have grown across the stone mouth of the well like iron bars. You cannot reach the shaft without cutting them away with a heavy blade. —"
         );
       }
       return;
@@ -154,7 +154,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         (sound as any).playDrip?.();
       } catch {}
       setActiveMonologue(
-        "â€” The severed roots hang limp around the cracked masonry. The shaft drops vertically into pitch blackness and rushing subterranean water. Dropping down without a rigged line would be fatal. â€”"
+        "— The severed roots hang limp around the cracked masonry. The shaft drops vertically into pitch blackness and rushing subterranean water. Dropping down without a rigged line would be fatal. —"
       );
       return;
     }
@@ -168,7 +168,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
       await PrologBridge.queryOnce('descend_into_well.');
     } catch {}
     setActiveMonologue(
-      "â€” Gripping the nylon line firmly, you step over the moss-slick stone curb and rappel down into the echoing black depths of the well shaft... â€”"
+      "— Gripping the nylon line firmly, you step over the moss-slick stone curb and rappel down into the echoing black depths of the well shaft... —"
     );
     if (onNavigate) {
       onNavigate('well_interior_deep');
@@ -199,27 +199,40 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full select-none overflow-hidden">
+    <div className="relative w-full h-full select-none overflow-hidden bg-black">
+      {/* Background Graphic */}
+      <img
+        src="/assets/scenes/banyan_wellhead_exterior.jpg"
+        alt="Banyan Wellhead & Ancient Tree"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        onError={(e) => {
+          e.currentTarget.src = 'assets/scenes/banyan_wellhead_exterior.jpg';
+        }}
+      />
+
       {/* Background Vignette / Atmosphere */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none z-10" />
 
-      {/* Hotspot 1: Overhanging Branch / Iron Eye-Bolt */}
-      <InteractiveHotspot
-        id="banyan_overhead_branch"
-        name="Overhanging Branch & Iron Eye-Bolt"
-        polygonPoints="68,14 78,14 78,64 68,64"
-        cursorTooltip={getBranchTooltip()}
-        onClick={handleOverheadBranch}
-      />
+      {/* Interactive Hotspots Layer */}
+      <div className="absolute inset-0 z-20 pointer-events-auto">
+        {/* Hotspot 1: Overhanging Branch / Iron Eye-Bolt */}
+        <InteractiveHotspot
+          id="banyan_overhead_branch"
+          name="Overhanging Branch & Iron Eye-Bolt"
+          polygonPoints="68,14 78,14 78,64 68,64"
+          cursorTooltip={getBranchTooltip()}
+          onClick={handleOverheadBranch}
+        />
 
-      {/* Hotspot 2: Ancient Wellhead Curb & Unsealed Shaft */}
-      <InteractiveHotspot
-        id="banyan_well_curb"
-        name="Ancient Wellhead Curb & Shaft"
-        polygonPoints="60,68 95,68 95,95 60,95"
-        cursorTooltip={getWellTooltip()}
-        onClick={handleWellCurb}
-      />
+        {/* Hotspot 2: Ancient Wellhead Curb & Unsealed Shaft */}
+        <InteractiveHotspot
+          id="banyan_well_curb"
+          name="Ancient Wellhead Curb & Shaft"
+          polygonPoints="60,68 95,68 95,95 60,95"
+          cursorTooltip={getWellTooltip()}
+          onClick={handleWellCurb}
+        />
+      </div>
     </div>
   );
 };

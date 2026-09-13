@@ -60,6 +60,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     highestChapterCompleted,
     maxUnlockedChapter,
     chapter2Completed: contextChapter2Completed,
+    chapter3Completed: contextChapter3Completed,
     justUnlockedChapter,
     clearJustUnlocked,
     resetProgress,
@@ -96,6 +97,13 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     localStorage.getItem('spirits_labyrinth_ch3_unlocked') === 'true'
   );
 
+  const isChapter3Completed = Boolean(
+    contextChapter3Completed ||
+    Boolean(activeSave?.chapter3Completed) ||
+    highestChapterCompleted >= 3 ||
+    localStorage.getItem('spirits_labyrinth_ch3_completed') === 'true'
+  );
+
   // Strict Chapter Locking Rules: Chapter 2 strictly requires Chapter 1 completed; Chapter 3 requires Chapter 2 completed
   const isChapterUnlocked = (num: number): boolean => {
     if (num === 1) return true;
@@ -123,8 +131,8 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
 
   // Auto-focus on highest available active chapter on load
   useEffect(() => {
-    setSelectedChapter(effectiveMaxChapter);
-  }, [effectiveMaxChapter]);
+    setSelectedChapter(isChapter3Completed ? 3 : effectiveMaxChapter);
+  }, [effectiveMaxChapter, isChapter3Completed]);
 
   // Audio cue when user newly unlocks a chapter
   useEffect(() => {
@@ -202,6 +210,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
   };
 
   const handleContinueActiveChapter = (chapterId: number) => {
+    if (isChapter3Completed) return;
     if (chapterId < effectiveMaxChapter) return;
     if (chapterId > effectiveMaxChapter) {
       sound.playError();
@@ -260,6 +269,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     localStorage.removeItem('spirits_labyrinth_active_save');
     localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
     localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
+    localStorage.removeItem('spirits_labyrinth_ch3_completed');
     localStorage.removeItem('spirits_labyrinth_save_ch1');
     localStorage.removeItem('spirits_labyrinth_progress_v1');
 
@@ -276,6 +286,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
       highestChapterCompleted: 0,
       chapter1Completed: false,
       chapter2Completed: false,
+      chapter3Completed: false,
       chapter3Unlocked: false,
       currentLocation: 'room_101',
       phase3Location: 'hallway_threshold',
@@ -295,7 +306,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     try {
       if (typeof window !== 'undefined' && (window as any).prologEngine) {
         (window as any).prologEngine.query?.(
-          "retractall(current_chapter(_)), assertz(current_chapter(1)), retractall(stairway_gate_unlocked), retractall(chapter2_completed), retractall(chapter1_completed)."
+          "retractall(current_chapter(_)), assertz(current_chapter(1)), retractall(stairway_gate_unlocked), retractall(chapter3_completed), retractall(chapter2_completed), retractall(chapter1_completed)."
         );
       }
     } catch {}
@@ -335,13 +346,15 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
         setSelectedChapter(num);
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleContinueActiveChapter(effectiveMaxChapter);
+        if (!isChapter3Completed) {
+          handleContinueActiveChapter(effectiveMaxChapter);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [effectiveMaxChapter, showRestartConfirm]);
+  }, [effectiveMaxChapter, isChapter3Completed, showRestartConfirm]);
 
   return (
     <AtmosphericLayout
@@ -415,9 +428,9 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               title="BLIND START"
               subtitle="1998 SEANCE"
               chapterNumber={1}
-              status={1 < effectiveMaxChapter ? 'CHAPTER 1 COMPLETED' : 'ACTIVE INVESTIGATION'}
+              status={isChapter3Completed || 1 < effectiveMaxChapter ? 'CHAPTER 1 COMPLETED' : 'ACTIVE INVESTIGATION'}
               buttonText={
-                1 === effectiveMaxChapter
+                !isChapter3Completed && 1 === effectiveMaxChapter
                   ? ch1Save &&
                     (ch1Save.currentPhase > 1 ||
                       (ch1Save.inventory && ch1Save.inventory.length > 0) ||
@@ -427,11 +440,12 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
                     : 'START CHAPTER 1'
                   : undefined
               }
-              isLocked={1 > effectiveMaxChapter}
-              isCompleted={1 < effectiveMaxChapter}
-              isActive={1 === effectiveMaxChapter}
+              isLocked={!isChapter3Completed && 1 > effectiveMaxChapter}
+              isCompleted={isChapter3Completed || 1 < effectiveMaxChapter}
+              isActive={!isChapter3Completed && 1 === effectiveMaxChapter}
               isSelected={selectedChapter === 1}
               hasActiveSave={
+                !isChapter3Completed &&
                 1 === effectiveMaxChapter &&
                 Boolean(
                   ch1Save &&
@@ -447,7 +461,9 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
                 setSelectedChapter(1);
               }}
               onAction={() => {
-                handleContinueActiveChapter(1);
+                if (!isChapter3Completed) {
+                  handleContinueActiveChapter(1);
+                }
               }}
               onRestart={() => {
                 setShowRestartConfirm(true);
@@ -460,23 +476,25 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               subtitle="EAST WING INVESTIGATION"
               chapterNumber={2}
               status={
-                2 < effectiveMaxChapter
+                isChapter3Completed || 2 < effectiveMaxChapter
                   ? 'CHAPTER 2 COMPLETED'
                   : 2 === effectiveMaxChapter
                   ? 'ACTIVE INVESTIGATION'
                   : 'LOCKED'
               }
-              buttonText={2 === effectiveMaxChapter ? 'CONTINUE CHAPTER 2' : undefined}
-              isLocked={2 > effectiveMaxChapter}
-              isCompleted={2 < effectiveMaxChapter}
-              isActive={2 === effectiveMaxChapter}
+              buttonText={!isChapter3Completed && 2 === effectiveMaxChapter ? 'CONTINUE CHAPTER 2' : undefined}
+              isLocked={!isChapter3Completed && 2 > effectiveMaxChapter}
+              isCompleted={isChapter3Completed || 2 < effectiveMaxChapter}
+              isActive={!isChapter3Completed && 2 === effectiveMaxChapter}
               isSelected={selectedChapter === 2}
               onSelect={() => {
                 sound.playMenuHover();
                 setSelectedChapter(2);
               }}
               onAction={() => {
-                handleContinueActiveChapter(2);
+                if (!isChapter3Completed) {
+                  handleContinueActiveChapter(2);
+                }
               }}
             />
 
@@ -486,23 +504,25 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               subtitle="ESCAPE / THE OUTSIDE GROUNDS"
               chapterNumber={3}
               status={
-                3 < effectiveMaxChapter
+                isChapter3Completed
                   ? 'CHAPTER 3 COMPLETED'
                   : 3 === effectiveMaxChapter
                   ? 'ACTIVE INVESTIGATION'
                   : 'LOCKED'
               }
-              buttonText={3 === effectiveMaxChapter ? 'CONTINUE CHAPTER 3' : undefined}
-              isLocked={3 > effectiveMaxChapter}
-              isCompleted={3 < effectiveMaxChapter}
-              isActive={3 === effectiveMaxChapter}
+              buttonText={!isChapter3Completed && 3 === effectiveMaxChapter ? 'CONTINUE CHAPTER 3' : undefined}
+              isLocked={!isChapter3Completed && 3 > effectiveMaxChapter}
+              isCompleted={isChapter3Completed}
+              isActive={!isChapter3Completed && 3 === effectiveMaxChapter}
               isSelected={selectedChapter === 3}
               onSelect={() => {
                 sound.playMenuHover();
                 setSelectedChapter(3);
               }}
               onAction={() => {
-                handleContinueActiveChapter(3);
+                if (!isChapter3Completed) {
+                  handleContinueActiveChapter(3);
+                }
               }}
             />
           </div>

@@ -18,7 +18,9 @@ import {
   lockChapterOneAndSave,
   loadActiveGameProgress,
   ACTIVE_SAVE_KEY,
+  useGameStore,
 } from '../gameStore';
+import { PrologBridge } from '../services/PrologBridge';
 import { ChapterProgressSave } from '../types';
 import {
   Volume2,
@@ -726,6 +728,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setStairwayGateUnlocked,
     chapter3Unlocked,
     setChapter3Unlocked,
+    chapter3Completed,
+    setChapter3Completed,
     garageDrained,
     removeItem,
     advanceToChapter,
@@ -790,6 +794,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [corridorShadowFlash, setCorridorShadowFlash] = useState<boolean>(false);
   const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
+  const [isChapter3TransitionOpen, setIsChapter3TransitionOpen] = useState<boolean>(false);
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
   const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
   const [natAudienceConcluded, setNatAudienceConcluded] = useState<boolean>(false);
@@ -829,6 +834,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setCurrentScreen('gameplay');
     }
   }, [isGameOver, isChapterFinished, mode]);
+
+  useEffect(() => {
+    if (phase3Location === 'seance_climax_flashback') {
+      const timer = setTimeout(() => {
+        try {
+          sound.playPhaseComplete();
+        } catch {}
+        setIsChapter3TransitionOpen(true);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [phase3Location]);
 
   // ONLY true pause freezes the world clock and mental attrition:
   const isSystemPaused = isPaused || currentScreen !== 'gameplay';
@@ -1909,6 +1926,38 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     navigate('/chapters');
   };
 
+  const handleFinishChapterThree = () => {
+    setIsChapter3TransitionOpen(false);
+    sound.stopAllAmbience();
+    sound.playMenuSelect();
+
+    // 1. Mark Chapter 3 completed in Context & Store
+    setChapter3Completed?.(true);
+    completeChapter(3);
+
+    try {
+      localStorage.setItem('spirits_labyrinth_ch3_completed', 'true');
+      const activeSave = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
+      activeSave.chapter3Completed = true;
+      activeSave.highestChapterCompleted = Math.max(activeSave.highestChapterCompleted || 0, 3);
+      activeSave.currentChapter = 3;
+      activeSave.chapter = 3;
+      localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(activeSave));
+
+      const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+      prog.chapter3Completed = true;
+      prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 3);
+      localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+
+      useGameStore.setState({ chapter3Completed: true, highestChapterCompleted: 3 });
+
+      PrologBridge.queryOnce('assertz(chapter3_completed)');
+    } catch {}
+
+    // 2. Navigate to Chapter Selection page
+    navigate('/chapters');
+  };
+
   const handleContinueToChapterThree = () => {
     sound.playMenuSelect();
 
@@ -2958,28 +3007,20 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     onClick={handlePickupWoodenBat}
                   />
                 ) : (
-                  /* Once collected, keep spot inactive / pointer-events-none */
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    aria-hidden="true"
+                  /* Wardrobe Baseboard Lore Inspect (rendered only after bat is taken) */
+                  <InteractiveHotspot
+                    id="wardrobe_baseboard"
+                    name="Wardrobe Baseboard"
+                    cursorTooltip="Wardrobe Baseboard"
+                    polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
+                    onClick={() => {
+                      sound.playMenuSelect();
+                      setActiveMonologue(
+                        "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
+                      );
+                    }}
                   />
                 )}
-
-                {/* Wardrobe Baseboard Lore Inspect */}
-                <InteractiveHotspot
-                  id="wardrobe_baseboard"
-                  name="Wardrobe Baseboard"
-                  cursorTooltip="Wardrobe Baseboard"
-                  polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
-                  onClick={() => {
-                    sound.playMenuSelect();
-                    setActiveMonologue(
-                      hasWoodenBat || inventory.includes('wooden_bat')
-                        ? "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
-                        : "— Solid teak baseboard from the nineties, warped by monsoon moisture. The heavy wardrobe footing has settled deep into the floorboards. —"
-                    );
-                  }}
-                />
               </>
             )}
 
@@ -3403,10 +3444,14 @@ onTuned={() => {
               <HostelOuterGroundsView
                 onNavigate={(target) => {
                   if (target === 'balcony_stairway_gate' || target === 'stairway_exit_gate' || target === 'stairway_gate_inspection') {
-                    setPhase3Location('stairway_gate_inspection');
+                    setPhase3Location(stairwayGateUnlocked ? 'west_split_landing' : 'stairway_gate_inspection');
                   } else {
                     setPhase3Location(target as Phase3Location);
-                    if (target === 'garage_subterranean') {
+                    if (target === 'compound_iron_gate') {
+                      setActiveMonologue(
+                        "— The massive iron compound gate is bound in heavy padlocks and overgrown thorns. Beyond lies the unpaved mud road leading toward Mawlamyine. —"
+                      );
+                    } else if (target === 'garage_subterranean') {
                       setActiveMonologue(
                         "— A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. —"
                       );
@@ -3420,7 +3465,7 @@ onTuned={() => {
                 setActiveMonologue={setActiveMonologue}
                 addDiscoveredClue={addDiscoveredClue}
                 setPhase3Location={setPhase3Location}
-                onReturn={() => setPhase3Location('stairway_gate_inspection')}
+                onReturn={() => setPhase3Location(stairwayGateUnlocked ? 'west_split_landing' : 'stairway_gate_inspection')}
               />
             )}
 
@@ -3464,6 +3509,12 @@ onTuned={() => {
                 onComplete={() => {
                   setPhase3Location('seance_climax_flashback');
                   setActiveMonologue("— You emerge from the trance back on the rain-swept grounds, the curse of Room 101 broken. —");
+                  setTimeout(() => {
+                    try {
+                      sound.playPhaseComplete();
+                    } catch {}
+                    setIsChapter3TransitionOpen(true);
+                  }, 1200);
                 }}
                 setActiveMonologue={setActiveMonologue}
               />
@@ -3482,7 +3533,10 @@ onTuned={() => {
                 cursorTooltip="[Emerge into the Rain-Swept Grounds]"
                 onClick={() => {
                   sound.playPaperRustle();
-                  setPhase3Location('hostel_outer_grounds');
+                  try {
+                    sound.playPhaseComplete();
+                  } catch {}
+                  setIsChapter3TransitionOpen(true);
                 }}
               />
             )}
@@ -3752,112 +3806,26 @@ onTuned={() => {
 
             {/* ZOOM: LOCKER 32 INTERIOR */}
             {phase3Location === 'locker_32' && (
-              <>
-                {/* 1. Hotspot: Pinned Pink Hostel Slip (Top-Right) */}
-                <InteractiveHotspot
-                  id="locker-32-pink-slip"
-                  name="Pink Hostel Overwrite Slip"
-                  polygonPoints="62,22 75,24 74,55 60,52"
-                  cursorTooltip="Examine Pinned Slip"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "အဆောင်ပြုပြင်ထိန်းသိမ်းရေးစလစ်ပြေစာတစ်ခု... 'အဆောင်မှူးရုံးခန်း အီလက်ထရောနစ်ကုဒ် - ၈ ၁ ၄ ၀ ၉ ၂'...အဆောင်စောင့်က နံပါတ်တိုင်းကို မှတ်ထားတာပဲ။"
-                    );
-                    setHasReadLocker32Note(true);
-                    addDiscoveredClue('cipher_note_32');
-                  }}
-                />
-
-                {/* 2. Hotspot: Bundle of Folded Letters marked K.Z. (Bottom-Right) */}
-                <InteractiveHotspot
-                  id="locker-32-letters"
-                  name="Folded Love Letters"
-                  polygonPoints="63,63 75,56 82,64 68,75"
-                  cursorTooltip="Read Folded Letters"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "စန္ဒာဆီ ပိုထားတဲ့ ‘K.Z.’လို လက်မှတ်ထိုးထားတဲ့ စာခေါက်လေးတွေ... 'ငါတိုအကြောင်း မေသိသွားရင်တော့ ငါတိုနှစ်ယောက်စလုံး ဒီအဆောင်မှာနေလိုရမှာမဟုတ်တော့ဘူး' တဲ့။"
-                    );
-                    setHasReadSandarLetters(true);
-                    addDiscoveredClue('sandar_kozaw_letters');
-                  }}
-                />
-
-                {/* 3. Optional Hotspot: Stacked Course Books (Bottom-Left) */}
-                <InteractiveHotspot
-                  id="locker-32-books"
-                  name="Old Engineering Textbooks"
-                  polygonPoints="39.5,56 46,47 61,48 58,59"
-                  cursorTooltip="Inspect Books"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "သန္တာရဲ့ စာအုပ်အထူကြီးတွေ… စိုထိုင်းလို့ အဖုံးတွေကွေးနေပြီး မှိုနံ့စွဲနေတယ်။"
-                    );
-                  }}
-                />
-              </>
+              <Locker32ZoomView
+                setActiveMonologue={setActiveMonologue}
+                setHasReadLocker32Note={setHasReadLocker32Note}
+                setHasReadSandarLetters={setHasReadSandarLetters}
+                addDiscoveredClue={addDiscoveredClue}
+              />
             )}
 
             {/* ZOOM: LOCKER 09 INTERIOR */}
             {phase3Location === 'locker_09' && (
-              <>
-                {/* 1. Black Beeswax Candle (Left Center) */}
-                {!hasLocker09Candle && (
-                  <InteractiveHotspot
-                    id="locker-09-candle"
-                    name="Black Beeswax Candle"
-                    polygonPoints="47,39 55,39 55,75 47,75"
-                    cursorTooltip="Take Black Candle"
-                    onClick={() => {
-                      sound.playItemPickup();
-                      setHasLocker09Candle(true);
-                      setHasBlackCandlesCount((prev) => prev + 1);
-                      setInventory((prev) => [...prev, 'black_beeswax_candle']);
-                      setActiveMonologue(
-                        "ဖယောင်းတိုင်အမည်းအတုတ်ကြီးတစ်တိုင်။ တော်တော်လေးပြီး အေးစက်နေတာပဲ၊ ဆီနံ့ သင်းသင်းလေးလည်း ရတယ်။ ဘုရားစင်မှာ ပူဇော်ဖိုတော့ အဆင်ပြေပြီပဲ။"
-                      );
-                    }}
-                  />
-                )}
-
-                {/* 2. Vintage Burmese Matchbox (Right Center) */}
-                {!hasLocker09Matchbox && (
-                  <InteractiveHotspot
-                    id="locker-09-matchbox"
-                    name="Three-Shooting-Stars Matchbox"
-                    polygonPoints="59,35 72,38 72,75 59,70"
-                    cursorTooltip="Take Matchbox"
-                    onClick={() => {
-                      sound.playPaperRustle();
-                      setHasLocker09Matchbox(true);
-                      setHasMatchesCount(3);
-                      setInventory((prev) => [...prev, 'matchbox_three_stars']);
-                      setActiveMonologue(
-                        "ကြယ်တံခွန်သုံးလုံး' မီးခြစ်ဆံဗူးပဲ။ အထဲမှာ မီးခြစ်လိုရမယ့် မီးခြစ်ဆံခြောက်က သုံးချောင်းပဲ ကျန်တော့တယ်။"
-                      );
-                    }}
-                  />
-                )}
-
-                {/* Emptied Feedback Hotspot */}
-                {hasLocker09Candle && hasLocker09Matchbox && (
-                  <InteractiveHotspot
-                    id="locker-09-empty"
-                    name="Locker 09 (Emptied)"
-                    polygonPoints="36,8 90,8 90,84 36,84"
-                    cursorTooltip="Locker 09 (Emptied)"
-                    onClick={() => {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. —"
-                      );
-                    }}
-                  />
-                )}
-              </>
+              <Locker09ZoomView
+                hasLocker09Candle={hasLocker09Candle}
+                hasLocker09Matchbox={hasLocker09Matchbox}
+                setHasLocker09Candle={setHasLocker09Candle}
+                setHasLocker09Matchbox={setHasLocker09Matchbox}
+                setHasBlackCandlesCount={setHasBlackCandlesCount}
+                setHasMatchesCount={setHasMatchesCount}
+                setInventory={setInventory}
+                setActiveMonologue={setActiveMonologue}
+              />
             )}
             {phase3Location === 'locker_10' && (
               <Locker10InspectionView
@@ -4444,6 +4412,17 @@ onTuned={() => {
         isOpen={isChapterTransitionOpen}
         onContinueToChapterTwo={handleContinueToChapterTwo}
         onSaveAndExit={handleSaveAndExit}
+      />
+
+      {/* 15. Chapter 3 Completion Modal (Game Complete) */}
+      <ChapterTransitionModal
+        isOpen={isChapter3TransitionOpen}
+        isFinalChapter={true}
+        overTitle="INVESTIGATION PHASE COMPLETED"
+        completedChapterTitle="CHAPTER 3 COMPLETED"
+        saveButtonText="FINISH / EXIT"
+        onFinish={handleFinishChapterThree}
+        onSaveAndExit={handleFinishChapterThree}
       />
     </div>
   );

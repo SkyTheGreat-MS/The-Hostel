@@ -74,6 +74,8 @@ export interface GameProgressContextType {
   setChapter3Unlocked: (val: boolean | ((prev: boolean) => boolean)) => void;
   chapter2Completed: boolean;
   setChapter2Completed: (val: boolean | ((prev: boolean) => boolean)) => void;
+  chapter3Completed: boolean;
+  setChapter3Completed: (val: boolean | ((prev: boolean) => boolean)) => void;
   chapter3IntroSeen: boolean;
   setChapter3IntroSeen: (val: boolean | ((prev: boolean) => boolean)) => void;
   garageDrained: boolean;
@@ -346,6 +348,27 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         const parsedAct = JSON.parse(active);
         if (typeof parsedAct.chapter2Completed === 'boolean') return parsedAct.chapter2Completed;
         if (parsedAct.chapter === 3 || parsedAct.chapter3Unlocked) return true;
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
+  const [chapter3Completed, setChapter3Completed] = useState<boolean>(() => {
+    try {
+      if (localStorage.getItem('spirits_labyrinth_ch3_completed') === 'true') return true;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.chapter3Completed === 'boolean') return parsed.chapter3Completed;
+        if (parsed.highestChapterCompleted >= 3) return true;
+      }
+      const active = localStorage.getItem('spirits_labyrinth_active_save');
+      if (active) {
+        const parsedAct = JSON.parse(active);
+        if (typeof parsedAct.chapter3Completed === 'boolean') return parsedAct.chapter3Completed;
+        if (parsedAct.highestChapterCompleted >= 3) return true;
       }
     } catch {
       // ignore
@@ -740,6 +763,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           stairwayGateUnlocked,
           chapter3Unlocked,
           chapter2Completed,
+          chapter3Completed,
           chapter3IntroSeen,
           maxUnlockedChapter,
           unlockedChapters,
@@ -781,6 +805,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     stairwayGateUnlocked,
     chapter3Unlocked,
     chapter2Completed,
+    chapter3Completed,
     chapter3IntroSeen,
     garageDrained,
     wellRootsSevered,
@@ -820,6 +845,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setHighestChapterCompleted(0);
     setMaxUnlockedChapter(1);
     setChapter2Completed(false);
+    setChapter3Completed(false);
     setJustUnlockedChapter(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
@@ -856,6 +882,11 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
+      localStorage.removeItem('spirits_labyrinth_ch3_completed');
+      localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+      localStorage.removeItem('spirits_labyrinth_active_save');
+      localStorage.removeItem('spirits_labyrinth_chapter_1_save');
+      PrologBridge.initGameState();
     } catch {
       // ignore
     }
@@ -865,6 +896,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setHighestChapterCompleted(0);
     setMaxUnlockedChapter(1);
     setChapter2Completed(false);
+    setChapter3Completed(false);
     setJustUnlockedChapter(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
@@ -901,6 +933,11 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
+      localStorage.removeItem('spirits_labyrinth_ch3_completed');
+      localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+      localStorage.removeItem('spirits_labyrinth_active_save');
+      localStorage.removeItem('spirits_labyrinth_chapter_1_save');
+      PrologBridge.initGameState();
     } catch {
       // ignore
     }
@@ -952,6 +989,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const addInventoryItem = (itemId: string) => {
     setInventory((prev) => {
       if (!prev.includes(itemId)) {
+        try {
+          PrologBridge.queryOnce(`assertz(player_has(${itemId}))`);
+        } catch {}
         return [...prev, itemId];
       }
       return prev;
@@ -959,6 +999,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   const removeInventoryItem = (itemId: string) => {
+    try {
+      PrologBridge.queryOnce(`retractall(player_has(${itemId}))`);
+    } catch {}
     setInventory((prev) => prev.filter((i) => i !== itemId));
   };
 
@@ -1038,6 +1081,8 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setChapter3Unlocked,
         chapter2Completed,
         setChapter2Completed,
+        chapter3Completed,
+        setChapter3Completed,
         chapter3IntroSeen,
         setChapter3IntroSeen,
         garageDrained,
@@ -1126,6 +1171,8 @@ export function useGameStore() {
       setChapter3Unlocked: (_val: boolean | ((prev: boolean) => boolean)) => {},
       chapter2Completed: false,
       setChapter2Completed: (_val: boolean | ((prev: boolean) => boolean)) => {},
+      chapter3Completed: false,
+      setChapter3Completed: (_val: boolean | ((prev: boolean) => boolean)) => {},
       chapter3IntroSeen: false,
       setChapter3IntroSeen: (_val: boolean | ((prev: boolean) => boolean)) => {},
       garageDrained: false,
@@ -1181,9 +1228,9 @@ useGameStore.getState = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     const parsed = saved ? JSON.parse(saved) : {};
     const active = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
-    const ch3Unlocked = localStorage.getItem('spirits_labyrinth_ch3_unlocked') === 'true';
-    const isCh2Done = Boolean(parsed.chapter2Completed || active.chapter2Completed || parsed.highestChapterCompleted >= 2 || ch3Unlocked);
-    const maxUnlocked = Math.max(parsed.maxUnlockedChapter || 1, active.maxUnlockedChapter || 1, ch3Unlocked || isCh2Done ? 3 : (parsed.highestChapterCompleted >= 1 || active.chapter1Completed ? 2 : 1));
+    const ch3Unlocked = localStorage.getItem('spirits_labyrinth_ch3_unlocked') === 'true' && parsed.chapter3Unlocked !== false;
+    const isCh2Done = Boolean(parsed.chapter2Completed || active.chapter2Completed || (parsed.highestChapterCompleted >= 2) || (ch3Unlocked && parsed.chapter3Unlocked !== false));
+    const maxUnlocked = Math.max(parsed.maxUnlockedChapter || 1, active.maxUnlockedChapter || 1, (ch3Unlocked || isCh2Done) && parsed.maxUnlockedChapter !== 1 ? 3 : (parsed.highestChapterCompleted >= 1 || active.chapter1Completed ? 2 : 1));
     const unlocked = Array.from(new Set([1, ...(maxUnlocked >= 2 ? [2] : []), ...(maxUnlocked >= 3 ? [3] : [])]));
 
     return {
@@ -1254,6 +1301,10 @@ useGameStore.getState = () => {
         }
       },
       chapter2Completed: isCh2Done,
+      chapter3Completed: Boolean(parsed.chapter3Completed || active.chapter3Completed || localStorage.getItem('spirits_labyrinth_ch3_completed') === 'true'),
+      setChapter3Completed: (val: boolean) => {
+        useGameStore.setState({ chapter3Completed: val });
+      },
       chapter3IntroSeen: Boolean(parsed.chapter3IntroSeen || active.chapter3IntroSeen),
       setChapter3IntroSeen: (seen: boolean) => {
         useGameStore.setState({ chapter3IntroSeen: seen });
@@ -1300,24 +1351,56 @@ useGameStore.setState = (updates: any) => {
   try {
     const current = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     const merged = { ...current, ...updates };
-    if (updates.maxUnlockedChapter) {
-      merged.maxUnlockedChapter = Math.max(current.maxUnlockedChapter || 0, updates.maxUnlockedChapter);
+    if (updates.maxUnlockedChapter !== undefined) {
+      merged.maxUnlockedChapter = updates.maxUnlockedChapter;
     }
-    if (updates.chapter3Unlocked || updates.chapter2Completed || updates.maxUnlockedChapter >= 3) {
+    if (updates.chapter3Unlocked === true || updates.chapter2Completed === true || updates.maxUnlockedChapter >= 3) {
       merged.chapter3Unlocked = true;
       merged.chapter2Completed = true;
       merged.maxUnlockedChapter = Math.max(merged.maxUnlockedChapter || 0, 3);
       localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
+    } else if (updates.chapter3Unlocked === false || updates.chapter === 1 || updates.maxUnlockedChapter === 1) {
+      merged.chapter3Unlocked = false;
+      merged.chapter2Completed = false;
+      localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
     }
+
+    if (updates.chapter3Completed === true) {
+      merged.chapter3Completed = true;
+      merged.highestChapterCompleted = Math.max(merged.highestChapterCompleted || 0, 3);
+      localStorage.setItem('spirits_labyrinth_ch3_completed', 'true');
+    } else if (updates.chapter3Completed === false) {
+      merged.chapter3Completed = false;
+      localStorage.removeItem('spirits_labyrinth_ch3_completed');
+    }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
 
     const activeSave = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
     const mergedActive = { ...activeSave, ...updates };
-    if (updates.chapter3Unlocked || updates.chapter2Completed || updates.maxUnlockedChapter >= 3) {
+    if (updates.chapter3Unlocked === true || updates.chapter2Completed === true || updates.maxUnlockedChapter >= 3) {
       mergedActive.chapter3Unlocked = true;
       mergedActive.chapter2Completed = true;
       mergedActive.maxUnlockedChapter = Math.max(mergedActive.maxUnlockedChapter || 0, 3);
+    } else if (updates.chapter3Unlocked === false || updates.chapter === 1) {
+      mergedActive.chapter3Unlocked = false;
+      mergedActive.chapter2Completed = false;
+      mergedActive.stairwayGateUnlocked = false;
     }
+
+    if (updates.chapter3Completed === true) {
+      mergedActive.chapter3Completed = true;
+      mergedActive.highestChapterCompleted = Math.max(mergedActive.highestChapterCompleted || 0, 3);
+    } else if (updates.chapter3Completed === false) {
+      mergedActive.chapter3Completed = false;
+    }
+
     localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(mergedActive));
+
+    if (Array.isArray(updates.inventory)) {
+      updates.inventory.forEach((item: string) => {
+        PrologBridge.queryOnce(`assertz(player_has(${item}))`);
+      });
+    }
   } catch {}
 };

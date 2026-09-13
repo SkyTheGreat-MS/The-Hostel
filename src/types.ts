@@ -316,6 +316,7 @@ export interface ActiveSaveState {
   stairwayGateKeyTaken?: boolean;
   stairwayGateUnlocked?: boolean;
   chapter2Completed?: boolean;
+  chapter3Completed?: boolean;
   chapter3Unlocked?: boolean;
   maxUnlockedChapter?: number;
   unlockedChapters?: number[];
@@ -358,6 +359,7 @@ export interface ChapterProgressSave {
   corridorShadowScareTriggered?: boolean;
   chapter1Completed?: boolean;
   chapter2Completed?: boolean;
+  chapter3Completed?: boolean;
   chapter3Unlocked?: boolean;
   maxUnlockedChapter?: number;
   unlockedChapters?: number[];

@@ -15,6 +15,7 @@ import {
 import { sound } from './audioEngine';
 import { CHARACTER_ROSTER } from './characterData';
 import { useGameStore } from './context/GameProgressContext';
+import { PrologBridge } from './services/PrologBridge';
 
 export {
   type NatKnowledgeTier,
@@ -83,6 +84,7 @@ export interface ChapterOneState {
   corridorShadowScareTriggered: boolean;
   chapter1Completed: boolean;
   chapter2Completed?: boolean;
+  chapter3Completed?: boolean;
   natAudienceConcluded?: boolean;
   mayResolved?: boolean;
   key14OnFloor?: boolean;
@@ -141,6 +143,7 @@ export const initialChapterOneState: ChapterOneState = {
   corridorShadowScareTriggered: false,
   chapter1Completed: false,
   chapter2Completed: false,
+  chapter3Completed: false,
   natAudienceConcluded: false,
   mayResolved: false,
   key14OnFloor: false,
@@ -905,6 +908,9 @@ export function lockChapterOneAndSave(
   try {
     localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(chapterTwoSaveState));
     localStorage.setItem('spirits_labyrinth_ch2_unlocked', 'true');
+    if (!extraFlags?.chapter3Unlocked) {
+      localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
+    }
   } catch {}
 
   return chapterTwoSaveState;
@@ -1010,7 +1016,11 @@ export function restart_chapter_one(): void {
   try {
     localStorage.removeItem(ACTIVE_SAVE_KEY);
     localStorage.removeItem('spirits_labyrinth_ch2_unlocked');
+    localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
+    localStorage.removeItem('spirits_labyrinth_ch3_completed');
     localStorage.removeItem(CHAPTER_1_SAVE_KEY);
+    localStorage.removeItem('spirits_labyrinth_progress_v1');
+    PrologBridge.initGameState();
   } catch {}
 }
 

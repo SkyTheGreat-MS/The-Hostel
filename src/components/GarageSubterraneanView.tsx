@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { sound } from '../utils/audio';
 import { useGameStore } from '../context/GameProgressContext';
@@ -195,7 +195,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       )}
 
       {/* Interactive Hotspots Layer (disabled during drainage animation) */}
-      <div className={`absolute inset-0 z-20 pointer-events-none ${isDraining ? 'opacity-50 pointer-events-none' : ''}`}>
+      <div className={`absolute inset-0 z-20 ${isDraining ? 'opacity-50 pointer-events-none' : 'pointer-events-auto'}`}>
         {/* Hotspot 1: Drainage Valve Wheel */}
         <InteractiveHotspot
           id="garage_drain_valve"

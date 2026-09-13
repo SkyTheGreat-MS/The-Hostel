@@ -120,7 +120,8 @@
     conduit_unlocked/0,
     insert_cassette_tape/0,
     play_cassette_tape/0,
-    unlock_storm_conduit/0
+    unlock_storm_conduit/0,
+    chapter3_completed/0
 ]).
 
 :- dynamic current_location/1.
@@ -140,6 +141,7 @@
 :- dynamic stairway_gate_unlocked/0.
 :- dynamic escaped_interior/0.
 :- dynamic chapter_1_completed/0.
+:- dynamic chapter3_completed/0.
 :- dynamic unlocked_location/1.
 
 % Chapter 2 Guardian Nat Interrogation & Law of Reality Dynamic State
@@ -196,12 +198,18 @@
 :- dynamic conduit_unlocked/0.
 
 % Top-level defaults for interactive evaluation & bridge queries
-:- assertz(nat_summoned).
-:- assertz(nat_persistent_state(summoned)).
+:- assertz(nat_persistent_state(dormant)).
 :- assertz(composure(100)).
-:- assertz(current_location(prayer_altar)).
-:- assertz(chapter(2)).
-:- assertz(chapter_phase(2, 1)).
+:- assertz(current_location(room_4b_main)).
+:- assertz(chapter(1)).
+:- assertz(chapter_phase(1, 1)).
+:- assertz(current_chapter(1)).
+:- assertz(time_remaining(600)).
+:- assertz(player_composure(100)).
+:- assertz(player_time_remaining(600)).
+:- assertz(door_state(room_4b_door, locked)).
+:- assertz(door_state(stairwell_exit_gate, locked)).
+:- assertz(caretaker_door(locked)).
 :- assertz(nat_dialogue_step(1)).
 :- assertz(inquiry_count(0)).
 
@@ -394,8 +402,10 @@ init_game_state :-
     retractall(may_resolved),
     retractall(floor_has(_)),
     retractall(locker_unlocked(_)),
-    retractall(garage_drained),
     retractall(locker_14_looted),
+    retractall(stairway_gate_unlocked),
+    retractall(escaped_interior),
+    retractall(garage_drained),
     retractall(well_roots_severed),
     retractall(well_pulley_rigged),
     retractall(well_rope_rigged),
@@ -424,8 +434,10 @@ init_game_state :-
     retractall(chapter_phase(_, _)),
     retractall(current_chapter(_)),
     retractall(chapter_1_completed),
+    retractall(chapter3_completed),
     retractall(unlocked_location(_)),
     retractall(caretaker_power_killed),
+    retractall(caretaker_spectral_climax),
     retractall(room_state(_, _)),
     retractall(player_has(_)),
     retractall(caretaker_latch_unlocked),
@@ -434,6 +446,9 @@ init_game_state :-
     retractall(topic_exhausted(_)),
     retractall(nat_persistent_state(_)),
     retractall(inquiry_count(_)),
+    retractall(player_time_remaining(_)),
+    retractall(player_composure(_)),
+    retractall(selected_investigator(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
@@ -442,7 +457,7 @@ init_game_state :-
     assertz(caretaker_door(locked)),
     assertz(altar_candle_count(0)),
     assertz(altar_bell_placed(false)),
-    assertz(nat_persistent_state(summoned)),
+    assertz(nat_persistent_state(dormant)),
     assertz(nat_summoned(false)),
     assertz(nat_dialogue_step(1)),
     assertz(inquiry_count(0)),
@@ -451,6 +466,8 @@ init_game_state :-
     assertz(current_chapter(1)),
     assertz(composure(100)),
     assertz(time_remaining(600)), % 10:00 Countdown
+    assertz(player_composure(100)),
+    assertz(player_time_remaining(600)),
     assertz(subscene_state(desk_mug_moved, false)),
     assertz(subscene_state(stall_horror_triggered, false)).
 

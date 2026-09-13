@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Key } from 'lucide-react';
 import { sound } from '../audioEngine';
@@ -52,6 +53,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
   isChapterTransitionOpen,
   setIsChapterTransitionOpen,
 }) => {
+  const navigate = useNavigate();
   const [showUnlockPrompt, setShowUnlockPrompt] = useState<boolean>(false);
   const [isUnlocking, setIsUnlocking] = useState<boolean>(false);
   const [localTransitionOpen, setLocalTransitionOpen] = useState<boolean>(false);
@@ -65,6 +67,14 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
   if (stairwayGateUnlocked && !transitionOpen && !isUnlocking) {
     return (
       <OuterGroundsView
+        onNavigate={(loc) => {
+          if (loc === 'balcony_stairway_gate' || loc === 'stairway_exit_gate' || loc === 'stairway_gate_inspection') {
+            if (setPhase3Location) setPhase3Location('west_split_landing');
+            else onReturn();
+          } else {
+            if (setPhase3Location) setPhase3Location(loc as any);
+          }
+        }}
         setActiveMonologue={setActiveMonologue}
         addDiscoveredClue={addDiscoveredClue}
         onReturn={onReturn}
@@ -237,7 +247,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
     if (onSaveAndExit) {
       onSaveAndExit();
     } else {
-      window.location.href = '/chapters';
+      navigate('/chapters');
     }
   };
 
@@ -266,12 +276,18 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         >
           <g
             className="group/poly pointer-events-auto cursor-pointer"
+            style={{ pointerEvents: 'all' }}
             onClick={handlePadlockClick}
             onMouseEnter={() => sound.playMenuHover()}
           >
             <polygon
               points="55,35 62,35 62,53 55,52"
-              className={`fill-transparent stroke-transparent transition-all duration-300 ${
+              style={{ pointerEvents: 'all' }}
+              fill="white"
+              fillOpacity={0.001}
+              onClick={handlePadlockClick}
+              onMouseEnter={() => sound.playMenuHover()}
+              className={`cursor-pointer pointer-events-auto stroke-transparent transition-all duration-300 ${
                 hasGateKey
                   ? 'group-hover:stroke-emerald-400 group-hover:stroke-[0.6] group-hover:[stroke-dasharray:4,3] group-hover:fill-emerald-500/10 group-hover:filter group-hover:drop-shadow-[0_0_12px_rgba(110,231,183,0.4)]'
                   : 'group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/5 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]'
