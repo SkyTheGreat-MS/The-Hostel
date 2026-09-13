@@ -391,7 +391,11 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               className="mb-6 px-4 py-2 bg-[#141f19]/95 border border-[#354c3f] rounded-full flex items-center gap-2.5 text-[#a7c4b5] text-xs font-mono shadow-xl"
             >
               <Sparkles className="w-4 h-4 text-[#6ee7b7] animate-spin" />
-              <span>Chapter {justUnlockedChapter} is now unlocked!</span>
+              <span>
+                {justUnlockedChapter >= 4 || isChapter3Completed
+                  ? 'Thanks for playing!'
+                  : `Chapter ${justUnlockedChapter} is now unlocked!`}
+              </span>
               <button
                 onClick={clearJustUnlocked}
                 className="ml-2 text-stone-400 hover:text-white cursor-pointer"

@@ -833,9 +833,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   const completeChapter = (chapterNumber: number) => {
     setHighestChapterCompleted((prev) => {
-      if (chapterNumber > prev) {
+      if (chapterNumber >= prev) {
         setJustUnlockedChapter(chapterNumber + 1);
-        return chapterNumber;
+        return Math.max(prev, chapterNumber);
       }
       return prev;
     });
