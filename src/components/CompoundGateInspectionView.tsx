@@ -17,7 +17,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
     } catch {}
 
     setActiveMonologue(
-      "The iron gates are wrapped tight in oxidized chains and padlocked from the street side. Escape through the front is impossible."
+      "သံတံခါးကြီးများကို သံချေးတက်နေသော သံကြိုးများဖြင့် တင်းကျပ်စွာ ပတ်ထားပြီး လမ်းဘက်မှ သော့ခတ်ထားသည်။ အရှေ့ဘက်မှ ထွက်ပြေးရန် မဖြစ်နိုင်ပေ။"
     );
   }, [setActiveMonologue]);
 
@@ -26,7 +26,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
       sound.playGateRattle?.();
     } catch {}
     setActiveMonologue(
-      "Heavy industrial chains loop through every bar. The brass padlock hangs on the exterior side—it was locked from the outside."
+      "လေးလံသော စက်မှုသုံးသံကြိုးများသည် တံခါးတိုင်တစ်ခုချင်းစီကို ရစ်ပတ်ထားသည်။ ကြေးဝါသော့ခလောက်သည် အပြင်ဘက်ခြမ်းတွင် တွဲလောင်းကျနေသည် — ၎င်းကို အပြင်ဘက်မှ သော့ခတ်ထားခဲ့ခြင်း ဖြစ်သည်။"
     );
   };
 
@@ -35,7 +35,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
       sound.playPaperRustle?.();
     } catch {}
     setActiveMonologue(
-      "A weathered enameled sign: 'ကျောင်းဝင်းအတွင်း ခွင့်ပြုချက်မရှိဘဲ မဝင်ရ' (No unauthorized entry into university grounds)."
+      "ရာသီဥတုဒဏ်ခံ သံကြွေဆိုင်းဘုတ် - 'ကျောင်းဝင်းအတွင်း ခွင့်ပြုချက်မရှိဘဲ မဝင်ရ'။"
     );
   };
 
@@ -44,7 +44,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
       sound.playFootstep?.();
     } catch {}
     setActiveMonologue(
-      "Beyond the bars lies the empty asphalt perimeter road, glistening under the dark rain. So close, yet completely out of reach."
+      "သံတိုင်များအလွန်တွင် မိုးရေထဲ၌ အရောင်လက်နေသော ကတ္တရာပတ်လမ်းမကြီး တိတ်ဆိတ်စွာ ရှိနေသည်။ အလွန်နီးကပ်နေသော်လည်း လုံးဝ လက်လှမ်းမမီနိုင်ပေ။"
     );
   };
 
@@ -68,8 +68,8 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
         {/* Hotspot 1: Center Chains & Exterior Padlock */}
         <InteractiveHotspot
           id="gate_chains_padlock"
-          name="Padlocked Industrial Chains"
-          cursorTooltip="Examine Locked Chains"
+          name="သော့ခတ်ထားသော သံကြိုးကြီးများ"
+          cursorTooltip="သော့ခတ်ထားသော သံကြိုးများကို စစ်ဆေးမည်"
           polygonPoints="38,30 62,30 65,72 35,72"
           onClick={handleInspectChains}
         />
@@ -77,8 +77,8 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
         {/* Hotspot 2: Vintage Burmese Warning Sign */}
         <InteractiveHotspot
           id="gate_warning_sign"
-          name="Enameled Metal Sign"
-          cursorTooltip="Read Metal Sign"
+          name="သံကြွေသတိပေးဆိုင်းဘုတ်"
+          cursorTooltip="သတိပေးဆိုင်းဘုတ်ကို ဖတ်ရှုမည်"
           polygonPoints="18,36 32,36 32,54 18,54"
           onClick={handleInspectSign}
         />
@@ -86,8 +86,8 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
         {/* Hotspot 3: Street Beyond the Bars */}
         <InteractiveHotspot
           id="gate_outside_view"
-          name="Perimeter Street"
-          cursorTooltip="Look Past the Gate"
+          name="အပြင်ဘက် လမ်းမကြီး"
+          cursorTooltip="တံခါးအပြင်ဘက်ကို ကြည့်ရှုမည်"
           polygonPoints="42,8 58,8 58,28 42,28"
           onClick={handleInspectStreet}
         />

@@ -28,7 +28,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
 
     if (!chapter3IntroSeen) {
       setActiveMonologue(
-        "The monsoon rain hits with a roar. The hostel stands locked and dark behind us... and the main perimeter gate is chained shut from the street. There must be another way out."
+        "မုတ်သုံမိုးက တဝုန်းဝုန်း ရွာချနေသည်။ ငါတို့နောက်ဘက်ရှိ အဆောင်ကြီးမှာ အမှောင်ဖုံးကာ သော့ခတ်ထားဆဲဖြစ်ပြီး... လမ်းမဘက်သို့ ထွက်ရမည့် ပင်မခြံဝင်းတံခါးကြီးကိုလည်း သံကြိုးများဖြင့် ခတ်ထားသည်။ အခြားထွက်ပေါက်တစ်ခုခု ရှိရမည်။"
       );
       setChapter3IntroSeen(true);
     }
@@ -58,7 +58,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
       setPhase3Location('compound_iron_gate');
     }
     setActiveMonologue(
-      "— The massive iron compound gate is bound in heavy padlocks and overgrown thorns. Beyond lies the unpaved mud road leading toward Mawlamyine. —"
+      "— ကြီးမားလှသော သံမဏိခြံစည်းရိုးတံခါးကြီးကို လေးလံသော သော့ခလောက်များနှင့် ချုံနွယ်ဆူးပင်များ ရစ်ပတ်ထားသည်။ တံခါးအလွန်တွင် မော်လမြိုင်ဘက်သို့ ဦးတည်သော ရွှံ့ဗွက်လမ်းမကြီး ရှိသည်။ —"
     );
   };
 
@@ -72,7 +72,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
       setPhase3Location('garage_subterranean');
     }
     setActiveMonologue(
-      "— A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. —"
+      "— ချောမွတ်နေသော ကွန်ကရစ်ဆင်ခြေလျှောသည် အောက်ဘက်ရှိ ရေလျှံနေသော စက်ဘီးဂိုဒေါင်ဆီသို့ ဦးတည်ဆင်းသွားသည်။ အမှောင်ထဲမှ စက်ဆီနံ့နှင့် ရေပုပ်နံ့များ ပျံ့လွင့်လာသည်။ —"
     );
   };
 
@@ -86,7 +86,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
       setPhase3Location('banyan_wellhead');
     }
     setActiveMonologue(
-      "— The twisted roots of the ancient banyan tree encircle the stone well. Deep whispers bubble up from the dark water below... —"
+      "— ရှေးဟောင်းညောင်ပင်ကြီး၏ လိမ်ယှက်နေသော ညောင်မြစ်များက ကျောက်ရေတွင်းကို ရစ်ပတ်ထားသည်။ အောက်ဘက် အမှောင်ထုထဲရှိ ရေပြင်မှ တိုးတိတ်သော တီးတိုးသံများ ပွက်ပွက်ထွက်ပေါ်နေသည်... —"
     );
   };
 
@@ -111,7 +111,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         <InteractiveHotspot
           id="grounds_stairway_exit"
           name="Return to Stairway Entrance"
-          cursorTooltip="Return to Stairway Entrance"
+          cursorTooltip="လှေကားအဝင်ဝသို့ ပြန်သွားမည်"
           polygonPoints="0,32 15,30 15,65 0,65"
           onClick={handleReturnToStairway}
         />
@@ -120,7 +120,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         <InteractiveHotspot
           id="grounds_compound_gate"
           name="Perimeter Compound Gate"
-          cursorTooltip="Examine Compound Gate"
+          cursorTooltip="ခြံဝင်းတံခါးကြီးကို စစ်ဆေးမည်"
           polygonPoints="34,22 57,22 57,65 34,65"
           onClick={handleInspectCompoundGate}
         />
@@ -129,7 +129,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         <InteractiveHotspot
           id="grounds_garage_ramp"
           name="Subterranean Garage Ramp"
-          cursorTooltip="Descend into Garage"
+          cursorTooltip="ဂိုဒေါင်ထဲသို့ ဆင်းသွားမည်"
           polygonPoints="1,66 28,66 43,80 32,99 0,99"
           onClick={handleEnterGarage}
         />
@@ -138,7 +138,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         <InteractiveHotspot
           id="grounds_banyan_well"
           name="Ancient Banyan Tree & Well"
-          cursorTooltip="Approach Banyan Tree & Well"
+          cursorTooltip="ညောင်ပင်ကြီးနှင့် ရေတွင်းဆီသို့ ချဉ်းကပ်မည်"
           polygonPoints="58,0 100,0 100,92 58,92"
           onClick={handleInspectBanyanWell}
         />

@@ -52,7 +52,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
       setComposure((prev) => Math.max(0, prev - 2));
     }
     setPhase3Location('locker_spider');
-    setActiveMonologue("— Gah! Scurrying cellar spiders spill from behind the rusted vent slats! (-2% Composure) —");
+    setActiveMonologue("— အား! သံချေးတက်နေသော လေဝင်ပေါက်တန်းများနောက်မှ မြေအောက်ပင့်ကူများ အပြေးအလွှား ထွက်လာသည်! (စိတ်တည်ငြိမ်မှု -၂%) —");
   };
 
   return (
@@ -67,10 +67,10 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
             sound.playMenuHover();
             setHoveredLocker({
               text: locker14Unlocked
-                ? 'Open Locker 14 (Unlocked)'
+                ? 'လော့ကာ ၁၄ ဖွင့်မည် (သော့ပွင့်ပြီး)'
                 : playerHasKey14
-                ? 'Inspect Locker 14 [Key 14 Available]'
-                : 'Inspect Locker 14 (Locked)',
+                ? 'လော့ကာ ၁၄ ကို စစ်ဆေးမည် [သော့ ၁၄ ရှိသည်]'
+                : 'လော့ကာ ၁၄ ကို စစ်ဆေးမည် (သော့ခတ်ထားသည်)',
               x: 18.8,
               y: 13.5,
             });
@@ -85,7 +85,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
             }
           }}
         >
-          <title>Inspect Locker 14 (Mama May)</title>
+          <title>လော့ကာ ၁၄ ကို စစ်ဆေးမည် (မမမေ)</title>
         </polygon>
 
         {/* 2. Locker 32 (Bottom-Left Tier, marked '32') */}
@@ -96,7 +96,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 32',
+              text: 'လော့ကာ ၃၂ ကို စစ်ဆေးမည်',
               x: 18.8,
               y: 59.5,
             });
@@ -105,14 +105,14 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onClick={() => {
             if (!hasSmallBrassKey) {
               sound.playLockJiggle();
-              setActiveMonologue("Locker 32 is locked shut. The keyhole is small and brass.");
+              setActiveMonologue("လော့ကာ ၃၂ ကို သော့ခတ်ထားသည်။ သော့ပေါက်သည် ကြေးဝါသော့ငယ် ပေါက်ဖြစ်သည်။");
             } else {
               sound.playKeyUnlock();
               setPhase3Location('locker_32');
             }
           }}
         >
-          <title>Inspect Locker 32 (Sandar)</title>
+          <title>လော့ကာ ၃၂ ကို စစ်ဆေးမည် (စန္ဒာ)</title>
         </polygon>
 
         {/* 3. Locker 09 (Top-Right Tier, marked '09') */}
@@ -123,7 +123,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 09',
+              text: 'လော့ကာ ၀၉ ကို စစ်ဆေးမည်',
               x: 88.0,
               y: 8.0,
               align: 'right',
@@ -135,7 +135,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
             setPhase3Location('locker_09');
           }}
         >
-          <title>Inspect Locker 09 (Supplies)</title>
+          <title>လော့ကာ ၀၉ ကို စစ်ဆေးမည် (ပစ္စည်းများ)</title>
         </polygon>
 
         {/* 4. Locker 10 (Bottom-Right Tier, marked '10') */}
@@ -146,7 +146,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Open Locker 10',
+              text: 'လော့ကာ ၁၀ ကို ဖွင့်မည်',
               x: 88.0,
               y: 60.0,
               align: 'right',
@@ -158,7 +158,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
             setPhase3Location('locker_10');
           }}
         >
-          <title>Open Locker 10</title>
+          <title>လော့ကာ ၁၀ ကို ဖွင့်မည်</title>
         </polygon>
 
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
@@ -169,7 +169,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker',
+              text: 'လော့ကာကို စစ်ဆေးမည်',
               x: 32.7,
               y: 19.0,
             });
@@ -177,7 +177,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseLeave={() => setHoveredLocker(null)}
           onClick={handleSpiderScare}
         >
-          <title>Inspect Locker</title>
+          <title>လော့ကာကို စစ်ဆေးမည်</title>
         </polygon>
       </svg>
 

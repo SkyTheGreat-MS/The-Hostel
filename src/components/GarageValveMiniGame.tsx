@@ -178,8 +178,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     if (progress >= 100) {
       return {
         stage: 5,
-        title: 'STAGE 5: FULLY DRAINED',
-        desc: 'Valve locked open. Murky water completely discharged.',
+        title: 'အဆင့် ၅ - ရေအားလုံး ခန်းခြောက်သွားပြီ',
+        desc: 'အဆို့ရှင်ကို အပြည့်ဖွင့်ပြီး သော့ခတ်လိုက်ပြီ။ နောက်ကျိနေသော ရေဆိုးများ အကုန်စီးထွက်သွားပြီ။',
         color: 'text-emerald-400 border-emerald-500/80 bg-emerald-950/40',
         waterHeightPct: 0,
         swirlOpacity: 0,
@@ -188,8 +188,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     if (progress >= 75) {
       return {
         stage: 4,
-        title: 'STAGE 4: NEAR EMPTY (75–99%)',
-        desc: 'Basement floor tiles and tool cage emerging from shallow silt.',
+        title: 'အဆင့် ၄ - ရေကျလုနီးပါးဖြစ်နေပြီ (၇၅–၉၉%)',
+        desc: 'မြေအောက်ကြမ်းပြင် ကြွေပြားများနှင့် ကိရိယာလှောင်အိမ် နုန်းများကြားမှ ပေါ်ထွက်လာသည်။',
         color: 'text-cyan-300 border-cyan-500/70 bg-cyan-950/30',
         waterHeightPct: 10,
         swirlOpacity: 0.4,
@@ -198,8 +198,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     if (progress >= 50) {
       return {
         stage: 3,
-        title: 'STAGE 3: FAST DRAINAGE (50–75%)',
-        desc: 'Rapid whirlpool forming over floor grates. Water level dropping fast.',
+        title: 'အဆင့် ၃ - ရေအရှိန်အဟုန်ဖြင့် စီးဆင်းနေသည် (၅၀–၇၅%)',
+        desc: 'ကြမ်းခင်းသံဆန်ခါပေါက်များပေါ်တွင် ရေဝဲကြီးတစ်ခု ဖြစ်ပေါ်နေသည်။ ရေမျက်နှာပြင် လျင်မြန်စွာ ကျဆင်းနေသည်။',
         color: 'text-amber-300 border-amber-500/70 bg-amber-950/30',
         waterHeightPct: 22,
         swirlOpacity: 0.75,
@@ -208,8 +208,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     if (progress >= 25) {
       return {
         stage: 2,
-        title: 'STAGE 2: SLUICE DISCHARGE (25–50%)',
-        desc: 'Internal sluice opens with a metallic groan. Water begins receding.',
+        title: 'အဆင့် ၂ - ရေစတင် စီးထွက်နေသည် (၂၅–၅၀%)',
+        desc: 'အတွင်းဘက် ရေနုတ်ပေါက်သည် သံသံမြည်လျက် ပွင့်သွားသည်။ ရေမျက်နှာပြင် စတင်ကျဆင်းလာသည်။',
         color: 'text-amber-400/80 border-amber-600/50 bg-amber-950/20',
         waterHeightPct: 32,
         swirlOpacity: 0.35,
@@ -217,8 +217,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     }
     return {
       stage: 1,
-      title: 'STAGE 1: FLOODED (0–25%)',
-      desc: 'Submerged under dark stagnant water. High water pressure resistance.',
+      title: 'အဆင့် ၁ - ရေလျှံနေဆဲဖြစ်သည် (၀–၂၅%)',
+      desc: 'မှောင်မည်းနေသော ရေပုပ်များအောက် နစ်မြုပ်နေသည်။ ရေဖိအားကြောင့် အဆို့ရှင်လှည့်ရ လေးလံနေသည်။',
       color: 'text-stone-400 border-stone-700 bg-stone-900/40',
       waterHeightPct: 40,
       swirlOpacity: 0,
@@ -287,7 +287,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           className="absolute top-4 right-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0b1410]/90 hover:bg-[#15271e] text-stone-400 hover:text-stone-200 border border-stone-800 hover:border-emerald-800 font-mono text-xs tracking-wider transition-all cursor-pointer shadow-xl disabled:opacity-30 disabled:pointer-events-none"
         >
           <X className="w-3.5 h-3.5" />
-          <span>[ ESC / STEP BACK ]</span>
+          <span>[ ESC / ပြန်ထွက်မည် ]</span>
         </button>
 
         {/* Main Focused Mini-Game Container */}
@@ -297,10 +297,10 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           <div className="w-full text-center pb-4 border-b border-[#1c2b22] space-y-1">
             <div className="flex items-center justify-center gap-2 text-[#799988] font-mono text-[11px] tracking-[0.25em] uppercase">
               <Droplets className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              <span>SUBTERRANEAN SLUICE SYSTEM • ရေနုတ်အဆို့ရှင်</span>
+              <span>SUBTERRANEAN SLUICE SYSTEM • မြေအောက် ရေနုတ်အဆို့ရှင်</span>
             </div>
             <h2 className="font-serif italic text-lg sm:text-2xl text-[#d4e4db] tracking-wide">
-              Heavy Drainage Valve Wheel
+              လေးလံသော ရေနုတ်အဆို့ရှင်ဘီး (Drainage Valve)
             </h2>
           </div>
 
@@ -439,7 +439,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
               <div className="px-3 py-1.5 rounded-full bg-black/85 border border-[#2b3d33] backdrop-blur-md flex items-center gap-1.5 shadow-2xl">
                 <RotateCw className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-400' : 'text-[#87a897] animate-spin'}`} style={{ animationDuration: '3s' }} />
                 <span className="font-mono text-xs font-bold text-[#d4e4db]">
-                  {isCompleted ? 'OPEN' : `${Math.round(progress)}%`}
+                  {isCompleted ? 'ပွင့်ပြီ' : `${Math.round(progress)}%`}
                 </span>
               </div>
             </div>
@@ -450,10 +450,10 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
             <div className="flex items-center justify-between text-[11px] font-mono text-[#7e9c8c]">
               <span className="flex items-center gap-1">
                 <Droplets className="w-3.5 h-3.5 text-emerald-400" />
-                <span>VALVE DISCHARGE CYCLE</span>
+                <span>ရေနုတ်အဆို့ရှင် လှည့်ပတ်မှုအဆင့်</span>
               </span>
               <span className="font-bold text-emerald-400">
-                {progress >= 100 ? '100% COMPLETE' : `${Math.round(progress)}% / 100%`}
+                {progress >= 100 ? '၁၀၀% ပြီးစီးပြီ' : `${Math.round(progress)}% / ၁၀၀%`}
               </span>
             </div>
 
@@ -483,11 +483,11 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
             {/* Tick Mark Labels */}
             <div className="flex justify-between text-[9px] font-mono text-stone-500 px-1">
-              <span>0% (CLOSED)</span>
-              <span>25%</span>
-              <span>50%</span>
-              <span>75%</span>
-              <span>100% (DRAINED)</span>
+              <span>၀% (ပိတ်ထားသည်)</span>
+              <span>၂၅%</span>
+              <span>၅၀%</span>
+              <span>၇၅%</span>
+              <span>၁၀၀% (ရေကျသွားပြီ)</span>
             </div>
           </div>
 
@@ -496,20 +496,20 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
             {isCompleted ? (
               <span className="font-mono text-xs font-bold text-emerald-300 tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                VALVE LOCKED OPEN • WATER FINISHED DRAINING!
+                အဆို့ရှင် အပြည့်ပွင့်သွားပြီ • ရေများ အကုန်စီးထွက်သွားခဲ့ပြီ!
               </span>
             ) : isDecaying ? (
               <span className="font-mono text-xs font-bold text-amber-400 tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
                 <AlertTriangle className="w-3.5 h-3.5" />
-                VALVE SLIPPING BACK! KEEP PRESSING TO MAINTAIN MOMENTUM!
+                အဆို့ရှင် ပြန်လည်လျောကျနေသည်! အရှိန်မပျက်စေရန် ဆက်တိုက်နှိပ်ပေးပါ!
               </span>
             ) : progress > 0 ? (
               <span className="font-mono text-xs text-[#a2c9b4] tracking-wider">
-                TURNING HEAVY VALVE... KEEP MOMENTUM GOING!
+                အဆို့ရှင်ကို လှည့်နေသည်... အရှိန်မပျက်စေရန် ဆက်တိုက်နှိပ်ပါ!
               </span>
             ) : (
               <span className="font-mono text-xs text-stone-400 tracking-wider">
-                RUSTED SHUT — REQUIRES RAPID, CONTINUOUS PRESSURE TO TURN
+                သံချေးတက်နေသည် — လှည့်နိုင်ရန် လျင်မြန်ပြီး စဉ်ဆက်မပြတ် ဖိအားပေးရန် လိုအပ်သည်
               </span>
             )}
           </div>
@@ -530,11 +530,11 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
               <kbd className="px-2.5 py-1 rounded bg-[#090e0b] border border-[#263b2f] text-emerald-400 text-xs font-mono shadow-inner">
                 SPACE
               </kbd>
-              <span>{isCompleted ? 'VALVE FULLY OPENED' : 'PRESS SPACEBAR REPEATEDLY'}</span>
+              <span>{isCompleted ? 'အဆို့ရှင် အပြည့်ပွင့်သွားပြီ' : 'SPACEBAR ကို အဆက်မပြတ် နှိပ်ပါ'}</span>
             </button>
 
             <span className="text-[10px] font-mono text-stone-500 text-center sm:text-right">
-              {isCompleted ? 'DRAINAGE COMPLETE' : 'OR CLICK VALVE TO TURN'}
+              {isCompleted ? 'ရေဖောက်ထုတ်မှု ပြီးဆုံးပြီ' : 'သို့မဟုတ် လှည့်ရန် အဆို့ရှင်ကို ကလစ်နှိပ်ပါ'}
             </span>
           </div>
 

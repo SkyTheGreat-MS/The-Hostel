@@ -265,7 +265,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
 
     // 5. Display the completion thought line
     setActiveMonologue?.(
-      '— The iron key turns with a sharp snap. The rusted chains fall away, and the accordion gate slides open to the cold night air. —'
+      '— သံသော့သည် ကလစ်ခနဲ အသံကျယ်ကျယ်ဖြင့် လည်သွားသည်။ သံချေးတက်နေသော သံကြိုးများ ပြုတ်ကျသွားပြီး ခေါက်သံတံခါးကြီးသည် အေးစက်သော ညဥ့်လေထုဆီသို့ ပွင့်ထွက်သွားသည်... —'
     );
 
     // 6. After a 1.2-second delay, mount ChapterTransitionModal directly
@@ -388,7 +388,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
                   : 'group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/5 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]'
               }`}
             />
-            <title>{hasGateKey ? '[ Unlock Stairway Exit Gate with Key ]' : '[ Examine Heavy Padlock & Chains ]'}</title>
+            <title>{hasGateKey ? '[ လှေကားထွက်ပေါက်တံခါးကို သော့ဖြင့် ဖွင့်မည် ]' : '[ လေးလံသော သော့ခလောက်နှင့် သံကြိုးများကို စစ်ဆေးမည် ]'}</title>
           </g>
         </svg>
 
@@ -397,7 +397,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
           className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
           style={{ left: '58%', top: '26%' }}
         >
-          {hasGateKey ? '[ Unlock Stairway Exit Gate with Key ]' : '[ Examine Heavy Padlock & Chains ]'}
+          {hasGateKey ? '[ လှေကားထွက်ပေါက်တံခါးကို သော့ဖြင့် ဖွင့်မည် ]' : '[ လေးလံသော သော့ခလောက်နှင့် သံကြိုးများကို စစ်ဆေးမည် ]'}
         </span>
       </div>
 
@@ -419,7 +419,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
               className="px-5 py-2.5 bg-[#0b1712]/95 hover:bg-[#12281e] text-emerald-300 hover:text-emerald-100 border border-emerald-500/60 hover:border-emerald-400 rounded-full font-mono text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] transition-all flex items-center gap-2 cursor-pointer ring-1 ring-emerald-500/30 active:scale-95"
             >
               <Key className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              [ Unlock Gate with Stairway Key ]
+              [ လှေကားသော့ဖြင့် တံခါးဖွင့်မည် ]
             </button>
           </motion.div>
         )}
@@ -429,15 +429,15 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       {isChapterTransitionOpen === undefined && (
         <ChapterTransitionModal
           isOpen={transitionOpen}
-        overTitle="INVESTIGATION PHASE COMPLETED"
-        completedChapterTitle="CHAPTER 2: UNDERSTANDING"
-        nextPhaseTag="ENTERING NEXT PHASE"
-        nextChapterTitle="CHAPTER 3: ESCAPE / THE OUTSIDE GROUNDS"
-        continueButtonText="CONTINUE INVESTIGATION →"
-        saveButtonText="SAVE & EXIT TO CHAPTER SELECTION"
-        onContinue={handleContinueToChapterThree}
-        onSaveAndExit={handleSaveAndExit}
-      />
+          overTitle="စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးစီးပြီ (PHASE COMPLETED)"
+          completedChapterTitle="အခန်း ၂ - အမှန်တရားကို နားလည်ခြင်း"
+          nextPhaseTag="နောက်တစ်ဆင့်သို့ ကူးပြောင်းနေသည်"
+          nextChapterTitle="အခန်း ၃ - လွတ်မြောက်ခြင်း / အဆောင်အပြင်ဘက်ဝင်း"
+          continueButtonText="စုံစမ်းစစ်ဆေးမှု ဆက်လုပ်မည် →"
+          saveButtonText="သိမ်းဆည်းပြီး အခန်းရွေးချယ်မှုသို့ ပြန်ထွက်မည်"
+          onContinue={handleContinueToChapterThree}
+          onSaveAndExit={handleSaveAndExit}
+        />
       )}
     </div>
   );

@@ -32,15 +32,15 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
   useEffect(() => {
     if (!cassetteInserted) {
       setActiveMonologue(
-        "You descend the rope into the damp, dark base of the stone well shaft. A weathered 1990s micro-cassette player rests silently on a dry stone slab."
+        "ကျောက်ရေတွင်းဝခြေရင်းရှိ စိုစွတ်မှောင်မည်းနေသော ကြမ်းပြင်ပေါ်သို့ သင် ကြိုးလျှောဆင်းသက်လာသည်။ ခြောက်သွေ့နေသော ကျောက်ပြားပေါ်တွင် ၁၉၉၀ ပြည့်လွန်နှစ်များက မိုက်ခရို တိတ်ခွေဖွင့်စက်ဟောင်းတစ်ခု တိတ်ဆိတ်စွာ တည်ရှိနေသည်။"
       );
     } else if (!cassettePlayed) {
       setActiveMonologue(
-        "May's micro-cassette is loaded into the player deck, awaiting playback."
+        "မေ ၏ မိုက်ခရိုတိတ်ခွေကို စက်ထဲသို့ ထည့်သွင်းထားပြီးဖြစ်ကာ ဖွင့်ပြရန် စောင့်ဆိုင်းနေသည်။"
       );
     } else {
       setActiveMonologue(
-        "The tape's final confession echoes off the brickwork. The heavy rusted iron drainage conduit gate has sprung open, revealing a dark tunnel leading outward."
+        "တိတ်ခွေ၏ နောက်ဆုံးဝန်ခံချက်သည် အုတ်နံရံများတွင် ပဲ့တင်ထပ်သွားသည်။ သံချေးတက်နေသော လေးလံသည့် သံရေနုတ်မြောင်းတံခါးကြီး ပွင့်ထွက်သွားပြီး အပြင်သို့ ဦးတည်နေသည့် ဥမင်လှိုဏ်ခေါင်းနက်ကြီးတစ်ခု ပေါ်ထွက်လာသည်။"
       );
     }
   }, [cassetteInserted, cassettePlayed, setActiveMonologue]);
@@ -52,9 +52,9 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
         await PrologBridge.insertCassette();
         removeInventoryItem('cassette_tape_may');
         setCassetteInserted(true);
-        setActiveMonologue("You insert May's micro-cassette tape into the portable player deck. The play button clicks down.");
+        setActiveMonologue("သင်သည် မေ ၏ မိုက်ခရိုတိတ်ခွေကို အိတ်ဆောင်စက်ထဲသို့ ထည့်သွင်းလိုက်သည်။ စက်ခလုတ် ဖိနှိပ်သံ ထွက်ပေါ်လာသည်။");
       } else {
-        setActiveMonologue("An old battery-powered micro-cassette player. The tape compartment is currently empty.");
+        setActiveMonologue("ဘက်ထရီသုံး မိုက်ခရိုတိတ်ခွေဖွင့်စက်ဟောင်းတစ်ခု။ တိတ်ခွေထည့်သည့်နေရာ လွတ်နေသည်။");
       }
       return;
     }
@@ -63,24 +63,24 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
       setIsPlayingAudio(true);
       try { (sound as any).playStatic?.() || (sound as any).playRainOutdoor?.(); } catch {}
 
-      setActiveMonologue("Static hisses from the tiny speaker, followed by May's shaking voice recorded on August 12, 1998: 'We opened something we couldn't close in Room 101... if anyone finds this, follow the conduit out before the circle closes.'");
+      setActiveMonologue("စပီကာငယ်လေးထဲမှ လေလှိုင်းဆူညံသံ ထွက်ပေါ်လာပြီးနောက် ၁၉၉၈ သြဂုတ် ၁၂ တွင် အသံသွင်းထားသော မေ ၏ တုန်လှုပ်နေသည့် အသံ ထွက်ပေါ်လာသည် - 'အခန်း ၁၀၁ ထဲမှာ ငါတို့ ပြန်မပိတ်နိုင်တဲ့ အရာတစ်ခုကို ဖွင့်မိခဲ့တယ်... တစ်ယောက်ယောက် ဒါကို တွေ့ရင် စက်ဝိုင်းမပိတ်မီ ရေနုတ်မြောင်းကနေ အမြန်ထွက်ပြေးကြပါ...'");
 
       setTimeout(async () => {
         await PrologBridge.playCassette();
         setCassettePlayed(true);
         setConduitUnlocked(true);
         setIsPlayingAudio(false);
-        setActiveMonologue("As the tape ends with a sharp click, a heavy mechanical latch echoes from the lower wall—the drainage conduit grate has sprung open!");
+        setActiveMonologue("တိတ်ခွေ အဆုံးသတ်သွားပြီး ကလစ်သံ ကျယ်ကျယ် မြည်သွားသည်နှင့် နံရံအောက်ခြေမှ သံမဏိသော့ဂျက်သံ ပဲ့တင်ထပ်လာသည် — ရေနုတ်မြောင်း သံဆန်ခါတံခါးကြီး ပွင့်ထွက်သွားပြီ!");
       }, 4000);
       return;
     }
 
-    setActiveMonologue("The cassette has finished playing. The micro-cassette reels are jammed at the end of the tape.");
+    setActiveMonologue("တိတ်ခွေ ဖွင့်ပြပြီးသွားပြီဖြစ်သည်။ မိုက်ခရိုတိတ်ခွေခွေများသည် တိတ်ခွေအဆုံးတွင် ညပ်နေသည်။");
   };
 
   const handleStormConduitGrating = () => {
     if (!conduitUnlocked) {
-      setActiveMonologue("An arched storm culvert set into the lower brick wall, secured by a heavy rusted iron padlock and drainage grille. It won't budge.");
+      setActiveMonologue("အုတ်နံရံအောက်ခြေရှိ မိုးရေနုတ်မြောင်း လှိုဏ်ခေါင်းဝကို လေးလံသော သံချေးတက် သော့ခလောက်နှင့် သံဆန်ခါဖြင့် ပိတ်ထားသည်။ လှုပ်၍မရပေ။");
       return;
     }
 
@@ -91,21 +91,21 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
 
   const handleShaftWalls = () => {
     try { sound.playDrip?.(); } catch {}
-    setActiveMonologue("Ancient damp brickwork curving upward into a tiny circle of gray monsoon light far above.");
+    setActiveMonologue("အထက်ဘက် မိုးရာသီကောင်းကင်မှ မီးခိုးရောင်အလင်းစက်ဝိုင်းငယ်လေးဆီသို့ အပေါ်ဘက်သို့ ကွေးတက်သွားသော စိုစွတ်သည့် ရှေးဟောင်းအုတ်နံရံများ။");
   };
 
   const getPlayerTooltip = (): string => {
     if (!cassetteInserted) {
-      return hasMayTape ? "[Insert May's Cassette Tape]" : "[Examine Cassette Player]";
+      return hasMayTape ? "[မေ ၏ တိတ်ခွေကို ထည့်သွင်းမည်]" : "[တိတ်ခွေဖွင့်စက်ကို စစ်ဆေးမည်]";
     }
     if (!cassettePlayed) {
-      return "[Play Cassette & Listen to Audio]";
+      return "[တိတ်ခွေဖွင့်ပြီး အသံကို နားထောင်မည်]";
     }
-    return "[Examine Audio Player]";
+    return "[တိတ်ခွေဖွင့်စက်ကို ကြည့်မည်]";
   };
 
   const getConduitTooltip = (): string => {
-    return conduitUnlocked ? "[Crawl Through Open Culvert]" : "[Inspect Iron Drainage Grate]";
+    return conduitUnlocked ? "[ပွင့်နေသော ရေနုတ်မြောင်းထဲသို့ တွားသွားမည်]" : "[သံရေနုတ်ဆန်ခါကို စစ်ဆေးမည်]";
   };
 
   return (
@@ -129,7 +129,7 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
         {/* Hotspot 1: Portable Micro-Cassette Player */}
         <InteractiveHotspot
           id="well_cassette_player"
-          name="Micro-Cassette Player"
+          name="မိုက်ခရို တိတ်ခွေဖွင့်စက်"
           cursorTooltip={getPlayerTooltip()}
           polygonPoints="44,58 56,58 56,74 44,74"
           onClick={handleCassettePlayer}
@@ -138,7 +138,7 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
         {/* Hotspot 2: Drainage Storm Culvert Gate */}
         <InteractiveHotspot
           id="well_storm_conduit"
-          name="Drainage Storm Conduit Grating"
+          name="ရေနုတ်မြောင်း သံဆန်ခါတံခါး"
           cursorTooltip={getConduitTooltip()}
           polygonPoints="32,38 43,38 43,58 32,58"
           onClick={handleStormConduitGrating}
@@ -147,8 +147,8 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
         {/* Hotspot 3: Shaft Brick Walls */}
         <InteractiveHotspot
           id="well_shaft_walls"
-          name="Ancient Shaft Walls"
-          cursorTooltip="[Inspect Well Brickwork]"
+          name="ရေတွင်း အုတ်နံရံများ"
+          cursorTooltip="[ရေတွင်းအုတ်နံရံများကို စစ်ဆေးမည်]"
           polygonPoints="10,10 90,10 90,35 10,35"
           onClick={handleShaftWalls}
         />

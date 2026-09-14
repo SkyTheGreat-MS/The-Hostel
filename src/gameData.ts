@@ -58,8 +58,8 @@ export const ITEMS: Record<string, Item> = {
     id: 'bobby_pin',
     name: 'Bobby Pin',
     shortLabel: 'Pin 4B',
-    description: 'A bent steel bobby pin found in a ceramic tray on the study desk.',
-    usageHint: 'Can rake small cylinder pins in simple locks silently.',
+    description: 'စာကြည့်ခုံပေါ်ရှိ ကြွေလင်ပန်းထဲတွင် တွေ့ရသည့် ကွေးနေသော သံမဏိဆံညှပ်ကလစ်ငယ်။ (A bent steel bobby pin)',
+    usageHint: 'ရိုးရှင်းသော သော့ခလောက်အတွင်းရှိ သော့ပင်များကို အသံမထွက်ဘဲ ထိုးဖွင့်နိုင်သည်။',
   },
   wooden_bat: {
     id: 'wooden_bat',
@@ -67,102 +67,102 @@ export const ITEMS: Record<string, Item> = {
     shortLabel: 'Wood',
     type: 'tool',
     icon: '/assets/items/wooden_bat.png',
-    description: 'A weathered piece of solid teak planking salvaged from the wardrobe base.',
-    usageHint: 'Can break wooden latches or jammed mechanisms with blunt force, but creates heavy noise.',
+    description: 'ဗီရိုအောက်ခြေမှ ဖြုတ်ယူရရှိခဲ့သော မာကျောသည့် ကျွန်းပျဉ်ပြားတုံးကြီး။',
+    usageHint: 'သစ်သားတံခါးဂျက် သို့မဟုတ် ပိတ်ဆို့နေသော အရာများကို အားဖြင့် ထုရိုက်ခွဲနိုင်သော်လည်း အသံကျယ်ကျယ် ထွက်ပေါ်စေသည်။',
   },
   magnetic_compass: {
     id: 'magnetic_compass',
     name: 'Magnetic Compass',
     shortLabel: 'Compass',
     description:
-      'An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.',
+      'အရှေ့၊ အနောက်၊ တောင်၊ မြောက် အမှတ်အသားများ ပါရှိသည့် ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများရှိရာသို့ တုန်ခါညွှန်ပြနေသည်။',
     isSpecial: true,
-    usageHint: 'Twitches and points toward supernatural anomalies and dimensional rifts.',
+    usageHint: 'သဘာဝလွန် ထူးဆန်းမှုများနှင့် အတိုင်းအတာကွဲလွဲမှုများ ရှိရာဘက်သို့ တုန်ခါညွှန်ပြသည်။',
   },
   small_brass_key_32: {
     id: 'small_brass_key_32',
     name: 'Small Brass Key (32)',
     shortLabel: 'Key 32',
-    description: "A small tarnished brass key bearing a round metallic tag marked '32', recovered from a soaked uniform pocket.",
-    usageHint: 'A numbered locker or cabinet key; unlikely to turn industrial padlocks.',
+    description: "ရေစိုနေသော ယူနီဖောင်းအိတ်ကပ်ထဲမှ တွေ့ရှိခဲ့သည့် '32' ဟု အမှတ်အသားပါသော ကြေးဝါသော့ငယ်။ (A small tarnished brass key marked 32)",
+    usageHint: 'နံပါတ်ပါသော လော့ကာ သို့မဟုတ် ဗီရိုသော့ဖြစ်ပြီး စက်မှုလုပ်ငန်းသုံး သော့ခလောက်ကြီးများကို ဖွင့်နိုင်မည် မဟုတ်ပေ။',
   },
   coiled_nylon_rope: {
     id: 'coiled_nylon_rope',
     name: 'Coiled Nylon Rope',
     shortLabel: 'Rope',
-    description: 'A length of sturdy weathered nylon rope taken from the overhead drainage pipe.',
-    usageHint: 'Tough enough to bear body weight or secure broken latches.',
+    description: 'အပေါ်ဘက် ရေဆင်းပိုက် (overhead drainage pipe) မှ ဖြုတ်ယူခဲ့သော ခိုင်ခံ့သည့် နိုင်လွန်ကြိုးခွေ။',
+    usageHint: 'လူတစ်ကိုယ်စာ အလေးချိန်ကို ခံနိုင်ရည်ရှိပြီး ကျိုးပဲ့နေသော သော့ဂျက်များကို ချည်နှောင်ရန် လုံလောက်စွာ ခိုင်မာသည်။',
   },
   black_beeswax_candle: {
     id: 'black_beeswax_candle',
     name: 'Black Beeswax Candle',
     shortLabel: 'Candle',
-    description: 'Thick black beeswax candle used in traditional guardian rites.',
-    usageHint: 'An essential offering element on the Guardian Nat prayer altar.',
+    description: 'ရိုးရာအစောင့်အရှောက်နတ် ပူဇော်ပသမှုများတွင် အသုံးပြုသည့် ထူထဲသော ဖယောင်းနက်တိုင်။',
+    usageHint: 'အစောင့်နတ်စင်တွင် ပူဇော်တင်ဆက်ရန် မရှိမဖြစ် လိုအပ်သော ပစ္စည်းတစ်ခု။',
   },
   matchbox_three_stars: {
     id: 'matchbox_three_stars',
     name: 'Matchbox (Three Stars)',
     shortLabel: 'Match',
-    description: "A vintage Burmese 'Three-Shooting-Stars' safety matchbox containing 3 matches.",
-    usageHint: 'Used to strike a flame on ritual candles. High dread causes trembling hands.',
+    description: "မီးခြစ်ဆံ ၃ ဆံ ပါရှိသော ရှေးဟောင်း မြန်မာ့ 'ကြယ်တံခွန် ၃ လုံး' (Three-Shooting-Stars) အမှတ်တံဆိပ် မီးခြစ်ဆံဗူး။",
+    usageHint: 'ယတြာဖယောင်းတိုင်များကို မီးညှိရန် အသုံးပြုသည်။ စိတ်မငြိမ်မသက်ဖြစ်ပါက လက်များ တုန်ယင်နေတတ်သည်။',
   },
   bronze_prayer_bell: {
     id: 'bronze_prayer_bell',
     name: 'Bronze Prayer Bell',
     shortLabel: 'Bell',
-    description: 'A ceremonial hand bell cast with traditional spirit runes.',
-    usageHint: 'Rung to summon and awaken the Guardian Nat at the altar.',
+    description: 'ရိုးရာနတ်မန္တန်အက္ခရာများ ထွင်းထုထားသည့် အခမ်းအနားသုံး ကြေးခေါင်းလောင်းငယ်။',
+    usageHint: 'နတ်စင်တွင် အစောင့်နတ်ကို ဆင့်ခေါ်နိုးထစေရန် လှုပ်ခတ်ရသည်။',
   },
   battery_pair: {
     id: 'battery_pair',
     name: '2x D-Cell Batteries',
     shortLabel: 'Batts',
-    description: 'Two zinc-carbon D-cell batteries acquired from Locker 10.',
-    usageHint: 'Powers the transistor radio on the Overlook Balcony.',
+    description: 'လော့ကာ ၁၀ ထဲမှ ရရှိခဲ့သော ဓာတ်ခဲအကြီး ၂ လုံး။',
+    usageHint: 'ဝရန်တာရှိ ထရန်စစ္စတာ ရေဒီယိုကို ဓာတ်အားပေးနိုင်သည်။',
   },
   letter_ko_zaw: {
     id: 'letter_ko_zaw',
     name: "Ko Zaw's Folded Letter",
     shortLabel: 'Letter',
     description:
-      'Creased lined paper addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.',
-    usageHint: 'A private letter for May. Required for the balcony handover sequence with Spectral May.',
+      'မေ ထံ လိပ်မူပြီး မြန်မာလက်ရေးလှဖြင့် အလျင်စလို ရေးသားထားသော ခေါက်ထားသည့် မျဉ်းသားစာရွက်။ သစ်သားမှင်အိုးခုံအောက်တွင် ဝှက်ထားသည်။',
+    usageHint: 'မေ အတွက် သီးသန့်စာလွှာ။ ဝရန်တာတွင် ဝိညာဉ်မေ ထံ ပေးအပ်ရန် လိုအပ်သည်။',
   },
   key_14: {
     id: 'key_14',
     name: 'Key 14',
     shortLabel: 'Key 14',
-    description: 'A tarnished brass key stamped with the number 14. Tied with frayed nylon string.',
-    usageHint: 'Stamped with 14. Corresponds to Locker 14 in the student locker bay.',
+    description: 'နံပါတ် ၁၄ ရိုက်နှိပ်ထားသော ကြေးဝါသော့ဟောင်း။ နိုင်လွန်ကြိုးစဖြင့် ချည်နှောင်ထားသည်။',
+    usageHint: 'နံပါတ် ၁၄ ရိုက်နှိပ်ထားသည်။ အဆောင်ခန်းတွင်းရှိ လော့ကာ ၁၄ နှင့် ကိုက်ညီသည်။',
   },
   key_stairway_gate: {
     id: 'key_stairway_gate',
     name: 'Stairway Gate Key',
     shortLabel: 'Gate Key',
-    description: 'A heavy, blackened iron key hidden on the lower shelf of Locker 14.',
-    usageHint: 'Used to unlock the iron curfew gate blocking the stairway to the terrace.',
+    description: 'လော့ကာ ၁၄ ၏ အောက်ထပ်စင်ပေါ်တွင် ဝှက်ထားသည့် သံမည်းသော့ကြီးတစ်ချောင်း။',
+    usageHint: 'ဝရန်တာသို့ တက်ရောက်နိုင်သည့် လှေကားကို ပိတ်ဆို့ထားသော ညမထွက်ရ သံတံခါးကို ဖွင့်ရန် အသုံးပြုသည်။',
   },
   iron_pulley: {
     id: 'iron_pulley',
     name: 'Heavy Cast-Iron Pulley',
     shortLabel: 'Pulley',
-    description: 'A heavy forged iron pulley wheel with an open bronze suspension hook. The bearings are greased and turn freely.',
-    usageHint: 'Can be suspended from a sturdy overhead anchor to rig a hoisting line.',
+    description: 'ကြေးဝါချိတ်ပါရှိသော လေးလံသည့် သံသွန်းစက်သီးဘီး။ ချောဆီထည့်ထားသဖြင့် အလွယ်တကူ လည်ပတ်နိုင်သည်။',
+    usageHint: 'အလေးအပင် ဆွဲတင်နိုင်ရန် အပေါ်ဘက် ခိုင်ခံ့သော အထိန်းတွင် ချိတ်ဆွဲအသုံးပြုနိုင်သည်။',
   },
   rusty_machete: {
     id: 'rusty_machete',
     name: "Groundskeeper's Machete",
     shortLabel: 'Blade',
-    description: 'A heavy, blackened steel clearing machete with a rubber-wrapped handle. Dulled from chopping thick vines and brush.',
-    usageHint: 'Heavy enough to hack through thick tropical roots and branches.',
+    description: 'ရော်ဘာပတ်လက်ကိုင်ပါရှိသည့် သံမည်း ဓားမကြီး။ သစ်ပင်နွယ်များနှင့် ခြုံနွယ်များကို ခုတ်ထွင်ရှင်းလင်းရာမှ တုံးနေသည်။',
+    usageHint: 'ထူထပ်သော အပူပိုင်း သစ်မြစ်များနှင့် သစ်ကိုင်းများကို ခုတ်ထွင်ရန် လုံလောက်စွာ လေးလံသည်။',
   },
   cassette_tape_may: {
     id: 'cassette_tape_may',
     name: "May's Micro-Cassette Tape (1998.08.12)",
     shortLabel: 'Tape 1998',
-    description: 'An unlabeled micro-cassette tape dated 1998.08.12. Left behind by Ko Zaw in Locker 14.',
-    usageHint: 'Can be played in a compatible micro-cassette recorder or deck.',
+    description: '၁၉၉၈.၀၈.၁၂ နေ့စွဲပါ တံဆိပ်မပါသော မိုက်ခရို တိတ်ခွေငယ်။ လော့ကာ ၁၄ တွင် ကိုဇော် ထားရစ်ခဲ့သည်။',
+    usageHint: 'ကိုက်ညီသော မိုက်ခရို တိတ်ခွေဖွင့်စက်တွင် ထည့်သွင်းနားထောင်နိုင်သည်။',
   },
 };
 
@@ -333,32 +333,32 @@ export { CHARACTER_ROSTER, getCharacterProfile } from './characterData';
 export const LOCATIONS: HostelLocation[] = [
   {
     id: 'dorm_room_4b',
-    name: 'Dormitory Room 4B',
-    description: "Mama May and Sandar's shared student quarters in August 1998.",
+    name: 'အဆောင်အခန်း ၄-ဘီ (Room 4B)',
+    description: '၁၉၉၈ ခုနှစ် သြဂုတ်လအတွင်း မမမေ နှင့် စန္ဒာ တို့ အတူနေထိုင်ခဲ့သော ကျောင်းသူအိပ်ဆောင်။',
     turnCost: 2,
   },
   {
     id: 'hostel_laundry',
-    name: 'Basement Laundry Basin',
-    description: 'Smells of stale soap, lye powder, and stagnant wash basin water.',
+    name: 'မြေအောက် အဝတ်လျှော်ကန် (Laundry Basin)',
+    description: 'ဆပ်ပြာနံ့၊ ပြာရည်မှုန့်နံ့ နှင့် ကန်ထဲမှ မသန့်ရှင်းသော ရေဆွေးနံ့များ နံစော်နေသည်။',
     turnCost: 2,
   },
   {
     id: 'caretaker_office',
-    name: 'Caretaker Old Office',
-    description: 'Dusty shelves, rusted keyrings, and locked iron-banded wooden chests.',
+    name: 'အဆောင်မှူးရုံးခန်းဟောင်း (Caretaker Office)',
+    description: 'ဖုန်ထူနေသော စင်များ၊ သံချေးတက်နေသော သော့တွဲများနှင့် သံပတ်ထားသော သစ်သားသေတ္တာများ။',
     turnCost: 2,
   },
   {
     id: 'courtyard_shrine',
-    name: 'Courtyard Nat Shrine & Dried Well',
-    description: 'A weather-beaten wooden shrine facing an overgrown, dry stone well.',
+    name: 'အဆောင်ဝင်း နတ်စင်နှင့် ရေတွင်းဟောင်း (Courtyard Shrine & Well)',
+    description: 'ခြုံနွယ်များ ဖုံးလွှမ်းနေသော ခန်းခြောက်ကျောက်ရေတွင်းဘေးရှိ ရာသီဥတုဒဏ်ခံ သစ်သားနတ်စင်ငယ်။',
     turnCost: 2,
   },
   {
     id: 'common_hall',
-    name: 'Hostel Common Hallway',
-    description: 'Notice boards from 1998 with student logs, curfew notices, and torn posters.',
+    name: 'အဆောင် အများသုံးစင်္ကြံ (Common Hallway)',
+    description: 'ကျောင်းသူမှတ်တမ်းများ၊ ညမထွက်ရအမိန့်စာများနှင့် စုတ်ပြဲနေသော ပိုစတာများ ကပ်ထားသည့် ၁၉၉၈ ခုနှစ် ကြော်ငြာသင်ပုန်းများ။',
     turnCost: 1,
   },
 ];
@@ -367,131 +367,131 @@ export const CLUES: Clue[] = [
   {
     id: 'diary_page',
     locationId: 'dorm_room_4b',
-    title: 'Torn Diary Page (Aug 1998)',
+    title: 'စုတ်ပြဲနေသော နေ့စဉ်မှတ်တမ်းစာမျက်နှာ (သြဂုတ် ၁၉၉၈)',
     details:
-      'A handwritten entry by Mama May: "Ko Zaw yelled at the tea shop today when I wore magenta. He passionately detests the color pink—he says it makes him physically ill."',
+      'မမမေ ၏ လက်ရေးမှတ်စု - "ဒီနေ့ လက်ဖက်ရည်ဆိုင်မှာ မိုးပြာရောင်သန်းတဲ့ ပန်းရောင်လုံချည် ဝတ်လာလို့ ကိုဇော် ဒေါသတကြီး အော်ဟစ်ခဲ့တယ်။ သူ ပန်းရောင်ကို အလွန်ရွံမုန်းတယ်... အဲ့ဒီအရောင်က သူ့ကို ပျို့အန်ချင်အောင် လုပ်တယ်တဲ့။"',
     pointsTo: 'ko_zaw_hates_pink',
   },
   {
     id: 'pink_shirt',
     locationId: 'hostel_laundry',
-    title: 'Stained Pink Silk Longyi & Blouse',
+    title: 'သွေးစွန်းနေသော ပန်းရောင်ပိုးလုံချည် နှင့် အင်္ကျီ',
     details:
-      'Found buried beneath lye powder in laundry vat #3. Faint blood traces linger on the cuffs. The size tag matches a woman of Sandar\'s build.',
+      'အဝတ်လျှော်ကန် နံပါတ် ၃ ထဲက ပြာရည်မှုန့်များအောက်တွင် မြှုပ်နှံထားသည်ကို တွေ့ရသည်။ လက်မောင်းစများတွင် သွေးစွန်းရာများ ကျန်ရှိနေသည်။ အင်္ကျီဆိုဒ်သည် စန္ဒာ၏ ကိုယ်လုံးကိုယ်ပေါက်နှင့် ကိုက်ညီသည်။',
     pointsTo: 'killer_is_not_ko_zaw',
   },
   {
     id: 'caesar_chest',
     locationId: 'caretaker_office',
-    title: 'Iron-Banded Box with Caesar Cipher',
+    title: 'ဆီဆာဝှက်စာပါ သံပတ်သေတ္တာ',
     details:
-      'A locked lockbox inscribed with shifted script: "VHFUHW: 5000 NBDWV SDLG WR VHDO WKH GULHG ZHOO DQG EXUB WKH ERGB (Shift 3)". Decoded receipt: 5,000 kyats paid by Room 4B tenant (Sandar) to caretaker to seal dried well.',
+      'ဝှက်စာထွင်းထားသော သော့ခတ်သေတ္တာ - "VHFUHW: 5000 NBDWV SDLG WR VHDO WKH GULHG ZHOO DQG EXUB WKH ERGB (Shift 3)"။ ဖော်ထုတ်ရရှိသော ပြေစာ - ခန်းခြောက်နေသော ရေတွင်းကို ပိတ်ဆို့ပြီး အလောင်းကို မြှုပ်နှံရန် အခန်း ၄-ဘီ နေထိုင်သူ (စန္ဒာ) က အဆောင်မှူးအား ကျပ် ၅,၀၀၀ ပေးချေခဲ့သည်။',
     pointsTo: 'sandar_bribed_caretaker',
     isCipher: true,
   },
   {
     id: 'broken_rosary',
     locationId: 'courtyard_shrine',
-    title: 'Shattered Bodhi Prayer Beads',
+    title: 'ကျိုးပဲ့နေသော ဗောဓိစိပ်ပုတီး',
     details:
-      'Scattered wooden beads coated in dried red wax. A devotional item left by frightened students in 1998. (Pure red herring with no investigative payoff).',
+      'ဖယောင်းနီခြောက်များ ပေကျံနေသည့် ကြမ်းပြင်ပေါ် ပြန့်ကျဲနေသော သစ်သားပုတီးစေ့များ။ ၁၉၉၈ ခုနှစ်က ကြောက်လန့်နေသော ကျောင်းသူများ ထားရစ်ခဲ့သည့် အရာဖြစ်သည် (စုံစမ်းမှုအတွက် အသုံးမဝင်သော သဲလွန်စအမှားဖြစ်သည်)။',
     pointsTo: 'red_herring_no_payoff',
   },
   {
     id: 'room_4b_log',
     locationId: 'common_hall',
-    title: '1998 Residence Roster Log',
+    title: '၁၉၉၈ ကျောင်းသူနေထိုင်မှု မှတ်တမ်းစာအုပ်',
     details:
-      'Official hostel ledger recording that Mama May and Sandar were roommates and close companions. Notations describe Sandar frequently braiding Mama May\'s hair before night assemblies.',
+      'မမမေ နှင့် စန္ဒာ တို့သည် အခန်းဖော်များနှင့် ရင်းနှီးသော သူငယ်ချင်းများဖြစ်ကြောင်း ဖော်ပြထားသည့် အဆောင်တရားဝင်မှတ်တမ်း။ ညပိုင်းအစည်းအဝေးများ မတိုင်မီ စန္ဒာ သည် မမမေ ၏ ဆံပင်ကို မကြာခဏ ကျစ်ဆံမြီးကျစ်ပေးလေ့ရှိကြောင်း မှတ်ချက်များတွင် ရေးသားထားသည်။',
     pointsTo: 'roommate_braided_hair',
   },
   {
     id: 'antique_locket',
     locationId: 'dorm_room_4b',
-    title: 'Silver Filigree Locket',
+    title: 'ငွေရောင်ပန်းထွင်း လော့ကတ်သီး',
     details:
-      'Concealed behind loose teak baseboard in Room 4B. Contains a photograph of Sandar holding an infant: "For Aunt Sandar, from Aye Aye\'s mother, July 1998." (Secret connection to 2026 friend Aye Aye).',
+      'အခန်း ၄-ဘီ ရှိ ကျွန်းပျဉ်ပြား အောက်ခြေနောက်ကွယ်တွင် ဝှက်ထားသည်။ မွေးကင်းစကလေးငယ်ကို ပွေ့ချီထားသည့် စန္ဒာ၏ ဓာတ်ပုံပါရှိသည် - "အန်တီစန္ဒာအတွက်၊ အေးအေး ၏ မိခင်ထံမှ၊ ဇူလိုင် ၁၉၉၈။" (၂၀၂၆ ခုနှစ်မှ သူငယ်ချင်း အေးအေး နှင့် လျှို့ဝှက်ဆွေမျိုးတော်စပ်မှု ဖြစ်သည်)။',
     pointsTo: 'aye_aye_is_sandars_niece',
   },
   {
     id: 'glitch_body_glimpse',
     locationId: 'common_hall',
-    title: 'Glitching Spectral Silhouette',
+    title: 'တုန်ခါဝိုးတဝါး ဝိညာဉ်အရိပ်သဏ္ဌာန်',
     details:
-      "A fleeting manifestation of Mama May's restless spirit glitching between 1998 and 2026 before dissolving into mist near the corridor.",
+      'စင်္ကြံလမ်းအနီး မြူခိုးများအဖြစ် မပျောက်ကွယ်မီ ၁၉၉၈ နှင့် ၂၀၂၆ အကြား ဝိုးတဝါးတုန်ခါပေါ်ပေါက်လာသည့် မမမေ ၏ မကျွတ်လွတ်သော ဝိညာဉ်အရိပ်။',
     pointsTo: 'shadow_event_manifestation',
   },
   {
     id: 'roster_slip_1998',
     locationId: 'dorm_room_4b',
-    title: 'Cleaning Duty Log (Aug 1998)',
+    title: 'သန့်ရှင်းရေး တာဝန်ကျစာရင်း (သြဂုတ် ၁၉၉၈)',
     details:
-      'Cleaning Duty Log (Aug 1998) assigning Room 4B to students May and Sandar.',
+      'သန့်ရှင်းရေး တာဝန်ကျစာရင်း (သြဂုတ် ၁၉၉၈) အရ အခန်း ၄-ဘီ အား ကျောင်းသူ မေ နှင့် စန္ဒာ တို့ထံ တာဝန်ပေးအပ်ထားသည်။',
     pointsTo: 'room_4b_duty_log',
   },
   {
     id: 'clue_may_letter',
     locationId: 'dorm_room_4b',
-    title: "Ko Zaw's Folded Letter",
+    title: 'ကိုဇော် ၏ ခေါက်ထားသောစာလွှာ',
     details:
-      "A secret note from Ko Zaw warning May not to let Sandar take her locker key, and revealing a tape hidden behind the vent in 326.",
+      'မေ ၏ လော့ကာသော့ကို စန္ဒာ့ထံ မပေးရန် သတိပေးထားပြီး အခန်း ၃၂၆ လေဝင်ပေါက်နောက်ကွယ်တွင် တိတ်ခွေတစ်ခု ဝှက်ထားကြောင်း ဖွင့်ဟထားသည့် ကိုဇော် ထံမှ လျှို့ဝှက်စာလွှာ။',
     pointsTo: 'balcony_secret_meeting',
   },
   {
     id: 'clue_key_14',
     locationId: 'balcony_326',
-    title: 'Key 14 (Locker Key)',
+    title: 'သော့ ၁၄ (လော့ကာသော့)',
     details:
-      'A tarnished brass key retrieved from the wet balcony terrace tiles after May disappeared. Corresponds to Locker 14 in the dorm bay.',
+      'မေ ပျောက်ဆုံးသွားပြီးနောက် စိုစွတ်နေသော ဝရန်တာကြမ်းခင်းပေါ်မှ ကောက်ယူရရှိခဲ့သည့် ကြေးဝါသော့ဟောင်း။ အဆောင်တွင်းရှိ လော့ကာ ၁၄ နှင့် သက်ဆိုင်သည်။',
     pointsTo: 'locker_14_unlocked',
   },
   {
     id: 'curfew_calendar_1998',
     locationId: 'dorm_room_4b',
-    title: 'August 1998 Wall Calendar',
+    title: '၁၉၉၈ သြဂုတ် နံရံကပ်ပြက္ခဒိန်',
     details:
-      'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
+      'ညမထွက်ရ အဆောင်ပိတ်သိမ်းခြင်း မှတ်စုများနှင့်အတူ သြဂုတ်လ ၁၄ ရက်နေ့ကို ဝိုင်းထားသော ၁၉၉၈ ခုနှစ် နံရံကပ်ပြက္ခဒိန်။',
     pointsTo: 'curfew_lockdown_aug14',
   },
   {
     id: 'washroom_stall_echo',
     locationId: 'hostel_laundry',
-    title: 'Washroom Stall Blood & Echo',
+    title: 'ရေချိုးခန်းအခန်းတွင်း သွေးစွန်းမှုနှင့် ပဲ့တင်သံ',
     details:
-      'The third washroom stall exhibits fresh blood smears and a shattered pocket mirror beside a crimson student hair ribbon.',
+      'တတိယမြောက် ရေချိုးခန်းတွင်း၌ သွေးစွန်းနေသော အစွန်းအထင်းများနှင့် သွေးရောင်ကျောင်းသူ ဆံစည်းကြိုးဘေးတွင် ကွဲကြေနေသော အိတ်ဆောင်မှန်ငယ်တစ်ခု တွေ့ရသည်။',
     pointsTo: 'washroom_third_stall',
   },
   {
     id: 'mirror_locker_scrawl',
     locationId: 'hostel_laundry',
-    title: 'Mirror Frame Etched Scrawl',
+    title: 'ရေချိုးခန်းမှန်ဘောင်ပေါ် ထွင်းခြစ်ထားသော စာ',
     details:
-      "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
+      "ရေချိုးခန်းမှန်ဘောင်အောက်ခြေတွင် မြေဖြူဖြင့် ကုတ်ခြစ်ထားသော အမှတ်အသား - 'Locker 14 - 1998'။",
     pointsTo: 'locker_14_1998',
   },
   {
     id: 'cipher_note_32',
     locationId: 'hostel_laundry',
-    title: 'Warden Office Overwrite Note',
+    title: 'အဆောင်မှူးရုံးခန်း ကုဒ်မှတ်စု',
     details:
-      "'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2. Note: Caretaker mirrors all sequence inputs for emergency security.'",
+      "'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2. Note: Caretaker mirrors all sequence inputs for emergency security.' အဆောင်မှူးရုံးခန်း အီလက်ထရွန်းနစ် သော့ခလောက် ကုဒ် - 8 1 4 0 9 2 ဖြစ်ပြီး အရေးပေါ်လုံခြုံရေးအတွက် အဆောင်မှူးသည် ကုဒ်အားလုံးကို ပြောင်းပြန် (mirror) ရိုက်ထည့်ရန် စီစဉ်ထားသည်။",
     pointsTo: 'caretaker_door_reverse_code',
     isCipher: true,
   },
   {
     id: 'sandar_kozaw_letters',
     locationId: 'lockers_main',
-    title: 'Folded Love Letters (K.Z.)',
+    title: 'ခေါက်ထားသော အချစ်စာလွှာများ (K.Z.)',
     details:
-      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Reveals the hidden betrayal behind Mama May.",
+      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော စာလွှာများ... 'လက်ဖက်ရည်ဆိုင် (tea shop) သွားတာကို မေ ရိပ်မိနေပြီ။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ပြနေသည်။",
     pointsTo: 'sandar_kozaw_betrayal',
   },
   {
     id: 'clue_stairway_key_found',
     locationId: 'lockers_main',
-    title: 'Stairway Gate Key',
+    title: 'လှေကားတံခါးသော့',
     details:
-      'A heavy, blackened iron key hidden on the lower shelf of Locker 14. Ko Zaw hid this here so May could bypass the curfew gate to reach the terrace.',
+      'လော့ကာ ၁၄ ၏ အောက်ထပ်စင်ပေါ်တွင် ဝှက်ထားသော သံမည်းသော့ကြီး။ မေ အနေဖြင့် ညမထွက်ရတံခါးကို ကျော်ဖြတ်ပြီး ဝရန်တာသို့ သွားနိုင်ရန် ကိုဇော် က ဤနေရာ၌ ဝှက်ထားပေးခဲ့ခြင်း ဖြစ်သည်။',
     pointsTo: 'stairway_gate_unlocked',
   },
 ];
@@ -499,20 +499,20 @@ export const CLUES: Clue[] = [
 export const GUARDIAN_PAIRS: GuardianPair[] = [
   {
     id: 1,
-    statementA: 'Ko Zaw killed her in a fit of jealous fury.',
-    statementB: 'The pink shirt found in the laundry belongs to the killer.',
+    statementA: 'ကိုဇော်က မနာလိုဒေါသထွက်ပြီး သူမကို သတ်ပစ်ခဲ့ခြင်း ဖြစ်သည်။',
+    statementB: 'အဝတ်လျှော်ကန်ထဲတွင် တွေ့ရှိခဲ့သည့် ပန်းရောင်အင်္ကျီသည် လူသတ်သမား၏ ပစ္စည်းဖြစ်သည်။',
     trueIndex: 2, // B is true; combined with diary, disproves Ko Zaw
   },
   {
     id: 2,
-    statementA: 'Her body was dropped down into the old dried courtyard well.',
-    statementB: 'Her body rests beneath the roots of the ancient mango tree.',
+    statementA: 'သူမ၏အလောင်းကို အဆောင်ဝင်းထဲက ခန်းခြောက်ကျောက်ရေတွင်းဟောင်းထဲသို့ ချပစ်ခဲ့သည်။',
+    statementB: 'သူမ၏အလောင်းသည် ရှေးဟောင်းသရက်ပင်ကြီး၏ သစ်မြစ်များအောက်တွင် လဲလျောင်းနေသည်။',
     trueIndex: 1, // A is true
   },
   {
     id: 3,
-    statementA: 'She met her end by a silver hairpin driven into her temple.',
-    statementB: 'Hands that once touched her with sisterly warmth choked her breath away.',
+    statementA: 'သူမ၏ နားထင်ကို ငွေဆံထိုးဖြင့် ထိုးစိုက်ခံရကာ အသက်ဆုံးရှုံးခဲ့ခြင်း ဖြစ်သည်။',
+    statementB: 'တစ်ချိန်က ညီအစ်မအရင်းလို နွေးထွေးစွာ ထိတွေ့ခဲ့သော လက်များက သူမ၏ အသက်ရှူလမ်းကြောင်းကို ပိတ်ဆို့ညှစ်သတ်ခဲ့သည်။',
     trueIndex: 2, // B is true (strangled)
   },
 ];
@@ -520,72 +520,72 @@ export const GUARDIAN_PAIRS: GuardianPair[] = [
 export const VICTIM_RIDDLES: VictimRiddle[] = [
   {
     topic: 'cause_of_death',
-    title: 'Cause of Death',
-    symbolicText: 'Hands that once gently braided my long hair closed around my throat instead.',
+    title: 'သေဆုံးရသည့် အကြောင်းရင်း (Cause of Death)',
+    symbolicText: 'တစ်ချိန်က ငါ့ဆံပင်ရှည်တွေကို ညင်သာစွာ ကျစ်ဆံမြီးကျစ်ပေးခဲ့တဲ့ လက်တွေဟာ အခုတော့ ငါ့လည်ချောင်းကို ညှစ်သတ်ပစ်ခဲ့တယ်။',
     trueMeaning: 'strangled',
     options: [
       {
         id: 'opt_strangled',
         meaningKey: 'strangled',
-        label: 'She was manually strangled by someone who used to braid her hair.',
+        label: 'သူမ၏ဆံပင်ကို ကျစ်ဆံမြီးကျစ်ပေးခဲ့ဖူးသူတစ်ဦးမှ လည်ပင်းညှစ်သတ်ဖြတ်ခဲ့ခြင်း ဖြစ်သည်။',
       },
       {
         id: 'opt_poisoned',
         meaningKey: 'poisoned',
-        label: 'She was poisoned by a cup of jasmine tea laced with datura.',
+        label: 'ပဒိုင်းသီးဆေးခတ်ထားသော စံပယ်လက်ဖက်ရည်တစ်ခွက်ဖြင့် အဆိပ်ခတ်ခံခဲ့ရခြင်း ဖြစ်သည်။',
       },
       {
         id: 'opt_drowned',
         meaningKey: 'drowned',
-        label: 'She was held underwater in the monsoon rainwater reservoir.',
+        label: 'မိုးရာသီ မိုးရေလှောင်ကန်ထဲတွင် ရေနစ်မြှုပ် အသတ်ခံခဲ့ရခြင်း ဖြစ်သည်။',
       },
     ],
   },
   {
     topic: 'killer_identity',
-    title: 'Killer Identity',
+    title: 'လူသတ်သမား မည်သူနည်း (Killer Identity)',
     symbolicText:
-      'The one who shared my mirror and whispered promises wore my favorite rose-silk shawl while scrubbing crimson from her sleeves.',
+      'ငါနဲ့အတူ မှန်တစ်ချပ်တည်း ကြည့်ပြီး ကတိတွေတီးတိုးပေးခဲ့သူဟာ ငါအကြိုက်ဆုံး နှင်းဆီရောင်ပိုးပုဝါကို လွှမ်းခြုံထားရင်း သူမလက်မောင်းစက သွေးတွေကို ဆေးကြောသုတ်သင်နေခဲ့တယ်။',
     trueMeaning: 'sandar',
     options: [
       {
         id: 'opt_sandar',
         meaningKey: 'sandar',
-        label: 'Her roommate Sandar, who wore her rose shawl and shared her room.',
+        label: 'သူမ၏ နှင်းဆီရောင်ပုဝါကို ဝတ်ဆင်ပြီး အခန်းဖော်အဖြစ် နေထိုင်ခဲ့သည့် စန္ဒာ ဖြစ်သည်။',
       },
       {
         id: 'opt_ko_zaw',
         meaningKey: 'ko_zaw',
-        label: 'Her boyfriend Ko Zaw, trying to hide a violent confrontation.',
+        label: 'ပြင်းထန်သော ခိုက်ရန်ဖြစ်ပွားမှုကို ဖုံးကွယ်ရန် ကြိုးစားခဲ့သည့် သူမ၏ ချစ်သူ ကိုဇော် ဖြစ်သည်။',
       },
       {
         id: 'opt_caretaker',
         meaningKey: 'caretaker',
-        label: 'The old hostel caretaker, acting on orders from university elders.',
+        label: 'တက္ကသိုလ်လူကြီးများ၏ အမိန့်အရ လုပ်ဆောင်ခဲ့သည့် အဆောင်မှူးအိုကြီး ဖြစ်သည်။',
       },
     ],
   },
   {
     topic: 'body_location',
-    title: 'Body Concealment Location',
+    title: 'အလောင်း ဝှက်ထားသည့် နေရာ (Body Concealment)',
     symbolicText:
-      'Where the stone mouth swallowed monsoon rains and now lies dry in the shadow of the shrine, I sleep in cold stone.',
+      'ကျောက်တွင်းဝဟာ မိုးရာသီမိုးရေတွေကို မျိုချပြီး အခုတော့ နတ်စင်ရဲ့ အရိပ်အောက်မှာ ခန်းခြောက်နေတဲ့ ကျောက်တုံးအေးစက်စက်ကြားမှာ ငါ အိပ်စက်နေရတယ်။',
     trueMeaning: 'dried_well',
     options: [
       {
         id: 'opt_dried_well',
         meaningKey: 'dried_well',
-        label: 'The old dried well in the overgrown courtyard behind the shrine.',
+        label: 'နတ်စင်နောက်ကွယ် ခြုံနွယ်ဖုံးလွှမ်းနေသော အဆောင်ဝင်းထဲက ခန်းခြောက်ကျောက်ရေတွင်းဟောင်း ဖြစ်သည်။',
       },
       {
         id: 'opt_mango_tree',
         meaningKey: 'mango_tree',
-        label: 'Deep underground beneath the roots of the ancient courtyard mango tree.',
+        label: 'အဆောင်ဝင်းထဲက ရှေးဟောင်းသရက်ပင်ကြီး၏ သစ်မြစ်များအောက် မြေအောက်အနက်တွင် ဖြစ်သည်။',
       },
       {
         id: 'opt_dorm_floor',
         meaningKey: 'dorm_floor',
-        label: 'Concealed within the double ceiling cavity above Room 4B.',
+        label: 'အခန်း ၄-ဘီ အပေါ်ရှိ မျက်နှာကြက်အခေါင်းပေါက်အတွင်း ဝှက်ထားခြင်း ဖြစ်သည်။',
       },
     ],
   },
@@ -596,52 +596,52 @@ export const ENDINGS_INFO: Record<
   { title: string; subtitle: string; description: string; type: 'victory' | 'defeat' | 'twist' }
 > = {
   true_rest: {
-    title: 'True Rest: The Spirit Laid to Peace',
-    subtitle: 'Canonical Victory & Escape to 2026',
+    title: 'ငြိမ်းချမ်းစွာ အနားယူခြင်း - ဝိညာဉ် ငြိမ်းချမ်းမှု ရရှိခြင်း (True Rest)',
+    subtitle: 'တရားဝင် အောင်ပွဲ နှင့် ၂၀၂၆ သို့ ပြန်လည်လွတ်မြောက်ခြင်း',
     description:
-      'You correctly identified Sandar as the killer, specified manual strangulation, guided the pacification rite to the dried well, and maintained Mama May\'s trust. She sheds a tear of warm light and dissolves into peace. A temporal surge pulls you back to 2026 into the arms of your waking friends.',
+      'သင်သည် လူသတ်သမားအစစ်အမှန် စန္ဒာကို မှန်ကန်စွာ ဖော်ထုတ်နိုင်ခဲ့ပြီး၊ လည်ပင်းညှစ်သတ်ခဲ့သည့် အကြောင်းရင်းကို ရှင်းလင်းစွာ ဖော်ပြကာ ခန်းခြောက်ရေတွင်းဆီသို့ ဝိညာဉ်အေးချမ်းရေး ယတြာကို မှန်ကန်စွာ လမ်းညွှန်ခဲ့သဖြင့် မမမေ ၏ ယုံကြည်မှုကို ရရှိခဲ့သည်။ သူမသည် နွေးထွေးသော မျက်ရည်တစ်စက် ကျဆင်းလျက် ငြိမ်းချမ်းစွာ ပျောက်ကွယ်သွားခဲ့သည်။ အချိန်ကာလစွမ်းအင် လှိုင်းလုံးကြီးက သင့်အား ၂၀၂၆ ခုနှစ်သို့ ပြန်လည်ဆွဲခေါ်သွားပြီး နိုးထလာသော သူငယ်ချင်းများ၏ ရင်ခွင်ထဲသို့ ရောက်ရှိစေခဲ့သည်။',
     type: 'victory',
   },
   twist_ending: {
-    title: 'Twist Ending: The Bloodline Revelation',
-    subtitle: 'Kinship Unmasked Across Time',
+    title: 'အလှည့်အပြောင်း ဇာတ်သိမ်း - သွေးမျိုးနွယ် ဖွင့်ဟချက် (Twist Ending)',
+    subtitle: 'အချိန်ကာလကို ကျော်လွန်သော ဆွေမျိုးတော်စပ်မှု',
     description:
-      'You proved Sandar\'s guilt and recovered the antique locket from Room 4B, proving that your 2026 friend Aye Aye is Sandar\'s direct niece. When you open your eyes in 2026, Aye Aye is kneeling beside you—wearing the exact antique rose hairpin described in the 1998 murder notes.',
+      'သင်သည် စန္ဒာ ၏ အပြစ်ကို သက်သေထူနိုင်ခဲ့ပြီး အခန်း ၄-ဘီ မှ ရှေးဟောင်းလော့ကတ်သီးကို ရှာဖွေတွေ့ရှိကာ ၂၀၂၆ ခုနှစ်မှ သူငယ်ချင်း အေးအေး သည် စန္ဒာ ၏ တူမအရင်းဖြစ်ကြောင်း သက်သေပြနိုင်ခဲ့သည်။ ၂၀၂၆ ခုနှစ်တွင် သင် မျက်စိဖွင့်ကြည့်လိုက်သောအခါ အေးအေး သည် သင့်ဘေးတွင် ဒူးထောက်ထိုင်နေပြီး ၁၉၉၈ လူသတ်မှုမှတ်တမ်းတွင် ဖော်ပြထားသော ရှေးဟောင်းနှင်းဆီဆံထိုးကို ဆင်မြန်းထားသည်ကို ထိတ်လန့်ဖွယ် တွေ့မြင်လိုက်ရသည်။',
     type: 'twist',
   },
   deceived: {
-    title: 'Deceived: The Guardian\'s Trap',
-    subtitle: 'Corrupted Judgment & False Accusation',
+    title: 'လှည့်စားခံရခြင်း - အစောင့်နတ်၏ ထောင်ချောက် (Deceived)',
+    subtitle: 'မှားယွင်းသော စီရင်ချက် နှင့် မမှန်ကန်သော စွပ်စွဲမှု',
     description:
-      'You trusted the Guardian Nat\'s false whispers or falsely condemned innocent Ko Zaw. The rite is corrupted with false testimonies. Sandar\'s true crime remains concealed, and Mama May\'s ghost remains bound to the hostel halls for another generation.',
+      'သင်သည် အစောင့်နတ်၏ မမှန်ကန်သော တီးတိုးလှည့်စားမှုများကို ယုံကြည်မိပြီး အပြစ်မဲ့သော ကိုဇော် ကို စွပ်စွဲပြစ်တင်ခဲ့သည်။ ယတြာအခမ်းအနားသည် မှားယွင်းသော သက်သေများဖြင့် ပျက်စီးသွားခဲ့သည်။ စန္ဒာ ၏ စစ်မှန်သော ရာဇဝတ်မှုသည် ဖုံးကွယ်ခံထားရဆဲဖြစ်ပြီး မမမေ ၏ ဝိညာဉ်သည် နောက်ထပ်မျိုးဆက်တစ်ခုအထိ အဆောင်စင်္ကြံများတွင် ချုပ်နှောင်ခံထားရတော့မည်။',
     type: 'defeat',
   },
   misunderstood: {
-    title: 'Misunderstood: Unresolved Grief',
-    subtitle: 'Incomplete Truth & Lingering Sorrow',
+    title: 'နားလည်မှုလွဲမှားခြင်း - မဖြေရှင်းနိုင်သော သောက (Misunderstood)',
+    subtitle: 'မပြည့်စုံသော အမှန်တရား နှင့် ကျန်ရစ်သော ဝမ်းနည်းကြေကွဲမှု',
     description:
-      'Though you escaped the Guardian\'s trap, you misinterpreted Mama May\'s symbolic riddles. Her true suffering was never comprehended. Her sorrowful spirit remains as an inconsolable ghost weeping under the monsoon eaves.',
+      'အစောင့်နတ်၏ ထောင်ချောက်မှ လွတ်မြောက်ခဲ့သော်လည်း မမမေ ၏ သင်္ကေတပဟေဠိများကို သင် လွဲမှားစွာ အဓိပ္ပာယ်ကောက်ယူခဲ့သည်။ သူမ၏ စစ်မှန်သော ခံစားချက်နှင့် ဆင်းရဲဒုက္ခကို နားမလည်နိုင်ခဲ့ပေ။ သူမ၏ ဝမ်းနည်းကြေကွဲနေသော ဝိညာဉ်သည် မိုးစက်မိုးပေါက်များအောက်တွင် အဆုံးမရှိ ငိုကြွေးနေသော သရဲမအဖြစ် ကျန်ရစ်ခဲ့သည်။',
     type: 'defeat',
   },
   time_expired: {
-    title: 'Time Expired: Temporal Strand Dissolution',
-    subtitle: 'Countdown Reached Zero',
+    title: 'အချိန်ကုန်ဆုံးခြင်း - အချိန်ဆက်သွယ်မှု ပြတ်တောက်ခြင်း (Time Expired)',
+    subtitle: 'အချိန်ရေတွက်မှု သုညသို့ ရောက်ရှိသွားသည်',
     description:
-      'The 2026 ritual anchor severed. Your friends\' calling voices faded away into dead silence. The 1998 hostel echoes into permanent stagnation, trapping you forever as a shadow of Room 4B.',
+      '၂၀၂၆ ခုနှစ် ယတြာကျောက်ဆူး ပြတ်တောက်သွားခဲ့သည်။ သူငယ်ချင်းများ၏ ခေါ်သံများသည် တိတ်ဆိတ်အမှောင်ထုထဲသို့ တဖြည်းဖြည်း ပျောက်ကွယ်သွားခဲ့သည်။ ၁၉၉၈ ခုနှစ် အဆောင်သည် ထာဝရရပ်တန့်သွားကာ သင်သည် အခန်း ၄-ဘီ ၏ အရိပ်တစ်ခုအဖြစ် ထာဝရ ပိတ်မိကျန်ရစ်တော့သည်။',
     type: 'defeat',
   },
   composure_zero: {
-    title: 'Composure Zero: Psychological Shattering',
-    subtitle: 'Mind Broken by Dread',
+    title: 'စိတ်တည်ငြိမ်မှု ပျက်ပြားခြင်း - စိတ်ပိုင်းဆိုင်ရာ ပြိုလဲမှု (Composure Zero)',
+    subtitle: 'ကြောက်ရွံ့မှုကြောင့် စိတ်နှလုံး ပျက်စီးသွားခြင်း',
     description:
-      'Terror shattered your composure to 0%. Hallucinations and sensory overload consumed your reason. You were found catatonic on the cold floorboards as the spirits dragged your mind into the well.',
+      'ထိတ်လန့်ကြောက်ရွံ့မှုကြောင့် သင့်စိတ်တည်ငြိမ်မှု ၀% သို့ ရောက်ရှိသွားခဲ့သည်။ ထင်ယောင်ထင်မှားများနှင့် သဘာဝလွန် အာရုံခံစားမှုများက သင့်အသိတရားကို ဝါးမျိုသွားသည်။ အေးစက်သော ကြမ်းပြင်ပေါ်တွင် အသိစိတ်မဲ့ လဲကျနေစဉ် ဝိညာဉ်များက သင့်စိတ်ကို ရေတွင်းနက်ထဲသို့ ဆွဲချသွားခဲ့သည်။',
     type: 'defeat',
   },
   grief_overflow: {
-    title: 'Grief Overflow: Vengeful Poltergeist',
-    subtitle: 'Mama May Transformed into a Thaye',
+    title: 'သောကပြင်းထန်ခြင်း - အငြိုးကြီးသော သရဲသရက် (Grief Overflow)',
+    subtitle: 'မမမေ သည် သရဲမကြီးအဖြစ်သို့ ကူးပြောင်းသွားသည်',
     description:
-      'Mama May\'s grief reached 100%. Agonized by distortion and misrepresentation, her sorrow turned into unbridled fury. The hostel collapsed in an eruption of violent psychokinetic forces.',
+      'မမမေ ၏ ဝမ်းနည်းသောကသည် ၁၀၀% သို့ ရောက်ရှိသွားခဲ့သည်။ အမှန်တရားကို လွဲမှားဖော်ပြမှုများကြောင့် သူမ၏ ပူဆွေးသောကသည် ထိန်းမနိုင်သိမ်းမရ ဒေါသအဖြစ် ပြောင်းလဲသွားခဲ့သည်။ အဆောင်တစ်ခုလုံးသည် ပြင်းထန်သော သဘာဝလွန်စွမ်းအင်ပေါက်ကွဲမှုကြီးနှင့်အတူ ပြိုကျပျက်စီးသွားခဲ့သည်။',
     type: 'defeat',
   },
 };

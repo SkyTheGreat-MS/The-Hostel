@@ -85,7 +85,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
 
     // 7. Optional success notification banner
     setRoomBanner?.({
-      text: "Retrieved Ko Zaw's Folded Letter. Added to inventory.",
+      text: "ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။",
       type: 'success',
     });
   };
@@ -115,7 +115,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       <InteractiveHotspot
         id="desk_enamel_mug"
         name="Chipped Enamel Mug"
-        cursorTooltip={deskMugMoved ? 'Shifted Enamel Mug' : 'Chipped Enamel Mug (Move Aside)'}
+        cursorTooltip={deskMugMoved ? 'ရွှေ့ထားသော ကြွေရည်သုတ်ခွက်' : 'အနားပဲ့နေသော ကြွေရည်သုတ်ခွက် (ဘေးသို့ ရွှေ့မည်)'}
         polygonPoints="14.5,23.5 25.5,22 28.5,31 31.5,41 29,52 24.5,56.5 15.5,55 14,35"
         onClick={() => {
           if (!deskMugMoved) {
@@ -125,7 +125,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
           } else {
             sound.playMenuSelect();
             setActiveMonologue(
-              '— The chipped enamel mug has already been shifted aside. Nothing else underneath. —'
+              '— အနားပဲ့နေသော ကြွေရည်သုတ်ခွက်ကို ဘေးသို့ ရွှေ့ပြီးသားဖြစ်သည်။ အောက်တွင် အခြားဘာမှ မရှိပါ။ —'
             );
           }
         }}
@@ -135,7 +135,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       <InteractiveHotspot
         id="desk_roster_slip"
         name={isLetterInInventory ? 'Empty Desk Surface' : "Ko Zaw's Folded Letter"}
-        cursorTooltip={isLetterInInventory ? 'Empty Desk Surface' : 'Read Folded Letter'}
+        cursorTooltip={isLetterInInventory ? 'စာပွဲမျက်နှာပြင် ဗလာ' : 'ခေါက်ထားသော စာလွှာကို ဖတ်မည်'}
         polygonPoints="15,42.5 3.5,57.5 22.5,93 39.5,70 33,52 27,56"
         onClick={handleLetterClick}
       />
@@ -145,13 +145,13 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
         <InteractiveHotspot
           id="desk_ceramic_tray"
           name="Bent Steel Bobby Pin"
-          cursorTooltip="Inspect Ceramic Tray (Bent Steel Pin)"
+          cursorTooltip="ကြွေလင်ပန်းကို စစ်ဆေးမည် (ကွေးနေသော သံညှပ်)"
           polygonPoints="48.5,28 56.5,28 52,36.5 48.5,36.5"
           onClick={() => {
             addInventoryItem('bobby_pin');
             sound.playPaperRustle();
             setRoomBanner?.({
-              text: 'Searching through dried ink nibs in the ceramic tray, you retrieve a sturdy bent steel bobby pin! Added to inventory.',
+              text: 'ကြွေလင်ပန်းထဲရှိ ခြောက်သွေ့နေသော မင်တံသွားများကြား ရှာဖွေရာမှ ခိုင်မာပြီး ကွေးနေသော သံဆံထိုးညှပ်တစ်ခုကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။',
               type: 'success',
             });
           }}
@@ -162,12 +162,12 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       <InteractiveHotspot
         id="desk_lecture_books"
         name="Lecture Notebooks"
-        cursorTooltip="Physics & Chemistry Lecture Notes (1998)"
+        cursorTooltip="ရူပဗေဒနှင့် ဓာတုဗေဒ သင်ခန်းစာမှတ်စုများ (၁၉၉၈)"
         polygonPoints="35,83 72,69 79,96 35,96"
         onClick={() => {
           sound.playPaperRustle();
           setActiveMonologue(
-            "— Physics and chemistry lecture notes from 1998... Someone scribbled: 'Strange voltage drops and vibrations in the hallway past 11 PM...' —"
+            "— ၁၉၉၈ ခုနှစ်က ရူပဗေဒနှင့် ဓာတုဗေဒ သင်ခန်းစာမှတ်စုများ... တစ်စုံတစ်ယောက်က လက်ရေးဆွဲရေးထားသည် - 'ည ၁၁ နာရီကျော်ရင် စင်္ကြံလမ်းထဲမှာ ထူးဆန်းတဲ့ လျှပ်စစ်ဗို့အားကျဆင်းမှုတွေနဲ့ တုန်ခါမှုတွေ ဖြစ်နေတယ်...' —"
           );
         }}
       />
@@ -194,10 +194,10 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
                       className="font-mono text-sm sm:text-base font-bold tracking-widest text-[#d8eae1] uppercase"
                       style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                     >
-                      KO ZAW'S FOLDED LETTER
+                      ကိုဇော်၏ ခေါက်ထားသော စာလွှာ
                     </h3>
                     <p className="text-[10px] font-mono text-[#6c8f7d] uppercase tracking-wider">
-                      Room 4B • August 1998
+                      အခန်း ၄B • ဩဂုတ် ၁၉၉၈
                     </p>
                   </div>
                 </div>
@@ -213,10 +213,10 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
               {/* Letter Parchment Reader Content */}
               <div className="relative rounded-xl bg-[#080d0a]/90 border border-[#1e2f25] p-5 sm:p-6 mb-5 font-mono text-xs sm:text-sm leading-relaxed text-[#bad3c7] shadow-inner space-y-3">
                 <div className="text-[11px] text-[#5e8270] tracking-wider uppercase border-b border-[#18261e] pb-1">
-                  [ Creased lined notebook page — Hasty Burmese script ]
+                  [ တွန့်ကြေနေသော လိုင်းသားစာအုပ်စာမျက်နှာ — အလျင်စလို ရေးထားသော လက်ရေး ]
                 </div>
                 <p className="italic text-[#d8eae1] tracking-wide pt-1">
-                  “May — I left the tape where we said, behind the vent in 326. Don't let Sandar take the room key from your locker. Meet me on the terrace when the curfew bell rings. — Ko Zaw”
+                  “မေ — ငါတို့ ပြောထားတဲ့အတိုင်း လေဝင်ပေါက်နောက် (၃၂၆) မှာ တိပ်ခွေကို ထားခဲ့တယ်။ မင်းရဲ့ ဘီရိုထဲက အခန်းသော့ကို Sandar ယူမသွားစေနဲ့။ ညမထွက်ရအမိန့် ခေါင်းလောင်းထိုးတဲ့အချိန် ဝရန်တာမှာ ငါ့ကို လာတွေ့ပါ။ — ကိုဇော်”
                 </p>
               </div>
 
@@ -226,13 +226,13 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
                   onClick={() => setIsLetterModalOpen(false)}
                   className="px-4 py-2 rounded-lg bg-[#121c17] hover:bg-[#1a2821] border border-[#22352b] text-stone-400 hover:text-stone-200 text-xs font-mono tracking-wider uppercase transition-all cursor-pointer"
                 >
-                  [ Put Back ]
+                  [ ပြန်ထားမည် ]
                 </button>
                 <button
                   onClick={handleTakeLetter}
                   className="group flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-500/60 hover:border-emerald-400 text-emerald-200 hover:text-white text-xs font-mono font-bold tracking-wider uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all cursor-pointer active:scale-95"
                 >
-                  <span>[ Take Letter ]</span>
+                  <span>[ စာလွှာကို ယူမည် ]</span>
                 </button>
               </div>
             </motion.div>

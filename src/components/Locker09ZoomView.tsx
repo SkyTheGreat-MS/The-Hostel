@@ -31,14 +31,14 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
           id="locker-09-candle"
           name="Black Beeswax Candle"
           polygonPoints="50,29 57,29 59,85 50,85"
-          cursorTooltip="Take Black Candle"
+          cursorTooltip="အနက်ရောင် ဖယောင်းတိုင်ကို ယူမည်"
           onClick={() => {
             sound.playItemPickup();
             setHasLocker09Candle(true);
             setHasBlackCandlesCount((prev) => prev + 1);
             setInventory((prev) => [...prev, 'black_beeswax_candle']);
             setActiveMonologue(
-              "A thick black beeswax candle. Heavy, cold, and smells faintly of sweet oil. Ideal for the prayer altar."
+              "ထူထဲသောအနက်ရောင် ပျားဖယောင်းတိုင်တစ်တိုင်။ လေးလံအေးစက်နေပြီး အမွှေးဆီနံ့ သင်းသင်းထွက်နေသည်။ ဘုရားစင်ယဇ်ပလ္လင်အတွက် သင့်တော်သည်။"
             );
           }}
         />
@@ -50,14 +50,14 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
           id="locker-09-matchbox"
           name="Three-Shooting-Stars Matchbox"
           polygonPoints="65,27 87,32 87,85 65,80"
-          cursorTooltip="Take Matchbox"
+          cursorTooltip="မီးခြစ်ဆံဗူးကို ယူမည်"
           onClick={() => {
             sound.playPaperRustle();
             setHasLocker09Matchbox(true);
             setHasMatchesCount(3);
             setInventory((prev) => [...prev, 'matchbox_three_stars']);
             setActiveMonologue(
-              "A box of 'Three-Shooting-Stars' safety matches. There are only three dry matches left inside."
+              "'ကြယ်သုံးပွင့်' ဘေးကင်းလုံခြုံရေး မီးခြစ်ဆံဗူးတစ်ခု။ အတွင်းတွင် မီးခြစ်ဆံ ခြောက်ခြောက် ၃ ချောင်းသာ ကျန်တော့သည်။"
             );
           }}
         />
@@ -69,11 +69,11 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
           id="locker-09-empty"
           name="Locker 09 (Emptied)"
           polygonPoints="0,8 90,8 90,88 0,88"
-          cursorTooltip="Locker 09 (Emptied)"
+          cursorTooltip="ဘီရို ၀၉ (ဗလာဖြစ်နေသည်)"
           onClick={() => {
             sound.playPaperRustle();
             setActiveMonologue(
-              "— Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. —"
+              "— ဘီရို ၀၉ တွင် ဘာမှ မရှိတော့ပါ။ ကျန်ရှိသော စင်များပေါ်တွင် စိုစွတ်သော ပိုးမွှားမစင်များနှင့် သံချေးတက်နေသော စင်တင်သံမှိုများသာ ကျန်တော့သည်။ —"
             );
           }}
         />

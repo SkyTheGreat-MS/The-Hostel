@@ -22,13 +22,13 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
     } catch {}
 
     setActiveMonologue?.(
-      "You crawl through the flooded drainage culvert into the sealed foundation beneath Room 101... The ritual chalk circle glows beneath the mud."
+      "ရေလျှံနေသော မြေအောက်ရေမြောင်းပေါက်မှတစ်ဆင့် အခန်း ၁၀၁ ၏ အောက်ခြေမြေအောက်ခန်းသို့ တွားသွားဝင်ရောက်ခဲ့သည်... ရွှံ့နွံများအောက်တွင် ယဇ်ပူဇော်ရာ မြေဖြူစက်ဝိုင်းသည် မှိန်ဖျော့ဖျော့ လင်းလက်နေသည်။"
     );
 
     const timer1 = setTimeout(() => {
       setStep(1);
       setActiveMonologue?.(
-        "A sudden blinding flash illuminates the darkness! Spectral memories of August 1998 violently surge across your vision..."
+        "ရုတ်တရက် မျက်စိကျိန်းမတတ် အလင်းရောင်တစ်ခုက အမှောင်ထုကို ထိုးခွဲလိုက်သည်! ၁၉၉၈ ခုနှစ် ဩဂုတ်လ၏ ဝိညာဉ်အမှတ်တရများသည် မျက်စိရှေ့တွင် ပြင်းထန်စွာ ရစ်ဝဲပေါ်ပေါက်လာသည်..."
       );
     }, 3000);
 
@@ -71,12 +71,12 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
       {/* Narrative Climax Box */}
       <div className="relative z-30 max-w-xl mx-6 p-6 rounded-2xl bg-black/80 border border-red-500/40 backdrop-blur-md text-center shadow-2xl">
         <h2 className="text-2xl font-mono font-bold text-red-400 tracking-widest uppercase mb-3">
-          [ CONDUIT REACHED — ROOM 101 ]
+          [ ရေမြောင်းပေါက်သို့ ရောက်ရှိ — အခန်း ၁၀၁ ]
         </h2>
         <p className="text-stone-300 font-mono text-sm leading-relaxed mb-6">
-          {step === 0 && "The subterranean culvert leads directly beneath the sealed floor of Room 101. The iron circle is complete."}
-          {step === 1 && "May's memory fractures the veil! The monsoon of 1998 and the present day violently collide..."}
-          {step >= 2 && "The investigation reaches its climax. The spirits of the hostel now acknowledge your presence."}
+          {step === 0 && "မြေအောက်ရေမြောင်းသည် အခန်း ၁၀၁ ၏ ပိတ်ထားသော ကြမ်းပြင်အောက်သို့ တိုက်ရိုက်ရောက်ရှိနေသည်။ သံစက်ဝိုင်း ပြီးပြည့်စုံသွားပြီ။"}
+          {step === 1 && "မေ၏ အမှတ်တရများသည် အမှောင်လွှာကို ထိုးဖောက်လိုက်သည်! ၁၉၉၈ မိုးရာသီနှင့် ယနေ့ကာလတို့ ပြင်းထန်စွာ ရိုက်ခတ်ဆုံစည်းသွားသည်..."}
+          {step >= 2 && "စုံစမ်းစစ်ဆေးမှုသည် အထွတ်အထိပ်သို့ ရောက်ရှိသွားပြီ။ အဆောင်၏ ဝိညာဉ်များသည် သင်ရောက်ရှိနေခြင်းကို အသိအမှတ်ပြုလိုက်ကြပြီ။"}
         </p>
 
         {step >= 2 && onComplete && (
@@ -84,7 +84,7 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
             onClick={onComplete}
             className="px-6 py-2.5 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-400/60 text-red-200 font-mono text-xs tracking-wider uppercase transition-colors cursor-pointer"
           >
-            [ PROCEED TO INVESTIGATION EPILOGUE ]
+            [ စုံစမ်းစစ်ဆေးမှု နိဂုံးသို့ ဆက်သွားမည် ]
           </button>
         )}
       </div>

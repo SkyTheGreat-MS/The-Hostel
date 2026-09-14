@@ -185,8 +185,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (candlesPlaced[spikeIndex]) {
       setActiveMonologue(
         candlesLit[spikeIndex]
-          ? "The tallow flame burns cold and steady."
-          : "A black beeswax candle is already mounted here."
+          ? "ဖယောင်းမီးတောက်သည် တည်ငြိမ်အေးစက်စွာ လောင်ကျွမ်းနေသည်။"
+          : "ဤနေရာတွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်ထားပြီးသား ဖြစ်သည်။"
       );
       return;
     }
@@ -253,7 +253,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     const hasBellItem = hasBronzeBell || inventory.includes('bronze_prayer_bell');
     if (!hasBellItem) {
       sound.playPaperRustle();
-      setActiveMonologue("— An empty wooden ring. It was crafted to hold a ceremonial bell. —");
+      setActiveMonologue("— ဗလာဖြစ်နေသော သစ်သားခုံ။ ယဇ်ပူဇော်ရာ ခေါင်းလောင်းကို တင်ထားရန် ပြုလုပ်ထားခြင်း ဖြစ်သည်။ —");
       return;
     }
 
@@ -314,7 +314,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     sound.playChime(true);
     sound.playGhostWhisper();
     setActiveMonologue(
-      "— The resonant chime of the bronze bell shivers across the damp masonry... A cold wind sweeps through the hall. The Guardian Nat has awakened. —"
+      "— ကြေးဝါခေါင်းလောင်း၏ ပဲ့တင်ထပ်သံသည် စိုစွတ်သောအုတ်နံရံများတစ်လျှောက် တုန်ခါသွားသည်... စင်္ကြံလမ်းတစ်လျှောက် အေးစက်သော လေပြင်းများ တိုက်ခတ်လာသည်။ အစောင့်နတ် နိုးထလာပြီ။ —"
     );
   };
 
@@ -447,9 +447,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             setHoveredSocket({
               text: candlesPlaced[0]
                 ? candlesLit[0]
-                  ? 'Lit Candle #1'
-                  : 'Unlit Candle #1'
-                : 'Place Black Candle on Spike 1',
+                  ? 'မီးညှိပြီး ဖယောင်းတိုင် #၁'
+                  : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၁'
+                : 'ဆူးတိုင် ၁ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်',
               x: 52.5,
               y: 45.0,
             });
@@ -460,9 +460,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <title>
             {candlesPlaced[0]
               ? candlesLit[0]
-                ? 'Lit Candle #1'
-                : 'Unlit Candle #1'
-              : 'Place Black Candle on Spike 1'}
+                ? 'မီးညှိပြီး ဖယောင်းတိုင် #၁'
+                : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၁'
+              : 'ဆူးတိုင် ၁ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်'}
           </title>
         </polygon>
 
@@ -476,9 +476,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             setHoveredSocket({
               text: candlesPlaced[1]
                 ? candlesLit[1]
-                  ? 'Lit Candle #2'
-                  : 'Unlit Candle #2'
-                : 'Place Black Candle on Spike 2',
+                  ? 'မီးညှိပြီး ဖယောင်းတိုင် #၂'
+                  : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၂'
+                : 'ဆူးတိုင် ၂ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်',
               x: 57.5,
               y: 45.0,
             });
@@ -489,9 +489,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <title>
             {candlesPlaced[1]
               ? candlesLit[1]
-                ? 'Lit Candle #2'
-                : 'Unlit Candle #2'
-              : 'Place Black Candle on Spike 2'}
+                ? 'မီးညှိပြီး ဖယောင်းတိုင် #၂'
+                : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၂'
+              : 'ဆူးတိုင် ၂ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်'}
           </title>
         </polygon>
 
@@ -505,9 +505,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             setHoveredSocket({
               text: candlesPlaced[2]
                 ? candlesLit[2]
-                  ? 'Lit Candle #3'
-                  : 'Unlit Candle #3'
-                : 'Place Black Candle on Spike 3',
+                  ? 'မီးညှိပြီး ဖယောင်းတိုင် #၃'
+                  : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၃'
+                : 'ဆူးတိုင် ၃ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်',
               x: 62.5,
               y: 45.0,
             });
@@ -518,9 +518,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <title>
             {candlesPlaced[2]
               ? candlesLit[2]
-                ? 'Lit Candle #3'
-                : 'Unlit Candle #3'
-              : 'Place Black Candle on Spike 3'}
+                ? 'မီးညှိပြီး ဖယောင်းတိုင် #၃'
+                : 'မီးမညှိရသေးသော ဖယောင်းတိုင် #၃'
+              : 'ဆူးတိုင် ၃ တွင် အနက်ရောင်ဖယောင်းတိုင် စိုက်မည်'}
           </title>
         </polygon>
 
@@ -532,7 +532,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredSocket({
-              text: 'Guardian Nat Altar Bowl',
+              text: 'အစောင့်နတ် ပူဇော်ရာ ယဇ်ခွက်',
               x: 57.5,
               y: 53.5,
             });
@@ -541,19 +541,19 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           onClick={() => {
             if (candlesPlaced.filter(Boolean).length < 3) {
               sound.playError();
-              setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+              setActiveMonologue("— အခမ်းအနား မပြည့်စုံသေးဘူး။ မီးမကူးခင် ဖယောင်းတိုင် သုံးတိုင် အရင်စိုက်ထားရမယ်။ —");
             } else if (!candlesLit.every(Boolean)) {
               if (inventory.includes('matchbox_three_stars')) {
-                setActiveMonologue("— Three black beeswax candles stand ready on the altar spikes. Use the safety matches to strike the fire. —");
+                setActiveMonologue("— အနက်ရောင် ပျားဖယောင်းတိုင် သုံးတိုင် ယဇ်စင်ဆူးတိုင်တွေပေါ်မှာ အသင့်ရှိနေပြီ။ မီးခြစ်ဆံနဲ့ မီးညှိလိုက်ပါ။ —");
               } else {
-                setActiveMonologue("— Three black beeswax candles stand ready, but I need matches to strike the flame. —");
+                setActiveMonologue("— အနက်ရောင် ပျားဖယောင်းတိုင် သုံးတိုင် အသင့်ရှိနေပေမဲ့ မီးညှိဖို့ မီးခြစ် လိုအပ်တယ်။ —");
               }
             } else {
-              setActiveMonologue("— The three candles burn cold and steady with pale blue sulfur light. —");
+              setActiveMonologue("— ဖယောင်းတိုင် သုံးတိုင်စလုံး အပြာဖျော့ဖျော့ ဆာလဖာမီးတောက်နဲ့ တည်ငြိမ်အေးစက်စွာ လောင်ကျွမ်းနေတယ်။ —");
             }
           }}
         >
-          <title>Guardian Nat Altar Bowl</title>
+          <title>အစောင့်နတ် ပူဇော်ရာ ယဇ်ခွက်</title>
         </polygon>
 
         {/* Bell Pedestal (Circular Wooden Stand on Right) */}
@@ -566,9 +566,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
             setHoveredSocket({
               text: hasPlacedBell
                 ? allCandlesLit
-                  ? '[Ring Ceremonial Bell]'
-                  : 'Ceremonial Bronze Bell (Placed)'
-                : 'Place Ceremonial Bronze Bell',
+                  ? '[ယဇ်ပူဇော်ရာ ခေါင်းလောင်းကို တီးမည်]'
+                  : 'ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်း (တင်ထားပြီး)'
+                : 'ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်းကို တင်မည်',
               x: 74.0,
               y: 40.0,
             });
@@ -579,9 +579,9 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <title>
             {hasPlacedBell
               ? allCandlesLit
-                ? '[Ring Ceremonial Bell]'
-                : 'Ceremonial Bronze Bell (Placed)'
-              : 'Place Ceremonial Bronze Bell'}
+                ? '[ယဇ်ပူဇော်ရာ ခေါင်းလောင်းကို တီးမည်]'
+                : 'ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်း (တင်ထားပြီး)'
+              : 'ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်းကို တင်မည်'}
           </title>
         </polygon>
       </svg>
@@ -708,20 +708,20 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   <div className="flex items-center justify-between text-[13px] font-mono tracking-wider text-[#8fa89b] uppercase">
                     <span className="flex items-center gap-1.5 font-bold">
                       <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                      Ritual Ignition
+                      ယဇ်ပူဇော်ရာ မီးညှိခြင်း
                     </span>
                     <span className="text-[#6ee7b7] font-semibold">
-                      {matchesRemaining} Matches Left
+                      မီးခြစ်ဆံ {matchesRemaining} ချောင်း ကျန်သည်
                     </span>
                   </div>
 
                   {/* Fail rate & composure stat bar */}
                   <div className="flex items-center justify-between text-[12px] font-mono text-stone-400 bg-black/40 px-2 py-1 rounded">
                     <span>
-                      Composure: <strong className="text-amber-300">{composure}%</strong>
+                      စိတ်တည်ငြိမ်မှု - <strong className="text-amber-300">{composure}%</strong>
                     </span>
                     <span>
-                      Fail Chance: <strong className="text-stone-300">{failRateDisplay}%</strong>
+                      မအောင်မြင်နိုင်ခြေ - <strong className="text-stone-300">{failRateDisplay}%</strong>
                     </span>
                   </div>
 
@@ -730,7 +730,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                     className="w-full py-2 px-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
                   >
                     <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-400" />
-                    <span>Strike Match ({litCount}/3 Lit)</span>
+                    <span>မီးခြစ်ဆံ ခြစ်မည် ({litCount}/၃ မီးလောင်နေ)</span>
                   </button>
                 </motion.div>
               )}
@@ -747,18 +747,18 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   <div className="flex items-center gap-2 font-mono">
                     <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
                     <span className="text-[11px] font-bold text-[#8fa89b] uppercase tracking-wider">
-                      Altar Prepared • Pacification Rite
+                      ယဇ်စင် ပြင်ဆင်ပြီး • နတ်ပူဇော်ပသမှု အခမ်းအနား
                     </span>
                   </div>
                   <div className="text-[10px] text-stone-400 leading-snug">
-                    The candles burn cold pale-blue. Strike the bronze bell to invoke the Guardian Nat.
+                    ဖယောင်းတိုင်များသည် အေးစက်သောအပြာဖျော့ရောင်ဖြင့် လောင်ကျွမ်းနေသည်။ အစောင့်နတ်ကို ဖိတ်ခေါ်ရန် ကြေးဝါခေါင်းလောင်းကို တီးခတ်ပါ။
                   </div>
                   <button
                     onClick={handleRingBell}
                     className="w-full py-2 px-3 rounded-lg bg-[#2a4536] hover:bg-[#365946] border border-[#4e7960] text-[#e0ede6] font-mono text-xs font-bold tracking-wider uppercase transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.02]"
                   >
                     <Bell className="w-3.5 h-3.5 fill-current text-amber-300" />
-                    <span>Ring Ceremonial Bell</span>
+                    <span>ယဇ်ပူဇော်ရာ ခေါင်းလောင်းကို တီးမည်</span>
                   </button>
                 </motion.div>
               )}
@@ -775,11 +775,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   <div className="flex items-center gap-2 font-mono">
                     <Sparkles className="w-3.5 h-3.5 text-[#6ee7b7] animate-spin" />
                     <span className="text-[11px] font-bold text-[#8fa89b] uppercase tracking-wider">
-                      Guardian Nat Awakened
+                      အစောင့်နတ် နိုးထလာပြီ
                     </span>
                   </div>
                   <div className="text-[10px] text-stone-400 leading-snug">
-                    The cold sulfur flames burn steadily. Guardian Nat is manifest. Return to corridor and inspect the Caretaker's office.
+                    အေးစက်သော ဆာလဖာမီးတောက်များ တည်ငြိမ်စွာ လောင်ကျွမ်းနေသည်။ အစောင့်နတ် ကိုယ်ထင်ပြလာပြီ။ စင်္ကြံလမ်းသို့ပြန်ပြီး အဆောင်မှူးအခန်းကို စစ်ဆေးပါ။
                   </div>
                   <div className="flex items-center gap-2 pt-1">
                     <button
@@ -789,7 +789,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                       }}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-[#1a2b22] hover:bg-[#253d30] border border-[#3f5c4c] text-[#a8cdb9] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
                     >
-                      <span>Inquire of Nat</span>
+                      <span>နတ်နှင့် စကားပြောမည်</span>
                     </button>
                     <button
                       onClick={() => {
@@ -802,7 +802,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                       }}
                       className="flex-1 py-1.5 px-2 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.02] active:scale-95"
                     >
-                      <span>Return</span>
+                      <span>ပြန်ထွက်မည်</span>
                     </button>
                   </div>
                 </motion.div>
@@ -823,8 +823,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   className="p-3.5 rounded-xl bg-[#0b0f0d]/90 border-2 border-[#273830] backdrop-blur-md shadow-2xl space-y-1.5 cursor-pointer hover:border-[#3f5c4c] transition-all group"
                 >
                   <div className="flex items-center justify-between text-[12px] font-mono text-[#8fa89b]/80 uppercase tracking-wider border-b border-[#1f2d26] pb-1">
-                    <span>Inner Monologue</span>
-                    <span className="group-hover:text-[#6ee7b7] transition-colors">[Click to Dismiss]</span>
+                    <span>အတွေး</span>
+                    <span className="group-hover:text-[#6ee7b7] transition-colors">[ပိတ်ရန် နှိပ်ပါ]</span>
                   </div>
                   <p className="text-base text-[#c2d6cc] font-mono leading-relaxed line-clamp-4 select-none">
                     "{activeMonologue}"

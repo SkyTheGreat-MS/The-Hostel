@@ -29,11 +29,11 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
 
     if (!garageDrained) {
       setActiveMonologue(
-        "The flooded subterranean bicycle garage smells of rusted iron and stagnant rainwater. A row of waterlogged 1990s bicycles sits submerged under the dark surface."
+        "ရေလျှံနေသော မြေအောက်စက်ဘီးဂိုဒေါင်ထဲတွင် သံချေးနံ့နှင့် မိုးရေပုပ်နံ့များ လှိုက်တက်နေသည်။ မှောင်မည်းသော ရေမျက်နှာပြင်အောက်တွင် ၁၉၉၀ ပြည့်လွန်နှစ်များက စက်ဘီးတန်းကြီး ရေနစ်မြှုပ်နေသည်။"
       );
     } else {
       setActiveMonologue(
-        "The basement floodwater has receded into the drainage floor grates, leaving muddy silt and damp floor tiles exposed."
+        "မြေအောက်ခန်းရှိ ရေများသည် ရေဆင်းသံဆန်ခါပေါက်များထဲသို့ စီးဆင်းခန်းခြောက်သွားပြီး ရွှံ့ညွန်နုန်းများနှင့် စိုစွတ်နေသော ကြမ်းခင်းကြွေပြားများ ပေါ်ထွက်လာသည်။"
       );
     }
   }, [setActiveMonologue, garageDrained]);
@@ -44,7 +44,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         sound.playMetalCreak?.();
       } catch {}
       setActiveMonologue(
-        "The heavy iron valve is wrenched open. Murky water has emptied through the floor grates."
+        "လေးလံသော သံအဆို့ရှင်ကို လှည့်ဖွင့်ထားပြီးဖြစ်သည်။ နောက်ကျိနေသော ရေဆိုးများသည် ရေဆင်းပေါက်များမှတစ်ဆင့် အကုန်အစင် စီးဆင်းသွားခဲ့ပြီ။"
       );
       return;
     }
@@ -66,7 +66,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
     useGameStore.setState({ garageDrained: true });
 
     setActiveMonologue(
-      "With a deafening groan of rusted iron, the valve locks fully open! The floodwaters drain completely into the lower pipes, exposing the damp floor and the caretaker's tool cage!"
+      "သံချေးတက်နေသော သံမဏိသံကြီး အကျယ်ကြီး မြည်ဟည်းလျက် အဆို့ရှင်သည် အဆုံးထိ ပွင့်ထွက်သွားသည်! ရေလျှံမှုများသည် အောက်ဘက်ပိုက်လိုင်းများထဲသို့ လုံးဝ စီးဆင်းသွားပြီး စိုစွတ်နေသော ကြမ်းပြင်နှင့် အဆောင်မှူး၏ ကိရိယာလှောင်အိမ် ပေါ်ထွက်လာသည်!"
     );
 
     setTimeout(() => {
@@ -80,7 +80,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       sound.playDrip?.();
     } catch {}
     setActiveMonologue(
-      "Row upon row of rusted Phoenix and Flying Pigeon bicycles, left behind by students decades ago. Their spokes are tangled with black hair and silt."
+      "ဆယ်စုနှစ်များစွာက ကျောင်းသူများ ထားရစ်ခဲ့သော သံချေးတက်နေသည့် ဖီးနစ် (Phoenix) နှင့် စာကလေး (Flying Pigeon) တံဆိပ် စက်ဘီးတန်းများ။ စက်ဘီးဒေါက်များတွင် ဆံပင်နက်များနှင့် ရွှံ့ညွန်များ ရစ်ပတ်နေသည်။"
     );
   };
 
@@ -90,7 +90,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       sound.playPaperRustle?.();
     } catch {}
     setActiveMonologue(
-      "A moldy logbook on a waterlogged desk: '1974 Sluice Overflow. The subterranean culvert below the old banyan well was sealed off. Only heavy rigging and clearing the choked vines will open passage to the drainage canal.'"
+      "ရေစိုနေသော စားပွဲပေါ်ရှိ မှိုတက်နေသော မှတ်တမ်းစာအုပ် - '၁၉၇၄ ရေလျှံမှု။ ညောင်ပင်ရေတွင်းဟောင်းအောက်ရှိ မြေအောက်ရေပြွန်ပေါက်ကို အသေပိတ်ဆို့ထားခဲ့သည်။ စက်သီးကြိုးတပ်ဆင်ပြီး ပိတ်ဆို့နေသော နွယ်ပင်များကို ခုတ်ထွင်ရှင်းလင်းမှသာ ရေနုတ်မြောင်းဆီသို့ လမ်းပွင့်မည်။'"
     );
   };
 
@@ -101,7 +101,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         sound.playDrip?.();
       } catch {}
       setActiveMonologue(
-        "An iron pulley hangs submerged in the murky floodwater. You can't reach it safely until the water is drained."
+        "နောက်ကျိနေသော ရေထဲတွင် သံစက်သီးတစ်လုံး နစ်မြုပ်ချိတ်ဆွဲနေသည်။ ရေမဖောက်မချင်း ဘေးကင်းစွာ လက်လှမ်းယူ၍ မရနိုင်ပေ။"
       );
       return;
     }
@@ -120,7 +120,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       addToInventory('iron_pulley');
     }
     setActiveMonologue(
-      "Acquired [HEAVY IRON PULLEY]. A solid cast-iron wheel with a forged steel hook, perfect for lowering heavy loads into deep shafts."
+      "[သံသွန်းစက်သီးကြီး] ကို ရရှိခဲ့သည်။ ခိုင်မာသော သံမဏိချိတ်ပါသည့် သံသွန်းဘီးဖြစ်ပြီး နက်ရှိုင်းသော တွင်းပေါက်များထဲသို့ အလေးအပင်များ ချရန် အလွန်သင့်တော်သည်။"
     );
   };
 
@@ -131,7 +131,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         sound.playDrip?.();
       } catch {}
       setActiveMonologue(
-        "A heavy blade is wedged under a submerged workbench. It is too deep in the stagnant water to grasp safely."
+        "ရေမြုပ်နေသော အလုပ်ခုံအောက်တွင် ဓားမကြီးတစ်လက် ညပ်နေသည်။ ရေနက်ထဲတွင် နစ်မြုပ်နေသဖြင့် လက်လှမ်းယူရန် မဖြစ်နိုင်သေးပေ။"
       );
       return;
     }
@@ -151,7 +151,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       addToInventory('rusty_machete');
     }
     setActiveMonologue(
-      "Acquired [RUSTY MACHETE]. The carbon steel blade is chipped and oxidized, but heavy enough to hack through thick banyan vines."
+      "[သံချေးတက် ဓားမကြီး] ကို ရရှိခဲ့သည်။ ကာဗွန်သံမဏိသွား ပဲ့ရွဲ့သံချေးတက်နေသော်လည်း ထူထပ်သော ညောင်ပင်နွယ်များကို ခုတ်ထွင်ရန် လုံလောက်စွာ လေးလံလှသည်။"
     );
   };
 
@@ -197,8 +197,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {/* Hotspot 1: Drainage Valve Wheel */}
         <InteractiveHotspot
           id="garage_drain_valve"
-          name="Drainage Valve Wheel"
-          cursorTooltip={garageDrained ? "Examine Open Valve" : "Turn Drainage Valve"}
+          name="ရေနုတ်အဆို့ရှင်ဘီး"
+          cursorTooltip={garageDrained ? "ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်" : "ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်"}
           polygonPoints="12,45 22,45 22,62 12,62"
           onClick={handleDrainValve}
         />
@@ -206,8 +206,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {/* Hotspot 2: Vintage 1990s Bicycles */}
         <InteractiveHotspot
           id="garage_bicycles"
-          name="Vintage 1990s Bicycles"
-          cursorTooltip="Inspect Submerged Bicycles"
+          name="၁၉၉၀ ကျောင်းသူစက်ဘီးဟောင်းများ"
+          cursorTooltip="ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်"
           polygonPoints="25,55 58,55 60,88 23,88"
           onClick={handleInspectBicycles}
         />
@@ -215,8 +215,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {/* Hotspot 3: Caretaker's Work Table & Log */}
         <InteractiveHotspot
           id="garage_caretaker_log"
-          name="Caretaker's Maintenance Log"
-          cursorTooltip="Read Caretaker's Log"
+          name="အဆောင်မှူး၏ ထိန်းသိမ်းရေးမှတ်တမ်း"
+          cursorTooltip="အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်"
           polygonPoints="68,48 76,48 76,58 68,58"
           onClick={handleInspectLog}
         />
@@ -225,8 +225,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {!hasPulley && (
           <InteractiveHotspot
             id="garage_tool_pulley"
-            name="Heavy Iron Pulley"
-            cursorTooltip={garageDrained ? "Take Iron Pulley" : "Examine Submerged Object"}
+            name="သံသွန်းစက်သီးကြီး"
+            cursorTooltip={garageDrained ? "သံစက်သီးကို ယူမည်" : "ရေမြုပ်နေသော အရာကို ကြည့်မည်"}
             polygonPoints="77,52 84,52 84,65 77,65"
             onClick={handleTakePulley}
           />
@@ -236,8 +236,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {!hasMachete && (
           <InteractiveHotspot
             id="garage_tool_machete"
-            name="Rusty Machete"
-            cursorTooltip={garageDrained ? "Take Rusty Machete" : "Examine Submerged Blade"}
+            name="သံချေးတက် ဓားမကြီး"
+            cursorTooltip={garageDrained ? "သံချေးတက်ဓားမကို ယူမည်" : "ရေမြုပ်နေသော ဓားကို ကြည့်မည်"}
             polygonPoints="85,42 93,42 93,68 85,68"
             onClick={handleTakeMachete}
           />
@@ -247,9 +247,9 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       {/* Top Scene Navigation Bar */}
       <SceneNavBar
         onReturn={onReturn}
-        returnDestination="HOSTEL COURTYARD"
-        areaZone="GROUND FLOOR EXTERIOR"
-        areaName="SUBTERRANEAN BICYCLE GARAGE"
+        returnDestination="အဆောင်ဝင်း (COURTYARD)"
+        areaZone="မြေပြင် အပြင်ဘက်ဝင်း"
+        areaName="မြေအောက် စက်ဘီးဂိုဒေါင်"
       />
 
       {/* Interactive Water Valve Turning Mini-Game Modal */}

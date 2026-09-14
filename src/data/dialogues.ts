@@ -7,73 +7,73 @@
 /** Inner thought monologue lines triggered by specific game actions */
 export const MONOLOGUE_LINES = {
   BALCONY_RETURN_FROM_BENCH:
-    '--- Stepped off the rain-swept balcony back into the East Fork corridor. ---',
+    '--- မိုးစိုနေတဲ့ ဝရံတာကနေ အရှေ့ဘက်စင်္ကြံလမ်းဆီ ပြန်ရောက်လာခဲ့တယ်။ ---',
   BALCONY_RADIO_STATIC_DISSOLVE:
-    '--- The harsh static dissolves into an acoustic melody... echoing out into the monsoon rain. ---',
+    '--- ဆူညံနေတဲ့ လှိုင်းသံတွေ ပျောက်သွားပြီး သာယာတဲ့ သီချင်းသံလေး... မုတ်သုံမိုးရေစက်တွေကြား ပျံ့လွင့်လာတယ်။ ---',
   RADIO_NO_POWER:
-    "--- No power. The frequency needle won't move until batteries are installed. ---",
+    "--- ဓာတ်အားမရှိဘူး။ ဓာတ်ခဲတွေ မထည့်မချင်း လှိုင်းချိန်ခလုတ် ရွေ့မှာမဟုတ်ဘူး။ ---",
   RADIO_BATTERY_COMPARTMENT_POWERED:
-    '--- Two zinc-carbon batteries are fitted tightly into the coils. The power circuit is closed. ---',
+    '--- ဇင့်ကာဗွန် ဓာတ်ခဲနှစ်လုံးကို အံဝင်ခွင်ကျ ထည့်ထားပြီးပြီ။ လျှပ်စစ်ပတ်လမ်း ပွင့်သွားပြီ။ ---',
   RADIO_BATTERY_COMPARTMENT_EMPTY:
-    '--- The compartment is empty. The contact springs are dry. It takes two heavy D-cell batteries to operate. ---',
+    '--- ဓာတ်ခဲထည့်တဲ့နေရာ လွတ်နေတယ်။ စပရင်တွေ ခြောက်ကပ်နေတယ်။ ဖွင့်ဖို့ ဓာတ်ခဲအကြီး ၂ လုံး လိုမယ်။ ---',
   RADIO_BATTERIES_INSERTED:
-    '--- The springs bite into the terminals. Faint hum vibrates through the speaker grille. ---',
-  LOCKER_32_LOCKED: 'Locker 32 is locked shut. The keyhole is small and brass.',
+    '--- စပရင်တွေက ငုတ်တိုင်တွေကို ဖိကပ်သွားတယ်။ စပီကာဇကာကနေ သဲ့သဲ့တုန်ခါသံ ထွက်လာတယ်။ ---',
+  LOCKER_32_LOCKED: 'လော့ကာ ၃၂ က သော့ခတ်ထားတယ်။ သော့ပေါက်က သေးငယ်တဲ့ ကြေးဝါသော့ပေါက်ပဲ။',
   CORRIDOR_SHADOW_SCARE:
-    '--- A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) ---',
+    '--- စင်္ကြံမျက်နှာကျက်ပေါ်မှာ မည်းနက်တဲ့ အရိပ်တစ်ခု ဖြတ်ပြေးသွားတယ်! သံပိုက်လုံးကြီးတွေ တကျွီကျွီမြည်လာတယ်... (စိတ်တည်ငြိမ်မှု -၅%) ---',
   LOCKER_09_EMPTIED:
-    '--- Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. ---',
+    '--- လော့ကာ ၀၉ ထဲမှာ ဘာမှမရှိတော့ဘူး။ စင်ပေါ်မှာ စိုစွတ်နေတဲ့ အင်းဆက်အညစ်အကြေးတွေနဲ့ သံချေးတက်နေတဲ့ သံတိုင်တွေပဲ ကျန်တော့တယ်။ ---',
   SPIDER_SCARE:
-    '--- Gah! Scurrying cellar spiders spill from behind the rusted vent slats! (-2% Composure) ---',
+    '--- အား! သံချေးတက်နေတဲ့ လေဝင်ပေါက်ကြားကနေ ပင့်ကူတွေ အုံလိုက်ကျင်းလိုက် ပြေးထွက်လာတယ်! (စိတ်တည်ငြိမ်မှု -၂%) ---',
   CARETAKER_RETURN_TO_FORK:
-    '--- Stepped out of the suffocating office back into the damp corridor fork. ---',
+    '--- အသက်ရှူကျပ်တဲ့ ရုံးခန်းထဲကနေ စိုစွတ်အေးစက်တဲ့ စင်္ကြံလမ်းဆုံဆီ ပြန်ထွက်လာခဲ့တယ်။ ---',
   LOCKER_10_BATTERY_FOUND:
-    '--- Two heavy D-cell batteries, still sealed in their packaging. The exercise book beside them is water-stained. ---',
+    '--- ထုပ်ပိုးမှုမပျက်သေးတဲ့ D-cell ဓာတ်ခဲအကြီးနှစ်လုံး တွေ့ရတယ်။ ဘေးက လေ့ကျင့်ခန်းစာအုပ်တော့ ရေစိုနေပြီ။ ---',
   // Room 4B Desk Letter Loot Chain
   DESK_MUG_MOVED:
-    '--- Moving the enamel mug reveals a folded sheet of lined paper tucked against the wood. ---',
+    '--- ကြွေခွက်ကို ရွှေ့လိုက်တော့ စားပွဲသစ်သားကြား ညှပ်ထားတဲ့ ခေါက်ထားတဲ့ မျဉ်းသားစာရွက်တစ်ရွက် ပေါ်လာတယ်။ ---',
   DESK_LETTER_TEXT:
-    "May — I left the tape where we said, behind the vent in 326. Don't let Sandar take the room key from your locker. Meet me on the terrace when the curfew bell rings. — Ko Zaw",
+    "မေ — စာကို ငါတို့ပြောထားတဲ့အတိုင်း ၃၂၆ လေဝင်ပေါက်နောက်မှာ ထားခဲ့တယ်။ မင်းလော့ကာထဲက အခန်းသော့ကို စန္ဒာ့ကို လုံးဝမယူစေနဲ့။ ညမထွက်ရအမိန့် ခေါင်းလောင်းထိုးတာနဲ့ ဝရံတာမှာ လာတွေ့ပါ။ — ကိုဇော်",
   DESK_LETTER_LOOTED:
-    '— "The letter is safely in my coat. Sandar won\'t find it here now." —',
+    '— "စာကို အင်္ကျီအိတ်ထဲ သေချာထည့်ထားလိုက်ပြီ။ အခုဆို စန္ဒာ ဒီစာကို ရှာတွေ့မှာ မဟုတ်တော့ဘူး။" —',
   DESK_SURFACE_EMPTY:
-    '— "The letter is safely in my coat. Sandar won\'t find it here now." —',
+    '— "စာကို အင်္ကျီအိတ်ထဲ သေချာထည့်ထားလိုက်ပြီ။ အခုဆို စန္ဒာ ဒီစာကို ရှာတွေ့မှာ မဟုတ်တော့ဘူး။" —',
   // Spectral May Balcony Handover & Key 14
   MAY_PANIC_MISSING_LETTER:
-    '— "She’s coming up... I heard her sandals on the wet floor. I left his letter on the study desk. Sandar will see his handwriting... she’ll know." —',
+    '— "သူ လာနေပြီ... ကြမ်းပြင်စိုစွတ်ပေါ်က သူ့ဖိနပ်သံ ကြားနေရတယ်။ သူ့စာကို စာကြည့်စားပွဲပေါ်မှာ ငါမေ့ထားခဲ့မိတယ်။ စန္ဒာ သူ့လက်ရေးကို မြင်သွားရင်... အကုန်သိသွားတော့မှာပဲ။" —',
   MAY_HANDOVER_RELIEF:
-    '— "He really did leave it for me... Then she never read it. She never had to know." —',
+    '— "သူ ငါ့အတွက် တကယ်ပဲ စာထားခဲ့တာပဲ... ဒါဆို သူ မဖတ်ရသေးဘူးပေါ့။ သူ ဘာမှ သိခွင့်မရတော့ပါဘူး။" —',
   KEY_14_PICKUP:
-    '— "Stamped with \'14\'. This belongs to Locker 14 in the dorm bay." —',
+    '— "\'၁၄\' လို့ တံဆိပ်ရိုက်ထားတယ်။ ဒီသော့က အိပ်ဆောင်က လော့ကာ ၁၄ ရဲ့ သော့ပဲ။" —',
   // Locker 14 Padlock Unlock & Interior
   LOCKER_14_LOCKED_NO_KEY:
-    '— "Locked tight with a small barrel cylinder. May\'s personal locker... the key is nowhere here." —',
+    '— "ဆလင်ဒါသော့အသေးနဲ့ သေချာသော့ခတ်ထားတယ်။ မေ့ ရဲ့ ကိုယ်ပိုင်လော့ကာ... သော့က ဒီနားမှာ မရှိဘူး။" —',
   LOCKER_14_UNLATCH_SUCCESS:
-    '— "The shackle pops loose with a dull click. The door swings open." —',
+    '— "သော့ခလောက်က အသံတိုးတိုးနဲ့ ပွင့်ထွက်သွားတယ်။ တံခါးပွင့်သွားပြီ။" —',
   // Locker 14 Interior Gate Key Looting
   STAIRWAY_GATE_KEY_ACQUIRED:
-    '— [ITEM ACQUIRED: Stairway Gate Key] — A heavy, blackened iron key. Ko Zaw must have hidden this here so May could bypass the curfew gate to reach the terrace. —',
+    '— [ပစ္စည်းရရှိသည်- လှေကားတံခါးသော့] — လေးလံပြီး မည်းနက်နေတဲ့ သံသော့ကြီး။ မေ အနေနဲ့ တံခါးကို ကျော်ဖြတ်ပြီး ဝရံတာကို သွားနိုင်အောင် ကိုဇော် ဒီမှာ ဝှက်ထားခဲ့တာ ဖြစ်မယ်။ —',
   STAIRWAY_GATE_KEY_ALREADY_TAKEN:
-    '— The iron key has already been taken. Only rust rings remain on the shelf. —',
+    '— သံသော့ကို ယူသွားပြီးပြီ။ စင်ပေါ်မှာ သံချေးရာတွေပဲ ကျန်တော့တယ်။ —',
   // Stairway Exit Accordion Gate & Chapter 3 Escape
   STAIRWAY_GATE_LOCKED_NO_KEY:
-    '— "A heavy brass padlock bound tight by rusted industrial chains. The gate seals the exterior stairwell leading down to the hostel courtyard and the main compound gate. It requires a heavy iron key." —',
+    '— "သံချေးတက်နေတဲ့ သံကြိုးတွေနဲ့ တင်းကျပ်စွာ ချည်ထားတဲ့ ကြေးဝါသော့ခလောက်ကြီး။ ဒီတံခါးက အဆောင်ဝင်းနဲ့ ပင်မဂိတ်ဘက်ကို ဆင်းတဲ့ အပြင်ဘက်လှေကားကို ပိတ်ထားတယ်။ ဖွင့်ဖို့ လေးလံတဲ့ သံသော့လိုမယ်။" —',
   STAIRWAY_GATE_UNLOCKED_SUCCESS:
-    '— "The iron key turns with a sharp snap. The rusted chains fall away, and the accordion gate slides open to the cold night air and the stairwell leading out into the rain." —',
+    '— "သံသော့ကို လှည့်လိုက်တော့ တချက်တည်း ပွင့်သွားတယ်။ သံချေးတက်နေတဲ့ သံကြိုးတွေ ပြုတ်ကျသွားပြီး ခေါက်တံခါးကြီးက အေးစက်တဲ့ ညဥ့်လေနဲ့ မိုးရွာနေတဲ့ လှေကားဘက်ကို ပွင့်သွားတယ်။" —',
   OUTER_GROUNDS_ENTRY:
-    '— Stepped through the unlocked gate into the torrential monsoon downpour. The hostel walls tower behind... but the outer compound gate stands ahead. —',
+    '— သော့ပွင့်သွားတဲ့ တံခါးကနေ သည်းထန်စွာရွာနေတဲ့ မုတ်သုံမိုးထဲကို ခြေလှမ်းလိုက်တယ်။ အဆောင်နံရံကြီးတွေ နောက်မှာ ကျန်ရစ်ခဲ့ပေမဲ့... အပြင်ဘက် ပင်မခြံဝင်းဂိတ်က ရှေ့တည့်တည့်မှာ ရှိနေတယ်။ —',
 } as const;
 
 /** Nat guardian spirit canonical dialogue responses, keyed by topic ID */
 export const NAT_DIALOGUE = {
   may_identity:
-    "Her name was May. A warden's favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.",
+    "သူမနာမည်က မေ လို့ခေါ်တယ်။ အဆောင်မှူးရဲ့ မျက်နှာသာပေးခံရသူတစ်ယောက်ပေါ့၊ မုတ်သုံရက်သတ္တပတ်ရဲ့ တိတ်ဆိတ်အေးစက်တဲ့ အမှောင်ထဲမှာ လည်ပင်းညှစ်သတ်ခံခဲ့ရတာ။ သူမရဲ့ မကျေနပ်ချက်တွေက ဒီတစ်ထပ်လုံးကို ချည်နှောင်ထားတယ်။",
   locker_14_key:
-    'The key was cast into the incinerator behind the mess hall. You will never hold it.',
+    'သော့ကို ထမင်းစားဆောင်နောက်က အမှိုက်မီးရှို့ဖိုထဲ ပစ်ချခဲ့ပြီးပြီ။ မင်း ဘယ်တော့မှ ရတော့မှာ မဟုတ်ဘူး။',
   broken_locket:
-    'The pendant of appeasement... He ripped it from her collar before the silence took her. Return it to her sight, and her fury will pause.',
+    'ဖြေဖျောက်ရာ ဆွဲသီး... တိတ်ဆိတ်မှုက သူမကို မဝါးမျိုခင်မှာ သူက သူမလည်ပင်းကနေ ဆွဲဖြတ်ယူသွားခဲ့တာ။ အဲဒါကို သူမမျက်စိရှေ့ ပြန်ပြလိုက်ပါ၊ သူမရဲ့ အမျက်ဒေါသ ခေတ္တရပ်တန့်သွားလိမ့်မယ်။',
   warden_ledger:
-    '...The ink of mortal bureaucrats does not echo in the spirit veil. I know nothing of his papers.',
+    '...သေမျိုးလူသား စာရေးစာချီတွေရဲ့ မင်ရည်က ဝိညာဉ်လောကမှာ ပဲ့တင်မထပ်ဘူး။ သူ့စာရွက်စာတမ်းတွေအကြောင်း ငါဘာမှမသိဘူး။',
   banyan_well:
-    '...The dry mouth beneath the roots cannot be named! Utter it again and I shall leave you to her claws!',
+    '...ညောင်ပင်မြစ်ဆုံအောက်က ခမ်းခြောက်နေတဲ့ ရေတွင်းဝအကြောင်း နာမည်မတပ်နဲ့! နောက်တစ်ခါ ထပ်ပြောရင် မင်းကို သူမလက်သည်းတွေကြား ထားပစ်ခဲ့မယ်!',
 } as const;

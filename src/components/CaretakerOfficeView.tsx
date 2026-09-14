@@ -73,7 +73,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
     } else if (setPhase3Location) {
       setPhase3Location('east_fork');
       if (setActiveMonologue) {
-        setActiveMonologue('— Stepped out of the suffocating office back into the damp corridor fork. —');
+        setActiveMonologue('— မွန်းကြပ်နေသော ရုံးခန်းထဲမှ စိုစွတ်သော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
       }
     }
   };
@@ -111,7 +111,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
               onStepBack();
             } else {
               setPhase3Location?.('east_fork');
-              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+              setActiveMonologue?.('— မွန်းကြပ်နေသော ရုံးခန်းထဲမှ စိုစွတ်သော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
             }
           }}
           returnDestination="EAST FORK"
@@ -128,14 +128,14 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           width={22}
           height={42}
           shape="rect"
-          cursorTooltip="[Dark Doorway: Return to East Fork]"
+          cursorTooltip="[အမှောင်တံခါးပေါက် - အရှေ့လမ်းခွဲသို့ ပြန်သွားမည်]"
           onClick={() => {
             try { sound.playDoorCreak(); } catch {}
             if (onStepBack) {
               onStepBack();
             } else {
               setPhase3Location?.('east_fork');
-              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+              setActiveMonologue?.('— မွန်းကြပ်နေသော ရုံးခန်းထဲမှ စိုစွတ်သော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
             }
           }}
         />
@@ -164,7 +164,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             onStepBack();
           } else {
             setPhase3Location?.('east_fork');
-            setActiveMonologue?.('— Stepped out of the office back into the corridor fork. —');
+            setActiveMonologue?.('— ရုံးခန်းထဲမှ စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
           }
         }}
         returnDestination="EAST FORK"
@@ -181,7 +181,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         width={10}
         height={22}
         shape="rect"
-        cursorTooltip={!hasCaretakerCandles ? '[Take 2 Black Beeswax Candles]' : '[Supply Shelf (Empty)]'}
+        cursorTooltip={!hasCaretakerCandles ? '[အနက်ရောင် ပျားဖယောင်းတိုင် ၂ တိုင် ယူမည်]' : '[ပစ္စည်းတင်စင် (ဗလာ)]'}
         onClick={() => {
           if (!hasCaretakerCandles) {
             setHasCaretakerCandles && setHasCaretakerCandles(true);
@@ -190,11 +190,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— On the high shelf: Locker 09 က ဖယောင်းတိုင်နဲ့ တစ်ပုံစံတည်း အနက်ရောင်ဖယောင်းတိုင် ၂ တိုင်ရှိတယ်။ အခုဆို ၃ တိုင်ပြည့်ပြီ။—'
+                '— စင်မြင့်ပေါ်တွင် - Locker 09 က ဖယောင်းတိုင်နှင့် တစ်ပုံစံတည်း အနက်ရောင် ဖယောင်းတိုင် ၂ တိုင် ရှိသည်။ အခုဆို ၃ တိုင် ပြည့်သွားပြီ။ —'
               );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue && setActiveMonologue('— The supply shelf is bare now. Nothing remains except dried cobwebs. —');
+            setActiveMonologue && setActiveMonologue('— ပစ္စည်းတင်စင်ပေါ်တွင် ဘာမှ မရှိတော့ပါ။ ခြောက်သွေ့နေသော ပင့်ကူမျှင်များသာ ကျန်တော့သည်။ —');
           }
         }}
       />
@@ -208,7 +208,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         width={18}
         height={30}
         shape="rect"
-        cursorTooltip={!hasBronzeBell ? '[Take Bronze Prayer Bell]' : '[Glass Cabinet (Empty)]'}
+        cursorTooltip={!hasBronzeBell ? '[ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်းကို ယူမည်]' : '[မှန်ဘောင် (ဗလာဖြစ်နေသည်)]'}
         onClick={() => {
           if (!hasBronzeBell) {
             addInventoryItem && addInventoryItem('bronze_prayer_bell');
@@ -216,11 +216,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— Inside the glass display: မှန်ဘောင်ထဲမှာ ကြေးဝါနဲ့လုပ်ထားတဲ့ ခေါင်းလောင်းတစ်လုံးရှိတယ်။ အနားမှာ ရိုးရာနတ်စာတွေ ထွင်းထားတယ်။ Acquired: Bronze Prayer Bell. —'
+                '— မှန်ဘောင်ထဲတွင် - ကြေးဝါဖြင့် ပြုလုပ်ထားသော ခေါင်းလောင်းတစ်လုံး ရှိသည်။ ဘေးပတ်လည်တွင် ရိုးရာနတ်စာများ ထွင်းထုထားသည်။ ရရှိပစ္စည်း - ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်း (Bronze Prayer Bell)။ —'
               );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue && setActiveMonologue('— The glass display cabinet is empty. —');
+            setActiveMonologue && setActiveMonologue('— မှန်ဘောင်ဗီရိုထဲတွင် ဘာမှမရှိတော့ပါ။ —');
           }
         }}
       />
@@ -232,8 +232,8 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         polygonPoints="50,54 80,60 83,85 39,65"
         cursorTooltip={
           hasCaretakerCandles && hasBronzeBell
-            ? '[Read the Open Ledger — Conclude Chapter 1]'
-            : '[Examine Caretaker Desk]'
+            ? '[ဖွင့်ထားသော မှတ်တမ်းစာအုပ်ကို ဖတ်မည် — အခန်း ၁ အဆုံးသတ်ရန်]'
+            : '[အဆောင်မှူး စားပွဲကို စစ်ဆေးမည်]'
         }
         onClick={() => {
           if (!deskInteractable) return;

@@ -23,7 +23,7 @@ export const ThoughtMonologueOverlay: React.FC<{
   text: string;
   onDismiss?: () => void;
   hintText?: string;
-}> = ({ text, onDismiss, hintText = '[click anywhere to continue]' }) => {
+}> = ({ text, onDismiss, hintText = '[ဆက်သွားရန် နေရာလွတ်တစ်ခုခုကို နှိပ်ပါ]' }) => {
   // Strip leading/trailing dashes to prevent double-dash display
   const cleanText = text.replace(/^[—–-]\s*|\s*[—–-]$/g, '').trim();
 
@@ -70,7 +70,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
   variant = 'dialogue',
   text,
   onDismiss,
-  hintText = '[click anywhere to dismiss]',
+  hintText = '[ပိတ်ရန် နေရာလွတ်တစ်ခုခုကို နှိပ်ပါ]',
   speakerName,
   speakerAlign = 'left',
   locationTag,
@@ -78,7 +78,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
   onAdvance,
   onRewind,
   canRewind = false,
-  advanceActionText = 'CONTINUE',
+  advanceActionText = 'ရှေ့သို့',
 }) => {
   if (variant === 'monologue') {
     return (
@@ -135,15 +135,15 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
                   onRewind();
                 }}
                 className="px-2.5 py-1 rounded bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-mono flex items-center gap-1 cursor-pointer transition-all shadow"
-                title="Rewind previous line [↑] or [Backspace]"
+                title="ယခင်စာကြောင်းသို့ ပြန်သွားမည် [↑] သို့မဟုတ် [Backspace]"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Rewind</span>
+                <span>နောက်သို့</span>
               </button>
             )}
 
             <span className="text-[11px] font-mono text-[#82a996]/80">
-              {isTyping ? 'Typing...' : 'Ready'}
+              {isTyping ? 'စာရိုက်နေသည်...' : 'အသင့်ရှိ'}
             </span>
           </div>
         </div>
@@ -157,7 +157,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
         {/* Advance Hint / Actions */}
         <div className="mt-4 flex items-center justify-between text-xs font-mono text-[#82a996]/80 border-t border-[#2c3d34]/60 pt-2">
           <span className="text-[11px] text-[#82a996]/70">
-            Press <span className="text-[#6ee7b7] font-bold">[ENTER]</span> • Rewind{' '}
+            ဆက်သွားရန် <span className="text-[#6ee7b7] font-bold">[ENTER]</span> • နောက်ပြန်ဆုတ်ရန်{' '}
             <span className="text-[#c2d6cc] font-bold">[↑]</span>
           </span>
 

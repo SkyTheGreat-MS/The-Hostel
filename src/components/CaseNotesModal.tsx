@@ -24,220 +24,220 @@ export interface ClueData {
 export const MASTER_CLUES: Record<string, ClueData> = {
   seance_notebook: {
     id: 'seance_notebook',
-    title: 'The Mirror-Well Pact (1998 Notebook)',
-    location: '2026 Seance Room',
+    title: 'ကြေးမုံ-ရေတွင်း ကတိစာချုပ် (၁၉၉၈ မှတ်စု)',
+    location: '၂၀၂၆ ဝိညာဉ်ခေါ်ခန်း',
     category: 'primary',
     description:
-      'A yellowed student notebook recording the seance ritual to summon the 1998 hostel spirits. Outlines the offering tea glass and letter board.',
+      '၁၉၉၈ ခုနှစ် အဆောင်ဝိညာဉ်များကို ဆင့်ခေါ်သည့် နတ်တင်ပွဲမှတ်တမ်း ပါရှိသော ကျောင်းသားမှတ်စုဟောင်း။ ကန်တော့ပွဲ လက်ဖက်ရည်ခွက်နှင့် ဝိညာဉ်ခေါ် စာလုံးသင်ပုန်း အကြောင်း ရေးသားထားသည်။',
   },
   missing_notice: {
     id: 'missing_notice',
-    title: 'Missing Student Notice: Mama May',
-    location: 'Pathway 326 (Door 304)',
+    title: 'ပျောက်ဆုံးကျောင်းသူ သတိပေးစာ - မမမေ',
+    location: 'စင်္ကြံလမ်း ၃၂၆ (အခန်း ၃၀၄ တံခါး)',
     category: 'primary',
     description:
-      'An official August 1998 missing poster. Deep fingernail claw marks on the adjacent doorframe indicate she was violently hunted down in this corridor.',
+      '၁၉၉၈ ခုနှစ် သြဂုတ်လ တရားဝင် ပျောက်ဆုံးသူကြော်ငြာစာ။ ဘေးနားရှိ တံခါးဘောင်ပေါ်တွင် လက်သည်းဖြင့် ပြင်းထန်စွာ ကုတ်ခြစ်ထားသည့် ဒဏ်ရာများအရ သူမသည် ဤစင်္ကြံထဲ၌ ရက်စက်စွာ လိုက်လံတိုက်ခိုက်ခံခဲ့ရကြောင်း သိသာစေသည်။',
   },
   bribe_ledger: {
     id: 'bribe_ledger',
-    title: "Caretaker's 5,000 Kyats Bribe Receipt",
-    location: "Caretaker's Archive",
+    title: 'အဆောင်မှူး၏ ၅၀၀၀ ကျပ် လာဘ်ငွေပြေစာ',
+    location: 'အဆောင်မှူး မှတ်တမ်းဟောင်းခန်း',
     category: 'primary',
     description:
-      'A handwritten cash receipt dated August 14, 1998. The caretaker received 5,000 Kyats to pour concrete and wrap iron chains over the dried courtyard well.',
+      '၁၉၉၈ ခုနှစ် သြဂုတ်လ ၁၄ ရက်စွဲပါ လက်ရေးဖြင့် ရေးထားသော ငွေလက်ခံပြေစာ။ အဆောင်ဝင်းထဲက ခန်းခြောက်နေသော ရေတွင်းကို ကွန်ကရစ်လောင်းပြီး သံကြိုးများဖြင့် တုပ်နှောင်ရန် အဆောင်မှူးသည် ကျပ်ငွေ ၅,၀၀၀ လာဘ်ငွေလက်ခံခဲ့သည်။',
   },
   well_key: {
     id: 'well_key',
-    title: 'Courtyard Dried Well Brass Key',
-    location: 'Courtyard Nat Shrine',
+    title: 'အဆောင်ဝင်း ရေတွင်းဟောင်း ကြေးဝါသော့',
+    location: 'အဆောင်ဝင်း နတ်စင်',
     category: 'item',
     description:
-      'A heavy antique key inscribed with numerical cipher marks. Given by the spectral form of Mama May to unlock the dried well chamber in Chapter 2.',
+      'ဂဏန်းဝှက်သင်္ကေတများ ထွင်းထုထားသော ရှေးဟောင်းသော့ကြီးတစ်ချောင်း။ အခန်း ၂ တွင် ခန်းခြောက်နေသော ရေတွင်းအခန်းကို ဖွင့်ရန် မမမေ၏ ဝိညာဉ်ရိပ်မှ ပေးအပ်ခဲ့ခြင်း ဖြစ်သည်။',
   },
   curfew_log: {
     id: 'curfew_log',
-    title: 'Padlocked Curfew Log',
-    location: 'East Wing Stairwell',
+    title: 'သော့ခတ်ထားသော ညမထွက်ရ မှတ်တမ်းစာအုပ်',
+    location: 'အရှေ့ဘက်လှေကားခွင်',
     category: 'side',
     description:
-      'Notes that the east fire exit was locked from the outside at 11:45 PM on the night Mama May vanished, cutting off all indoor student escape.',
+      'မမမေ ပျောက်ဆုံးသွားသည့်ညက အရှေ့ဘက်အရေးပေါ်ထွက်ပေါက်ကို ည ၁၁:၄၅ တွင် အပြင်ဘက်မှ သော့ခတ်ပိတ်ဆို့ထားခဲ့ပြီး အဆောင်တွင်းမှ ကျောင်းသူများ ထွက်ပြေးခွင့် မရအောင် ဖြတ်တောက်ခဲ့ကြောင်း ရေးသားထားသည်။',
   },
   jasmine_hairpin: {
     id: 'jasmine_hairpin',
-    title: 'Bloodstained Jasmine Hairpin',
-    location: 'Communal Washroom',
+    title: 'သွေးစွန်းနေသော စံပယ်ဆံထိုး',
+    location: 'အများသုံး ရေချိုးခန်း',
     category: 'side',
     description:
-      'A carved bone hairpin soaked in dried dark rust. Dropped near the broken mirror during an intense struggle before she was dragged away.',
+      'အမည်းရောင်ခြောက်သွေ့နေသော သွေးများ စွန်းထင်းနေသည့် အရိုးဆံထိုး။ သူမအား ဆွဲခေါ်မသွားမီ အပြင်းအထန် ရုန်းကန်တိုက်ခိုက်စဉ် ကွဲကြေနေသော မှန်ရှေ့၌ ပြုတ်ကျကျန်ရစ်ခဲ့ခြင်း ဖြစ်သည်။',
   },
   study_notes: {
     id: 'study_notes',
-    title: 'Nat Binding Diagram',
-    location: 'Disused Study Hall',
+    title: 'နတ်ချုပ် မန္တန်ကားချပ်',
+    location: 'စွန့်ပစ်ထားသော စာကြည့်ဆောင်',
     category: 'side',
     description:
-      'Chalk diagrams explaining how Burmese guardian spirits (Nats) can be tethered by a blood-sealed covenant to hold a restless soul in place.',
+      'မကျွတ်မလွတ် မငြိမ်မသက်ဖြစ်နေသော ဝိညာဉ်တစ်ခုကို တစ်နေရာတည်းတွင် ချုပ်နှောင်ထားရန် မြန်မာ့အစောင့်အရှောက်နတ်များကို သွေးသစ္စာပြု ချည်နှောင်ပုံ ရှင်းပြထားသည့် မြေဖြူရေးဆွဲချက်များ။',
   },
   boiler_concrete: {
     id: 'boiler_concrete',
-    title: 'Masonry Trowel & Quick-Dry Concrete',
-    location: 'Basement Boiler Hatch',
+    title: 'ပန်းရံသုတ်သင်ပုန်းနှင့် အခြောက်မြန်ကွန်ကရစ်',
+    location: 'မြေအောက် ရေနွေးငွေ့ခန်းပေါက်',
     category: 'side',
     description:
-      'Fresh cement residue matching the masonry seal on the courtyard well. Proves construction materials were stored in the hostel basement.',
+      'အဆောင်ဝင်း ရေတွင်းဟောင်းကို ပိတ်ဆို့ရာတွင် သုံးခဲ့သည့် အင်္ဂတေနမူနာနှင့် ထပ်တူကျနေသော ဘိလပ်မြေအကြွင်းအကျန်များ။ ဆောက်လုပ်ရေးပစ္စည်းများကို အဆောင်မြေအောက်ခန်းတွင် သိမ်းဆည်းခဲ့ကြောင်း သက်သေထူနေသည်။',
   },
   roster_slip_1998: {
     id: 'roster_slip_1998',
-    title: 'Cleaning Duty Log (Aug 1998)',
-    location: 'Room 4B (Desk)',
+    title: 'သန့်ရှင်းရေး တာဝန်ကျစာရင်း (သြဂုတ် ၁၉၉၈)',
+    location: 'အခန်း ၄-ဘီ (စာရေးခုံ)',
     category: 'primary',
     description:
-      'Cleaning Duty Log (Aug 1998) assigning Room 4B to students May and Sandar.',
+      '၁၉၉၈ ခုနှစ် သြဂုတ်လ သန့်ရှင်းရေးတာဝန်ကျစာရင်းဖြစ်ပြီး အခန်း ၄-ဘီ အား ကျောင်းသူ မေ နှင့် စန္ဒာ တို့ထံ တာဝန်ပေးအပ်ထားသည်။',
   },
   clue_may_letter: {
     id: 'clue_may_letter',
-    title: "Ko Zaw's Folded Letter",
-    location: 'Room 4B (Study Desk)',
+    title: 'ကိုဇော် ၏ ခေါက်ထားသောစာလွှာ',
+    location: 'အခန်း ၄-ဘီ (စာကြည့်ခုံ)',
     category: 'primary',
     description:
-      "A secret note from Ko Zaw warning May not to let Sandar take her locker key, and revealing a tape hidden behind the vent in 326.",
+      'မေ ၏ လော့ကာသော့ကို စန္ဒာ့ထံ မပေးရန် သတိပေးထားပြီး အခန်း ၃၂၆ လေဝင်ပေါက်နောက်ကွယ်တွင် တိတ်ခွေတစ်ခု ဝှက်ထားကြောင်း ဖွင့်ဟထားသည့် ကိုဇော် ထံမှ လျှို့ဝှက်စာလွှာ။',
   },
   clue_key_14: {
     id: 'clue_key_14',
-    title: 'Key 14 (Tarnished Brass Key)',
-    location: 'Pathway 326 (Balcony Terrace)',
+    title: 'သော့ ၁၄ (ကြေးဝါသော့ဟောင်း)',
+    location: 'စင်္ကြံလမ်း ၃၂၆ (ဝရန်တာ)',
     category: 'primary',
     description:
-      'Key 14 retrieved from the balcony terrace. Corresponds to Locker 14 in the dorm bay.',
+      'ဝရန်တာမှ ကောက်ယူရရှိခဲ့သော သော့ ၁၄။ အဆောင်ခန်းတွင်းရှိ လော့ကာ ၁၄ နှင့် သက်ဆိုင်သည်။',
   },
   curfew_calendar_1998: {
     id: 'curfew_calendar_1998',
-    title: 'August 1998 Wall Calendar',
-    location: 'Room 4B (Wall)',
+    title: '၁၉၉၈ သြဂုတ် နံရံကပ်ပြက္ခဒိန်',
+    location: 'အခန်း ၄-ဘီ (နံရံ)',
     category: 'side',
     description:
-      'August 1998 wall calendar with August 14th circled with curfew lockdown notes.',
+      'ညမထွက်ရ အဆောင်ပိတ်သိမ်းခြင်း မှတ်စုများနှင့်အတူ သြဂုတ်လ ၁၄ ရက်နေ့ကို ဝိုင်းထားသော ၁၉၉၈ ခုနှစ် နံရံကပ်ပြက္ခဒိန်။',
   },
   washroom_stall_echo: {
     id: 'washroom_stall_echo',
-    title: 'Washroom Stall Blood & Echo',
-    location: 'Communal Washroom (Stall 3)',
+    title: 'ရေချိုးခန်းအခန်းတွင်း သွေးစွန်းမှုနှင့် ပဲ့တင်သံ',
+    location: 'အများသုံး ရေချိုးခန်း (အခန်း ၃)',
     category: 'primary',
     description:
-      'The third washroom stall exhibits fresh blood smears and a shattered pocket mirror beside a crimson student hair ribbon.',
+      'တတိယမြောက် ရေချိုးခန်းတွင်း၌ သွေးစွန်းနေသော အစွန်းအထင်းများနှင့် သွေးရောင်ကျောင်းသူ ဆံစည်းကြိုးဘေးတွင် ကွဲကြေနေသော အိတ်ဆောင်မှန်ငယ်တစ်ခု တွေ့ရသည်။',
   },
   mirror_locker_scrawl: {
     id: 'mirror_locker_scrawl',
-    title: 'Washroom Mirror Etched Scrawl',
-    location: 'Communal Washroom (Mirror)',
+    title: 'ရေချိုးခန်းမှန်ပေါ် ထွင်းခြစ်ထားသော စာ',
+    location: 'အများသုံး ရေချိုးခန်း (မှန်)',
     category: 'side',
     description:
-      "Chalk-scratched notation etched into the base of the washroom mirror frame: 'Locker 14 - 1998'.",
+      "ရေချိုးခန်းမှန်ဘောင်အောက်ခြေတွင် မြေဖြူဖြင့် ကုတ်ခြစ်ထားသော အမှတ်အသား - 'Locker 14 - 1998'။",
   },
   cipher_note_32: {
     id: 'cipher_note_32',
-    title: 'Warden Office Overwrite Slip',
-    location: 'Locker 32 (Sandar)',
+    title: 'အဆောင်မှူးရုံးခန်း လျှို့ဝှက်ကုဒ်မှတ်စု',
+    location: 'လော့ကာ ၃၂ (စန္ဒာ)',
     category: 'primary',
     description:
-      "An official hostel maintenance slip: 'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2.' Note: Caretaker mirrors all sequence inputs for emergency security.",
+      "တရားဝင် အဆောင်ထိန်းသိမ်းရေး စာရွက်ငယ် - 'အဆောင်မှူးရုံးခန်း အီလက်ထရွန်းနစ် သော့ခလောက် ကုဒ် - 8 1 4 0 9 2.' (Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2. Caretaker mirrors all sequence inputs for emergency security.) မှတ်ချက် - အရေးပေါ်လုံခြုံရေးအတွက် အဆောင်မှူးသည် ကုဒ်အားလုံးကို ပြောင်းပြန် (mirror) ရိုက်ထည့်ရန် စီစဉ်ထားသည်။",
   },
   sandar_kozaw_letters: {
     id: 'sandar_kozaw_letters',
-    title: 'Folded Love Letters (K.Z.)',
-    location: 'Locker 32 (Sandar)',
+    title: 'ခေါက်ထားသော အချစ်စာလွှာများ (K.Z.)',
+    location: 'လော့ကာ ၃၂ (စန္ဒာ)',
     category: 'primary',
     description:
-      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' Shows the hidden betrayal behind Mama May.",
+      "စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော ခေါက်ထားသည့် စာလွှာများ... 'Sandar, လက်ဖက်ရည်ဆိုင် (tea shop) သွားတဲ့ကိစ္စကို မေ ရိပ်မိနေပြီ။ ငါတို့အကြောင်း မေ သိသွားရင် ငါတို့နှစ်ယောက်စလုံး ဒီအဆောင်မှာ ဆက်နေလို့ မရတော့ဘူး။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ထုတ်ပြသနေသည်။",
   },
   nat_testimony_may_murder: {
     id: 'nat_testimony_may_murder',
-    title: "Nat Testimony: May's Murder",
-    location: 'Guardian Nat Altar',
+    title: "နတ်သက်သေထွက်ဆိုချက် - မေ ၏ လူသတ်မှု",
+    location: 'အစောင့်နတ်စင်',
     category: 'primary',
     description:
-      '[NOTE: May was strangled inside the hostel during monsoon term 1998.] The Guardian Nat confirmed her name was May, a warden’s favorite, choke-strangled in the quiet dark of monsoon week.',
+      '[NOTE: May was strangled inside the hostel during monsoon term 1998.] အစောင့်နတ်က သူမနာမည် မေ ဖြစ်ကြောင်း၊ အဆောင်မှူး အချစ်တော်ဖြစ်ပြီး မိုးရာသီအမှောင်ထုထဲတွင် လည်ပင်းညှစ်သတ်ဖြတ်ခံခဲ့ရကြောင်း အတည်ပြုခဲ့သည်။',
   },
   nat_testimony_locker_key: {
     id: 'nat_testimony_locker_key',
-    title: 'Nat Testimony: Locker 14 Key',
-    location: 'Guardian Nat Altar',
+    title: 'နတ်သက်သေထွက်ဆိုချက် - လော့ကာ ၁၄ သော့',
+    location: 'အစောင့်နတ်စင်',
     category: 'side',
     description:
-      '[NOTE: Nat claimed the key was incinerated behind the mess hall. DEDUCTION: Contradicts Locker 32 notes confirming May carries the key around her neck—a deliberate deceit.]',
+      '[NOTE: Nat claimed the key was incinerated behind the mess hall. DEDUCTION: Contradicts Locker 32 notes confirming May carries the key around her neck—a deliberate deceit.] နတ်က သော့ကို ထမင်းစားဆောင်နောက်တွင် မီးရှို့ဖျက်ဆီးခဲ့သည်ဟု ဆိုသော်လည်း လော့ကာ ၃၂ မှတ်စုအရ မေ သည် သော့ကို လည်ပင်းတွင် ဆွဲထားလေ့ရှိသည်ဟု ဆိုထားသဖြင့် တမင်လှည့်စားထားခြင်း ဖြစ်သည်။',
   },
   nat_testimony_office_attack: {
     id: 'nat_testimony_office_attack',
-    title: 'Nat Testimony: Caretaker Office Attack',
-    location: 'Guardian Nat Altar',
+    title: 'နတ်သက်သေထွက်ဆိုချက် - အဆောင်မှူးရုံးခန်း တိုက်ခိုက်မှု',
+    location: 'အစောင့်နတ်စင်',
     category: 'primary',
     description:
-      '[NOTE: May mistakes anyone in the office for her killer until calmed.] Until her neck is freed of shame, every living soul looks like her murderer.',
+      '[NOTE: May mistakes anyone in the office for her killer until calmed.] စိတ်ငြိမ်မသွားမချင်း မေ သည် ရုံးခန်းထဲရှိ မည်သူ့ကိုမဆို သူမ၏ လူသတ်သမားဟု အထင်မှားနေသည်။ သူမ၏ လည်ပင်း၌ စွပ်စွဲခံရသော အရှက်တရားများ မလွတ်မြောက်သရွေ့ သက်ရှိလူသားတိုင်းကို သူမ၏ လူသတ်သမားဟု ထင်မှတ်နေမည်။',
   },
   nat_testimony_banyan_well: {
     id: 'nat_testimony_banyan_well',
-    title: 'Nat Testimony: Banyan Tree Well',
-    location: 'Guardian Nat Altar',
+    title: 'နတ်သက်သေထွက်ဆိုချက် - ညောင်ပင် ရေတွင်းဟောင်း',
+    location: 'အစောင့်နတ်စင်',
     category: 'side',
     description:
-      '[NOTE: The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.]',
+      '[NOTE: The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.] ညောင်ပင်အောက်ရှိ ခြောက်သွေ့သော တွင်းပေါက်အကြောင်း မပြောသင့်ပေ။ ထိုတွင်းနက်ကို အမည်တပ်မိပါက ထိုတွင်းထဲသို့ နစ်မြုပ်သွားလိမ့်မည်။',
   },
   clue_locker_14_found: {
     id: 'clue_locker_14_found',
-    title: "Locker 14 Barrel Lock",
-    location: 'Dorm Lockers',
+    title: 'လော့ကာ ၁၄ စည်ပုံစံသော့ခလောက်',
+    location: 'အဆောင် လော့ကာများ',
     category: 'side',
-    description: "May's personal locker 14 is sealed with a barrel lock. The key is missing.",
+    description: 'မေ ၏ ကိုယ်ပိုင်လော့ကာ ၁၄ ကို သော့ခလောက်ဖြင့် ခတ်ထားသည်။ သော့ ပျောက်ဆုံးနေသည်။',
   },
   clue_broken_locket_found: {
     id: 'clue_broken_locket_found',
-    title: 'Shattered Jade Fragment',
-    location: 'Hostel Ground',
+    title: 'ကျိုးပဲ့နေသော ကျောက်စိမ်း အပိုင်းအစ',
+    location: 'အဆောင်ဝင်း မြေပြင်',
     category: 'item',
-    description: 'A fragment of shattered jade from an appeasement pendant.',
+    description: 'ယတြာလော့ကတ်သီးတစ်ခုမှ ကျိုးပဲ့ထွက်ကျလာသော ကျောက်စိမ်း အပိုင်းအစ။',
   },
   clue_warden_notes_found: {
     id: 'clue_warden_notes_found',
-    title: "Caretaker's Hidden Ledger",
-    location: "Caretaker's Archive",
+    title: 'အဆောင်မှူး၏ လျှို့ဝှက်စာရင်းစာအုပ်',
+    location: 'အဆောင်မှူး မှတ်တမ်းဟောင်းခန်း',
     category: 'side',
-    description: 'Bribe notes and hidden receipts kept by the caretaker.',
+    description: 'အဆောင်မှူး သိမ်းဆည်းထားသော လာဘ်ငွေမှတ်စုများနှင့် ဝှက်ထားသော ပြေစာများ။',
   },
   clue_well_rumor: {
     id: 'clue_well_rumor',
-    title: 'Whispers of the Banyan Well',
-    location: 'Courtyard Grounds',
+    title: 'ညောင်ပင်ရေတွင်း သတင်းစကားများ',
+    location: 'အဆောင်ဝင်း မြေပြင်',
     category: 'side',
-    description: 'Superstitious student rumors about the dried well under the roots of the banyan tree.',
+    description: 'ညောင်ပင်မြစ်ဆုံအောက်ရှိ ခန်းခြောက်နေသော ရေတွင်းအကြောင်း ကျောင်းသူများကြား ပျံ့နှံ့နေသည့် အယူသည်းသော ကောလာဟလများ။',
   },
   clue_ko_zaw_letters: {
     id: 'clue_ko_zaw_letters',
-    title: 'Folded Love Letters (Ko Zaw)',
-    location: 'Locker 32 (Sandar)',
+    title: 'ခေါက်ထားသော အချစ်စာလွှာများ (ကိုဇော်)',
+    location: 'လော့ကာ ၃၂ (စန္ဒာ)',
     category: 'primary',
-    description: 'Stolen letters between Sandar and Ko Zaw exposing a secret affair that drove a violent wedge between dorm sisters.',
+    description: 'အဆောင်သူညီအစ်မနှစ်ဦးကြား သွေးထွက်သံယို အမုန်းတရားများ ဖြစ်ပေါ်စေခဲ့သည့် စန္ဒာ နှင့် ကိုဇော် တို့၏ လျှို့ဝှက်အချစ်ဇာတ်လမ်းကို ဖော်ထုတ်ထားသည့် စာလွှာများ။',
   },
   clue_stairway_key_found: {
     id: 'clue_stairway_key_found',
-    title: 'Stairway Gate Key',
-    location: 'Locker 14 (Mama May)',
+    title: 'လှေကားတံခါးသော့',
+    location: 'လော့ကာ ၁၄ (မမမေ)',
     category: 'item',
     description:
-      'A heavy, blackened iron key found on the lower shelf of May’s locker. Ko Zaw hid it here so May could bypass the curfew gate to reach the terrace.',
+      'မေ ၏ လော့ကာ အောက်ထပ်စင်ပေါ်တွင် တွေ့ရသည့် သံမည်းသော့ကြီးတစ်ချောင်း။ မေ အနေဖြင့် ညမထွက်ရတံခါးကို ကျော်ဖြတ်ပြီး ဝရန်တာသို့ ရောက်နိုင်ရန် ကိုဇော် က ဤနေရာ၌ ဝှက်ထားပေးခဲ့ခြင်း ဖြစ်သည်။',
   },
   clue_physics_chem_notes_1998: {
     id: 'clue_physics_chem_notes_1998',
-    title: 'Physics & Chemistry Notes (1998)',
-    location: 'Study Desk',
+    title: 'ရူပဗေဒနှင့် ဓာတုဗေဒ မှတ်စုများ (၁၉၉၈)',
+    location: 'စာကြည့်ခုံ',
     category: 'side',
-    description: 'Formulas written by a trembling hand. May spent her final study hours plotting an escape beyond the curfew gate before the corridor was barricaded.',
+    description: 'တုန်လှုပ်နေသော လက်ဖြင့် ရေးသားထားသည့် ဖော်မြူလာများ။ စင်္ကြံလမ်းကို ပိတ်ဆို့မခံရမီ ညမထွက်ရတံခါးကို ကျော်ဖြတ်ပြီး ထွက်ပြေးရန် မေ သည် သူမ၏ နောက်ဆုံးစာကျက်ချိန်များ၌ ကြံစည်ရေးဆွဲခဲ့သည်။',
   },
   clue_banyan_well: {
     id: 'clue_banyan_well',
-    title: 'The Dried Banyan Well',
-    location: 'Courtyard Grounds',
+    title: 'ခန်းခြောက်နေသော ညောင်ပင်ရေတွင်း',
+    location: 'အဆောင်ဝင်း မြေပြင်',
     category: 'primary',
-    description: 'The forbidden dried well beneath the sacred banyan tree. The roots drink deep from the dark.',
+    description: 'ညောင်ပင်ကြီးအောက်ရှိ တားမြစ်ထားသော ခန်းခြောက်ရေတွင်းဟောင်း။ သစ်မြစ်များသည် အမှောင်ထုထဲမှ အရာများကို စုပ်ယူထားသလို ရှိနေသည်။',
   },
 };
 
@@ -257,10 +257,10 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
   const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   const getComposureStatus = (comp: number) => {
-    if (comp >= 75) return { text: 'STEELY (CALM)', color: 'text-emerald-400', ring: '#10b981', pct: comp };
-    if (comp >= 50) return { text: 'UNSETTLED', color: 'text-amber-400', ring: '#f59e0b', pct: comp };
-    if (comp >= 25) return { text: 'PANICKED', color: 'text-orange-400', ring: '#f97316', pct: comp };
-    return { text: 'TERRIFIED', color: 'text-rose-500', ring: '#ef4444', pct: comp };
+    if (comp >= 75) return { text: 'တည်ငြိမ်သည် (STEELY)', color: 'text-emerald-400', ring: '#10b981', pct: comp };
+    if (comp >= 50) return { text: 'မငြိမ်မသက်ဖြစ် (UNSETTLED)', color: 'text-amber-400', ring: '#f59e0b', pct: comp };
+    if (comp >= 25) return { text: 'ထိတ်လန့်တုန်လှုပ် (PANICKED)', color: 'text-orange-400', ring: '#f97316', pct: comp };
+    return { text: 'ကြောက်ဒူးတုန် (TERRIFIED)', color: 'text-rose-500', ring: '#ef4444', pct: comp };
   };
 
   const compStatus = getComposureStatus(composure);
@@ -293,13 +293,13 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               </div>
               <div>
                 <span className="text-[9px] font-mono tracking-[0.2em] text-[#00ffb4]/50 uppercase font-semibold block">
-                  CASE FILE &bull; AUGUST 1998 INCIDENT
+                  အမှုတွဲမှတ်တမ်း &bull; သြဂုတ် ၁၉၉၈ ဖြစ်ရပ် (CASE FILE)
                 </span>
                 <h2
                   className="text-2xl sm:text-3xl font-black text-[#d4ede3] tracking-[0.15em] uppercase leading-none"
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                 >
-                  INVESTIGATION NOTEBOOK
+                  စုံစမ်းစစ်ဆေးမှု မှတ်စုစာအုပ်
                 </h2>
               </div>
             </div>
@@ -311,7 +311,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 onClose();
               }}
               className="w-9 h-9 rounded-lg bg-[#0e1511] border border-[#2a3a30] text-[#00ffb4]/50 hover:text-[#00ffb4] hover:border-[#00ffb4]/40 hover:bg-[#1a221e] transition-all cursor-pointer flex items-center justify-center"
-              title="Close Notebook [ESC]"
+              title="မှတ်စုစာအုပ် ပိတ်ရန် [ESC]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -338,7 +338,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     <User className="w-7 h-7 text-[#00ffb4]/30" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase">Investigator</div>
+                    <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase">စုံစမ်းစစ်ဆေးသူ (Investigator)</div>
                     <div className="text-sm font-bold text-[#d4ede3] truncate" style={{ fontFamily: "'Cinzel', serif" }}>
                       {investigatorName}
                     </div>
@@ -349,7 +349,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 </div>
                 <div className="h-px bg-gradient-to-r from-transparent via-[#00ffb4]/15 to-transparent" />
                 <div className="mt-2 text-[9px] font-mono text-[#00ffb4]/30 text-center uppercase tracking-widest">
-                  Authenticated &bull; Active Case
+                  စစ်ဆေးအတည်ပြုပြီး &bull; လက်ရှိအမှုတွဲ
                 </div>
               </div>
 
@@ -357,7 +357,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               <div className="rounded-xl border border-[#2a3a30]/80 p-4 flex flex-col items-center gap-3"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
                 <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase">
-                  Composure
+                  စိတ်တည်ငြိမ်မှု (Composure)
                 </div>
                 <div className="relative w-24 h-24">
                   {/* Background ring */}
@@ -389,7 +389,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               <div className="rounded-xl border border-[#2a3a30]/80 p-4"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
                 <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase text-center mb-2">
-                  Remaining Time
+                  ကျန်ရှိသော အချိန် (Remaining Time)
                 </div>
                 <div className="text-center">
                   <span className="text-3xl font-black text-[#00ffb4] tracking-widest" style={{ fontFamily: "'Bebas Neue', sans-serif", textShadow: '0 0 20px rgba(0,255,180,0.3)' }}>
@@ -431,11 +431,11 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Search className="w-3.5 h-3.5 text-[#00ffb4]/50" />
                     <span className="text-[10px] font-mono tracking-[0.15em] text-[#00ffb4]/50 uppercase font-semibold">
-                      Clue Inventory
+                      ရရှိထားသော သဲလွန်စများ (Clues)
                     </span>
                   </div>
                   <span className="text-[10px] font-mono text-[#00ffb4]/30">
-                    {filledSlots} / {totalSlots} Slots Filled
+                    {filledSlots} / {totalSlots} ကွက်လပ် ဖြည့်ပြီး
                   </span>
                 </div>
                 <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
@@ -473,7 +473,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                   })}
                 </div>
                 <div className="mt-2 text-center text-[9px] font-mono text-[#00ffb4]/25 tracking-wider">
-                  Uncover critical evidence to unlock Chapter 2
+                  အခန်း ၂ သို့ ကူးပြောင်းရန် အရေးကြီးသော သက်သေများကို ရှာဖွေပါ
                 </div>
               </div>
 
@@ -485,7 +485,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                       <Search className="w-7 h-7 text-[#00ffb4]/15" />
                     </div>
                     <p className="text-sm font-mono text-[#d4ede3]/30 max-w-xs leading-relaxed">
-                      No clues discovered yet. Search the hostel corridors and archives to uncover evidence.
+                      သဲလွန်စများ မတွေ့ရှိသေးပါ။ အဆောင်စင်္ကြံများနှင့် မှတ်တမ်းဟောင်းခန်းများတွင် အထောက်အထားများ ရှာဖွေပါ။
                     </p>
                   </div>
                 ) : (
@@ -539,7 +539,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           <div className="px-5 py-3.5 border-t border-[#2a3a30]/60 flex items-center justify-between"
             style={{ background: 'linear-gradient(90deg, #121916 0%, #162018 50%, #121916 100%)' }}>
             <div className="text-[9px] font-mono text-[#00ffb4]/20 tracking-widest uppercase">
-              Case Notebook &bull; Secure Channel
+              အမှုတွဲမှတ်စု &bull; လုံခြုံရေးချန်နယ် (Case Notebook)
             </div>
             <button
               onClick={() => {
@@ -561,7 +561,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <span className="relative z-10">RESUME INVESTIGATION</span>
+              <span className="relative z-10">စုံစမ်းစစ်ဆေးမှု ဆက်လုပ်မည်</span>
             </button>
           </div>
         </motion.div>

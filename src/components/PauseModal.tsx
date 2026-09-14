@@ -59,7 +59,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
       <div className="relative w-full max-w-md bg-[#121815] border border-[#2d4036] rounded-xl shadow-2xl p-6 flex flex-col items-center">
         {/* Modal Content */}
         <h2 className="font-mono text-lg text-[#c2d6cc] tracking-widest mb-6 uppercase">
-          Investigation Paused
+          စုံစမ်းစစ်ဆေးမှုကို ခေတ္တရပ်ထားသည်
         </h2>
 
         <div className="w-full space-y-3">
@@ -67,19 +67,19 @@ export const PauseModal: React.FC<PauseModalProps> = ({
             onClick={handleResume}
             className="w-full py-2.5 px-4 rounded bg-[#1e2a24] hover:bg-[#283830] border border-[#395043] text-[#c2d6cc] hover:text-[#6ee7b7] font-mono text-sm tracking-wider transition-all cursor-pointer shadow-md"
           >
-            RESUME INVESTIGATION
+            စုံစမ်းစစ်ဆေးမှု ပြန်လည်စတင်မည်
           </button>
 
           <button
             onClick={() => setShowSettings((prev) => !prev)}
             className="w-full py-2.5 px-4 rounded bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-300 hover:text-[#c2d6cc] font-mono text-sm tracking-wider transition-all flex items-center justify-between cursor-pointer"
           >
-            <span>AUDIO &amp; DISPLAY SETTINGS</span>
+            <span>အသံနှင့် မျက်နှာပြင် ဆက်တင်များ</span>
             <div className="flex items-center gap-1.5 text-xs">
               {isMuted ? (
-                <span className="text-rose-400 font-mono">[MUTED]</span>
+                <span className="text-rose-400 font-mono">[အသံပိတ်ထားသည်]</span>
               ) : (
-                <span className="text-emerald-400 font-mono">[ACTIVE]</span>
+                <span className="text-emerald-400 font-mono">[အသံဖွင့်ထားသည်]</span>
               )}
             </div>
           </button>
@@ -87,7 +87,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
           {showSettings && (
             <div className="p-3.5 rounded-lg bg-[#0e1411] border border-[#283930] space-y-2.5 text-xs font-mono text-[#c2d6cc]">
               <div className="flex items-center justify-between">
-                <span>Ambient &amp; SFX Audio:</span>
+                <span>နောက်ခံနှင့် အသံသက်ရောက်မှုများ -</span>
                 <button
                   onClick={handleToggleAudio}
                   className="px-2.5 py-1 rounded bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -95,18 +95,18 @@ export const PauseModal: React.FC<PauseModalProps> = ({
                   {isMuted ? (
                     <>
                       <VolumeX className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Unmute</span>
+                      <span>အသံဖွင့်မည်</span>
                     </>
                   ) : (
                     <>
                       <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Mute</span>
+                      <span>အသံပိတ်မည်</span>
                     </>
                   )}
                 </button>
               </div>
               <div className="text-[10px] text-stone-400 pt-1 border-t border-[#1f2e26]">
-                Display: 16:9 Letterbox • 1998 Monsoon Atmosphere
+                မျက်နှာပြင် - 16:9 • ၁၉၉၈ မိုးရာသီ အငွေ့အသက်
               </div>
             </div>
           )}
@@ -121,7 +121,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
               className="w-full py-2 px-4 rounded bg-[#16201b] hover:bg-[#1e2a24] border border-[#2a3c32] text-stone-400 hover:text-stone-200 font-mono text-xs tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>RESTART CHAPTER 1</span>
+              <span>အခန်း ၁ ကို အစမှ ပြန်စမည်</span>
             </button>
           )}
 
@@ -129,12 +129,12 @@ export const PauseModal: React.FC<PauseModalProps> = ({
             onClick={handleReturnToMainMenu}
             className="w-full py-2.5 px-4 rounded bg-red-950/40 hover:bg-red-900/60 border border-red-900/50 text-red-300 font-mono text-sm tracking-wider transition-all cursor-pointer shadow-md"
           >
-            EXIT TO CHAPTER SELECTION
+            အခန်းရွေးချယ်မှုသို့ ပြန်ထွက်မည်
           </button>
         </div>
 
         <p className="text-[10px] font-mono text-[#4d6e5e] mt-5 uppercase tracking-widest">
-          Press [ESC] to resume
+          ပြန်စတင်ရန် [ESC] ကို နှိပ်ပါ
         </p>
       </div>
     </div>

@@ -79,7 +79,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
       PrologBridge.setLocation?.('locker_14');
       if (hasKey14) {
         setActiveMonologue(
-          "Locker 14 is secured with a heavy tarnished padlock stamped '14'. Key 14 fits the keyway."
+          "ဘီရို ၁၄ ကို '14' ဟု ရိုက်နှိပ်ထားသော လေးလံသည့် ကြေးဝါသော့ခလောက်ကြီးဖြင့် သော့ခတ်ထားသည်။ သော့ ၁၄ သည် သော့ပေါက်နှင့် အံကိုက်ဖြစ်သည်။"
         );
       } else {
         setActiveMonologue(MONOLOGUE_LINES.LOCKER_14_LOCKED_NO_KEY);
@@ -90,19 +90,19 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     PrologBridge.setLocation?.('locker_14_interior');
     if (!hasTape && !hasGateKey && !locker14Looted) {
       setActiveMonologue(
-        "Locker 14's heavy steel door swings open. Inside, resting among moldy student records, is an unlabeled micro-cassette tape."
+        "ဘီရို ၁၄ ၏ လေးလံသော သံမဏိတံခါး ပွင့်သွားသည်။ အတွင်းရှိ မှိုတက်နေသော ကျောင်းသားမှတ်တမ်းများကြားတွင် အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေတစ်ခွေ တင်ထားသည်။"
       );
     } else if (!hasTape && !locker14Looted) {
       setActiveMonologue(
-        "Locker 14 interior. An unlabeled micro-cassette tape rests among moldy student records."
+        "ဘီရို ၁၄ အတွင်းပိုင်း။ မှိုတက်နေသော ကျောင်းသားမှတ်တမ်းများကြားတွင် အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေတစ်ခွေ ရှိနေသည်။"
       );
     } else if (!hasGateKey && !locker14Looted) {
       setActiveMonologue(
-        "Locker 14 interior. The stairway gate key rests on the lower shelf."
+        "ဘီရို ၁၄ အတွင်းပိုင်း။ အောက်စင်ပေါ်တွင် လှေကားထွက်ပေါက်တံခါးသော့ ရှိနေသည်။"
       );
     } else {
       setActiveMonologue(
-        "Locker 14 interior. The shelf is now empty."
+        "ဘီရို ၁၄ အတွင်းပိုင်း။ စင်ပေါ်တွင် ဘာမှ မရှိတော့ပါ။"
       );
     }
   }, [isUnlocked, hasKey14, locker14Looted, hasTape, hasGateKey, setActiveMonologue]);
@@ -148,7 +148,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
 
     setActiveMonologue(MONOLOGUE_LINES.LOCKER_14_UNLATCH_SUCCESS);
     setRoomBanner?.({
-      text: "Used Key 14 to unlock Locker 14. The heavy steel door swings open.",
+      text: "ဘီရို ၁၄ ကို ဖွင့်ရန် သော့ ၁၄ ကို အသုံးပြုခဲ့သည်။ လေးလံသော သံမဏိတံခါး ပွင့်သွားသည်။",
       type: 'success',
     });
 
@@ -157,7 +157,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
 
   const handleTakeTape = async () => {
     if (hasTape) {
-      setActiveMonologue("The micro-cassette tape has already been taken.");
+      setActiveMonologue("မိုက်ခရိုတိပ်ခွေကို ယူပြီးသား ဖြစ်သည်။");
       return;
     }
 
@@ -185,17 +185,17 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     }
 
     setActiveMonologue(
-      "Acquired [UNLABELED MICRO-CASSETTE TAPE (1998.08.12)]. Dated right before the incident in Room 101."
+      "ရရှိပစ္စည်း - [အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂)]။ အခန်း ၁၀၁ ဖြစ်ရပ် မတိုင်မီ ရက်စွဲတပ်ထားသည်။"
     );
     setRoomBanner?.({
-      text: "Acquired Unlabeled Micro-Cassette Tape (1998.08.12).",
+      text: "အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂) ကို ရရှိခဲ့သည်။",
       type: 'success',
     });
   };
 
   const handleTakeKey = async () => {
     if (hasGateKey) {
-      setActiveMonologue("The stairway gate key has already been taken.");
+      setActiveMonologue("လှေကားထွက်ပေါက်တံခါးသော့ကို ယူပြီးသား ဖြစ်သည်။");
       return;
     }
 
@@ -224,10 +224,10 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     }
 
     setActiveMonologue(
-      "Acquired [STAIRWAY GATE KEY]. A heavy iron key stamped with 'STAIRWAY EXTR' for the ground floor security gate."
+      "ရရှိပစ္စည်း - [လှေကားထွက်ပေါက်တံခါးသော့]။ မြေညီထပ် လုံခြုံရေးတံခါးအတွက် 'STAIRWAY EXTR' ဟု ရိုက်နှိပ်ထားသော လေးလံသည့် သံသော့တစ်ချောင်း။"
     );
     setRoomBanner?.({
-      text: "Acquired Stairway Gate Key stamped 'STAIRWAY EXTR'.",
+      text: "'STAIRWAY EXTR' တံဆိပ်ရိုက်ထားသော လှေကားထွက်ပေါက်တံခါးသော့ကို ရရှိခဲ့သည်။",
       type: 'success',
     });
   };
@@ -254,8 +254,8 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
               name="Tarnished Brass Padlock (14)"
               cursorTooltip={
                 hasKey14
-                  ? "[ Unlock Padlock with Key 14 ]"
-                  : "[ Heavy Brass Padlock (14) - Locked ]"
+                  ? "[ သော့ ၁၄ ဖြင့် သော့ခလောက်ကို ဖွင့်မည် ]"
+                  : "[ လေးလံသော ကြေးဝါသော့ခလောက် (၁၄) - သော့ခတ်ထားဆဲ ]"
               }
               onClick={handleUnlockPadlock}
               polygonPoints="42,24 58,24 59,66 41,66"
@@ -276,7 +276,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
                     className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 border border-amber-400/80 hover:border-amber-300 text-amber-100 hover:text-white text-xs sm:text-sm font-mono font-bold tracking-wider uppercase shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:shadow-[0_0_40px_rgba(245,158,11,0.7)] cursor-pointer transition-all active:scale-95"
                   >
                     <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                    <span>[ Use Key 14 to Unlock Locker 14 ]</span>
+                    <span>[ သော့ ၁၄ ဖြင့် ဘီရို ၁၄ ကို ဖွင့်မည် ]</span>
                   </button>
                 </motion.div>
               )}
@@ -291,7 +291,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
               <InteractiveHotspot
                 id="locker_14_cassette_tape"
                 name="Unlabeled Micro-Cassette"
-                cursorTooltip="Take Micro-Cassette Tape"
+                cursorTooltip="မိုက်ခရိုတိပ်ခွေကို ယူမည်"
                 onClick={handleTakeTape}
                 polygonPoints="35,45 65,45 65,75 35,75"
               />
@@ -302,7 +302,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
               <InteractiveHotspot
                 id="key_stairway_gate"
                 name="Stairway Gate Key"
-                cursorTooltip="Take Stairway Gate Key"
+                cursorTooltip="လှေကားထွက်ပေါက်တံခါးသော့ကို ယူမည်"
                 onClick={handleTakeKey}
                 polygonPoints="34,76 66,76 66,94 34,94"
               />

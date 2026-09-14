@@ -36,15 +36,15 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
 
     if (!wellRootsSevered) {
       setActiveMonologue(
-        "Ancient aerial roots from the sacred banyan tree twist tightly around the stone mouth of the well, choking off the entrance like iron bars."
+        "ညောင်ပင်ကြီးမှ ရှေးဟောင်းလေရှူမြစ်များသည် ကျောက်ရေတွင်းဝကို သံတိုင်များသဖွယ် တင်းကျပ်စွာ ရစ်ပတ်ပိတ်ဆို့ထားကြသည်။"
       );
     } else if (!wellPulleyRigged || !wellRopeRigged) {
       setActiveMonologue(
-        "The constricting roots have been cleared, exposing the dark masonry of the wellhead. The shaft plunges deep into the earth."
+        "ပိတ်ဆို့နေသော သစ်မြစ်များကို ခုတ်ထွင်ရှင်းလင်းလိုက်သဖြင့် ရေတွင်းဝ၏ အုတ်ကျောက်နံရံများ ပေါ်ထွက်လာသည်။ ရေတွင်းပေါက်ကြီးသည် မြေအောက်နက်နက်သို့ ထိုးဆင်းသွားသည်။"
       );
     } else {
       setActiveMonologue(
-        "The cast-iron pulley and climbing rope are rigged firmly over the wellhead. The line hangs taut into the abyss, ready for descent."
+        "သံသွန်းစက်သီးနှင့် တောင်တက်ကြိုးကို ရေတွင်းဝအထက်တွင် ခိုင်ခံ့စွာ တပ်ဆင်ထားသည်။ ကြိုးသည် တွင်းနက်ကြီးထဲသို့ တင်းမာစွာ တွဲလောင်းကျနေပြီး ဆင်းသက်ရန် အသင့်ဖြစ်နေပြီ။"
       );
     }
   }, [setActiveMonologue, wellRootsSevered, wellPulleyRigged, wellRopeRigged]);
@@ -55,7 +55,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         (sound as any).playMetalCreak?.();
       } catch {}
       setActiveMonologue(
-        "A rusted iron eye-bolt is forged into the underside of the heavy banyan limb directly over the well shaft. But the dense mass of tangled aerial roots below makes it impossible to work safely. Clear the roots first."
+        "ရေတွင်းဝတည့်တည့်ရှိ လေးလံသော ညောင်ကိုင်းကြီး၏ အောက်ဘက်တွင် သံကွင်းခတ်ထားသော သံမျက်ကွင်းကျည်တစ်ခု တပ်ဆင်ထားသည်။ သို့သော် အောက်ဘက်တွင် ရစ်ပတ်ရှုပ်ထွေးနေသော လေရှူမြစ်များကြောင့် ဘေးကင်းစွာ လုပ်ဆောင်ရန် မဖြစ်နိုင်ပေ။ သစ်မြစ်များကို ဦးစွာ ရှင်းလင်းရမည်။"
       );
       return;
     }
@@ -73,14 +73,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         }
         setWellPulleyRigged(true);
         setActiveMonologue(
-          "— You hoist the heavy cast-iron pulley and slip it onto the ancient forged eye-bolt. It seats firmly with a dull metallic clank. —"
+          "— သင်သည် လေးလံသော သံသွန်းစက်သီးကြီးကို မကာ ရှေးဟောင်းသံကွင်းကြီးထဲသို့ ထည့်သွင်းချိတ်ဆွဲလိုက်သည်။ သတ္တုသံ ကျယ်ကျယ်မြည်ဟည်းလျက် တင်းကျပ်စွာ ချိတ်တွဲသွားသည်။ —"
         );
       } else {
         try {
           (sound as any).playMetalCreak?.();
         } catch {}
         setActiveMonologue(
-          "— A heavy forged iron eye-bolt hangs directly over the center of the well shaft. A pulley could be mounted here to support descent into the depths. —"
+          "— ရေတွင်းခေါင်းဝတည့်တည့်တွင် လေးလံသော သံမဏိမျက်ကွင်းကျည်တစ်ခု ချိတ်ဆွဲထားသည်။ ရေတွင်းနက်ထဲသို့ ဆင်းသက်နိုင်ရန် ဤနေရာ၌ စက်သီးတစ်ခု တပ်ဆင်နိုင်သည်။ —"
         );
       }
       return;
@@ -100,14 +100,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         }
         setWellRopeRigged(true);
         setActiveMonologue(
-          "— You thread the sturdy nylon climbing rope through the grooved pulley wheel and knot it securely. The weighted line drops straight down into the flooded depths below. —"
+          "— သင်သည် ခိုင်ခံ့သော နိုင်လွန်တောင်တက်ကြိုးကို စက်သီးဘီးခွေကြားသို့ လျှိုသွင်းကာ လုံခြုံစွာ ချည်နှောင်လိုက်သည်။ အလေးချိန်ပါသော ကြိုးစသည် အောက်ဘက် ရေလွှမ်းနေသော အမှောင်တွင်းနက်ထဲသို့ တည့်တည့်ကျသွားသည်။ —"
         );
       } else {
         try {
           (sound as any).playMetalCreak?.();
         } catch {}
         setActiveMonologue(
-          "— The cast-iron pulley hangs securely from the overhead limb. You need a strong climbing line or nylon rope to thread through the wheel. —"
+          "— သံသွန်းစက်သီးသည် အပေါ်ဘက်သစ်ကိုင်းတွင် ခိုင်ခံ့စွာ ချိတ်ဆွဲထားပြီး ဖြစ်သည်။ ဘီးခွေကြား လျှိုသွင်းရန် ခိုင်မာသော တောင်တက်ကြိုး သို့မဟုတ် နိုင်လွန်ကြိုး လိုအပ်သည်။ —"
         );
       }
       return;
@@ -117,7 +117,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
       (sound as any).playInventoryAdd?.();
     } catch {}
     setActiveMonologue(
-      "— The pulley and braided nylon line are rigged and anchored securely. The line is taut and ready to bear your weight down into the well. —"
+      "— စက်သီးနှင့် ကျစ်ထားသော နိုင်လွန်ကြိုးကို ခိုင်လုံစွာ တပ်ဆင်ချည်နှောင်ထားပြီး ဖြစ်သည်။ ကြိုးသည် တင်းမာနေပြီး ရေတွင်းထဲသို့ သင့်ကိုယ်အလေးချိန်ကို သယ်ဆောင်ဆင်းသက်ရန် အသင့်ဖြစ်နေပြီ။ —"
     );
   };
 
@@ -136,14 +136,14 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         } catch {}
         setWellRootsSevered(true);
         setActiveMonologue(
-          "— You swing the heavy rusted machete into the thick tangle of aerial banyan roots. Splintered tendrils snap away, revealing the open stone wellhead beneath! —"
+          "— သင်သည် လေးလံသော သံချေးတက်ဓားမကြီးဖြင့် ရစ်ပတ်ရှုပ်ထွေးနေသော ညောင်မြစ်များကို ခုတ်ပိုင်းလိုက်သည်။ ပြတ်တောက်သွားသော သစ်မြစ်စများ လွင့်စင်ကျသွားပြီး အောက်ဘက်ရှိ ကျောက်ရေတွင်းဝ ပွင့်ထွက်ပေါ်လာသည်! —"
         );
       } else {
         try {
           (sound as any).playDrip?.();
         } catch {}
         setActiveMonologue(
-          "— Thick, woody banyan roots have grown across the stone mouth of the well like iron bars. You cannot reach the shaft without cutting them away with a heavy blade. —"
+          "— ထူထပ်သော ညောင်ပင်သစ်မြစ်များသည် ရေတွင်းဝပေါ်တွင် သံတိုင်များသဖွယ် ဖြတ်သန်းပေါက်ရောက်နေသည်။ လေးလံသော ဓားဖြင့် မခုတ်ထွင်ဘဲ ရေတွင်းပေါက်သို့ လက်လှမ်းမမီနိုင်ပေ။ —"
         );
       }
       return;
@@ -154,7 +154,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         (sound as any).playDrip?.();
       } catch {}
       setActiveMonologue(
-        "— The severed roots hang limp around the cracked masonry. The shaft drops vertically into pitch blackness and rushing subterranean water. Dropping down without a rigged line would be fatal. —"
+        "— ပြတ်တောက်သွားသော သစ်မြစ်များသည် အက်ကွဲနေသော အုတ်နံရံများဘေးတွင် တွဲလောင်းကျနေသည်။ ရေတွင်းကြီးသည် အမှောင်ထုနှင့် အောက်ဘက် ရေစီးသံများဆီသို့ မတ်စောက်စွာ ထိုးဆင်းသွားသည်။ ကြိုးမပါဘဲ ခုန်ဆင်းပါက အသက်အန္တရာယ် ရှိနိုင်သည်။ —"
       );
       return;
     }
@@ -168,7 +168,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
       await PrologBridge.queryOnce('descend_into_well.');
     } catch {}
     setActiveMonologue(
-      "— Gripping the nylon line firmly, you step over the moss-slick stone curb and rappel down into the echoing black depths of the well shaft... —"
+      "— နိုင်လွန်ကြိုးကို တင်းကျပ်စွာ ဆုပ်ကိုင်လျက် ရေညှိချောနေသော ကျောက်ရေတွင်းဘောင်ကို ကျော်ခွကာ ပဲ့တင်သံထွက်နေသော ရေတွင်းနက်ကြီးထဲသို့ ကြိုးလျှောဆင်းသက်သွားသည်... —"
     );
     if (onNavigate) {
       onNavigate('well_interior_deep');
@@ -177,25 +177,25 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
 
   const getBranchTooltip = (): string => {
     if (!wellRootsSevered) {
-      return "[Examine Overhead Eye-Bolt]";
+      return "[အပေါ်ဘက် သံကွင်းကို စစ်ဆေးမည်]";
     }
     if (!wellPulleyRigged) {
-      return hasPulley ? "[Mount Cast-Iron Pulley]" : "[Examine Overhead Eye-Bolt]";
+      return hasPulley ? "[သံသွန်းစက်သီးကို တပ်ဆင်မည်]" : "[အပေါ်ဘက် သံကွင်းကို စစ်ဆေးမည်]";
     }
     if (!wellRopeRigged) {
-      return hasRope ? "[Rig Climbing Rope]" : "[Examine Rigged Pulley]";
+      return hasRope ? "[တောင်တက်ကြိုးကို တပ်ဆင်ချည်နှောင်မည်]" : "[တပ်ဆင်ထားသော စက်သီးကို စစ်ဆေးမည်]";
     }
-    return "[Examine Rigged Hoist]";
+    return "[တပ်ဆင်ထားသော စက်သီးကြိုးကို စစ်ဆေးမည်]";
   };
 
   const getWellTooltip = (): string => {
     if (!wellRootsSevered) {
-      return hasMachete ? "[Sever Aerial Roots with Machete]" : "[Examine Choked Wellhead]";
+      return hasMachete ? "[ဓားမဖြင့် လေရှူမြစ်များကို ခုတ်ပိုင်းမည်]" : "[ပိတ်ဆို့နေသော ရေတွင်းဝကို စစ်ဆေးမည်]";
     }
     if (!wellPulleyRigged || !wellRopeRigged) {
-      return "[Inspect Dark Well Shaft]";
+      return "[မှောင်မည်းနေသော ရေတွင်းပေါက်ကို ကြည့်မည်]";
     }
-    return "[Descend into Well]";
+    return "[ရေတွင်းထဲသို့ ကြိုးလျှောဆင်းမည်]";
   };
 
   return (

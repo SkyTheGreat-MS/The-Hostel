@@ -47,7 +47,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
       sound.playPaperRustle();
     } catch {}
 
-    const text = "— 'Locker 14 - 1998' scratched into the frame. Someone left this note before the mirrors shattered. —";
+    const text = "— မှန်ဘောင်ပေါ်တွင် 'Locker 14 - 1998' ဟု ခြစ်ရေးထားသည်။ မှန်များ မကွဲအက်မီ တစ်စုံတစ်ယောက်က ဤမှတ်စုကို ချန်ထားခဲ့ခြင်း ဖြစ်သည်။ —";
     setActiveThought(text);
     setActiveMonologue?.(text);
   };
@@ -56,7 +56,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
     try {
       sound.playPaperRustle();
     } catch {}
-    const text = "— Spiderweb fractures branch across the tarnished glass. My reflection is fractured into dozens of distorted shadows. —";
+    const text = "— အဆင်းမလှတော့သော မှန်ပြင်ပေါ်တွင် ပင့်ကူအိမ်သဖွယ် ကွဲအက်ရာများ ဖြာထွက်နေသည်။ ငါ့ရဲ့ ပုံရိပ်သည် ပုံပျက်နေသော အရိပ်ဒါဇင်ပေါင်းများစွာအဖြစ် အစိတ်စိတ်အမွှာမွှာ ကွဲကြေနေသည်။ —";
     setActiveThought(text);
     setActiveMonologue?.(text);
   };
@@ -88,7 +88,7 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
           id="washroom_mirror_glass"
           name="Shattered Wall Mirror"
           polygonPoints="16.5,6 86.5,6 86.5,68 17.5,68"
-          cursorTooltip="[Inspect Shattered Glass]"
+          cursorTooltip="[ကွဲအက်နေသော မှန်ပြင်ကို စစ်ဆေးမည်]"
           onClick={handleInspectGlass}
         />
 
@@ -99,8 +99,8 @@ export const WashroomMirrorView: React.FC<WashroomMirrorViewProps> = ({
           polygonPoints="30,71 70,71 70,79 30,79"
           cursorTooltip={
             !isScratched
-              ? '[Wipe Bottom Mirror Frame]'
-              : '[Read Etched Scrawl: Locker 14 - 1998]'
+              ? '[အောက်ဘက် မှန်ဘောင်ကို သုတ်မည်]'
+              : '[ခြစ်ရေးထားသော စာကို ဖတ်မည် - Locker 14 - 1998]'
           }
           onClick={handleInspectEtching}
         />

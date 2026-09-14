@@ -120,7 +120,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         {/* Lock Faceplate Plate */}
         <div className="w-full pb-3 border-b border-[#352c1e] flex items-center justify-between">
           <span className="font-mono text-[10px] tracking-widest text-[#8a7a5e] uppercase">
-            PATENT 1974 • HEAVY BRASS LATCH
+            မူပိုင်ခွင့် ၁၉၇၄ • အကြမ်းခံကြေးဝါဂျက်ခလောက်
           </span>
           {typeof composure === 'number' && (
             <span
@@ -132,7 +132,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
                   : 'text-emerald-400/80'
               }`}
             >
-              COMPOSURE: {composure}%
+              စိတ်တည်ငြိမ်မှု - {composure}%
             </span>
           )}
         </div>
@@ -171,18 +171,18 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
           <div className="w-full mb-4 px-3 py-2 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center justify-between text-xs animate-pulse">
             <div className="flex flex-col">
               <span className="font-mono text-red-300 font-bold text-[11px] flex items-center gap-1.5">
-                <span>⚠️ LATCH RESISTS</span>
+                <span>⚠️ သော့ဂျက် တင်းကျပ်နေသည်</span>
                 <span className="text-[10px] text-red-400/80 font-normal">
-                  (Wrong Code #{recentAttemptNumber})
+                  (ကုဒ်အမှား အကြိမ် #{recentAttemptNumber})
                 </span>
               </span>
               <span className="text-[10px] font-mono text-red-400/70">
-                The shackle screeches stubbornly...
+                သော့ကွင်းက တကျီကျီမြည်ကာ မပွင့်ပါ...
               </span>
             </div>
             <div className="font-mono font-bold text-red-400 text-right tracking-wider">
               -{lastPenalty}%
-              <div className="text-[9px] text-red-500/80 uppercase">Composure</div>
+              <div className="text-[9px] text-red-500/80 uppercase">စိတ်တည်ငြိမ်မှု</div>
             </div>
           </div>
         )}
@@ -194,14 +194,14 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
             onClick={onClose}
             className="px-3 py-1.5 rounded-lg border border-[#382f21] text-xs font-mono text-[#736348] hover:text-[#ab9776] cursor-pointer"
           >
-            Leave
+            ပြန်ထွက်မည်
           </button>
           <button
             type="button"
             onClick={handleAttemptUnlock}
             className="px-5 py-1.5 rounded-lg bg-[#3d311d] hover:bg-[#524227] border border-[#695431] text-xs font-serif tracking-wider text-[#fae1b4] font-semibold uppercase shadow-lg transition-all active:scale-95 cursor-pointer"
           >
-            Pull Latch
+            သော့ဂျက်ဆွဲဖွင့်မည်
           </button>
         </div>
       </div>

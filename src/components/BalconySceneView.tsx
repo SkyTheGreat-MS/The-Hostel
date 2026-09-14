@@ -287,7 +287,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
 
     // 6. Notification banner
     setRoomBanner?.({
-      text: "Retrieved Key 14 from the balcony terrace. Corresponds to Locker 14.",
+      text: "ဝရန်တာကြမ်းပြင်မှ သော့ (၁၄) ကို ကောက်ယူရရှိခဲ့သည်။ ဘီရိုအမှတ် ၁၄ အတွက် ဖြစ်သည်။",
       type: 'success',
     });
   };
@@ -321,7 +321,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
         id="balcony_transistor_radio"
         name="Transistor Radio"
         polygonPoints="60,55 73,57 73,74 60,69"
-        cursorTooltip="[Inspect Transistor Radio]"
+        cursorTooltip="[ထရန်စစ္စတာ ရေဒီယိုကို စစ်ဆေးမည်]"
         onClick={() => {
           sound.playBenchInspect();
           setActiveMonologue?.(null);
@@ -346,9 +346,9 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
           {!isDissolving && (
             <InteractiveHotspot
               id="balcony_spectral_may"
-              name={hasLetter ? "Spectral May - [ Hand over Ko Zaw's Letter ]" : "Spectral May"}
+              name={hasLetter ? "ဝိညာဉ် မေမေ - [ ကိုဇော်၏ စာလွှာကို ပေးအပ်မည် ]" : "ဝိညာဉ် မေမေ"}
               polygonPoints="8,35 22,35 25,99 6,99"
-              cursorTooltip={hasLetter ? "[ Hand over Ko Zaw's Folded Letter ]" : "Speak to May"}
+              cursorTooltip={hasLetter ? "[ ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ပေးအပ်မည် ]" : "မေနှင့် စကားပြောမည်"}
               onClick={handleMayClick}
             />
           )}
@@ -369,7 +369,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                     className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-emerald-950/95 hover:bg-emerald-900 border border-emerald-400/80 hover:border-emerald-300 text-emerald-100 hover:text-white text-xs sm:text-sm font-mono font-bold tracking-wider uppercase shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:shadow-[0_0_40px_rgba(16,185,129,0.7)] cursor-pointer transition-all active:scale-95"
                   >
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span>[ Hand over Ko Zaw's Folded Letter ]</span>
+                    <span>[ ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ပေးအပ်မည် ]</span>
                   </button>
                   <button
                     onClick={(e) => {
@@ -415,7 +415,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
           <InteractiveHotspot
             id="balcony_key_14_floor"
             name="Tarnished Key (14)"
-            cursorTooltip="Take Tarnished Key (14)"
+            cursorTooltip="ဟောင်းနွမ်းနေသော သော့ (၁၄) ကို ယူမည်"
             polygonPoints="48,70 54,70 56,82 49,82"
             onClick={handlePickupKey14}
           />

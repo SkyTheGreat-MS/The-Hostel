@@ -67,13 +67,13 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
   const handleBatteryCompartmentClick = () => {
     if (radioHasBatteries) {
       setActiveMonologue(
-        '— Two zinc-carbon batteries are fitted tightly into the coils. The power circuit is closed. —'
+        '— ဇင့်-ကာဗွန် ဓာတ်ခဲနှစ်လုံး ခွေကွိုင်များထဲတွင် တင်းကျပ်စွာ တပ်ဆင်ထားသည်။ လျှပ်စီးပတ်လမ်း အပြည့်အဝ ချိတ်ဆက်သွားပြီ။ —'
       );
       return;
     }
     if (!hasBatteries) {
       setActiveMonologue(
-        '— The compartment is empty. The contact springs are dry. It takes two heavy D-cell batteries to operate. —'
+        '— ဓာတ်ခဲထည့်သည့်အပေါက် ဗလာဖြစ်နေသည်။ စပရင်များ ခြောက်သွေ့နေသည်။ ရေဒီယိုဖွင့်ရန် D-cell ဓာတ်ခဲကြီး နှစ်လုံး လိုအပ်သည်။ —'
       );
       return;
     }
@@ -90,14 +90,14 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
     setRadioHasBatteries(true);
     setShowBatteryPrompt(false);
     setActiveMonologue(
-      '— The springs bite into the terminals. Faint hum vibrates through the speaker grille. —'
+      '— စပရင်များ ဓာတ်ခဲခေါင်းနှင့် ထိကပ်သွားသည်။ စပီကာဇကာပေါက်မှ အသံတိုးတိုး တုန်ခါမြည်လာသည်။ —'
     );
   };
 
   const handleTuningDialClick = () => {
     if (!radioHasBatteries) {
       setActiveMonologue(
-        '— No power. The frequency needle won\'t move until batteries are installed. —'
+        '— ဓာတ်အားမရှိပါ။ ဓာတ်ခဲမထည့်မချင်း လှိုင်းညွှန်တံ ရွေ့မည်မဟုတ်ပါ။ —'
       );
       return;
     }
@@ -131,7 +131,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
       stopStaticLoop();
       sound.playRadioBallad();
       setActiveMonologue(
-        '— The harsh static dissolves into an acoustic melody... echoing out into the monsoon rain. —'
+        '— ဆူညံနေသော လှိုင်းသံများ ပျောက်ကွယ်သွားပြီး သာယာငြိမ့်ညောင်းသော ဂစ်တာသံစဉ် ထွက်ပေါ်လာကာ... မိုးသည်းထန်နေသော အမှောင်ထုထဲ ပျံ့လွင့်သွားသည်။ —'
       );
       setTimeout(() => {
         setIsTuning(false);
@@ -143,8 +143,8 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
   const sliderPercent = ((frequency - MIN_FREQ) / (MAX_FREQ - MIN_FREQ)) * 100;
 
   const batteryCompartmentTooltip = radioHasBatteries
-    ? 'Battery Compartment (Powered)'
-    : 'Inspect Battery Compartment';
+    ? 'ဓာတ်ခဲထည့်သည့်အပေါက် (ဓာတ်အားပြည့်)'
+    : 'ဓာတ်ခဲထည့်သည့်အပေါက်ကို စစ်ဆေးမည်';
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black select-none">
@@ -181,12 +181,12 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
             className="pointer-events-auto cursor-pointer fill-transparent hover:fill-emerald-500/15 stroke-transparent hover:stroke-emerald-400 hover:stroke-[0.8] hover:[stroke-dasharray:2,2] transition-all duration-200"
             onMouseEnter={() => {
               sound.playMenuHover();
-              setHoveredHotspot({ text: 'Adjust Tuning Dial', x: 50, y: 30 });
+              setHoveredHotspot({ text: 'လှိုင်းချိန်ခလုတ်ကို လှည့်မည်', x: 50, y: 30 });
             }}
             onMouseLeave={() => setHoveredHotspot(null)}
             onClick={handleTuningDialClick}
           >
-            <title>Adjust Tuning Dial</title>
+            <title>လှိုင်းချိန်ခလုတ်ကို လှည့်မည်</title>
           </ellipse>
         </svg>
 
@@ -210,7 +210,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
             onClick={insertBatteries}
             className="absolute bottom-10 left-1/2 z-40 -translate-x-1/2 rounded-full border border-[#587867] bg-[#0b120e]/95 px-5 py-3 font-mono text-xs font-bold tracking-wider text-[#c5ded0] shadow-2xl transition hover:border-[#9cc7aa] hover:text-white"
           >
-            [ Insert 2x D-Cell Batteries ]
+            [ D-Cell ဓာတ်ခဲ ၂ လုံး ထည့်မည် ]
           </motion.button>
         )}
       </AnimatePresence>

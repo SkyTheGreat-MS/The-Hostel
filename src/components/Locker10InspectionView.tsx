@@ -27,7 +27,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
     if (batteriesTaken) {
       sound.playPaperRustle();
       setActiveMonologue(
-        '— Only torn greasy wax paper and dust remain on the shelf. —'
+        '— စင်ပေါ်တွင် စုတ်ပြတ်နေသော ဖယောင်းစက္ကူနှင့် ဖုန်မှုန့်များသာ ကျန်တော့သည်။ —'
       );
       return;
     }
@@ -36,7 +36,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
     setInventory((prev) => (prev.includes('battery_pair') ? prev : [...prev, 'battery_pair']));
     addDiscoveredClue('battery_pair_acquired');
     setActiveMonologue(
-      '— A wax-paper bundle of two heavy D-cell batteries. The terminals are clean and the charge holds. —'
+      '— ဖယောင်းစက္ကူဖြင့် ထုပ်ထားသော လေးလံသည့် D-cell ဓာတ်ခဲကြီး နှစ်လုံး။ ငုတ်တိုင်များ သန့်ရှင်းပြီး ဓာတ်အားပြည့်ဝနေဆဲ ဖြစ်သည်။ —'
     );
   };
 
@@ -46,12 +46,12 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
       addDiscoveredClue('clue_radio_freq_1042');
     }
     setActiveMonologue(
-      '— Scratched into the cover margin in pencil: \'104.2 AM — where the acoustic session plays past midnight\'. —'
+      '— စာအုပ်အဖုံးဘေးတွင် ခဲတံဖြင့် ခြစ်ရေးထားသည် - \'104.2 AM — သန်းခေါင်ကျော် ဂစ်တာသံစဉ် လွင့်ပျံ့ရာနေရာ\'။ —'
     );
   };
 
-  const batteriesTooltip = batteriesTaken ? 'Empty Wax Paper Wrapper' : 'Take Heavy Dry-Cell Batteries';
-  const notebookTooltip = 'Inspect Scratched Exercise Book';
+  const batteriesTooltip = batteriesTaken ? 'ဖယောင်းစက္ကူ ဗလာ' : 'D-cell ဓာတ်ခဲကြီးများကို ယူမည်';
+  const notebookTooltip = 'ခြစ်ရာများပါသော ဗလာစာအုပ်ကို စစ်ဆေးမည်';
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black select-none">
