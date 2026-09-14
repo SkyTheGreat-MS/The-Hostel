@@ -189,7 +189,7 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
           id="well_cassette_player"
           name="မိုက်ခရို တိတ်ခွေဖွင့်စက်"
           cursorTooltip={getPlayerTooltip()}
-          polygonPoints="44,58 56,58 56,74 44,74"
+          polygonPoints="41,81.8 50.8,74.1 59.7,80.3 48.4,90.7"
           onClick={handleCassettePlayer}
         />
 

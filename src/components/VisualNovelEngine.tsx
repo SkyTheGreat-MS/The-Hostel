@@ -139,7 +139,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 1,
     phase: 1,
-    speaker: 'မေဂျူး',
+    speaker: 'မေရတနာ',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက စာအုပ်ဟောင်းတစ်ခု တွေ့ထားတယ်တဲ့။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားရအောင်။',
@@ -159,7 +159,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 3,
     phase: 1,
-    speaker: 'ဆွတ်မြတ်ရှိန်',
+    speaker: 'ဆုမြတ်ရှိန်',
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတယ်လို့ ကြားဖူးတယ်။',
@@ -168,7 +168,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 4,
     phase: 1,
-    speaker: 'ယင်မင်းထိပ်',
+    speaker: 'ယဉ်မင်းထိုက်',
     characterId: 'yin_min_htike',
     pos: 'left',
     text: 'ဟုတ်တယ်။ သူပျောက်သွားပြီးကတည်းက စင်္ကြံလမ်း (၃၂၆) ကို အန္တရာယ်ရှိတယ်ဆိုပြီး ပိတ်ပစ်လိုက်ကြတာ။',
@@ -187,7 +187,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 6,
     phase: 1,
-    speaker: 'မေဂျူး',
+    speaker: 'မေရတနာ',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ဒီအခန်းထဲမှာ ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
@@ -200,7 +200,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 7,
     phase: 2,
-    speaker: 'မိုးစိတ်ခ',
+    speaker: 'မိုးင်္သခ',
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'ဟေ့... ဖယောင်းတိုင်မီး အပြာရောင်ပြောင်းသွားပြီ! ဘယ်သူမှ လက်မခွာနဲ့နော်။',
@@ -210,7 +210,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 8,
     phase: 2,
-    speaker: 'မိုနာနှင့် ဆွတ်မြတ်ရှိန်',
+    speaker: 'မိုနာနှင့် ဆုမြတ်ရှိန်',
     characterId: 'mona',
     pos: 'right',
     text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးအေးကြီး လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
@@ -228,7 +228,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 10,
     phase: 2,
-    speaker: 'မေဂျူး',
+    speaker: 'မေရတနာ',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'မခွာနဲ့! ဖန်ခွက်ကွဲရင် တမလွန်တံခါး ပွင့်သွားလိမ့်မယ်',
@@ -3258,7 +3258,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                     </span>
                                   </div>
                                   <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးစိတ်ခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
+                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးင်္သခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
                                   </p>
                                 </button>
                               )}

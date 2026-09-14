@@ -5,7 +5,7 @@ export { type CharacterProfile };
 export const CHARACTER_ROSTER: Record<string, CharacterProfile> = {
   moe_stheinkha: {
     id: 'moe_stheinkha',
-    name: 'မိုးစိတ်ခ',
+    name: 'မိုးင်္သခ',
     archetype: 'သံသယရှိသူ',
     tensionMultiplier: 1.2,
     resolveMultiplier: 0.9,
@@ -21,7 +21,7 @@ export const CHARACTER_ROSTER: Record<string, CharacterProfile> = {
   },
   may_jewel: {
     id: 'may_jewel',
-    name: 'မေဂျူး',
+    name: 'မေရတနာ',
     archetype: 'အတွေ့အကြုံရှိသူ',
     tensionMultiplier: 0.8,
     resolveMultiplier: 1.3,
@@ -29,7 +29,7 @@ export const CHARACTER_ROSTER: Record<string, CharacterProfile> = {
   },
   yin_min_htike: {
     id: 'yin_min_htike',
-    name: 'ယင်မင်းထိပ်',
+    name: 'ယဉ်မင်းထိုက်',
     archetype: 'မှတ်တမ်းပြ',
     tensionMultiplier: 0.8,
     resolveMultiplier: 0.8,
@@ -37,7 +37,7 @@ export const CHARACTER_ROSTER: Record<string, CharacterProfile> = {
   },
   hsu_myat_shein: {
     id: 'hsu_myat_shein',
-    name: 'ဆွတ်မြတ်ရှိန်',
+    name: 'ဆုမြတ်ရှိန်',
     archetype: 'သွေးဆက်သူ',
     tensionMultiplier: 1.4,
     resolveMultiplier: 1.5,

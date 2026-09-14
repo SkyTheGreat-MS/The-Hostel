@@ -171,7 +171,7 @@ export const ITEM_DATABASE = ITEMS;
 export const CHARACTERS: MCCharacter[] = [
   {
     id: 'moe_stheinkha',
-    name: 'မိုးစိတ်ခ',
+    name: 'မိုးင်္သခ',
     archetype: 'သံသယရှိသူ',
     description: 'ခွဲခြမ်းစိတ်ဖြာတတ်ပြီး ယုတ္တိကျသော စိတ်ပိုင်းဆိုင်ရာ ရှိသည်။ ကိုယ်ထိလက်ရောက် ခြိမ်းခြောက်မှုကို ခုခံနိုင်သော်လည်း ပုဂ္ဂိုလ်ထူးဆန်းမှုများအပေါ် အလွန်နားညံ့သည်။',
     tensionMultiplier: 1.2,
@@ -197,7 +197,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'may_jewel',
-    name: 'မေဂျူး',
+    name: 'မေရတနာ',
     archetype: 'အတွေ့အကြုံရှိသူ',
     description: 'ဝိညာဉ်နှင့် ဆက်စပ်နေသည့် မီဒီယမ်တစ်ဦးဖြစ်ပြီး ဝှက်ထားသည့် တုန်ခါမှုများနှင့် ညည်းညူသံများကို ရှာဖွေတွေ့ရှိနိုင်သည်။ ပြင်းထန်သည့် စိတ်ဖိစီးမှုကို ခံစားရသည်။',
     tensionMultiplier: 0.8,
@@ -210,7 +210,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'yin_min_htike',
-    name: 'ယင်မင်းထိပ်',
+    name: 'ယဉ်မင်းထိုက်',
     archetype: 'မှတ်တမ်းပြ',
     description: 'ရှေးဟောင်းစာရင်းများ၊ ကုဒ်များနှင့် ကွဲလွဲမှုများအကြောင်း ကျွမ်းကျင်သည်။ ကိုယ်ထိလက်ရောက် ဖိအားအောက်တွင် ကိုယ်ခန္ဓာပိုင်းအားနည်းသည်။',
     tensionMultiplier: 0.8,
@@ -223,7 +223,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'hsu_myat_shein',
-    name: 'ဆွတ်မြတ်ရှိန်',
+    name: 'ဆုမြတ်ရှိန်',
     archetype: 'သွေးဆက်သူ',
     description: 'နက်ရှိုင်းစွာ သက်ရောက်မှုရှိပြီး ၁၉၉၈ ခုနှစ် ဩဂုတ်လ ဖြစ်ရပ်များနှင့် မထင်မြင်ဘဲ သွေးဆက်နေသည်။',
     tensionMultiplier: 1.4,
@@ -250,7 +250,7 @@ export const CHARACTERS: MCCharacter[] = [
   // Legacy aliases for backward compatibility with existing tests and Prolog mirrors
   {
     id: 'thazin',
-    name: 'သဇင် (မိုးစိတ်ခ)',
+    name: 'သဇင် (မိုးင်္သခ)',
     archetype: 'သံသယရှိသူ',
     description: 'ဖြစ်နိုင်ခြေကို တွက်ချက်သည်။ တိုက်ရိုက် သဘာဝလွန် ဖြစ်ရပ်များနှင့် ရင်ဆိုင်ရသောအခါ အခက်အခဲဖြစ်သည်။',
     tensionMultiplier: 1.2,
@@ -276,7 +276,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'htet',
-    name: 'ထက် (ယင်မင်းထိပ်)',
+    name: 'ထက် (ယဉ်မင်းထိုက်)',
     archetype: 'မှတ်တမ်းပြ',
     description: 'စာရွက်စာတမ်းများ၊ စာရင်းများနှင့် ကုဒ်များအတွက် အမြင်ရှိသည်။ ဖိအားအောက်တွင် ကိုယ်ခန္ဓာပိုင်း အားနည်းသည်။',
     tensionMultiplier: 0.8,
@@ -289,7 +289,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'aye_aye',
-    name: 'အေးအေး (ဆွတ်မြတ်ရှိန်)',
+    name: 'အေးအေး (ဆုမြတ်ရှိန်)',
     archetype: 'သွေးဆက်သူ',
     description: 'စိတ်ခံစားမှု တုံ့ပြန်မှုကို နက်ရှိုင်းစွာ ခံစားသည်။ ၁၉၉၈ ခုနှစ်နှင့် မိခင်ဆက်စပ်မှုကို ဝှက်ထားသည်။',
     tensionMultiplier: 1.4,
@@ -315,7 +315,7 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'su_su',
-    name: 'စုစု (မေဂျူး)',
+    name: 'စုစု (မေရတနာ)',
     archetype: 'အတွေ့အကြုံရှိသူ',
     description: 'ဝိညာဉ်နှင့် ဆက်စပ်နေသည့် မီဒီယမ်ဖြစ်ပြီး ညည်းညူသံများကို ရှင်းရှင်းလင်းလင်း ကြားသည်။ စိတ်ပိုင်းဆိုင်ရာ ပင်ပန်းမှု ပြင်းထန်စွာ ခံစားရသည်။',
     tensionMultiplier: 0.8,

@@ -373,7 +373,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         >
           <g className="group/poly pointer-events-auto cursor-pointer" style={{ pointerEvents: 'all' }}>
             <polygon
-              points="48,28 68,28 68,60 48,60"
+              points="37.2,51.6 67.7,51.6 67.7,84.4 37.2,84.4"
               style={{ pointerEvents: 'all' }}
               fill="white"
               fillOpacity={0.001}
@@ -395,7 +395,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         {/* Hover label / tooltip anchored above padlock & chains */}
         <span
           className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
-          style={{ left: '58%', top: '26%' }}
+          style={{ left: '52.5%', top: '52%' }}
         >
           {hasGateKey ? '[ လှေကားထွက်ပေါက်တံခါးကို သော့ဖြင့် ဖွင့်မည် ]' : '[ လေးလံသော သော့ခလောက်နှင့် သံကြိုးများကို စစ်ဆေးမည် ]'}
         </span>

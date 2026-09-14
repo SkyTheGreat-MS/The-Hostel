@@ -199,7 +199,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           id="garage_drain_valve"
           name="ရေနုတ်အဆို့ရှင်ဘီး"
           cursorTooltip={garageDrained ? "ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်" : "ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်"}
-          polygonPoints="12,45 22,45 22,62 12,62"
+          polygonPoints="42.8,54.1 40.8,62.6 36,66.1 31.3,62.6 29.3,54.1 31.3,45.6 36,42.1 40.8,45.6"
           onClick={handleDrainValve}
         />
 
@@ -217,7 +217,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           id="garage_caretaker_log"
           name="အဆောင်မှူး၏ ထိန်းသိမ်းရေးမှတ်တမ်း"
           cursorTooltip="အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်"
-          polygonPoints="68,48 76,48 76,58 68,58"
+          polygonPoints="17.9,64.8 15.9,73.3 11.2,76.8 6.4,73.3 4.4,64.8 6.4,56.3 11.2,52.7 15.9,56.3"
           onClick={handleInspectLog}
         />
 
@@ -227,7 +227,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
             id="garage_tool_pulley"
             name="သံသွန်းစက်သီးကြီး"
             cursorTooltip={garageDrained ? "သံစက်သီးကို ယူမည်" : "ရေမြုပ်နေသော အရာကို ကြည့်မည်"}
-            polygonPoints="77,52 84,52 84,65 77,65"
+            polygonPoints="17.7,64.6 15.8,73.1 11,76.6 6.3,73.1 4.3,64.6 6.3,56.1 11,52.5 15.8,56.1"
             onClick={handleTakePulley}
           />
         )}
@@ -238,7 +238,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
             id="garage_tool_machete"
             name="သံချေးတက် ဓားမကြီး"
             cursorTooltip={garageDrained ? "သံချေးတက်ဓားမကို ယူမည်" : "ရေမြုပ်နေသော ဓားကို ကြည့်မည်"}
-            polygonPoints="85,42 93,42 93,68 85,68"
+            polygonPoints="1.4,84 26.3,68.2 30.9,72.1 16,85.2"
             onClick={handleTakeMachete}
           />
         )}
