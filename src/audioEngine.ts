@@ -9,6 +9,7 @@ class AudioEngine {
   private rainGain: GainNode | null = null;
   private isRainRunning: boolean = false;
   private radioBallad: HTMLAudioElement | null = null;
+  private mayCassetteAudio: HTMLAudioElement | null = null;
 
   private playAsset(src: string, options: { loop?: boolean; volume?: number } = {}) {
     if (this.isMuted || typeof Audio === 'undefined') return null;
@@ -43,6 +44,9 @@ class AudioEngine {
     if (this.rainGain && this.ctx) {
       this.rainGain.gain.setValueAtTime(this.isMuted ? 0 : 0.035, this.ctx.currentTime);
     }
+    if (this.mayCassetteAudio) {
+      this.mayCassetteAudio.muted = this.isMuted;
+    }
     return this.isMuted;
   }
 
@@ -53,6 +57,9 @@ class AudioEngine {
     }
     if (this.rainGain && this.ctx) {
       this.rainGain.gain.setValueAtTime(this.isMuted ? 0 : 0.035, this.ctx.currentTime);
+    }
+    if (this.mayCassetteAudio) {
+      this.mayCassetteAudio.muted = this.isMuted;
     }
     return this.isMuted;
   }
@@ -1525,6 +1532,36 @@ public playBenchInspect() {
       osc.stop(this.ctx.currentTime + 1.0);
     } catch {
       this.playHollowChime();
+    }
+  }
+
+  public playMayCassetteSong(onEnded?: () => void): HTMLAudioElement | null {
+    if (typeof Audio === 'undefined') return null;
+    this.stopMayCassetteSong();
+    try {
+      const audio = new Audio('/assets/Songs/may_cassette_tape_song.mp3');
+      audio.volume = 0.85;
+      audio.muted = this.isMuted;
+      if (onEnded) {
+        audio.addEventListener('ended', onEnded);
+      }
+      void audio.play().catch((err) => {
+        console.warn('Audio play error:', err);
+      });
+      this.mayCassetteAudio = audio;
+      return audio;
+    } catch {
+      return null;
+    }
+  }
+
+  public stopMayCassetteSong() {
+    if (this.mayCassetteAudio) {
+      try {
+        this.mayCassetteAudio.pause();
+        this.mayCassetteAudio.currentTime = 0;
+      } catch {}
+      this.mayCassetteAudio = null;
     }
   }
 }
