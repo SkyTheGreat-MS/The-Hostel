@@ -30,7 +30,7 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
         <InteractiveHotspot
           id="locker-09-candle"
           name="Black Beeswax Candle"
-          polygonPoints="50,29 57,29 59,85 50,85"
+          polygonPoints="48,39 55,39 55,75 48,75"
           cursorTooltip="အနက်ရောင် ဖယောင်းတိုင်ကို ယူမည်"
           onClick={() => {
             sound.playItemPickup();
@@ -49,7 +49,7 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
         <InteractiveHotspot
           id="locker-09-matchbox"
           name="Three-Shooting-Stars Matchbox"
-          polygonPoints="65,27 87,32 87,85 65,80"
+          polygonPoints="60,37 74,42 74,75 60,70"
           cursorTooltip="မီးခြစ်ဆံဗူးကို ယူမည်"
           onClick={() => {
             sound.playPaperRustle();
@@ -68,7 +68,7 @@ export const Locker09ZoomView: React.FC<Locker09ZoomViewProps> = ({
         <InteractiveHotspot
           id="locker-09-empty"
           name="Locker 09 (Emptied)"
-          polygonPoints="0,8 90,8 90,88 0,88"
+          polygonPoints="37,8 90,8 90,88 37,88"
           cursorTooltip="ဘီရို ၀၉ (ဗလာဖြစ်နေသည်)"
           onClick={() => {
             sound.playPaperRustle();
