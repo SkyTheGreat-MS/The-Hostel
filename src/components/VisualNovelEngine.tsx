@@ -953,9 +953,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (activeSave?.hasReadSandarLetters) setHasReadSandarLetters(true);
       if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
       if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
-      if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
-      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
-      if (activeSave?.radioTuned) setRadioTuned(true);
+      // Only restore radio state if batteries were actually inserted and not still in inventory
+      const invHasBatteries = (activeSave?.inventory || []).includes('battery_pair');
+      const hasBatteries = Boolean(activeSave?.radioHasBatteries) && !invHasBatteries;
+      setRadioHasBatteries(hasBatteries);
+      setRadioTuned(hasBatteries && Boolean(activeSave?.radioTuned));
       if (activeSave?.mayResolved) setMayResolved(true);
       if (activeSave?.key14OnFloor) setKey14OnFloor(true);
       if (activeSave?.key14Collected) setKey14Collected(true);
@@ -1012,8 +1014,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       setNatAudienceConcluded(Boolean(save.natAudienceConcluded));
-      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
-      if (activeSave?.radioTuned) setRadioTuned(true);
+      setRadioHasBatteries(false);
+      setRadioTuned(false);
       setMayResolved(Boolean(save.mayResolved));
       setKey14OnFloor(Boolean(save.key14OnFloor));
       setKey14Collected(Boolean(save.key14Collected));
@@ -1853,6 +1855,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setAltarBellPlaced(false);
     setNatSummoned(false);
     setHasConsultedNat(false);
+    setRadioHasBatteries(false);
+    setRadioTuned(false);
     setCorridorShadowScareTriggered(false);
     setKeypadInput('');
     setSpectralClimaxActive(false);
@@ -1909,6 +1913,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setMode('phase3');
     setChapter1Completed(true);
     setCaretakerDoorUnlocked(true);
+    setRadioHasBatteries(false);
+    setRadioTuned(false);
+    setMayResolved(false);
+    setKey14OnFloor(false);
+    setKey14Collected(false);
     sound.startAmbient();
     setActiveMonologue(
       "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. The communal prayer room altar awaits. —"
@@ -3245,6 +3254,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           composure={composure}
           setComposure={setComposure}
           discoveredClues={discoveredClues}
+          radioHasBatteries={radioHasBatteries}
           radioTuned={radioTuned}
           mayResolved={mayResolved}
           setMayResolved={setMayResolved}
@@ -3796,6 +3806,8 @@ onTuned={() => {
             {phase3Location === 'lockers_main' && (
               <LockersOverviewView
                 hasSmallBrassKey={hasSmallBrassKey}
+                hasKey14={inventory.includes('key_14')}
+                inventory={inventory}
                 locker14Unlocked={locker14Unlocked}
                 setPhase3Location={setPhase3Location}
                 setActiveMonologue={setActiveMonologue}
@@ -3841,8 +3853,16 @@ onTuned={() => {
             {/* ZOOM: LOCKER 14 INTERIOR */}
             {(phase3Location === 'locker_14' || phase3Location === 'locker_14_interior') && (
               <Locker14InteriorView
+                locker14Unlocked={locker14Unlocked}
+                setLocker14Unlocked={setLocker14Unlocked}
+                inventory={inventory}
+                setInventory={setInventory}
+                removeInventoryItem={removeInventoryItem}
+                setPhase3Location={setPhase3Location}
                 onReturn={() => setPhase3Location('lockers_main')}
                 setActiveMonologue={setActiveMonologue}
+                setRoomBanner={setRoomBanner}
+                addDiscoveredClue={addDiscoveredClue}
               />
             )}
 

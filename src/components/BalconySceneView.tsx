@@ -6,6 +6,7 @@ import { SceneNavBar } from './SceneNavBar';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { MONOLOGUE_LINES } from '../data/dialogues';
 import { Key } from 'lucide-react';
+import { PrologBridge } from '../services/PrologBridge';
 
 declare global {
   namespace JSX {
@@ -26,6 +27,7 @@ export interface BalconySceneViewProps {
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
   discoveredClues?: string[];
   onStepBack?: () => void;
+  radioHasBatteries?: boolean;
   radioTuned?: boolean;
   mayResolved?: boolean;
   setMayResolved?: (val: boolean) => void;
@@ -50,6 +52,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
   setComposure,
   discoveredClues = [],
   onStepBack,
+  radioHasBatteries = false,
   radioTuned = false,
   mayResolved: mayResolvedProp,
   setMayResolved,
@@ -90,13 +93,59 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
     (typeof key14OnFloorProp === 'boolean' ? key14OnFloorProp : localKey14OnFloor) ||
     (isMayResolved && !isKey14Collected);
 
-  // 1. May is visible only when radio is tuned, she hasn't resolved, and is not dissolved
-  const isMayVisible = radioTuned && !isMayResolved;
+  // 1. May appears ONLY in the canonical sequence:
+  //    insert battery -> tune the radio -> may appear -> hand letter -> get key
+  const isMayVisible = Boolean(radioHasBatteries) && Boolean(radioTuned) && !isMayResolved;
 
   // 2. Key 14 is visible on floor when dropped/resolved and not yet collected
   const isKeyVisibleOnFloor = isKey14OnFloor && !isKey14Collected;
 
-  const hasLetter = inventory.includes('letter_ko_zaw') || inventory.includes('clue_letter_4b');
+  // Robust letter detection across all item/clue ID aliases or desk loot state
+  const hasLetter =
+    (Array.isArray(inventory) &&
+      inventory.some((item) => {
+        if (typeof item !== 'string') return false;
+        const lower = item.toLowerCase();
+        return (
+          lower === 'letter_ko_zaw' ||
+          lower === 'clue_letter_4b' ||
+          lower === 'clue_may_letter' ||
+          lower === 'sandar_kozaw_letters' ||
+          lower === 'clue_ko_zaw_letters' ||
+          lower.includes('letter')
+        );
+      })) ||
+    (Array.isArray(discoveredClues) &&
+      discoveredClues.some((clue) => {
+        if (typeof clue !== 'string') return false;
+        const lower = clue.toLowerCase();
+        return (
+          lower === 'clue_may_letter' ||
+          lower === 'clue_letter_4b' ||
+          lower === 'clue_ko_zaw_letters' ||
+          lower === 'sandar_kozaw_letters' ||
+          lower.includes('letter')
+        );
+      })) ||
+    (() => {
+      try {
+        const stored = localStorage.getItem('spirits_labyrinth_progress_v1');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return Boolean(parsed?.desk4bLooted);
+        }
+      } catch {}
+      return false;
+    })();
+
+  // Auto-display handover action prompt pill ONLY when May is actually visible on the balcony
+  useEffect(() => {
+    if (isMayVisible && hasLetter && !isMayResolved && !isDissolving) {
+      setShowHandoverPrompt(true);
+    } else {
+      setShowHandoverPrompt(false);
+    }
+  }, [isMayVisible, hasLetter, isMayResolved, isDissolving]);
 
   // Ambient: Start looping outdoor monsoon rain audio cue on mount, cleanup on unmount
   useEffect(() => {
@@ -128,9 +177,9 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
     }
   };
 
-  // Click handler on May's sprite
+  // Click handler on May's sprite / interactive hotspot
   const handleMayClick = () => {
-    if (isDissolving) return;
+    if (!isMayVisible || isDissolving || isMayResolved) return;
 
     if (!hasLetter) {
       // Condition A: Missing Letter -> Panic monologue loop
@@ -140,32 +189,44 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
       } catch {}
       setActiveMonologue?.(MONOLOGUE_LINES.MAY_PANIC_MISSING_LETTER);
     } else {
-      // Condition B: Holding letter_ko_zaw -> Toggle minimal action prompt pill
-      sound.playPaperRustle();
-      setShowHandoverPrompt((prev) => !prev);
-      setActiveMonologue?.(null);
+      // Condition B: Holding Ko Zaw's letter -> Directly execute the handover sequence
+      handleHandoverLetter();
     }
   };
 
   // Handover Execution sequence
   const handleHandoverLetter = () => {
+    if (isDissolving || isMayResolved) return;
     setShowHandoverPrompt(false);
 
     // 1. Audio cues: paper rustle immediately followed by cord snap
-    sound.playPaperRustle();
+    try {
+      sound.playPaperRustle();
+    } catch {}
     setTimeout(() => {
-      sound.playCordSnap();
+      try {
+        sound.playCordSnap();
+      } catch {}
     }, 120);
 
-    // 2. Remove 'letter_ko_zaw' from inventory
+    // 2. Remove letter from inventory across all possible aliases
+    const letterIds = [
+      'letter_ko_zaw',
+      'clue_letter_4b',
+      'clue_may_letter',
+      'sandar_kozaw_letters',
+      'clue_ko_zaw_letters',
+    ];
     if (removeInventoryItem) {
-      removeInventoryItem('letter_ko_zaw');
-      removeInventoryItem('clue_letter_4b');
-    } else if (setInventory) {
-      setInventory((prev) => prev.filter((i) => i !== 'letter_ko_zaw' && i !== 'clue_letter_4b'));
+      letterIds.forEach((id) => removeInventoryItem(id));
+    }
+    if (setInventory) {
+      setInventory((prev) =>
+        prev.filter((i) => !letterIds.includes(i) && !i.toLowerCase().includes('letter'))
+      );
     }
 
-    // 3. Mark May as resolved in store
+    // 3. Mark May as resolved in store & local state
     setMayResolved?.(true);
     setLocalMayResolved(true);
 
@@ -177,8 +238,10 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
 
     // 6. Play ghost whisper sigh and key drop sound
     setTimeout(() => {
-      sound.playGhostWhisper();
-      sound.playKeyDrop();
+      try {
+        sound.playGhostWhisper();
+        sound.playKeyDrop();
+      } catch {}
     }, 450);
 
     // 7. After 1 second, enable floor key drop state
@@ -187,6 +250,15 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
       setKey14OnFloor?.(true);
       setLocalKey14OnFloor(true);
     }, 1000);
+
+    // 8. Synchronize Prolog state if available
+    try {
+      PrologBridge.queryOnce?.('handover_letter.');
+    } catch {}
+    try {
+      PrologBridge.queryOnce?.('assertz(may_resolved).');
+      PrologBridge.queryOnce?.('assertz(floor_has(key_14)).');
+    } catch {}
   };
 
   // Key 14 Floor Pickup Action
@@ -274,9 +346,9 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
           {!isDissolving && (
             <InteractiveHotspot
               id="balcony_spectral_may"
-              name="Spectral May"
+              name={hasLetter ? "Spectral May - [ Hand over Ko Zaw's Letter ]" : "Spectral May"}
               polygonPoints="8,35 22,35 25,99 6,99"
-              cursorTooltip="Speak to May"
+              cursorTooltip={hasLetter ? "[ Hand over Ko Zaw's Folded Letter ]" : "Speak to May"}
               onClick={handleMayClick}
             />
           )}
@@ -300,7 +372,10 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                     <span>[ Hand over Ko Zaw's Folded Letter ]</span>
                   </button>
                   <button
-                    onClick={() => setShowHandoverPrompt(false)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowHandoverPrompt(false);
+                    }}
                     className="p-2 rounded-xl bg-black/85 border border-[#2d4436] text-stone-400 hover:text-white text-xs font-mono cursor-pointer"
                     title="Dismiss"
                   >

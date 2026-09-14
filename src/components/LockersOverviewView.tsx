@@ -4,6 +4,8 @@ import { Phase3Location } from '../types';
 
 export interface LockersOverviewViewProps {
   hasSmallBrassKey: boolean;
+  hasKey14?: boolean;
+  inventory?: string[];
   locker14Unlocked?: boolean;
   setPhase3Location: (loc: Phase3Location) => void;
   setActiveMonologue: (msg: string | null) => void;
@@ -14,6 +16,8 @@ export interface LockersOverviewViewProps {
 
 export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
   hasSmallBrassKey,
+  hasKey14,
+  inventory = [],
   locker14Unlocked = false,
   setPhase3Location,
   setActiveMonologue,
@@ -27,6 +31,14 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
     y: number;
     align?: 'center' | 'right';
   } | null>(null);
+
+  const playerHasKey14 = Boolean(
+    hasKey14 ||
+    (Array.isArray(inventory) &&
+      inventory.some(
+        (i) => typeof i === 'string' && (i === 'key_14' || i.toLowerCase().includes('key_14'))
+      ))
+  );
 
   const handleSpiderScare = () => {
     sound.playCreepInsect();
@@ -54,7 +66,11 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: locker14Unlocked ? 'Open Locker 14 (Unlocked)' : 'Inspect Locker 14',
+              text: locker14Unlocked
+                ? 'Open Locker 14 (Unlocked)'
+                : playerHasKey14
+                ? 'Inspect Locker 14 [Key 14 Available]'
+                : 'Inspect Locker 14 (Locked)',
               x: 18.8,
               y: 13.5,
             });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Key } from 'lucide-react';
@@ -8,6 +8,7 @@ import { ChapterTransitionModal } from './ChapterTransitionModal';
 import { Phase3Location } from '../types';
 import { MONOLOGUE_LINES } from '../data/dialogues';
 import { useGameStore } from '../context/GameProgressContext';
+import { PrologBridge } from '../services/PrologBridge';
 
 export interface StairwayGateInspectionViewProps {
   inventory?: string[];
@@ -61,7 +62,56 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
   const transitionOpen = isChapterTransitionOpen !== undefined ? isChapterTransitionOpen : localTransitionOpen;
   const setTransitionOpen = setIsChapterTransitionOpen || setLocalTransitionOpen;
 
-  const hasGateKey = inventory.includes('key_stairway_gate');
+  const storeState = (useGameStore as any).getState?.() || {};
+  const storeInventory = Array.isArray(storeState.inventory) ? storeState.inventory : [];
+
+  const combinedInventory = [
+    ...(Array.isArray(inventory) ? inventory : []),
+    ...storeInventory,
+  ];
+
+  const hasGateKey =
+    combinedInventory.some((item) => {
+      if (typeof item !== 'string') return false;
+      const lower = item.toLowerCase();
+      return (
+        lower === 'key_stairway_gate' ||
+        lower === 'stairway_gate_key' ||
+        lower === 'stairway_key' ||
+        lower === 'gate_key' ||
+        lower === 'key_gate' ||
+        (lower.includes('stairway') && lower.includes('key')) ||
+        (lower.includes('gate') && lower.includes('key'))
+      );
+    }) ||
+    Boolean(storeState.stairwayGateKeyTaken) ||
+    (() => {
+      try {
+        const stored = localStorage.getItem('spirits_labyrinth_progress_v1');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return Boolean(parsed?.stairwayGateKeyTaken);
+        }
+      } catch {}
+      return false;
+    })() ||
+    (() => {
+      try {
+        const activeSave = localStorage.getItem('spirits_labyrinth_active_save');
+        if (activeSave) {
+          const parsed = JSON.parse(activeSave);
+          return Boolean(parsed?.stairwayGateKeyTaken);
+        }
+      } catch {}
+      return false;
+    })();
+
+  // Auto-display unlock action prompt pill when holding the gate key
+  useEffect(() => {
+    if (hasGateKey && !stairwayGateUnlocked && !isUnlocking && !transitionOpen) {
+      setShowUnlockPrompt(true);
+    }
+  }, [hasGateKey, stairwayGateUnlocked, isUnlocking, transitionOpen]);
 
   // State A: Unlocked bypass -> Directly render OuterGroundsView only if already unlocked and not in transition
   if (stairwayGateUnlocked && !transitionOpen && !isUnlocking) {
@@ -101,14 +151,8 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       );
       addDiscoveredClue?.('clue_stairway_gate_locked');
     } else {
-      // State C: Locked with key -> Toggle minimal action prompt pill
-      try {
-        sound.playMetallicTumblerClick();
-      } catch {
-        sound.playPaperRustle();
-      }
-      setShowUnlockPrompt((prev) => !prev);
-      setActiveMonologue?.(null);
+      // State C: Locked with key -> Directly execute the unlock sequence
+      handleUnlockSequence();
     }
   };
 
@@ -119,26 +163,39 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
     setShowUnlockPrompt(false);
 
     // 1. Play key_turn.mp3, padlock_open.mp3, chain_drop.mp3, and metal_gate_slide.mp3
-    sound.playKeyTurn();
+    try {
+      sound.playKeyTurn();
+    } catch {}
     setTimeout(() => {
-      sound.playPadlockOpen();
+      try {
+        sound.playPadlockOpen();
+      } catch {}
     }, 140);
 
     setTimeout(() => {
-      sound.playChainDrop();
+      try {
+        sound.playChainDrop();
+      } catch {}
     }, 380);
 
     setTimeout(() => {
-      sound.playMetalGateSlide();
+      try {
+        sound.playMetalGateSlide();
+      } catch {}
     }, 680);
 
-    // 2. Remove 'key_stairway_gate' from inventory
+    // 2. Remove stairway gate key from inventory
+    const gateKeyIds = ['key_stairway_gate', 'stairway_gate_key', 'stairway_key'];
     if (removeInventoryItem) {
-      removeInventoryItem('key_stairway_gate');
-    } else if (removeItem) {
-      removeItem('key_stairway_gate');
-    } else if (setInventory) {
-      setInventory((prev) => prev.filter((item) => item !== 'key_stairway_gate'));
+      gateKeyIds.forEach((id) => removeInventoryItem(id));
+    }
+    if (removeItem) {
+      gateKeyIds.forEach((id) => removeItem(id));
+    }
+    if (setInventory) {
+      setInventory((prev) =>
+        prev.filter((item) => !gateKeyIds.includes(item) && !item.toLowerCase().includes('stairway'))
+      );
     }
 
     // 3. Mark stairwayGateUnlocked: true and persist Chapter 3 unlock
@@ -155,14 +212,26 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
     } catch {}
 
-    // 4. Display the completion thought line
+    // 4. Synchronize Prolog state if available
+    try {
+      PrologBridge.queryOnce?.('unlock_stairway_gate.');
+    } catch {}
+    try {
+      PrologBridge.queryOnce?.(
+        'retractall(player_has(key_stairway_gate)), assertz(stairway_gate_unlocked), assertz(escaped_interior).'
+      );
+    } catch {}
+
+    // 5. Display the completion thought line
     setActiveMonologue?.(
       '— The iron key turns with a sharp snap. The rusted chains fall away, and the accordion gate slides open to the cold night air. —'
     );
 
-    // 5. After a 1.2-second delay, mount ChapterTransitionModal directly
+    // 6. After a 1.2-second delay, mount ChapterTransitionModal directly
     setTimeout(() => {
-      sound.playPhaseComplete();
+      try {
+        sound.playPhaseComplete();
+      } catch {}
       setTransitionOpen(true);
       setIsUnlocking(false);
     }, 1200);
@@ -274,18 +343,16 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
         >
-          <g
-            className="group/poly pointer-events-auto cursor-pointer"
-            style={{ pointerEvents: 'all' }}
-            onClick={handlePadlockClick}
-            onMouseEnter={() => sound.playMenuHover()}
-          >
+          <g className="group/poly pointer-events-auto cursor-pointer" style={{ pointerEvents: 'all' }}>
             <polygon
-              points="55,35 62,35 62,53 55,52"
+              points="48,28 68,28 68,60 48,60"
               style={{ pointerEvents: 'all' }}
               fill="white"
               fillOpacity={0.001}
-              onClick={handlePadlockClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePadlockClick();
+              }}
               onMouseEnter={() => sound.playMenuHover()}
               className={`cursor-pointer pointer-events-auto stroke-transparent transition-all duration-300 ${
                 hasGateKey
@@ -293,16 +360,16 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
                   : 'group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/5 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]'
               }`}
             />
-            <title>{hasGateKey ? 'Unlock Stairway Exit Gate' : '[Examine Heavy Padlock & Chains]'}</title>
+            <title>{hasGateKey ? '[ Unlock Stairway Exit Gate with Key ]' : '[ Examine Heavy Padlock & Chains ]'}</title>
           </g>
         </svg>
 
         {/* Hover label / tooltip anchored above padlock & chains */}
         <span
           className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
-          style={{ left: '62%', top: '24%' }}
+          style={{ left: '58%', top: '26%' }}
         >
-          {hasGateKey ? 'Unlock Stairway Exit Gate' : '[Examine Heavy Padlock & Chains]'}
+          {hasGateKey ? '[ Unlock Stairway Exit Gate with Key ]' : '[ Examine Heavy Padlock & Chains ]'}
         </span>
       </div>
 
@@ -314,11 +381,14 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-[72%] left-1/2 -translate-x-1/2 z-40 pointer-events-auto"
+            className="absolute top-[72%] left-1/2 -translate-x-1/2 z-40 pointer-events-auto flex items-center gap-2"
           >
             <button
-              onClick={handleUnlockSequence}
-              className="px-5 py-2.5 bg-[#0b1712]/95 hover:bg-[#12281e] text-emerald-300 hover:text-emerald-100 border border-emerald-500/60 hover:border-emerald-400 rounded-full font-mono text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] transition-all flex items-center gap-2 cursor-pointer ring-1 ring-emerald-500/30"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleUnlockSequence();
+              }}
+              className="px-5 py-2.5 bg-[#0b1712]/95 hover:bg-[#12281e] text-emerald-300 hover:text-emerald-100 border border-emerald-500/60 hover:border-emerald-400 rounded-full font-mono text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] transition-all flex items-center gap-2 cursor-pointer ring-1 ring-emerald-500/30 active:scale-95"
             >
               <Key className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
               [ Unlock Gate with Stairway Key ]
