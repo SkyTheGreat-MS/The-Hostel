@@ -911,6 +911,14 @@ export function lockChapterOneAndSave(
     if (!extraFlags?.chapter3Unlocked) {
       localStorage.removeItem('spirits_labyrinth_ch3_unlocked');
     }
+    const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+    prog.chapter1Completed = true;
+    prog.chapter2Unlocked = true;
+    prog.maxUnlockedChapter = Math.max(prog.maxUnlockedChapter || 1, 2);
+    prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 1);
+    prog.composure = recoveredComposure;
+    prog.timerSeconds = rolloverTime;
+    localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
   } catch {}
 
   return chapterTwoSaveState;
@@ -970,6 +978,8 @@ export function advanceToChapterThreeAndSave(
     prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 2);
     prog.stairwayGateUnlocked = true;
     prog.phase3Location = 'hostel_outer_grounds';
+    prog.composure = recoveredComposure;
+    prog.timerSeconds = rolloverTime;
     localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
   } catch {}
 

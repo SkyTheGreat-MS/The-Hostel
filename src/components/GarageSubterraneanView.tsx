@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { InteractiveHotspot } from './InteractiveHotspot';
+import { SceneNavBar } from './SceneNavBar';
+import { GarageValveMiniGame } from './GarageValveMiniGame';
 import { sound } from '../utils/audio';
 import { useGameStore } from '../context/GameProgressContext';
 
@@ -15,6 +17,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
   const { inventory, addToInventory, garageDrained, setGarageDrained, drainGarage, pickupGarageItem } = useGameStore();
 
   const [isDraining, setIsDraining] = useState(false);
+  const [isValveGameOpen, setIsValveGameOpen] = useState(false);
 
   const hasPulley = inventory.includes('iron_pulley');
   const hasMachete = inventory.includes('rusty_machete');
@@ -48,32 +51,27 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
 
     if (isDraining) return;
 
-    // Start draining animation sequence
+    // Launch focused valve-turning mini-game
+    setIsValveGameOpen(true);
+  };
+
+  const handleValveGameComplete = () => {
     setIsDraining(true);
-    try {
-      sound.playMetalCreak?.();
-      setTimeout(() => {
-        try {
-          sound.playDrip?.();
-        } catch {}
-      }, 500);
-    } catch {}
+
+    if (drainGarage) {
+      void drainGarage();
+    } else {
+      setGarageDrained(true);
+    }
+    useGameStore.setState({ garageDrained: true });
 
     setActiveMonologue(
-      "With a violent groan of rusted iron, the valve turns! The dark floodwater swirls and gurgles down the basement sluices..."
+      "With a deafening groan of rusted iron, the valve locks fully open! The floodwaters drain completely into the lower pipes, exposing the damp floor and the caretaker's tool cage!"
     );
 
     setTimeout(() => {
-      if (drainGarage) {
-        void drainGarage();
-      } else {
-        setGarageDrained(true);
-      }
       setIsDraining(false);
-      setActiveMonologue(
-        "The floodwater drains completely into the lower pipes, exposing the damp floor and the caretaker's tool cage!"
-      );
-    }, 1800);
+    }, 1500);
   };
 
   const handleInspectBicycles = () => {
@@ -245,6 +243,21 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           />
         )}
       </div>
+
+      {/* Top Scene Navigation Bar */}
+      <SceneNavBar
+        onReturn={onReturn}
+        returnDestination="HOSTEL COURTYARD"
+        areaZone="GROUND FLOOR EXTERIOR"
+        areaName="SUBTERRANEAN BICYCLE GARAGE"
+      />
+
+      {/* Interactive Water Valve Turning Mini-Game Modal */}
+      <GarageValveMiniGame
+        isOpen={isValveGameOpen}
+        onClose={() => setIsValveGameOpen(false)}
+        onComplete={handleValveGameComplete}
+      />
     </div>
   );
 };

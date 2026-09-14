@@ -9,6 +9,7 @@ import { Phase3Location } from '../types';
 import { MONOLOGUE_LINES } from '../data/dialogues';
 import { useGameStore } from '../context/GameProgressContext';
 import { PrologBridge } from '../services/PrologBridge';
+import { advanceToChapterThreeAndSave } from '../gameStore';
 
 export interface StairwayGateInspectionViewProps {
   inventory?: string[];
@@ -27,6 +28,13 @@ export interface StairwayGateInspectionViewProps {
   onSaveAndExit?: () => void;
   isChapterTransitionOpen?: boolean;
   setIsChapterTransitionOpen?: (val: boolean | ((prev: boolean) => boolean)) => void;
+  timeLeft?: number;
+  setTimeLeft?: React.Dispatch<React.SetStateAction<number>>;
+  composure?: number;
+  setComposure?: React.Dispatch<React.SetStateAction<number>>;
+  selectedCharacter?: any;
+  setCurrentChapter?: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentScene?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 /**
@@ -53,6 +61,13 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
   onSaveAndExit,
   isChapterTransitionOpen,
   setIsChapterTransitionOpen,
+  timeLeft,
+  setTimeLeft,
+  composure,
+  setComposure,
+  selectedCharacter,
+  setCurrentChapter,
+  setCurrentScene,
 }) => {
   const navigate = useNavigate();
   const [showUnlockPrompt, setShowUnlockPrompt] = useState<boolean>(false);
@@ -161,6 +176,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
     if (isUnlocking || transitionOpen) return;
     setIsUnlocking(true);
     setShowUnlockPrompt(false);
+    setIsChapterTransitionOpen?.(true);
 
     // 1. Play key_turn.mp3, padlock_open.mp3, chain_drop.mp3, and metal_gate_slide.mp3
     try {
@@ -198,19 +214,44 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       );
     }
 
-    // 3. Mark stairwayGateUnlocked: true and persist Chapter 3 unlock
+    // 3. Mark stairwayGateUnlocked: true and advance to Chapter 3 save with rollover and composure recovery
     setStairwayGateUnlocked?.(true);
     setChapter3Unlocked?.(true);
     useGameStore.setState({
+      currentChapter: 3,
+      currentLocation: 'hostel_outer_grounds',
+      phase3Location: 'hostel_outer_grounds',
       stairwayGateUnlocked: true,
       chapter3Unlocked: true,
       chapter2Completed: true,
       maxUnlockedChapter: 3,
       highestChapterCompleted: 2,
     });
-    try {
-      localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
-    } catch {}
+
+    const resolve = selectedCharacter?.resolveMultiplier ?? 1.0;
+    const curTime = typeof timeLeft === 'number' ? timeLeft : 0;
+    const curComp = typeof composure === 'number' ? composure : 100;
+    const charId = selectedCharacter?.id || 'thazin';
+    const remainingInv = (Array.isArray(inventory) ? inventory : []).filter(
+      (item) => !gateKeyIds.includes(item) && !item.toLowerCase().includes('stairway')
+    );
+
+    const savedState = advanceToChapterThreeAndSave(
+      charId,
+      curComp,
+      remainingInv,
+      curTime,
+      resolve,
+      {
+        stairwayGateUnlocked: true,
+        chapter3Unlocked: true,
+      }
+    );
+
+    setComposure?.(savedState.composure);
+    setTimeLeft?.(savedState.timerSeconds);
+    setCurrentChapter?.(3);
+    setCurrentScene?.('hostel_outer_grounds_main');
 
     // 4. Synchronize Prolog state if available
     try {
@@ -233,6 +274,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         sound.playPhaseComplete();
       } catch {}
       setTransitionOpen(true);
+      setIsChapterTransitionOpen?.(true);
       setIsUnlocking(false);
     }, 1200);
   };
@@ -247,6 +289,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
   const handleContinueToChapterThree = () => {
     sound.playMenuSelect();
     setTransitionOpen(false);
+    setIsChapterTransitionOpen?.(false);
 
     // 1. Authoritative chapter bump (preserving inventory)
     if (advanceToChapter) {
@@ -255,7 +298,11 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       useGameStore.getState().advanceToChapter(3);
     }
 
+    setCurrentChapter?.(3);
+    setCurrentScene?.('hostel_outer_grounds_main');
+
     useGameStore.setState({
+      currentChapter: 3,
       stairwayGateUnlocked: true,
       chapter3Unlocked: true,
       chapter2Completed: true,
@@ -290,28 +337,9 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
 
   const handleSaveAndExit = () => {
     sound.playPaperRustle();
+    sound.stopAllAmbience();
     setTransitionOpen(false);
-    setStairwayGateUnlocked?.(true);
-    setChapter3Unlocked?.(true);
-
-    if (advanceToChapter) {
-      advanceToChapter(3);
-    } else {
-      useGameStore.getState().advanceToChapter(3);
-    }
-
-    useGameStore.setState({
-      stairwayGateUnlocked: true,
-      chapter3Unlocked: true,
-      chapter2Completed: true,
-      maxUnlockedChapter: 3,
-      highestChapterCompleted: 2,
-      phase3Location: 'hostel_outer_grounds',
-    });
-
-    try {
-      localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
-    } catch {}
+    setIsChapterTransitionOpen?.(false);
 
     if (onSaveAndExit) {
       onSaveAndExit();
@@ -397,9 +425,10 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         )}
       </AnimatePresence>
 
-      {/* 5. Direct ChapterTransitionModal Reuse for Chapter 2 -> Chapter 3 */}
-      <ChapterTransitionModal
-        isOpen={transitionOpen}
+      {/* 5. Direct ChapterTransitionModal Reuse for Chapter 2 -> Chapter 3 (standalone fallback) */}
+      {isChapterTransitionOpen === undefined && (
+        <ChapterTransitionModal
+          isOpen={transitionOpen}
         overTitle="INVESTIGATION PHASE COMPLETED"
         completedChapterTitle="CHAPTER 2: UNDERSTANDING"
         nextPhaseTag="ENTERING NEXT PHASE"
@@ -409,6 +438,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         onContinue={handleContinueToChapterThree}
         onSaveAndExit={handleSaveAndExit}
       />
+      )}
     </div>
   );
 };

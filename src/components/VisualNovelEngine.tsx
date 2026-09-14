@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameProgress } from '../context/GameProgressContext';
 import { sound } from '../audioEngine';
-import { MCId, MCCharacter, Room4BSubScene, Phase3Location } from '../types';
+import { MCId, MCCharacter, Room4BSubScene, Phase3Location, ActiveSaveState, ChapterProgressSave } from '../types';
 import { CHARACTERS, ROOM_4B_ASSETS, PHASE_3_ASSETS, ITEMS } from '../gameData';
 import { InkPortrait, getCharacterPortraitSrc } from './InkPortrait';
 import { CharacterSelectModal } from './CharacterSelectModal';
@@ -21,7 +21,6 @@ import {
   useGameStore,
 } from '../gameStore';
 import { PrologBridge } from '../services/PrologBridge';
-import { ChapterProgressSave } from '../types';
 import {
   Volume2,
   VolumeX,
@@ -726,11 +725,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setStairwayGateKeyTaken,
     stairwayGateUnlocked,
     setStairwayGateUnlocked,
+    chapter2Completed,
     chapter3Unlocked,
     setChapter3Unlocked,
     chapter3Completed,
     setChapter3Completed,
     garageDrained,
+    setGarageDrained,
     removeItem,
     advanceToChapter,
     removeInventoryItem,
@@ -800,9 +801,30 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [natAudienceConcluded, setNatAudienceConcluded] = useState<boolean>(false);
   const [radioHasBatteries, setRadioHasBatteries] = useState<boolean>(false);
   const [radioTuned, setRadioTuned] = useState<boolean>(false);
+  const [caretakerLockFailCount, setCaretakerLockFailCount] = useState<number>(() => {
+    try {
+      const act = loadActiveGameProgress();
+      if (typeof act?.caretakerLockFailCount === 'number') {
+        return act.caretakerLockFailCount;
+      }
+    } catch {}
+    return 0;
+  });
 
   // 10-Minute Timer & Composure State
-  const [timeLeft, setTimeLeft] = useState<number>(600); // 10 minutes = 600s
+  const [timeLeft, setTimeLeft] = useState<number>(() => {
+    try {
+      const act = loadActiveGameProgress();
+      if (typeof act?.timerSeconds === 'number' && act.timerSeconds > 0) {
+        return act.timerSeconds;
+      }
+      const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+      if (typeof prog.timerSeconds === 'number' && prog.timerSeconds > 0) {
+        return prog.timerSeconds;
+      }
+    } catch {}
+    return 600;
+  });
   const [currentTier, setCurrentTier] = useState<1 | 2 | 3>(1);
   const [selectedLocationIdx, setSelectedLocationIdx] = useState<number>(0);
   const [investigatedLocIds, setInvestigatedLocIds] = useState<string[]>([]);
@@ -866,7 +888,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   // 10-Minute Countdown Clock Hook
   // Ensure the timer only suspends when isPaused is true or outside gameplay:
   useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0) return;
+    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
 
     const timerInterval = setInterval(() => {
       setTimerSeconds((prev) => {
@@ -880,13 +902,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     }, 1000);
 
     return () => clearInterval(timerInterval);
-  }, [isPaused, currentScreen, timerSeconds]);
+  }, [isPaused, currentScreen, timerSeconds, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
 
   // Ambient Composure Attrition Hook
   // Base rate: 1% per 18s (accelerated to 8s during Nat dialogue), scaled by active investigator tensionMultiplier
   // Continues ticking while player checks case notes or inventory; halts when system is paused (isPaused)
   useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || composure <= 0) return;
+    if (isPaused || currentScreen !== 'gameplay' || composure <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
 
     const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
     const tension = selectedCharacter.tensionMultiplier || 1.0;
@@ -897,7 +919,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     }, decayIntervalMs);
 
     return () => clearInterval(composureInterval);
-  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier]);
+  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
 
   // Monitor composure zero game over condition
   useEffect(() => {
@@ -923,6 +945,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       }
       if (typeof activeSave?.composure === 'number') {
         setComposure(activeSave.composure);
+      } else {
+        try {
+          const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+          if (typeof prog.composure === 'number') {
+            setComposure(prog.composure);
+          }
+        } catch {}
+      }
+      if (typeof activeSave?.timerSeconds === 'number' && activeSave.timerSeconds > 0) {
+        setTimeLeft(activeSave.timerSeconds);
+      } else {
+        try {
+          const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+          if (typeof prog.timerSeconds === 'number' && prog.timerSeconds > 0) {
+            setTimeLeft(prog.timerSeconds);
+          }
+        } catch {}
       }
       const isCh3 = activeSave?.chapter === 3 || initialChapter === 3 || Boolean(activeSave?.chapter3Unlocked);
       setCurrentChapter(isCh3 ? 3 : 2);
@@ -966,6 +1005,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
       if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
       if (activeSave?.desk4bLooted) setDesk4bLooted(true);
+      if (typeof activeSave?.caretakerLockFailCount === 'number') setCaretakerLockFailCount(activeSave.caretakerLockFailCount);
+      if (activeSave?.garageDrained) {
+        setGarageDrained(true);
+        useGameStore.setState({ garageDrained: true });
+      }
       // CRITICAL FIX: Trust the saved inventory exactly — no phantom item fallback
       if (activeSave?.inventory) {
         setInventory(activeSave.inventory);
@@ -1051,28 +1095,53 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   // Auto-save progression changes across Phase 2 & Phase 3
   useEffect(() => {
-    if (isChapterFinished || isGameOver) return;
-    if (currentChapter === 2) {
-      lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, selectedCharacter.resolveMultiplier ?? 1.0, {
-        natAudienceConcluded,
-        radioHasBatteries,
-        radioTuned,
-        discoveredClues,
-        askedNatTopics,
-        hasReadLocker32Note,
-        hasReadSandarLetters,
-        hasCaretakerCandles,
-        altarCandlesPlaced,
-        // Pass actual ritual item counts so they persist across browser refreshes
-        hasMatchesCount,
-        hasBlackCandlesCount,
-        hasBronzeBell,
-        mayResolved,
-        key14OnFloor,
-        key14Collected,
-        locker14Unlocked,
-        stairwayGateKeyTaken,
-      });
+    if (isChapterFinished || isGameOver || isChapterTransitionOpen || isChapter3TransitionOpen) return;
+    if (currentChapter === 2 || currentChapter === 3) {
+      try {
+        const activeSaveData: ActiveSaveState = {
+          chapter: currentChapter,
+          currentChapter,
+          currentPhase: 1,
+          phase3Location,
+          chapter1Completed: true,
+          chapter2Completed: currentChapter === 3 || Boolean(chapter2Completed),
+          chapter3Unlocked: currentChapter === 3 || Boolean(chapter3Unlocked),
+          selectedCharacterId: selectedCharacter.id,
+          inventory,
+          discoveredClues,
+          hasMatchesCount,
+          hasBlackCandlesCount,
+          hasBronzeBell,
+          caretakerDoorUnlocked: true,
+          composure,
+          timerSeconds: timeLeft,
+          natAudienceConcluded,
+          radioHasBatteries,
+          radioTuned,
+          askedNatTopics,
+          hasReadLocker32Note,
+          hasReadSandarLetters,
+          hasCaretakerCandles,
+          altarCandlesPlaced,
+          desk4bLooted,
+          mayResolved,
+          key14OnFloor,
+          key14Collected,
+          locker14Unlocked,
+          stairwayGateKeyTaken,
+          stairwayGateUnlocked: currentChapter === 3 || Boolean(stairwayGateUnlocked),
+          garageDrained: Boolean(garageDrained),
+          caretakerLockFailCount,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem(ACTIVE_SAVE_KEY, JSON.stringify(activeSaveData));
+        if (currentChapter === 2) {
+          localStorage.setItem('spirits_labyrinth_ch2_unlocked', 'true');
+        } else if (currentChapter === 3) {
+          localStorage.setItem('spirits_labyrinth_ch2_unlocked', 'true');
+          localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
+        }
+      } catch {}
       return;
     }
     if (
@@ -1208,6 +1277,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     key14Collected,
     locker14Unlocked,
     stairwayGateKeyTaken,
+    garageDrained,
+    caretakerLockFailCount,
   ]);
 
   // Current active dialogue line for Phase 1 & 2
@@ -1900,11 +1971,6 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   const handleContinueToChapterTwo = () => {
     setIsChapterTransitionOpen(false);
-    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
-    const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
-    const rolloverTime = 600 + Math.max(0, timeLeft);
-    setComposure(recoveredComposure);
-    setTimeLeft(rolloverTime);
     setCurrentChapter(2);
     setPhase(2);
     setPhase3Location('east_fork');
@@ -1928,10 +1994,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleSaveAndExit = () => {
     setIsChapterTransitionOpen(false);
     sound.stopAllAmbience();
-    const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
-    // 1. Persist Chapter 2 checkpoint with rollover time & recovered composure
-    lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, resolve);
-    // 2. Route directly to Chapter Selection page
+    // Route directly to Chapter Selection page (progress was already saved in lockChapterOneAndSave or advanceToChapterThreeAndSave)
     navigate('/chapters');
   };
 
@@ -1969,6 +2032,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   const handleContinueToChapterThree = () => {
     sound.playMenuSelect();
+    setIsChapterTransitionOpen(false);
 
     // 1. Authoritative chapter bump (preserving inventory)
     advanceToChapter(3);
@@ -2027,17 +2091,36 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
       // 3. Mark Chapter 1 finished and display the transition modal HERE ONLY with Time Bank rollover and Resolve recovery
       const resolve = selectedCharacter.resolveMultiplier ?? 1.0;
-      const recoveredComposure = Math.min(100, composure + Math.round(20 * resolve));
-      const rolloverTime = 600 + Math.max(0, timeLeft);
+      const savedState = lockChapterOneAndSave(
+        selectedCharacter.id,
+        composure,
+        inventory,
+        timeLeft,
+        resolve,
+        {
+          natAudienceConcluded,
+          radioHasBatteries,
+          radioTuned,
+          discoveredClues,
+          askedNatTopics,
+          hasReadLocker32Note,
+          hasReadSandarLetters,
+          hasCaretakerCandles,
+          altarCandlesPlaced,
+          hasMatchesCount,
+          hasBlackCandlesCount,
+          hasBronzeBell,
+          desk4bLooted,
+        }
+      );
 
-      setComposure(recoveredComposure);
-      setTimeLeft(rolloverTime);
+      setComposure(savedState.composure);
+      setTimeLeft(savedState.timerSeconds);
       // The cinematic thought is replaced by the transition card; never layer a
       // legacy dialogue/monologue panel over the Chapter 2 hand-off.
       setActiveMonologue(null);
       setChapter1Completed(true);
       completeChapter(1);
-      lockChapterOneAndSave(selectedCharacter.id, recoveredComposure, inventory, timeLeft, resolve);
       setShowChapterTransitionModal(true);
     }, 900);
   };
@@ -3446,6 +3529,15 @@ onTuned={() => {
                 setPhase3Location={setPhase3Location}
                 onReturn={() => setPhase3Location('west_split_landing')}
                 onSaveAndExit={handleSaveAndExit}
+                timeLeft={timeLeft}
+                setTimeLeft={setTimeLeft}
+                composure={composure}
+                setComposure={setComposure}
+                selectedCharacter={selectedCharacter}
+                setCurrentChapter={setCurrentChapter}
+                setCurrentScene={setCurrentScene}
+                isChapterTransitionOpen={isChapterTransitionOpen}
+                setIsChapterTransitionOpen={setIsChapterTransitionOpen}
               />
             )}
 
@@ -3890,6 +3982,11 @@ onTuned={() => {
             {phase3Location === 'caretaker_door_keypad' && (
               <CaretakerLockModal
                 isOpen={true}
+                composure={composure}
+                setComposure={setComposure}
+                setIsScreenShaking={setIsScreenShaking}
+                failedAttempts={caretakerLockFailCount}
+                setFailedAttempts={setCaretakerLockFailCount}
                 onClose={() => {
                   sound.playPaperRustle();
                   setPhase3Location('east_fork');
@@ -3902,8 +3999,24 @@ onTuned={() => {
                   );
                   setPhase3Location('caretaker_office_main');
                 }}
-                onCombinationAttemptFailed={() => {
-                  setActiveMonologue("— The lock shackle rattles stubbornly. Incorrect tumbler combination. —");
+                onCombinationAttemptFailed={(attemptCount = 1, penalty = 5) => {
+                  if (attemptCount === 1) {
+                    setActiveMonologue(
+                      "— The lock shackle rattles stubbornly. Metal jams tight... A wave of dread washes over you. (-5% Composure) —"
+                    );
+                  } else if (attemptCount === 2) {
+                    setActiveMonologue(
+                      "— Clang! The tumblers screech and resist. Panic mounts as the noise echoes down the corridor! (-8% Composure) —"
+                    );
+                  } else if (attemptCount === 3) {
+                    setActiveMonologue(
+                      "— Shuddering resistance! Your fingers slip against cold rusted iron. You're losing your nerve! (-11% Composure) —"
+                    );
+                  } else {
+                    setActiveMonologue(
+                      `— The heavy latch seizes violently! The darkness seems to close in as terror grips your mind... (-${penalty}% Composure, Mistake #${attemptCount}) —`
+                    );
+                  }
                 }}
               />
             )}
@@ -4427,9 +4540,36 @@ onTuned={() => {
         )}
       </AnimatePresence>
 
-      {/* 14. Chapter Transition Modal (Chapter 1 -> Chapter 2) */}
+      {/* 14. Chapter Transition Modal (Chapter 1 -> Chapter 2 or Chapter 2 -> Chapter 3) */}
       <ChapterTransitionModal
         isOpen={isChapterTransitionOpen}
+        overTitle="INVESTIGATION PHASE COMPLETED"
+        completedChapterTitle={
+          stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
+            ? 'CHAPTER 2: UNDERSTANDING'
+            : 'CHAPTER 1: BLIND START'
+        }
+        nextPhaseTag="ENTERING NEXT PHASE"
+        nextChapterTitle={
+          stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
+            ? 'CHAPTER 3: ESCAPE / THE OUTSIDE GROUNDS'
+            : 'CHAPTER 2: UNDERSTANDING'
+        }
+        continueButtonText={
+          stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
+            ? 'CONTINUE INVESTIGATION →'
+            : 'Continue Investigation →'
+        }
+        saveButtonText={
+          stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
+            ? 'SAVE & EXIT TO CHAPTER SELECTION'
+            : 'Save & Exit to Chapter Selection'
+        }
+        onContinue={
+          stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
+            ? handleContinueToChapterThree
+            : handleContinueToChapterTwo
+        }
         onContinueToChapterTwo={handleContinueToChapterTwo}
         onSaveAndExit={handleSaveAndExit}
       />

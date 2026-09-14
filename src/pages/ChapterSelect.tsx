@@ -63,6 +63,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     chapter3Completed: contextChapter3Completed,
     justUnlockedChapter,
     clearJustUnlocked,
+    setComposure,
     resetProgress,
     resetChapterOneProgress,
   } = useGameProgress();
@@ -161,9 +162,6 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
       act.stairwayGateKeyTaken = true;
       act.maxUnlockedChapter = Math.max(act.maxUnlockedChapter || 0, 3);
       act.highestChapterCompleted = Math.max(act.highestChapterCompleted || 0, 2);
-      localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(act));
-      localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
-
       const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
       prog.chapter2Completed = true;
       prog.chapter3Unlocked = true;
@@ -172,7 +170,26 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
       prog.stairwayGateUnlocked = true;
       prog.currentLocation = 'hostel_outer_grounds';
       prog.phase3Location = 'hostel_outer_grounds';
+
+      if (typeof act.composure === 'number') {
+        prog.composure = act.composure;
+      } else if (typeof prog.composure === 'number') {
+        act.composure = prog.composure;
+      }
+      if (typeof act.timerSeconds === 'number') {
+        prog.timerSeconds = act.timerSeconds;
+      } else if (typeof prog.timerSeconds === 'number') {
+        act.timerSeconds = prog.timerSeconds;
+      }
+
+      localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(act));
+      localStorage.setItem('spirits_labyrinth_ch3_unlocked', 'true');
       localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+
+      const comp = typeof act.composure === 'number' ? act.composure : (typeof prog.composure === 'number' ? prog.composure : undefined);
+      if (typeof comp === 'number') {
+        setComposure?.(comp);
+      }
     } catch {}
 
     useGameStore.setState({
