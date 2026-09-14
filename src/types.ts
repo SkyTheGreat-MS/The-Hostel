@@ -321,6 +321,8 @@ export interface ActiveSaveState {
   maxUnlockedChapter?: number;
   unlockedChapters?: number[];
   highestChapterCompleted?: number;
+  garageDrained?: boolean;
+  caretakerLockFailCount?: number;
   timestamp: number;
 }
 
