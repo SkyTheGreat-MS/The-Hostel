@@ -22,7 +22,7 @@ export const SceneNavBar: React.FC<SceneNavBarProps> = ({
   const cleanDest = returnDestination
     .replace(/^←?\s*(RETURN TO|EXIT TO|STEP BACK TO|ASCEND BACK TO)\s*/i, '')
     .trim();
-  const returnText = `RETURN TO ${cleanDest}`;
+  const returnText = `${cleanDest} သို့ ပြန်သွားမည်`;
 
   // Format sub-area breadcrumb standard: "[ZONE] • [ROOM NAME]"
   const fullAreaText =

@@ -16,16 +16,16 @@ export interface ChapterPreviewModalProps {
 }
 
 const DEFAULT_CHAPTER_2_DATA = {
-  title: 'Chapter 2',
-  subtitle: 'Chapter 2 — Understanding',
-  tagline: 'CORRESPONDENCE OF THE CARETAKER & CAESAR CIPHERS',
+  title: 'အခန်း ၂',
+  subtitle: 'အခန်း ၂ — နားလည်ခြင်း',
+  tagline: 'အဆောင်စောင့် စာနှီးဖလှယ်မှု နှင့် ဆီဇာ လျှို့ဝှက်ကုဒ်များ',
   scopeSummary:
-    'Deepen the communion with the hostel spirits. Cross-reference the dormitory ledger with the Caretaker\'s sealed records to decipher the true conspiracy.',
+    'အဆောင်ဝိညာဉ်များနှင့် ဆက်သွယ်မှုကို ပိုမိုနက်ရှိုင်းစေပါ။ အဆောင်မှတ်တမ်းစာအုပ်ကို အဆောင်စောင့်၏ တံဆိပ်ခတ်ထားသော မှတ်တမ်းများနှင့် ကန့်လန့်စစ်ဆေးကာ အမှန်တကယ် လျှို့ဝှက်ကြံစည်မှုကို ဖော်ထုတ်ပါ။',
   plannedFeatures: [
-    'Cross-referencing the hostel ledger with the Caretaker old office files',
-    'Interactive multi-layer Caesar cipher decoding puzzles with shift keys',
-    'Advanced Guardian Nat paired logic puzzles with nested contradictions',
-    'Uncovering the 5,000 Kyats payoff trail to seal the dried courtyard well',
+    'အဆောင်စောင့်၏ ရုံးဟောင်းဖိုင်များနှင့် အဆောင်မှတ်တမ်းကို ကန့်လန့်စစ်ဆေးခြင်း',
+    'ရွှေ့လှည့်သော့များပါသည့် အလွှာပေါင်းစုံ ဆီဇာ လျှို့ဝှက်ကုဒ်ဖော်ထုတ်ရေး ပဟေဠိများ',
+    'အဆင့်ဆင့် ကွဲလွဲချက်များပါ အဆင့်မြင့် အစောင့်နတ် ယုတ္တိပဟေဠိများ',
+    'ခန်းခြောက်နေသော ဝင်းရေတွင်းဟောင်းကို ပိတ်ဆို့ရန် ကျပ် ၅၀၀၀ လာဘ်ငွေလမ်းကြောင်းကို ဖော်ထုတ်ခြင်း',
   ],
 };
 

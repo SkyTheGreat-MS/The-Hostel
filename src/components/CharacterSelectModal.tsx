@@ -76,17 +76,17 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
       <div className="text-center space-y-2 mb-4 sm:mb-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#16221c] border border-[#2c3d34] rounded-full text-xs text-[#82a996] uppercase tracking-widest font-mono shadow-md">
           <span className="w-2 h-2 rounded-full bg-[#6ee7b7] animate-ping" />
-          <span>TEMPORAL DISPLACEMENT • AUGUST 1998</span>
+          <span>အချိန်ကာလ ရွှေ့ပြောင်းမှု • ၁၉၉၈ ဩဂုတ်</span>
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-[#b2c7bd] tracking-widest uppercase drop-shadow-md">
-          ANCHOR CONSCIOUSNESS
+          ကျောက်ဆူးသတိ
         </h1>
         <p className="text-xs sm:text-sm text-[#7d998b] max-w-2xl mx-auto font-mono">
-          Choose which student&apos;s perspective anchors the investigation. Use arrow keys{' '}
-          <span className="text-[#a7c4b5] font-bold">[← / → / ↑ / ↓]</span>, keys{' '}
-          <span className="text-[#a7c4b5] font-bold">[1-6]</span>, or click a card. Press{' '}
-          <span className="text-[#a7c4b5] font-bold">[Enter]</span> or{' '}
-          <span className="text-[#a7c4b5] font-bold">[Space]</span> to awaken.
+          စုံစမ်းမှုကို ကျောက်ဆူးချမည့် ကျောင်းသား၏ ရှုထောင့်ကို ရွေးချယ်ပါ။ မြှားခလုတ်များ{' '}
+          <span className="text-[#a7c4b5] font-bold">[← / → / ↑ / ↓]</span>၊ နံပါတ်ခလုတ်{' '}
+          <span className="text-[#a7c4b5] font-bold">[၁-၆]</span> သို့မဟုတ် ကတ်ကိုနှိပ်ပါ။ နိုးထရန်{' '}
+          <span className="text-[#a7c4b5] font-bold">[Enter]</span> သို့မဟုတ်{' '}
+          <span className="text-[#a7c4b5] font-bold">[Space]</span> ကိုနှိပ်ပါ။
         </p>
       </div>
 
@@ -150,14 +150,14 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
               {/* Stat Badges: Tension (Amber Zap) & Resolve (Cyan Shield) */}
               <div className="mt-2 pt-2 border-t border-[#223028] grid grid-cols-2 gap-1.5 text-[10px] font-mono text-center">
                 <div
-                  title="Tension: Drain speed & blunder shock"
+                  title="တင်းမာမှု: အမြန်နှုန်း ယိုစီးမှုနှင့် မှားယွင်းမှု တုန်လှုပ်စေခြင်း"
                   className="bg-[#1a2420] text-amber-400 border border-amber-900/40 rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
                 >
                   <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{char.tensionMultiplier ?? 1.0}x</span>
                 </div>
                 <div
-                  title="Resolve: Relief surges & chapter recovery"
+                  title="စိတ်ခွန်အား: သက်သာရာရမှု မြင့်တက်ခြင်းနှင့် ခန်းဆုံး ပြန်လည်ကောင်းမွန်ခြင်း"
                   className="bg-[#1a2420] text-cyan-400 border border-cyan-900/40 rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
                 >
                   <Shield className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
@@ -183,11 +183,11 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
               <div className="flex items-center gap-1.5 font-mono text-[11px]">
                 <span className="flex items-center gap-1 text-amber-400 font-bold bg-[#1a2420] px-2 py-0.5 rounded border border-amber-900/40">
                   <Zap className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Tension {activeChar.tensionMultiplier ?? 1.0}x</span>
+                  <span>တင်းမာမှု {activeChar.tensionMultiplier ?? 1.0}x</span>
                 </span>
                 <span className="flex items-center gap-1 text-cyan-400 font-bold bg-[#1a2420] px-2 py-0.5 rounded border border-cyan-900/40">
                   <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Resolve {activeChar.resolveMultiplier ?? 1.0}x</span>
+                  <span>စိတ်ခွန်အား {activeChar.resolveMultiplier ?? 1.0}x</span>
                 </span>
               </div>
               <h2

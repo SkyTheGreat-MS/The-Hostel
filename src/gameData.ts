@@ -56,15 +56,15 @@ export const PHASE_3_ASSETS = {
 export const ITEMS: Record<string, Item> = {
   bobby_pin: {
     id: 'bobby_pin',
-    name: 'Bobby Pin',
-    shortLabel: 'Pin 4B',
+    name: 'ဆံထိုး',
+    shortLabel: 'ဆံ',
     description: 'စာကြည့်ခုံပေါ်ရှိ ကြွေလင်ပန်းထဲတွင် တွေ့ရသည့် ကွေးနေသော သံမဏိဆံညှပ်ကလစ်ငယ်။ (A bent steel bobby pin)',
     usageHint: 'ရိုးရှင်းသော သော့ခလောက်အတွင်းရှိ သော့ပင်များကို အသံမထွက်ဘဲ ထိုးဖွင့်နိုင်သည်။',
   },
   wooden_bat: {
     id: 'wooden_bat',
-    name: 'Heavy Teak Timber',
-    shortLabel: 'Wood',
+    name: 'ကျွန်းပျဉ်တုံးကြီး',
+    shortLabel: 'ပျဉ်',
     type: 'tool',
     icon: '/assets/items/wooden_bat.png',
     description: 'ဗီရိုအောက်ခြေမှ ဖြုတ်ယူရရှိခဲ့သော မာကျောသည့် ကျွန်းပျဉ်ပြားတုံးကြီး။',
@@ -72,8 +72,8 @@ export const ITEMS: Record<string, Item> = {
   },
   magnetic_compass: {
     id: 'magnetic_compass',
-    name: 'Magnetic Compass',
-    shortLabel: 'Compass',
+    name: 'သံလိုက်အိမ်မြှောင်',
+    shortLabel: 'မြှောင်',
     description:
       'အရှေ့၊ အနောက်၊ တောင်၊ မြောက် အမှတ်အသားများ ပါရှိသည့် ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများရှိရာသို့ တုန်ခါညွှန်ပြနေသည်။',
     isSpecial: true,
@@ -81,86 +81,86 @@ export const ITEMS: Record<string, Item> = {
   },
   small_brass_key_32: {
     id: 'small_brass_key_32',
-    name: 'Small Brass Key (32)',
-    shortLabel: 'Key 32',
+    name: 'ကြေးသော့ (၃၂)',
+    shortLabel: 'သော့-၃၂',
     description: "ရေစိုနေသော ယူနီဖောင်းအိတ်ကပ်ထဲမှ တွေ့ရှိခဲ့သည့် '32' ဟု အမှတ်အသားပါသော ကြေးဝါသော့ငယ်။ (A small tarnished brass key marked 32)",
     usageHint: 'နံပါတ်ပါသော လော့ကာ သို့မဟုတ် ဗီရိုသော့ဖြစ်ပြီး စက်မှုလုပ်ငန်းသုံး သော့ခလောက်ကြီးများကို ဖွင့်နိုင်မည် မဟုတ်ပေ။',
   },
   coiled_nylon_rope: {
     id: 'coiled_nylon_rope',
-    name: 'Coiled Nylon Rope',
-    shortLabel: 'Rope',
+    name: 'နိုင်လွန်ကြိုးခွေ',
+    shortLabel: 'ကြိုး',
     description: 'အပေါ်ဘက် ရေဆင်းပိုက် (overhead drainage pipe) မှ ဖြုတ်ယူခဲ့သော ခိုင်ခံ့သည့် နိုင်လွန်ကြိုးခွေ။',
     usageHint: 'လူတစ်ကိုယ်စာ အလေးချိန်ကို ခံနိုင်ရည်ရှိပြီး ကျိုးပဲ့နေသော သော့ဂျက်များကို ချည်နှောင်ရန် လုံလောက်စွာ ခိုင်မာသည်။',
   },
   black_beeswax_candle: {
     id: 'black_beeswax_candle',
-    name: 'Black Beeswax Candle',
-    shortLabel: 'Candle',
+    name: 'ဖယောင်းတိုင်နက်',
+    shortLabel: 'ဖယောင်း',
     description: 'ရိုးရာအစောင့်အရှောက်နတ် ပူဇော်ပသမှုများတွင် အသုံးပြုသည့် ထူထဲသော ဖယောင်းနက်တိုင်။',
     usageHint: 'အစောင့်နတ်စင်တွင် ပူဇော်တင်ဆက်ရန် မရှိမဖြစ် လိုအပ်သော ပစ္စည်းတစ်ခု။',
   },
   matchbox_three_stars: {
     id: 'matchbox_three_stars',
-    name: 'Matchbox (Three Stars)',
-    shortLabel: 'Match',
+    name: 'မီးခြစ်ဆံဗူး (ကြယ် ၃ လုံး)',
+    shortLabel: 'မီး',
     description: "မီးခြစ်ဆံ ၃ ဆံ ပါရှိသော ရှေးဟောင်း မြန်မာ့ 'ကြယ်တံခွန် ၃ လုံး' (Three-Shooting-Stars) အမှတ်တံဆိပ် မီးခြစ်ဆံဗူး။",
     usageHint: 'ယတြာဖယောင်းတိုင်များကို မီးညှိရန် အသုံးပြုသည်။ စိတ်မငြိမ်မသက်ဖြစ်ပါက လက်များ တုန်ယင်နေတတ်သည်။',
   },
   bronze_prayer_bell: {
     id: 'bronze_prayer_bell',
-    name: 'Bronze Prayer Bell',
-    shortLabel: 'Bell',
+    name: 'ကြေးခေါင်းလောင်းငယ်',
+    shortLabel: 'လောင်း',
     description: 'ရိုးရာနတ်မန္တန်အက္ခရာများ ထွင်းထုထားသည့် အခမ်းအနားသုံး ကြေးခေါင်းလောင်းငယ်။',
     usageHint: 'နတ်စင်တွင် အစောင့်နတ်ကို ဆင့်ခေါ်နိုးထစေရန် လှုပ်ခတ်ရသည်။',
   },
   battery_pair: {
     id: 'battery_pair',
-    name: '2x D-Cell Batteries',
-    shortLabel: 'Batts',
+    name: 'ဓာတ်ခဲ (၂)',
+    shortLabel: 'ဓာတ်',
     description: 'လော့ကာ ၁၀ ထဲမှ ရရှိခဲ့သော ဓာတ်ခဲအကြီး ၂ လုံး။',
     usageHint: 'ဝရန်တာရှိ ထရန်စစ္စတာ ရေဒီယိုကို ဓာတ်အားပေးနိုင်သည်။',
   },
   letter_ko_zaw: {
     id: 'letter_ko_zaw',
-    name: "Ko Zaw's Folded Letter",
-    shortLabel: 'Letter',
+    name: 'ကိုဇော်စာရွက်',
+    shortLabel: 'စာ',
     description:
       'မေ ထံ လိပ်မူပြီး မြန်မာလက်ရေးလှဖြင့် အလျင်စလို ရေးသားထားသော ခေါက်ထားသည့် မျဉ်းသားစာရွက်။ သစ်သားမှင်အိုးခုံအောက်တွင် ဝှက်ထားသည်။',
     usageHint: 'မေ အတွက် သီးသန့်စာလွှာ။ ဝရန်တာတွင် ဝိညာဉ်မေ ထံ ပေးအပ်ရန် လိုအပ်သည်။',
   },
   key_14: {
     id: 'key_14',
-    name: 'Key 14',
-    shortLabel: 'Key 14',
+    name: 'သော့ (၁၄)',
+    shortLabel: 'သော့-၁၄',
     description: 'နံပါတ် ၁၄ ရိုက်နှိပ်ထားသော ကြေးဝါသော့ဟောင်း။ နိုင်လွန်ကြိုးစဖြင့် ချည်နှောင်ထားသည်။',
     usageHint: 'နံပါတ် ၁၄ ရိုက်နှိပ်ထားသည်။ အဆောင်ခန်းတွင်းရှိ လော့ကာ ၁၄ နှင့် ကိုက်ညီသည်။',
   },
   key_stairway_gate: {
     id: 'key_stairway_gate',
-    name: 'Stairway Gate Key',
-    shortLabel: 'Gate Key',
+    name: 'လှေကားတံခါးသော့',
+    shortLabel: 'တံခါးသော့',
     description: 'လော့ကာ ၁၄ ၏ အောက်ထပ်စင်ပေါ်တွင် ဝှက်ထားသည့် သံမည်းသော့ကြီးတစ်ချောင်း။',
     usageHint: 'ဝရန်တာသို့ တက်ရောက်နိုင်သည့် လှေကားကို ပိတ်ဆို့ထားသော ညမထွက်ရ သံတံခါးကို ဖွင့်ရန် အသုံးပြုသည်။',
   },
   iron_pulley: {
     id: 'iron_pulley',
-    name: 'Heavy Cast-Iron Pulley',
-    shortLabel: 'Pulley',
+    name: 'သံဘီးကြီး',
+    shortLabel: 'ဘီး',
     description: 'ကြေးဝါချိတ်ပါရှိသော လေးလံသည့် သံသွန်းစက်သီးဘီး။ ချောဆီထည့်ထားသဖြင့် အလွယ်တကူ လည်ပတ်နိုင်သည်။',
     usageHint: 'အလေးအပင် ဆွဲတင်နိုင်ရန် အပေါ်ဘက် ခိုင်ခံ့သော အထိန်းတွင် ချိတ်ဆွဲအသုံးပြုနိုင်သည်။',
   },
   rusty_machete: {
     id: 'rusty_machete',
-    name: "Groundskeeper's Machete",
-    shortLabel: 'Blade',
+    name: 'ဓားမကြီး',
+    shortLabel: 'ဓား',
     description: 'ရော်ဘာပတ်လက်ကိုင်ပါရှိသည့် သံမည်း ဓားမကြီး။ သစ်ပင်နွယ်များနှင့် ခြုံနွယ်များကို ခုတ်ထွင်ရှင်းလင်းရာမှ တုံးနေသည်။',
     usageHint: 'ထူထပ်သော အပူပိုင်း သစ်မြစ်များနှင့် သစ်ကိုင်းများကို ခုတ်ထွင်ရန် လုံလောက်စွာ လေးလံသည်။',
   },
   cassette_tape_may: {
     id: 'cassette_tape_may',
-    name: "May's Micro-Cassette Tape (1998.08.12)",
-    shortLabel: 'Tape 1998',
+    name: 'တိတ်ခွေ (မေ ၁၉၉၈)',
+    shortLabel: 'တိတ်',
     description: '၁၉၉၈.၀၈.၁၂ နေ့စွဲပါ တံဆိပ်မပါသော မိုက်ခရို တိတ်ခွေငယ်။ လော့ကာ ၁၄ တွင် ကိုဇော် ထားရစ်ခဲ့သည်။',
     usageHint: 'ကိုက်ညီသော မိုက်ခရို တိတ်ခွေဖွင့်စက်တွင် ထည့်သွင်းနားထောင်နိုင်သည်။',
   },
@@ -171,9 +171,9 @@ export const ITEM_DATABASE = ITEMS;
 export const CHARACTERS: MCCharacter[] = [
   {
     id: 'moe_stheinkha',
-    name: 'Moe Stheinkha',
-    archetype: 'Skeptic',
-    description: 'Analytical and rational mind; resists physical intimidation, but highly vulnerable to occult anomalies.',
+    name: 'မိုးစိတ်ခ',
+    archetype: 'သံသယရှိသူ',
+    description: 'ခွဲခြမ်းစိတ်ဖြာတတ်ပြီး ယုတ္တိကျသော စိတ်ပိုင်းဆိုင်ရာ ရှိသည်။ ကိုယ်ထိလက်ရောက် ခြိမ်းခြောက်မှုကို ခုခံနိုင်သော်လည်း ပုဂ္ဂိုလ်ထူးဆန်းမှုများအပေါ် အလွန်နားညံ့သည်။',
     tensionMultiplier: 1.2,
     resolveMultiplier: 0.9,
     multipliers: {
@@ -184,9 +184,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'ye_yint_hein',
-    name: 'Ye Yint Hein',
-    archetype: 'Daredevil',
-    description: 'Audacious and quick to act; shrugs off physical threats but easily unhinged in eerie isolation.',
+    name: 'ရဲရင့်ဟိန်း',
+    archetype: 'ရဲရင့်သူ',
+    description: 'ရဲတင်းပြီး လျင်မြန်စွာ လုပ်ဆောင်တတ်သည်။ ကိုယ်ထိလက်ရောက် ခြိမ်းခြောက်မှုကို ဂရုမစိုက်သော်လည်း အေးစိမ့်သော အထီးကျန်မှုတွင် လွယ်ကူစွာ စိတ်ပျက်တတ်သည်။',
     tensionMultiplier: 1.3,
     resolveMultiplier: 1.4,
     multipliers: {
@@ -197,9 +197,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'may_jewel',
-    name: 'May Jewel',
-    archetype: 'Intuitive',
-    description: 'Spiritually attuned medium who detects hidden vibrations and whispers; suffers severe mental strain.',
+    name: 'မေဂျူး',
+    archetype: 'အတွေ့အကြုံရှိသူ',
+    description: 'ဝိညာဉ်နှင့် ဆက်စပ်နေသည့် မီဒီယမ်တစ်ဦးဖြစ်ပြီး ဝှက်ထားသည့် တုန်ခါမှုများနှင့် ညည်းညူသံများကို ရှာဖွေတွေ့ရှိနိုင်သည်။ ပြင်းထန်သည့် စိတ်ဖိစီးမှုကို ခံစားရသည်။',
     tensionMultiplier: 0.8,
     resolveMultiplier: 1.3,
     multipliers: {
@@ -210,9 +210,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'yin_min_htike',
-    name: 'Yin Min Htike',
-    archetype: 'Archivist',
-    description: 'Expert on historical ledgers, ciphers, and discrepancies; physically frail when under violent pressure.',
+    name: 'ယင်မင်းထိပ်',
+    archetype: 'မှတ်တမ်းပြ',
+    description: 'ရှေးဟောင်းစာရင်းများ၊ ကုဒ်များနှင့် ကွဲလွဲမှုများအကြောင်း ကျွမ်းကျင်သည်။ ကိုယ်ထိလက်ရောက် ဖိအားအောက်တွင် ကိုယ်ခန္ဓာပိုင်းအားနည်းသည်။',
     tensionMultiplier: 0.8,
     resolveMultiplier: 0.8,
     multipliers: {
@@ -223,9 +223,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'hsu_myat_shein',
-    name: 'Hsu Myat Shein',
-    archetype: 'Kin-Bound',
-    description: 'Deeply empathetic; unknowingly linked by bloodline to the tragic events of August 1998.',
+    name: 'ဆွတ်မြတ်ရှိန်',
+    archetype: 'သွေးဆက်သူ',
+    description: 'နက်ရှိုင်းစွာ သက်ရောက်မှုရှိပြီး ၁၉၉၈ ခုနှစ် ဩဂုတ်လ ဖြစ်ရပ်များနှင့် မထင်မြင်ဘဲ သွေးဆက်နေသည်။',
     tensionMultiplier: 1.4,
     resolveMultiplier: 1.5,
     multipliers: {
@@ -236,9 +236,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'mona',
-    name: 'Mona',
-    archetype: 'Protector',
-    description: 'Steadfast shield of the circle; resists brute force, but psychologically crushed by betrayal.',
+    name: 'မိုနာ',
+    archetype: 'ကာကွယ်သူ',
+    description: 'အဖွဲ့၏ တည်ငြိမ်သော ကာကွယ်ရေးဖြစ်ပြီး ကိုယ်ထိလက်ရောက် အင်အားကို ခုခံနိုင်သည်။ သို့သော် သစာဖောက်မှုဖြင့် စိတ်ပိုင်းဆိုင်ရာ ပြိုကျသည်။',
     tensionMultiplier: 1.0,
     resolveMultiplier: 1.0,
     multipliers: {
@@ -250,9 +250,9 @@ export const CHARACTERS: MCCharacter[] = [
   // Legacy aliases for backward compatibility with existing tests and Prolog mirrors
   {
     id: 'thazin',
-    name: 'Thazin (Moe Stheinkha)',
-    archetype: 'Skeptic',
-    description: 'Calculates probability; struggles when confronted by direct supernatural phenomena.',
+    name: 'သဇင် (မိုးစိတ်ခ)',
+    archetype: 'သံသယရှိသူ',
+    description: 'ဖြစ်နိုင်ခြေကို တွက်ချက်သည်။ တိုက်ရိုက် သဘာဝလွန် ဖြစ်ရပ်များနှင့် ရင်ဆိုင်ရသောအခါ အခက်အခဲဖြစ်သည်။',
     tensionMultiplier: 1.2,
     resolveMultiplier: 0.9,
     multipliers: {
@@ -263,9 +263,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'min_khant',
-    name: 'Min Khant (Mona)',
-    archetype: 'Protector',
-    description: 'Steadfast against physical danger; deeply hurt by betrayal and broken oaths.',
+    name: 'မင်းခန့် (မိုနာ)',
+    archetype: 'ကာကွယ်သူ',
+    description: 'ကိုယ်ထိလက်ရောက် အန္တရာယ်ကို ခုခံနိုင်သည်။ သစာဖောက်မှုနှင့် ကျိုးပဲ့သည့် ကတိကဝတ်များဖြင့် နက်ရှိုင်းစွာ ထိခိုက်သည်။',
     tensionMultiplier: 1.0,
     resolveMultiplier: 1.0,
     multipliers: {
@@ -276,9 +276,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'htet',
-    name: 'Htet (Yin Min Htike)',
-    archetype: 'Archivist',
-    description: 'Keen eye for documents, ledgers, and ciphers; physically frail under strain.',
+    name: 'ထက် (ယင်မင်းထိပ်)',
+    archetype: 'မှတ်တမ်းပြ',
+    description: 'စာရွက်စာတမ်းများ၊ စာရင်းများနှင့် ကုဒ်များအတွက် အမြင်ရှိသည်။ ဖိအားအောက်တွင် ကိုယ်ခန္ဓာပိုင်း အားနည်းသည်။',
     tensionMultiplier: 0.8,
     resolveMultiplier: 0.8,
     multipliers: {
@@ -289,9 +289,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'aye_aye',
-    name: 'Aye Aye (Hsu Myat Shein)',
-    archetype: 'Kin-Bound',
-    description: 'Deeply attuned to emotional resonance; secretly carries maternal ties to 1998.',
+    name: 'အေးအေး (ဆွတ်မြတ်ရှိန်)',
+    archetype: 'သွေးဆက်သူ',
+    description: 'စိတ်ခံစားမှု တုံ့ပြန်မှုကို နက်ရှိုင်းစွာ ခံစားသည်။ ၁၉၉၈ ခုနှစ်နှင့် မိခင်ဆက်စပ်မှုကို ဝှက်ထားသည်။',
     tensionMultiplier: 1.4,
     resolveMultiplier: 1.5,
     multipliers: {
@@ -302,9 +302,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'kyaw_swar',
-    name: 'Kyaw Swar (Ye Yint Hein)',
-    archetype: 'Daredevil',
-    description: 'Bold and impulsive; quick to take action but easily unhinged by quiet isolation.',
+    name: 'ကျော်စွာ (ရဲရင့်ဟိန်း)',
+    archetype: 'ရဲရင့်သူ',
+    description: 'ရဲတင်းပြီး အလျင်စလို လုပ်တတ်သည်။ ငြိမ်သက်သည့် အထီးကျန်မှုဖြင့် လွယ်ကူစွာ စိတ်ပျက်တတ်သည်။',
     tensionMultiplier: 1.3,
     resolveMultiplier: 1.4,
     multipliers: {
@@ -315,9 +315,9 @@ export const CHARACTERS: MCCharacter[] = [
   },
   {
     id: 'su_su',
-    name: 'Su Su (May Jewel)',
-    archetype: 'Intuitive',
-    description: 'Spiritually receptive medium; hears whispers clearly but suffers heavy mental fatigue.',
+    name: 'စုစု (မေဂျူး)',
+    archetype: 'အတွေ့အကြုံရှိသူ',
+    description: 'ဝိညာဉ်နှင့် ဆက်စပ်နေသည့် မီဒီယမ်ဖြစ်ပြီး ညည်းညူသံများကို ရှင်းရှင်းလင်းလင်း ကြားသည်။ စိတ်ပိုင်းဆိုင်ရာ ပင်ပန်းမှု ပြင်းထန်စွာ ခံစားရသည်။',
     tensionMultiplier: 0.8,
     resolveMultiplier: 1.3,
     multipliers: {
@@ -483,7 +483,7 @@ export const CLUES: Clue[] = [
     locationId: 'lockers_main',
     title: 'ခေါက်ထားသော အချစ်စာလွှာများ (K.Z.)',
     details:
-      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော စာလွှာများ... 'လက်ဖက်ရည်ဆိုင် (tea shop) သွားတာကို မေ ရိပ်မိနေပြီ။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ပြနေသည်။",
+      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.' စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော စာလွှာများ... 'လက်ဖက်ရည်ဆိုင် သွားတာကို မေ ရိပ်မိနေပြီ။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ပြနေသည်။",
     pointsTo: 'sandar_kozaw_betrayal',
   },
   {

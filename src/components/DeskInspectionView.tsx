@@ -98,7 +98,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/room_4b_desk_zoom.jpg';
         }}
-        alt="Room 4B Study Desk Zoom"
+        alt="အခန်း 4B စာကြည့်စားပွဲ အနီးကပ်မြင်ကွင်း"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />
@@ -106,16 +106,16 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       {/* Standardized Scene Navigation Bar */}
       <SceneNavBar
         onReturn={onStepBack}
-        returnDestination="ROOM 4B"
-        areaZone="ROOM 4B"
-        areaName="STUDY DESK"
+        returnDestination="အခန်း 4B"
+        areaZone="အခန်း 4B"
+        areaName="စာကြည့်စားပွဲ"
       />
 
       {/* 1. Chipped Enamel Mug Hotspot */}
       <InteractiveHotspot
         id="desk_enamel_mug"
-        name="Chipped Enamel Mug"
-        cursorTooltip={deskMugMoved ? 'ရွှေ့ထားသော ကြွေရည်သုတ်ခွက်' : 'အနားပဲ့နေသော ကြွေရည်သုတ်ခွက် (ဘေးသို့ ရွှေ့မည်)'}
+        name="အိုးစားနေသော ကြွေခွက်"
+        cursorTooltip={deskMugMoved ? 'ရွှေ့ထားသော ကြွေရည်သုတ်ခွက်' : 'ကြွေခွက်ကို စစ်ဆေးရန်'}
         polygonPoints="14.5,23.5 25.5,22 28.5,31 31.5,41 29,52 24.5,56.5 15.5,55 14,35"
         onClick={() => {
           if (!deskMugMoved) {
@@ -134,8 +134,8 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       {/* 2. Ko Zaw's Folded Letter Hotspot (Replaces Generic Cleaning Log) */}
       <InteractiveHotspot
         id="desk_roster_slip"
-        name={isLetterInInventory ? 'Empty Desk Surface' : "Ko Zaw's Folded Letter"}
-        cursorTooltip={isLetterInInventory ? 'စာပွဲမျက်နှာပြင် ဗလာ' : 'ခေါက်ထားသော စာလွှာကို ဖတ်မည်'}
+        name={isLetterInInventory ? 'စာပွဲမျက်နှာပြင် ဗလာ' : 'ကိုဇော် စာရွက်'}
+        cursorTooltip={isLetterInInventory ? 'စာပွဲမျက်နှာပြင် ဗလာ' : 'ကိုဇော်၏ စာရွက်ကို စစ်ဆေးရန်'}
         polygonPoints="15,42.5 3.5,57.5 22.5,93 39.5,70 33,52 27,56"
         onClick={handleLetterClick}
       />
@@ -144,8 +144,8 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       {!hasBobbyPin && !inventory.includes('bobby_pin') && (
         <InteractiveHotspot
           id="desk_ceramic_tray"
-          name="Bent Steel Bobby Pin"
-          cursorTooltip="ကြွေလင်ပန်းကို စစ်ဆေးမည် (ကွေးနေသော သံညှပ်)"
+          name="ကွေးနေသော သံမဏိဆံညှပ်"
+          cursorTooltip="ဆံညှပ်ကို စစ်ဆေးရန်"
           polygonPoints="48.5,28 56.5,28 52,36.5 48.5,36.5"
           onClick={() => {
             addInventoryItem('bobby_pin');
@@ -161,8 +161,8 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       {/* 4. Physics & Chemistry Lecture Notes */}
       <InteractiveHotspot
         id="desk_lecture_books"
-        name="Lecture Notebooks"
-        cursorTooltip="ရူပဗေဒနှင့် ဓာတုဗေဒ သင်ခန်းစာမှတ်စုများ (၁၉၉၈)"
+        name="ပို့ချချက် မှတ်စုစာအုပ်များ"
+        cursorTooltip="မှတ်စုစာအုပ်များကို စစ်ဆေးရန်"
         polygonPoints="35,83 72,69 79,96 35,96"
         onClick={() => {
           sound.playPaperRustle();
@@ -204,7 +204,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
                 <button
                   onClick={() => setIsLetterModalOpen(false)}
                   className="p-1.5 rounded-lg bg-[#14201a] border border-[#22352b] text-[#6c8f7d] hover:text-[#c2d6cc] hover:border-[#3d5e48] transition-all cursor-pointer"
-                  title="Close Letter"
+                  title="စာရွက် ပိတ်ရန်"
                 >
                   <X className="w-4 h-4" />
                 </button>

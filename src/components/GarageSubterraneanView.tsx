@@ -164,7 +164,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
             ? '/assets/scenes/garage_subterranean_rain.jpg'
             : '/assets/scenes/garage_subterranean_rain_submerged.jpg'
         }
-        alt="Subterranean Bicycle Garage"
+        alt="မြေအောက်ကားဂိုဒေါင်"
         className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-1000 ${
           isDraining ? 'opacity-40 scale-[1.01]' : 'opacity-100 scale-100'
         }`}
@@ -247,7 +247,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       {/* Top Scene Navigation Bar */}
       <SceneNavBar
         onReturn={onReturn}
-        returnDestination="အဆောင်ဝင်း (COURTYARD)"
+        returnDestination="အဆောင်ဝင်း (ဝင်း)"
         areaZone="မြေပြင် အပြင်ဘက်ဝင်း"
         areaName="မြေအောက် စက်ဘီးဂိုဒေါင်"
       />

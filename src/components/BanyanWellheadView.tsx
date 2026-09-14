@@ -203,7 +203,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
       {/* Background Graphic */}
       <img
         src="/assets/scenes/banyan_wellhead_exterior.jpg"
-        alt="Banyan Wellhead & Ancient Tree"
+        alt="ရှေးဟောင်း ညောင်ပင်နှင့် ရေတွင်းခုံ"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/banyan_wellhead_exterior.jpg';
@@ -218,7 +218,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         {/* Hotspot 1: Overhanging Branch / Iron Eye-Bolt */}
         <InteractiveHotspot
           id="banyan_overhead_branch"
-          name="Overhanging Branch & Iron Eye-Bolt"
+          name="နွဲ့ကွေးနေသော အကိုင်း နှင့် သံမူလီ"
           polygonPoints="51,22 55,22 55,36 51,36"
           cursorTooltip={getBranchTooltip()}
           onClick={handleOverheadBranch}
@@ -227,7 +227,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         {/* Hotspot 2: Ancient Wellhead Curb & Unsealed Shaft */}
         <InteractiveHotspot
           id="banyan_well_curb"
-          name="Ancient Wellhead Curb & Shaft"
+          name="ခိုင်လုံသော ရေတွင်းပတ်နှုတ်ခမ်းနှင့် တွင်းခွက်"
           polygonPoints="33,45 63,45 63,77 33,77"
           cursorTooltip={getWellTooltip()}
           onClick={handleWellCurb}

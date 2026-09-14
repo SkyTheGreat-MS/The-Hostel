@@ -34,7 +34,7 @@ export const ThoughtMonologueOverlay: React.FC<{
         <div
           onClick={onDismiss}
           className="fixed inset-0 z-35 cursor-pointer pointer-events-auto"
-          title="Click anywhere to continue"
+          title="ဆက်လည်ရန် နေရာမရွေး နှိပ်ပါ"
         />
       )}
 

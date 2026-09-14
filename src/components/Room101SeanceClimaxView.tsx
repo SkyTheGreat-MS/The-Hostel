@@ -50,7 +50,7 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
         onError={(e) => {
           e.currentTarget.src = '/assets/scenes/well_interior_deep.jpg';
         }}
-        alt="Room 101 Seance Climax Flashback"
+        alt="အခန်း ၁၀၁ နတ်ဝင်စက်ဝိုင်း"
         className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-1000 ${
           step >= 1 ? 'brightness-150 contrast-125 filter invert hue-rotate-180' : 'brightness-75'
         }`}

@@ -139,7 +139,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 1,
     phase: 1,
-    speaker: 'May Jewel',
+    speaker: 'မေဂျူး',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက စာအုပ်ဟောင်းတစ်ခု တွေ့ထားတယ်တဲ့။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားရအောင်။',
@@ -149,7 +149,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 2,
     phase: 1,
-    speaker: 'Ye Yint Hein',
+    speaker: 'ရဲရင့်ဟိန်း',
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: '၉၀ ခုနှစ်တွေက သရဲခေါ်တမ်း ကစားနည်းလား။ စီနီယာတွေ ခြောက်ထားတာ နေမှာပါ။',
@@ -159,7 +159,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 3,
     phase: 1,
-    speaker: 'Hsu Myat Shein',
+    speaker: 'ဆွတ်မြတ်ရှိန်',
     characterId: 'hsu_myat_shein',
     pos: 'right',
     text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတယ်လို့ ကြားဖူးတယ်။',
@@ -168,7 +168,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 4,
     phase: 1,
-    speaker: 'Yin Min Htike',
+    speaker: 'ယင်မင်းထိပ်',
     characterId: 'yin_min_htike',
     pos: 'left',
     text: 'ဟုတ်တယ်။ သူပျောက်သွားပြီးကတည်းက စင်္ကြံလမ်း (၃၂၆) ကို အန္တရာယ်ရှိတယ်ဆိုပြီး ပိတ်ပစ်လိုက်ကြတာ။',
@@ -178,7 +178,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 5,
     phase: 1,
-    speaker: 'Mona',
+    speaker: 'မိုနာ',
     characterId: 'mona',
     pos: 'right',
     text: 'ကြောက်နေရင် ပြန်လိုရတယ်။ အမှန်တရားသိချင်ရင်တော့ ကစားကြမယ်။',
@@ -187,7 +187,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 6,
     phase: 1,
-    speaker: 'May Jewel',
+    speaker: 'မေဂျူး',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ဒီအခန်းထဲမှာ ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
@@ -200,7 +200,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 7,
     phase: 2,
-    speaker: 'Moe Stheinkha',
+    speaker: 'မိုးစိတ်ခ',
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'ဟေ့... ဖယောင်းတိုင်မီး အပြာရောင်ပြောင်းသွားပြီ! ဘယ်သူမှ လက်မခွာနဲ့နော်။',
@@ -210,7 +210,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 8,
     phase: 2,
-    speaker: 'Mona & Hsu Myat Shein',
+    speaker: 'မိုနာနှင့် ဆွတ်မြတ်ရှိန်',
     characterId: 'mona',
     pos: 'right',
     text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးအေးကြီး လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
@@ -219,7 +219,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 9,
     phase: 2,
-    speaker: 'Ye Yint Hein',
+    speaker: 'ရဲရင့်ဟိန်း',
     characterId: 'ye_yint_hein',
     pos: 'right',
     text: 'ဖန်ခွက်ကြီး အရမ်းရမ်းနေပြီ လက်တွေခွာလိုက်တော့',
@@ -228,7 +228,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 10,
     phase: 2,
-    speaker: 'May Jewel',
+    speaker: 'မေဂျူး',
     characterId: 'may_jewel',
     pos: 'left',
     text: 'မခွာနဲ့! ဖန်ခွက်ကွဲရင် တမလွန်တံခါး ပွင့်သွားလိမ့်မယ်',
@@ -256,7 +256,7 @@ export interface ExplorationLocation {
   subtleClues: {
     airflow: string;
     acoustic: string;
-    affinity: 'High (Exterior Escape Path)' | 'Low (Dead End / Interior Trap)' | 'Primary (Source of Supernatural Curse)';
+    affinity: string;
   };
   lines: {
     speakerType: 'player' | 'mama_may' | 'environment';
@@ -274,21 +274,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'pathway_326',
       tier: 1,
-      areaCode: 'AREA 1-A',
+      areaCode: 'ဒေသ ၁-A',
       roman: 'I',
-      title: 'Pathway 326',
-      subtitle: 'The Sealed West Hallway',
-      desc: 'Rotting wooden floorboards where rainwater trickles through cracked ceiling laths.',
+      title: 'အဆောင်လမ်းသွယ် ၃၂၆',
+      subtitle: 'တံဆိပ်ခတ်ထားသော အနောက်စင်္ကြံ',
+      desc: 'မိုးရေများ အက်နေသော မျက်နှာကျက်ပျဉ်းများကြားမှ စီးကျနေသည့် ပုပ်သိုးနေသော သစ်သားကြမ်းပြင်များ။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'missing_notice',
-      clueTitle: 'Missing Student Notice (Mama May)',
+      clueTitle: 'ပျောက်ဆုံးကျောင်းသူ ကြော်ငြာစာ (မမမေ)',
       isCorrectRoute: true,
       timePenaltySeconds: 0,
       composureDrain: 0,
       subtleClues: {
-        airflow: 'Strong cold draft circulating from under the distant fire door.',
-        acoustic: 'Muffled sound of torrential rain and wind against exterior glass.',
-        affinity: 'High (Exterior Escape Path)',
+        airflow: 'အကွာအဝေးရှိ မီးဘေးတံခါးအောက်မှ တိုက်ခတ်နေသော ပြင်းထန်သည့် အေးမြသော လေစီးကြောင်း။',
+        acoustic: 'ပြင်ပမှန်တံခါးကို တိုက်ခတ်နေသော မိုးသည်းထန်စွာရွာသွန်းမှုနှင့် လေတိုက်ခတ်သံ၏ မှုန်ဝါးသော အသံ။',
+        affinity: 'မြင့်မား (အပြင်ဘက် ထွက်ပြေးရာလမ်း)',
       },
       lines: [
         {
@@ -316,21 +316,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'east_stairwell',
       tier: 1,
-      areaCode: 'AREA 1-B',
+      areaCode: 'ဒေသ ၁-B',
       roman: 'II',
-      title: 'East Wing Stairwell',
-      subtitle: 'Padlocked Fire Exit',
-      desc: 'Heavy iron padlocks and rusted chains wrapping the crumbling emergency stairs.',
+      title: 'အရှေ့တောင်ပံ လှေကားခင်း',
+      subtitle: 'သော့ခလောက်ကြီး ခတ်ထားသော မီးဘေးထွက်ပေါက်',
+      desc: 'ပြိုကျနေသော အရေးပေါ် လှေကားများကို ရစ်ပတ်ထားသည့် လေးလံသော သံခလောက်ကြီးများနှင့် သံချေးတက်နေသော သံကြိုးများ။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'curfew_log',
-      clueTitle: 'Caretaker’s Curfew Sheet',
+      clueTitle: 'အလုပ်သမား၏ ညမထွက်ရ အမိန့်စာရွက်',
       isCorrectRoute: false,
       timePenaltySeconds: 35,
       composureDrain: 8,
       subtleClues: {
-        airflow: 'Dead, suffocating air; zero exterior draft or ventilation.',
-        acoustic: 'Stifling, unbroken silence with occasional pipe creaks.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'ငြိမ်သက်ပြီး မွန်းကြပ်နေသော လေထု။ ပြင်ပလေစီးကြောင်းနှင့် လေဝင်လေထွက် လုံးဝမရှိ။',
+        acoustic: 'ရံဖန်ရံခါ ပိုက်လုံးများ တကျွီကျွီမြည်သံမှလွဲ၍ ဖိနှိပ်ခံထားရသော တိတ်ဆိတ်မှု။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -357,21 +357,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'communal_washroom',
       tier: 1,
-      areaCode: 'AREA 1-C',
+      areaCode: 'ဒေသ ၁-C',
       roman: 'III',
-      title: 'Communal Washroom',
-      subtitle: 'Shattered Mirror Sinks',
-      desc: 'Fogged mirror shards and trickling rusted pipes reeking of stagnant well mildew.',
+      title: 'ဘုံရေချိုးခန်း',
+      subtitle: 'ကွဲအက်နေသော မှန်စင်များ',
+      desc: 'မြူခိုးကပ်နေသော မှန်ကွဲစများနှင့် အိုးမဲရေနံ့နံနေသော သံချေးတက်ပိုက်များမှ စီးကျနေသည့် ရေများ။',
       bgImage: '/assets/main_menu.jpg',
       clueId: 'jasmine_hairpin',
-      clueTitle: 'Bloodstained Jasmine Hairpin',
+      clueTitle: 'သွေးစွန်းနေသော စံပယ်ပန်းဆံထိုး',
       isCorrectRoute: false,
       timePenaltySeconds: 45,
       composureDrain: 10,
       subtleClues: {
-        airflow: 'Damp, cold moisture rising from floor drains; no wind current.',
-        acoustic: 'Irregular rhythmic dripping of brown rusted tap water.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'ကြမ်းပြင်ရေမြောင်းများမှ တက်လာသော စိုစွတ်အေးမြမှု။ လေစီးကြောင်း မရှိ။',
+        acoustic: 'သံချေးရောင်ရေ ပုတ်ခုံမှ မမှန်မကန် ယိုစိမ့်ကျဆင်းသံ။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -404,21 +404,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'caretaker_office',
       tier: 2,
-      areaCode: 'AREA 2-A',
+      areaCode: 'ဒေသ ၂-A',
       roman: 'I',
-      title: "Caretaker's Archive",
-      subtitle: 'The Administrative Quarters',
-      desc: 'An overturned desk smelling of damp earth, tallow candles, and hidden ledgers.',
+      title: "အလုပ်သမား မှတ်တမ်းခန်း",
+      subtitle: 'စီမံခန့်ခွဲရေး အခန်းများ',
+      desc: 'စိုစွတ်သော မြေကြီးနံ့၊ ဖယောင်းတိုင်နံ့နှင့် ဝှက်ထားသော မှတ်တမ်းစာအုပ်များနံ့ ရှိနေပြီး မှောက်လှန်ထားသော စာကြည့်စားပွဲ။',
       bgImage: '/assets/main_menu.jpg',
       clueId: 'bribe_ledger',
-      clueTitle: '5,000 Kyats Well Bribe Ledger',
+      clueTitle: 'ကျပ် ၅၀၀၀ ရေတွင်း လာဘ်ငွေ မှတ်တမ်း',
       isCorrectRoute: true,
       timePenaltySeconds: 0,
       composureDrain: 0,
       subtleClues: {
-        airflow: 'Rainwater and cold night draft seeping beneath the rear wooden exit door.',
-        acoustic: 'Rattling iron keys and heavy wind howling in the outdoor courtyard.',
-        affinity: 'High (Exterior Escape Path)',
+        airflow: 'နောက်ဖေး သစ်သား ထွက်ပေါက်တံခါးအောက်မှ စိမ့်ဝင်နေသော မိုးရေနှင့် အေးမြသော ညလေစီးကြောင်း။',
+        acoustic: 'ပြင်ပဝင်းတွင် တချွင်ချွင် မြည်နေသော သံသော့များနှင့် ပြင်းထန်စွာ လေတိုက်ခတ် တိုးသံများ။',
+        affinity: 'မြင့်မား (အပြင်ဘက် ထွက်ပြေးရာလမ်း)',
       },
       lines: [
         {
@@ -446,21 +446,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'disused_study',
       tier: 2,
-      areaCode: 'AREA 2-B',
+      areaCode: 'ဒေသ ၂-B',
       roman: 'II',
-      title: 'Disused Study Hall',
-      subtitle: 'Overturned Lecture Benches',
-      desc: 'Chalk dust and rotting wooden benches under barred metal windows.',
+      title: 'အသုံးမပြုတော့သော စာသင်ခန်းမ',
+      subtitle: 'မှောက်လှန်ထားသော ကျောင်းသားခုံများ',
+      desc: 'သံတန်းရိုက်ထားသော သတ္တုပြတင်းပေါက်များအောက်ရှိ မြေဖြူမှုန့်များနှင့် ပုပ်နေသော သစ်သားခုံများ။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'study_notes',
-      clueTitle: 'Nat Binding Diagram Notes',
+      clueTitle: 'နတ်ချည်နှောင်မှု ပုံပြမှတ်စုများ',
       isCorrectRoute: false,
       timePenaltySeconds: 35,
       composureDrain: 7,
       subtleClues: {
-        airflow: 'Stale, dry chalk dust; all windows are shuttered with corrugated zinc.',
-        acoustic: 'Dead silence broken only by the faint whistle of wind against metal sheets.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'အနံ့ဟောင်းသော ခြောက်သွေ့ မြေဖြူမှုန့်။ ပြတင်းပေါက်အားလုံးကို သွပ်ပြားတန်းများဖြင့် ပိတ်ထားသည်။',
+        acoustic: 'သတ္တုပြားများကို တိုက်ခတ်သော လေတိုးသံ မှိန်မှိန်မှလွဲ၍ တိတ်ဆိတ်ငြိမ်သက်နေသည်။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -487,21 +487,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'boiler_hatch',
       tier: 2,
-      areaCode: 'AREA 2-C',
+      areaCode: 'ဒေသ ၂-C',
       roman: 'III',
-      title: 'Basement Boiler Hatch',
-      subtitle: 'Flooded Sub-Level Chute',
-      desc: 'A heavy iron trapdoor leaking black oily water and smelling of wet cement.',
+      title: 'မြေအောက်ခန်း ရေနွေးကန် တံခါးခုံ',
+      subtitle: 'ရေလွှမ်းနေသော အောက်ထပ် မြောင်း',
+      desc: 'မည်းနက်သော ဆီနက်ရည်များ ယိုစိမ့်ပြီး စိုစွတ်သော ဘိလပ်မြေနံ့ ရှိနေသည့် လေးလံသော သံတံခါးခုံ။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'boiler_concrete',
-      clueTitle: 'Masonry Trowel & Quick-Dry Cement',
+      clueTitle: 'အုတ်စီခြစ်နှင့် အမြန်ခြောက် ဘိလပ်မြေ',
       isCorrectRoute: false,
       timePenaltySeconds: 40,
       composureDrain: 10,
       subtleClues: {
-        airflow: 'Warm petroleum fumes and foul subterranean dampness.',
-        acoustic: 'Gurgling water splashing against submerged pipes.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'နွေးထွေးသော ရေနံငွေ့များနှင့် အနံ့ဆိုးသော မြေအောက်စိုထိုင်းမှု။',
+        acoustic: 'ရေအောက်နစ်မြုပ်နေသော ပိုက်များကို ရိုက်ခတ်နေသည့် ရေဆူပွက်သံ။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -534,21 +534,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'courtyard_well',
       tier: 3,
-      areaCode: 'AREA 3-A',
+      areaCode: 'ဒေသ ၃-A',
       roman: 'I',
-      title: 'Courtyard Nat Shrine',
-      subtitle: 'The Chained Dried Well',
-      desc: 'An ancient banyan tree towering over a chained brick well under the torrential monsoon rain.',
+      title: 'ဝင်းရှိ နတ်ကွန်း',
+      subtitle: 'သံကြိုးချည်ထားသော ရေခန်းခြောက်အင်း',
+      desc: 'မုတ်သုံမိုးကြီးထဲတွင် သံကြိုးချည်ထားသော အုတ်ရေတွင်းအပေါ်မှ ထီးထီးမြင့်နေသော ရှေးဟောင်း ညောင်ပင်ကြီး။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'well_key',
-      clueTitle: 'Courtyard Dried Well Brass Key',
+      clueTitle: 'ဝင်းရှိ ရေတွင်းဟောင်း ကြေးသော့',
       isCorrectRoute: true,
       timePenaltySeconds: 0,
       composureDrain: 0,
       subtleClues: {
-        airflow: 'Violent monsoon storm winds blowing torrential rain across the open sky.',
-        acoustic: 'Thunderous downpour and deep resonant metal vibrations from the well chains.',
-        affinity: 'Primary (Source of Supernatural Curse)',
+        airflow: 'ကောင်းကင်တစ်ခွင်တွင် မိုးသည်းထန်စွာ ရွာသွန်းစေနေသော ပြင်းထန်သည့် မုတ်သုံလေမုန်တိုင်း။',
+        acoustic: 'ပြင်းထန်သော မိုးသက်ရွာ၏ မိုးကြိုးသံနှင့် ရေတွင်းသံကြိုးများမှ နက်ရှိုင်းသော သတ္တုတုန်ခါသံများ။',
+        affinity: 'အဓိက (သဘာဝလွန် ကျိန်စာ၏ အရင်းအမြစ်)',
       },
       lines: [
         {
@@ -585,21 +585,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'bicycle_shed',
       tier: 3,
-      areaCode: 'AREA 3-B',
+      areaCode: 'ဒေသ ၃-B',
       roman: 'II',
-      title: 'Overgrown Bicycle Shed',
-      subtitle: 'Rusted Frames & Briars',
-      desc: 'Corrugated zinc roofing rattling violently over dense thorny brambles.',
+      title: 'ချုံနွယ်ပိတ်ပေါက်နေသော စက်ဘီးတဲ',
+      subtitle: 'သံချေးတက် ဘောင်များနှင့် ချုံဆူးများ',
+      desc: 'ရှုပ်ထွေးသော ဆူးချုံများအပေါ်မှ ပြင်းထန်စွာ ခေါက်ခတ်မြည်နေသော သွပ်ပြားမိုး။',
       bgImage: '/assets/main_menu.jpg',
       clueId: 'curfew_log',
-      clueTitle: 'Broken 1998 Bicycle Lock',
+      clueTitle: 'ကျိုးနေသော ၁၉၉၈ စက်ဘီးသော့',
       isCorrectRoute: false,
       timePenaltySeconds: 30,
       composureDrain: 6,
       subtleClues: {
-        airflow: 'Rain blowing sideways under the rusted corrugated roof.',
-        acoustic: 'Deafening drum of raindrops against corrugated tin sheets.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'သံချေးတက်နေသော သွပ်ပြားမိုးအောက်မှ ဘေးတိုက်တိုက်ခတ်နေသော မိုးရေ။',
+        acoustic: 'သွပ်ပြားများကို ရိုက်ခတ်နေသော နားပင်းလောက်သည့် မိုးစက်သံ။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -625,21 +625,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
     {
       id: 'front_gate',
       tier: 3,
-      areaCode: 'AREA 3-C',
+      areaCode: 'ဒေသ ၃-C',
       roman: 'III',
-      title: 'Hostel Perimeter Gate',
-      subtitle: 'Spiked Municipal Grille',
-      desc: 'Towering cast-iron gates wrapped in heavy chains and a lead municipal seal.',
+      title: 'အဆောင် နယ်နိမိတ် တံခါး',
+      subtitle: 'သံဆူးပါသော မြို့နယ် တံခါးစင်',
+      desc: 'သံကြိုးများနှင့် ခဲတံဆိပ်ထိုးထားသော မြို့နယ် တံဆိပ်ဖြင့် ရစ်ပတ်ထားသည့် မြင့်မားသော သွန်းသံတံခါးကြီးများ။',
       bgImage: '/assets/uni_room_chp1_bg1.jpg',
       clueId: 'missing_notice',
-      clueTitle: '1998 Police Barricade Chain',
+      clueTitle: '၁၉၉၈ ရဲ ကာရံထားသော သံကြိုး',
       isCorrectRoute: false,
       timePenaltySeconds: 35,
       composureDrain: 8,
       subtleClues: {
-        airflow: 'Heavy wind pressing against the massive iron grille.',
-        acoustic: 'Thunder cracks rattling the iron spikes.',
-        affinity: 'Low (Dead End / Interior Trap)',
+        airflow: 'ကြီးမားသော သံတံခါးစင်ကို ဖိညှစ်နေသည့် ပြင်းထန်သော လေ။',
+        acoustic: 'သံဆူးများကို တုန်ခါစေနေသည့် မိုးကြိုးပစ်သံများ။',
+        affinity: 'နိမ့် (သေဆုံးသော လမ်းဆုံး / အတွင်းထောင်ချောက်)',
       },
       lines: [
         {
@@ -1374,8 +1374,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           step.speakerType === 'player'
             ? selectedCharacter.name
             : step.speakerType === 'mama_may'
-            ? 'Mama May (1998)'
-            : 'Hostel Environment',
+            ? 'မမမေ (၁၉၉၈)'
+            : 'အဆောင် ပတ်ဝန်းကျင်',
         characterId:
           step.speakerType === 'player'
             ? selectedCharacter.id
@@ -1684,7 +1684,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (method === 'bobby_pin') {
       sound.playChime(true);
       setRoomBanner({
-        text: `${selectedCharacter.name} gently guides the bent steel bobby pin into the keyway. The tumblers align silently... Click. The lock opens without a sound.`,
+        text: `${selectedCharacter.name} က ကွေးနေသော သံမဏိဆံညှပ်ကို သော့ပေါက်အတွင်း ညင်သာစွာ ထည့်သွင်းလိုက်သည်။ သော့ပင်များ တိတ်ဆိတ်စွာ ညှိမိသွားသည်... ကလစ်သံ။ သော့သည် အသံမထွက်ဘဲ ပွင့်သွားသည်.`,
         type: 'success',
       });
       setTimeout(() => {
@@ -1705,7 +1705,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setComposure((c) => Math.max(0, c - 15));
       setDoorSmashed(true);
       setRoomBanner({
-        text: 'CRASH! The heavy teak timber strikes the deadbolt with violent force! Splintered wood shrieks as the door bursts open, echoing down Pathway 326...',
+        text: 'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...',
         type: 'warn',
       });
       setTimeout(() => {
@@ -1759,7 +1759,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setIsScreenShaking(false);
     }, 200);
 
-    const fullText = 'AUGUST 14, 1998 — ROOM 4B';
+    const fullText = '၁၉၉၈ ဩဂုတ် ၁၄ — အခန်း ၄B';
     let charIdx = 0;
     const typeInterval = setInterval(() => {
       charIdx++;
@@ -2190,69 +2190,77 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   // Dynamic Global HUD Location Label
   const getGlobalHudLocationLabel = (): string => {
+    const subSceneNames: Record<string, string> = {
+      main: 'ခန်းမကျယ်',
+      desk: 'စာကြည့်စားပွဲ',
+      wardrobe: 'အဝတ်ဗီရို',
+      calendar: 'ပြက္ခဒိန်',
+      door: 'တံခါး',
+      stool: 'ထိုင်ခုံငယ်',
+    };
     if (mode === 'phase1_2') {
       return currentP12Line.phase === 1
-        ? 'Phase 1 : The Discussion'
-        : 'Phase 2 : The Seance';
+        ? 'အဆင့် ၁ : ဆွေးနွေးပွဲ'
+        : 'အဆင့် ၂ : နတ်ဝင်ပြောသည့်ပွဲ';
     }
     if (mode === 'awakening' || mode === 'room_escape') {
       return activeInspectSubScene === 'main'
-        ? 'Phase 3 • Room 4B Escape'
-        : `Room 4B : ${activeInspectSubScene.toUpperCase()}`;
+        ? 'အဆင့် ၃ • အခန်း ၄B ထွက်ပြေးမှု'
+        : `အခန်း ၄B : ${(subSceneNames[activeInspectSubScene] ?? activeInspectSubScene).toUpperCase()}`;
     }
     if (mode === 'phase3') {
       switch (phase3Location) {
         case 'hallway_threshold':
-          return 'PATHWAY 326 • THRESHOLD';
+          return 'အဆောင်လမ်းသွယ် ၃၂၆ • တံခါးခုံ';
         case 'west_split_landing':
-          return 'WEST WING • SPLIT LANDING';
+          return 'အနောက်တောင်ပံ • လှေကားကုန်းနားပြင်';
         case 'stairwell_gate':
         case 'stairway_gate_inspection':
         case 'stairway_exit_gate':
-          return 'GROUND FLOOR • STAIRWAY EXIT GATE';
+          return 'မြေညီထပ် • လှေကားထွက်ပေါက် တံခါး';
         case 'hostel_outer_grounds':
-          return 'GROUND FLOOR • HOSTEL COURTYARD & COMPOUND GATE';
+          return 'မြေညီထပ် • အဆောင်ဝင်းနှင့် ခြံဝတံခါး';
         case 'washroom_main':
-          return 'WEST WING • COMMUNAL WASHROOM';
+          return 'အနောက်တောင်ပံ • ဘုံရေချိုးခန်း';
         case 'washroom_basin':
-          return 'WASHROOM • CEMENT BASIN';
+          return 'ရေချိုးခန်း • ဘိလပ်မြေလင်ပန်း';
         case 'washroom_stall':
-          return 'WASHROOM • THIRD STALL';
+          return 'ရေချိုးခန်း • တတိယအခန်း';
         case 'washroom_rope':
-          return 'WASHROOM • DRAINAGE PIPE';
+          return 'ရေချိုးခန်း • ရေမြောင်းပိုက်';
         case 'washroom_mirror':
-          return 'WASHROOM • CRACKED MIRROR';
+          return 'ရေချိုးခန်း • အက်နေသည့်မှန်';
         case 'east_fork':
-          return 'EAST WING • TRIPLE FORK';
+          return 'အရှေ့တောင်ပံ • လမ်းသုံးခွလမ်းဆုံ';
         case 'lockers_main':
-          return 'EAST WING • STUDENT LOCKER BAY';
+          return 'အရှေ့တောင်ပံ • ကျောင်းသားလော့ကာခန်း';
         case 'locker_32':
-          return 'LOCKER BAY • LOCKER 32';
+          return 'လော့ကာခန်း • လော့ကာ ၃၂';
         case 'locker_09':
-          return 'LOCKER BAY • LOCKER 09';
+          return 'လော့ကာခန်း • လော့ကာ ၀၉';
         case 'locker_10':
-          return 'LOCKER BAY • LOCKER 10';
+          return 'လော့ကာခန်း • လော့ကာ ၁၀';
         case 'locker_14':
-          return 'LOCKER BAY • LOCKER 14';
+          return 'လော့ကာခန်း • လော့ကာ ၁၄';
         case 'locker_spider':
-          return 'LOCKER BAY • RUSTED VENT';
+          return 'လော့ကာခန်း • သံချေးလေဝင်ပေါက်';
         case 'prayer_room_main':
-          return 'EAST WING • PRAYER ROOM';
+          return 'အရှေ့တောင်ပံ • နတ်ကွန်းခန်း';
         case 'prayer_altar':
-          return 'PRAYER ROOM • GUARDIAN ALTAR';
+          return 'နတ်ကွန်းခန်း • အစောင့်နတ်စင်';
         case 'caretaker_door_keypad':
-          return 'EAST WING • CARETAKER DOOR';
+          return 'အရှေ့တောင်ပံ • အလုပ်သမားတံခါး';
         case 'caretaker_office_main':
         case 'caretaker_office':
-          return 'ROOM 101 • CARETAKER ARCHIVE';
+          return 'အခန်း ၁၀၁ • အလုပ်သမားမှတ်တမ်းခန်း';
         case 'balcony_326':
         case 'balcony':
-          return 'PATHWAY 326 • THE OVERLOOK BALCONY';
+          return 'အဆောင်လမ်းသွယ် ၃၂၆ • ရှေ့မြင်ကွင်း ဝရန်တာ';
         default:
-          return 'PHASE 3 • PATHWAY 326';
+          return 'အဆင့် ၃ • အဆောင်လမ်းသွယ် ၃၂၆';
       }
     }
-    return `Phase 3 • Sector 0${currentTier} / 03`;
+    return `အဆင့် ၃ • ကဏ္ဍ 0${currentTier} / 03`;
   };
 
   // Unified Phase 3 Return Navigation Handler
@@ -2350,17 +2358,17 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   // Unified Return Destination Label
   const getPhase3ReturnDestination = (): string => {
     if (phase3Location === 'hostel_outer_grounds') {
-      return 'STAIRWAY GATE';
+      return 'လှေကားတံခါး';
     }
     if (
       phase3Location === 'garage_subterranean' ||
       phase3Location === 'compound_iron_gate' ||
       phase3Location === 'banyan_wellhead'
     ) {
-      return 'COURTYARD';
+      return 'ဝင်း';
     }
     if (phase3Location === 'well_interior_deep') {
-      return 'WELLHEAD';
+      return 'ရေတွင်းခုံ';
     }
     if (phase3Location === 'room_101_seance_flashback' || phase3Location === 'seance_climax_flashback') {
       return '';
@@ -2372,106 +2380,106 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       phase3Location === 'balcony_stairway_gate' ||
       phase3Location === 'washroom_main'
     ) {
-      return 'SPLIT LANDING';
+      return 'လှေကားကုန်းနားပြင်';
     }
     if (phase3Location === 'west_split_landing') {
-      return 'HALLWAY';
+      return 'စင်္ကြံ';
     }
     if (phase3Location.startsWith('washroom_')) {
-      return 'WASHROOM';
+      return 'ရေချိုးခန်း';
     }
     if (phase3Location === 'radio_bench_inspection') {
-      return 'BALCONY';
+      return 'ဝရန်တာ';
     }
     if (phase3Location.startsWith('locker_')) {
-      return 'LOCKER BAY';
+      return 'လော့ကာခန်း';
     }
     if (
       phase3Location === 'lockers_main' ||
       phase3Location === 'caretaker_door_keypad' ||
       phase3Location === 'prayer_room_main'
     ) {
-      return 'EAST FORK';
+      return 'အရှေ့လမ်းခွဲ';
     }
     if (phase3Location === 'prayer_altar') {
-      return 'PRAYER ROOM';
+      return 'နတ်ကွန်းခန်း';
     }
     if (phase3Location === 'east_fork') {
-      return 'HALLWAY';
+      return 'စင်္ကြံ';
     }
     if (phase3Location === 'hallway_threshold') {
-      return 'ROOM 4B';
+      return 'အခန်း ၄B';
     }
-    return 'EAST FORK';
+    return 'အရှေ့လမ်းခွဲ';
   };
 
   // Unified Area Breadcrumb Resolver
   const getPhase3AreaBreadcrumb = (): { zone: string; name: string } => {
     switch (phase3Location) {
       case 'hallway_threshold':
-        return { zone: 'PATHWAY 326', name: 'THRESHOLD' };
+        return { zone: 'အဆောင်လမ်းသွယ် ၃၂၆', name: 'တံခါးခုံ' };
       case 'west_split_landing':
-        return { zone: 'WEST WING', name: 'SPLIT LANDING' };
+        return { zone: 'အနောက်တောင်ပံ', name: 'လှေကားကုန်းနားပြင်' };
       case 'stairwell_gate':
       case 'stairway_gate_inspection':
       case 'stairway_exit_gate':
       case 'balcony_stairway_gate':
-        return { zone: 'GROUND FLOOR', name: 'STAIRWAY EXIT GATE' };
+        return { zone: 'မြေညီထပ်', name: 'လှေကားထွက်ပေါက်တံခါး' };
       case 'hostel_outer_grounds':
-        return { zone: 'GROUND FLOOR EXTERIOR', name: 'HOSTEL COURTYARD & COMPOUND GATE' };
+        return { zone: 'မြေညီထပ် အပြင်ဘက်', name: 'အဆောင်ဝင်းနှင့် ခြံဝတံခါး' };
       case 'compound_iron_gate':
-        return { zone: 'GROUND FLOOR EXTERIOR', name: 'COMPOUND IRON GATE' };
+        return { zone: 'မြေညီထပ် အပြင်ဘက်', name: 'ခြံဝ သံတံခါး' };
       case 'garage_subterranean':
-        return { zone: 'GROUND FLOOR EXTERIOR', name: 'SUBTERRANEAN GARAGE' };
+        return { zone: 'မြေညီထပ် အပြင်ဘက်', name: 'မြေအောက်ကားဂိုဒေါင်' };
       case 'banyan_wellhead':
-        return { zone: 'GROUND FLOOR EXTERIOR', name: 'BANYAN TREE & WELL' };
+        return { zone: 'မြေညီထပ် အပြင်ဘက်', name: 'ညောင်ပင်နှင့် ရေတွင်း' };
       case 'well_interior_deep':
-        return { zone: 'SUBTERRANEAN CONDUIT', name: 'DEEP WELL SHAFT' };
+        return { zone: 'မြေအောက်လမ်းသွယ်', name: 'ရေတွင်းနက် ချိုင့်' };
       case 'room_101_seance_flashback':
       case 'seance_climax_flashback':
-        return { zone: 'CONDUIT CLIMAX', name: 'ROOM 101 SEANCE CIRCLE' };
+        return { zone: 'လမ်းသွယ် အထွတ်အထိပ်', name: 'အခန်း ၁၀၁ နတ်ဝင်စက်ဝိုင်း' };
       case 'washroom_main':
-        return { zone: 'WEST WING', name: 'COMMUNAL WASHROOM' };
+        return { zone: 'အနောက်တောင်ပံ', name: 'ဘုံရေချိုးခန်း' };
       case 'washroom_basin':
-        return { zone: 'WASHROOM', name: 'CEMENT BASIN' };
+        return { zone: 'ရေချိုးခန်း', name: 'ဘိလပ်မြေလင်ပန်း' };
       case 'washroom_stall':
-        return { zone: 'WASHROOM', name: 'THIRD STALL' };
+        return { zone: 'ရေချိုးခန်း', name: 'တတိယအခန်း' };
       case 'washroom_rope':
-        return { zone: 'WASHROOM', name: 'DRAINAGE PIPE' };
+        return { zone: 'ရေချိုးခန်း', name: 'ရေမြောင်းပိုက်' };
       case 'washroom_mirror':
-        return { zone: 'WASHROOM', name: 'CRACKED MIRROR' };
+        return { zone: 'ရေချိုးခန်း', name: 'အက်နေသည့်မှန်' };
       case 'east_fork':
-        return { zone: 'EAST WING', name: 'TRIPLE FORK' };
+        return { zone: 'အရှေ့တောင်ပံ', name: 'လမ်းသုံးခွလမ်းဆုံ' };
       case 'lockers_main':
-        return { zone: 'EAST WING', name: 'STUDENT LOCKER BAY' };
+        return { zone: 'အရှေ့တောင်ပံ', name: 'ကျောင်းသားလော့ကာခန်း' };
       case 'locker_32':
-        return { zone: 'LOCKER BAY', name: 'LOCKER 32' };
+        return { zone: 'လော့ကာခန်း', name: 'လော့ကာ ၃၂' };
       case 'locker_09':
-        return { zone: 'LOCKER BAY', name: 'LOCKER 09' };
+        return { zone: 'လော့ကာခန်း', name: 'လော့ကာ ၀၉' };
       case 'locker_10':
-        return { zone: 'LOCKER BAY', name: 'LOCKER 10' };
+        return { zone: 'လော့ကာခန်း', name: 'လော့ကာ ၁၀' };
       case 'locker_14':
-        return { zone: 'LOCKER BAY', name: 'LOCKER 14' };
+        return { zone: 'လော့ကာခန်း', name: 'လော့ကာ ၁၄' };
       case 'locker_14_interior':
-        return { zone: 'LOCKER BAY', name: 'LOCKER 14 INTERIOR' };
+        return { zone: 'လော့ကာခန်း', name: 'လော့ကာ ၁၄ အတွင်း' };
       case 'locker_spider':
-        return { zone: 'LOCKER BAY', name: 'RUSTED VENT' };
+        return { zone: 'လော့ကာခန်း', name: 'သံချေးလေဝင်ပေါက်' };
       case 'prayer_room_main':
-        return { zone: 'EAST WING', name: 'PRAYER ROOM' };
+        return { zone: 'အရှေ့တောင်ပံ', name: 'နတ်ကွန်းခန်း' };
       case 'prayer_altar':
-        return { zone: 'PRAYER ROOM', name: 'GUARDIAN ALTAR' };
+        return { zone: 'နတ်ကွန်းခန်း', name: 'အစောင့်နတ်စင်' };
       case 'caretaker_door_keypad':
-        return { zone: 'EAST WING', name: 'CARETAKER DOOR' };
+        return { zone: 'အရှေ့တောင်ပံ', name: 'အလုပ်သမားတံခါး' };
       case 'caretaker_office_main':
       case 'caretaker_office':
-        return { zone: 'ROOM 101', name: 'CARETAKER ARCHIVE' };
+        return { zone: 'အခန်း ၁၀၁', name: 'အလုပ်သမားမှတ်တမ်းခန်း' };
       case 'balcony_326':
       case 'balcony':
-        return { zone: 'PATHWAY 326', name: 'THE OVERLOOK BALCONY' };
+        return { zone: 'အဆောင်လမ်းသွယ် ၃၂၆', name: 'ရှေ့မြင်ကွင်း ဝရန်တာ' };
       case 'radio_bench_inspection':
-        return { zone: 'PATHWAY 326', name: 'RADIO BENCH' };
+        return { zone: 'အဆောင်လမ်းသွယ် ၃၂၆', name: 'ရေဒီယိုခုံ' };
       default:
-        return { zone: 'PATHWAY 326', name: 'CORRIDOR' };
+        return { zone: 'အဆောင်လမ်းသွယ် ၃၂၆', name: 'စင်္ကြံ' };
     }
   };
 
@@ -2498,7 +2506,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         {/* 1. Scene Background Image */}
         <img
           src={getActiveBackground()}
-          alt="Scene Atmosphere"
+          alt="နေရာလေထု"
           className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out select-none pointer-events-none ${
             isZoomed
               ? 'scale-125 filter brightness-[0.75] contrast-125'
@@ -2579,7 +2587,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 )}`}
               >
                 <AlertTriangle className="w-3.5 h-3.5" />
-                <span>Composure: {composure}%</span>
+                <span>စိတ်တည်ငြိမ်မှု: {composure}%</span>
               </div>
             </div>
           )}
@@ -2613,7 +2621,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               className={`relative group p-1 sm:p-1.5 rounded-xl bg-[#121815]/95 border border-[#2c3d34] hover:border-[#4d6e5e] text-[#82a996] shadow-[0_0_15px_rgba(46,66,56,0.4)] flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 ${
                 isCompassVibrating ? 'ring-2 ring-rose-500 animate-bounce' : ''
               }`}
-              title="Paranormal Magnetic Compass (Click for close-up view)"
+              title="သဘာဝလွန် သံလိုက်အိမ်မြှောင် (ချဲ့ကြည့်ရန် နှိပ်ပါ)"
             >
               <div className="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#0b0f0d] border border-[#2c3d34] flex items-center justify-center overflow-hidden">
                 <span className="absolute top-0.5 text-[6px] font-mono font-bold text-[#82a996]">N</span>
@@ -2626,7 +2634,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 />
               </div>
               <span className="text-[10px] font-mono font-bold text-[#82a996] uppercase tracking-wider hidden lg:inline">
-                COMPASS
+                မြှောင်
               </span>
             </button>
           )}
@@ -2639,10 +2647,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setIsNotesOpen(true);
               }}
               className="px-3 py-1.5 rounded-lg bg-[#18221d] border border-[#2c3d34] text-[#c2d6cc] hover:border-[#4d6e5e] hover:bg-[#1f2d26] text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all"
-              title="Open Case File [N]"
+              title="အမှုမှတ်တမ်းဖွင့်ရန် [N]"
             >
               <BookOpen className="w-3.5 h-3.5 text-[#82a996]" />
-              <span className="hidden sm:inline">Case Notes</span>
+              <span className="hidden sm:inline">အမှုမှတ်စု</span>
               <span className="bg-[#2c3d34] text-[#c2d6cc] px-1 rounded text-[10px]">
                 {discoveredClues.length}
               </span>
@@ -2652,7 +2660,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           <button
             onClick={toggleMute}
             className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto"
-            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+            title={isMuted ? 'အသံဖွင့်ရန်' : 'အသံပိတ်ရန်'}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
@@ -2663,7 +2671,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               sound.playPaperRustle();
             }}
             className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto z-50"
-            title="Pause Menu [ESC]"
+            title="ခေတ္တရပ်နားခန်း [ESC]"
           >
             <Pause className="w-4 h-4" />
           </button>
@@ -2677,25 +2685,25 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         <div className="relative flex-1 flex flex-col justify-center items-center px-4 py-2 z-20">
           <div className="text-center mb-3 sm:mb-6">
             <span className="text-[11px] font-mono tracking-widest text-amber-500 uppercase font-semibold">
-              SECTOR 0{currentTier} • CHOOSE FORWARD PATHWAY
+              ကဏ္ဍ 0{currentTier} • ရှေ့ဆက်လမ်း ရွေးချယ်ပါ
             </span>
             <h2
               className="text-3xl sm:text-5xl font-black text-stone-100 tracking-wider uppercase drop-shadow-lg"
               style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
             >
               {currentTier === 1
-                ? 'CHOOSE CORRIDOR WING'
+                ? 'စင်္ကြံတောင်ပံ ရွေးချယ်ပါ'
                 : currentTier === 2
-                ? 'CHOOSE GROUND APPROACH'
-                : 'COURTYARD PERIMETER • FINAL PATH'}
+                ? 'မြေညီ လမ်းကြမ်း ရွေးချယ်ပါ'
+                : 'ဝင်း ပတ်ပတ်လည် • နောက်ဆုံးလမ်း'}
             </h2>
             <p className="text-xs font-mono text-stone-400 mt-1 tracking-wider">
-              [←/→] Select • [ENTER] Investigate • Observe air currents & drafts to find the escape route
+              [←/→] ရွေးရန် • [ENTER] စုံစမ်းရန် • ထွက်ပေါက်လမ်း ရှာဖွေရန် လေစီးကြောင်းများကို စောင့်ကြည့်ပါ
             </p>
             {doorSmashed && currentTier === 1 && (
               <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/85 border border-rose-600 text-rose-300 text-xs font-mono shadow-lg animate-pulse">
                 <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                <span>⚠️ DEAFENING CRASH ECHO: Smashing the door alerted entities along Pathway 326. Hallway threat level accelerated!</span>
+                <span>⚠️ နားပင်းလောက်သော ခေါက်ချုန်းသံ ပဲ့တင်ထပ်: တံခါးကို ရိုက်ခွဲခြင်းသည် အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် သရဲများကို နှိုးဆော်လိုက်သည်။ စင်္ကြံ အန္တရာယ်အဆင့် မြင့်တက်သွားပြီ!</span>
               </div>
             )}
           </div>
@@ -2714,7 +2722,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   ? 'opacity-20 cursor-not-allowed text-stone-600'
                   : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
               }`}
-              aria-label="Previous Location"
+              aria-label="ယခင် နေရာ"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
@@ -2760,12 +2768,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       {isInvestigated ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-950/80 border border-emerald-700 text-emerald-300">
                           <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                          SEARCHED
+                          စစ်ဆေးပြီး
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-950/80 border border-amber-600 text-amber-300">
                           <Eye className="w-3 h-3 text-amber-400" />
-                          UNEXPLORED
+                          မစစ်ဆေးရသေး
                         </span>
                       )}
                     </div>
@@ -2795,14 +2803,14 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         <div className="flex items-start gap-1.5 text-stone-300">
                           <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-amber-400">Airflow:</strong> {loc.subtleClues.airflow}
+                            <strong className="text-amber-400">လေစီးကြောင်း:</strong> {loc.subtleClues.airflow}
                           </span>
                         </div>
 
                         <div className="flex items-start gap-1.5 text-stone-400">
                           <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-stone-300">Affinity:</strong>{' '}
+                            <strong className="text-stone-300">ဆက်စပ်မှု:</strong>{' '}
                             <span
                               className={
                                 loc.subtleClues.affinity.includes('High') ||
@@ -2833,7 +2841,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                       >
                         <MapPin className="w-4 h-4" />
-                        <span>{isInvestigated ? 'RE-EXAMINE' : 'INVESTIGATE'}</span>
+                        <span>{isInvestigated ? 'ပြန်လည်စစ်ဆေးရန်' : 'စုံစမ်းရန်'}</span>
                       </button>
                     </div>
                   </motion.div>
@@ -2853,7 +2861,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   ? 'opacity-20 cursor-not-allowed text-stone-600'
                   : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
               }`}
-              aria-label="Next Location"
+              aria-label="နောက်ထပ် နေရာ"
             >
               <ChevronRight className="w-6 h-6" />
             </button>
@@ -2880,7 +2888,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 className="px-3.5 py-1.5 rounded-xl bg-[#121815]/95 border border-[#2c3d34] hover:bg-[#18221d] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-mono font-bold flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 transition-all"
               >
                 <ArrowLeft className="w-4 h-4 text-[#82a996]" />
-                <span>STEP BACK / RETURN TO ROOM</span>
+                <span>နောက်ဆုတ်ရန် / ခန်းသို့ ပြန်သွားရန်</span>
               </button>
             ) : (
               <div />
@@ -2889,14 +2897,14 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             {activeInspectSubScene !== 'desk' && (
               <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
                 {mode === 'awakening' || activeInspectSubScene === 'main'
-                  ? 'ROOM 4B • DORMITORY ROOM'
+                  ? 'အခန်း ၄B • အိပ်ဆောင်ခန်း'
                   : activeInspectSubScene === 'stool'
-                  ? 'INSPECTING • BEDSIDE STOOL'
+                  ? 'စစ်ဆေးနေသည် • ကုတင်ဘေးထိုင်ခုံ'
                   : activeInspectSubScene === 'wardrobe'
-                  ? 'INSPECTING • WARDROBE FOOTING'
+                  ? 'စစ်ဆေးနေသည် • အဝတ်ဗီရို ခြေရင်း'
                   : activeInspectSubScene === 'calendar'
-                  ? 'INSPECTING • WALL CALENDAR'
-                  : 'INSPECTING • ROOM DOOR'}
+                  ? 'စစ်ဆေးနေသည် • နံရံပြက္ခဒိန်'
+                  : 'စစ်ဆေးနေသည် • ခန်းတံခါး'}
               </div>
             )}
           </div>
@@ -2944,8 +2952,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* 1. Wardrobe (Yellow) */}
                 <InteractiveHotspot
                   id="main_wardrobe"
-                  name="Teak Wardrobe"
-                  cursorTooltip="Teak Wardrobe & Footing"
+                  name="ကျွန်းသစ် အဝတ်ဗီရို"
+                  cursorTooltip="ကျွန်းသစ် အဝတ်ဗီရိုနှင့် ခြေရင်း"
                   polygonPoints="0,15 21,19 21,99 0,99"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2956,8 +2964,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* 2. Wall Calendar (Orange) */}
                 <InteractiveHotspot
                   id="main_calendar"
-                  name="Wall Calendar"
-                  cursorTooltip="Wall Calendar (August 1998)"
+                  name="နံရံပြက္ခဒိန်"
+                  cursorTooltip="နံရံပြက္ခဒိန် (၁၉၉၈ ဩဂုတ်)"
                   polygonPoints="24.5,45 32,45 32,59 24.5,59"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -2968,11 +2976,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* 3. Compass / Tin Box (Purple) */}
                 <InteractiveHotspot
                   id="main_tin_compass"
-                  name="Compass / Tin Box"
+                  name="အိမ်မြှောင် / သံသေတ္တာ"
                   cursorTooltip={
                     hasMagneticCompass
-                      ? 'Inspect Antique Magnetic Compass'
-                      : 'Velvet-Lined Tin Box (Compass)'
+                      ? 'ရှေးဟောင်း သံလိုက်အိမ်မြှောင်ကို စစ်ဆေးရန်'
+                      : 'နတ္တာစီထားသော သံသေတ္တာ (အိမ်မြှောင်)'
                   }
                   polygonPoints="27,80 36,75 36,85 28,90"
                   onClick={() => {
@@ -2982,7 +2990,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       sound.playChime(true);
                       sound.playPaperRustle();
                       setRoomBanner({
-                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
                         type: 'success',
                       });
                       setIsCompassModalOpen(true);
@@ -2996,8 +3004,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* 4. Study Desk (Green) */}
                 <InteractiveHotspot
                   id="main_desk"
-                  name="Study Desk & Notes"
-                  cursorTooltip="Inspect Study Desk"
+                  name="စာကြည့်စားပွဲနှင့် မှတ်စုများ"
+                  cursorTooltip="စာကြည့်စားပွဲကို စစ်ဆေးရန်"
                   polygonPoints="46,61 67,70 75,63 52,59"
                   onClick={() => {
                     sound.playMenuSelect();
@@ -3008,8 +3016,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* 5. Room Door 4B (Blue) */}
                 <InteractiveHotspot
                   id="main_door"
-                  name="Room Door 4B"
-                  cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
+                  name="အခန်း ၄B တံခါး"
+                  cursorTooltip={doorUnlocked ? "အဆောင်လမ်းသွယ် ၃၂၆ သို့ ထွက်ရန်" : "အခန်း ၄B တံခါး"}
                   polygonPoints="80,8 99.5,5 99.5,98 79,93"
                   onClick={() => {
                     if (doorUnlocked) {
@@ -3055,11 +3063,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               <>
                 <InteractiveHotspot
                   id="stool_tin_compass"
-                  name="Rusted Metal Biscuit Tin"
+                  name="သံချေးတက် ဘီစကစ် သံသေတ္တာ"
                   cursorTooltip={
                     hasMagneticCompass
-                      ? 'Inspect Antique Magnetic Compass'
-                      : 'Open Rusted Metal Tin Box'
+                      ? 'ရှေးဟောင်း သံလိုက်အိမ်မြှောင်ကို စစ်ဆေးရန်'
+                      : 'သံချေးတက် သံသေတ္တာကို ဖွင့်ရန်'
                   }
                   x={42}
                   y={40}
@@ -3073,7 +3081,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       sound.playChime(true);
                       sound.playPaperRustle();
                       setRoomBanner({
-                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
                         type: 'success',
                       });
                       setIsCompassModalOpen(true);
@@ -3093,8 +3101,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {!hasWoodenBat && !inventory.includes('wooden_bat') ? (
                   <InteractiveHotspot
                     id="wardrobe_timber_bat"
-                    name="Heavy Teak Timber"
-                    cursorTooltip="Heavy Teak Timber"
+                    name="ကျွန်းပျဉ်တုံးကြီး"
+                    cursorTooltip="ကျွန်းပျဉ်တုံးကြီး"
                     polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
                     onClick={handlePickupWoodenBat}
                   />
@@ -3102,8 +3110,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   /* Wardrobe Baseboard Lore Inspect (rendered only after bat is taken) */
                   <InteractiveHotspot
                     id="wardrobe_baseboard"
-                    name="Wardrobe Baseboard"
-                    cursorTooltip="Wardrobe Baseboard"
+                    name="အဝတ်ဗီရို ခြေရင်းပျဉ်"
+                    cursorTooltip="အဝတ်ဗီရို ခြေရင်းပျဉ်"
                     polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
                     onClick={() => {
                       sound.playMenuSelect();
@@ -3121,8 +3129,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               <>
                 <InteractiveHotspot
                   id="calendar_aug14"
-                  name="Wall Calendar Sheet"
-                  cursorTooltip="Examine Circled Date (August 14, 1998)"
+                  name="ပြက္ခဒိန် စာရွက်"
+                  cursorTooltip="စက်ဝိုင်းခြယ်ထားသော နေ့ကို စစ်ဆေးရန် (၁၉၉၈ ဩဂုတ် ၁၄)"
                   polygonPoints="25,12 52.5,13.5 53,80.5 24.5,82.5"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3141,8 +3149,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 {/* Interactive Hotspot over Deadbolt Mechanism / Center Door Area */}
                 <InteractiveHotspot
                   id="door_deadbolt"
-                  name={doorUnlocked ? "Unlocked Teak Door" : "Locked Teak Door"}
-                  cursorTooltip={doorUnlocked ? "Step through to Pathway 326" : "Locked Teak Door"}
+                  name={doorUnlocked ? "ဖွင့်ထားသော ကျွန်းသစ်တံခါး" : "သော့ခတ်ထားသော ကျွန်းသစ်တံခါး"}
+                  cursorTooltip={doorUnlocked ? "အဆောင်လမ်းသွယ် ၃၂၆ သို့ ဖြတ်သွားရန်" : "သော့ခတ်ထားသော ကျွန်းသစ်တံခါး"}
                   x={28}
                   y={5}
                   width={45}
@@ -3181,13 +3189,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       <div className="flex items-center gap-2 text-[#82a996]">
                         <Lock className="w-4 h-4 text-[#82a996]" />
                         <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#82a996]">
-                          ROOM 4B HEAVY TEAK EXIT DOOR
+                          အခန်း ၄B ကျွန်းသစ် ထွက်ပေါက်တံခါးကြီး
                         </span>
                       </div>
                       <button
                         onClick={() => setIsDoorInspectOpen(false)}
                         className="p-1 rounded bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white cursor-pointer transition-colors"
-                        title="Close door inspection"
+                        title="တံခါးစစ်ဆေးခြင်းကို ပိတ်ရန်"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -3197,7 +3205,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       <div className="space-y-3">
                         <div className="py-4 px-4 rounded-xl bg-[#151f1a]/80 border border-[#223229]">
                           <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                            The deadbolt is disengaged. Door 4B is wide open to Pathway 326.
+                            သော့တံ ဖြုတ်ထားသည်။ တံခါး ၄B သည် အဆောင်လမ်းသွယ် ၃၂၆ သို့ အပြည့်အဝ ပွင့်နေသည်။
                           </p>
                         </div>
                         <button
@@ -3213,7 +3221,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                           }}
                           className="w-full py-3 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
                         >
-                          <span>STEP THROUGH TO PATHWAY 326</span>
+                          <span>အဆောင်လမ်းသွယ် ၃၂၆ သို့ ဖြတ်သွားရန်</span>
                           <span className="text-xs">→</span>
                         </button>
                       </div>
@@ -3223,7 +3231,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
                           <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
                             <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                              The deadbolt is engaged from the other side. Locked.
+                              သော့တံကို အခြားဘက်မှ ခတ်ထားသည်။ သော့ခတ်ထားသည်။
                             </p>
                           </div>
                         )}
@@ -3232,7 +3240,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
                           <div className="space-y-3">
                             <p className="text-xs font-mono text-stone-400">
-                              Choose an action to breach the deadbolt:
+                              သော့တံကို ဖောက်ထွင်းရန် လုပ်ဆောင်ချက် ရွေးပါ:
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -3246,11 +3254,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                   <div className="flex items-center gap-2 mb-1">
                                     <Unlock className="w-4 h-4 text-emerald-400" />
                                     <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
-                                      Pick the lock with bobby pin
+                                      ဆံညှပ်ဖြင့် သော့ဖောက်ပါ
                                     </span>
                                   </div>
                                   <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    Silent breach • Zero Composure loss. Moe Stheinkha unlocks it cleanly.
+                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးစိတ်ခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
                                   </p>
                                 </button>
                               )}
@@ -3265,14 +3273,14 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                   <div className="flex items-center gap-2 mb-1">
                                     <AlertTriangle className="w-4 h-4 text-rose-400" />
                                     <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
-                                      Smash open lock with wooden bat
+                                      ကျွန်းပျဉ်တုံးဖြင့် သော့ကို ရိုက်ခွဲဖွင့်ပါ
                                     </span>
                                   </div>
                                   <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
-                                    ⚠️ Warning: Smashing the door will produce a deafening crash.
+                                    ⚠️ သတိပေးချက်: တံခါးကို ရိုက်ခွဲလျှင် နားပင်းလောက်သော အသံကျယ်ကြီး ထွက်ပေါ်လာမည်။
                                   </div>
                                   <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    -15% Composure loss • Elevates subsequent hallway threat.
+                                    -၁၅% စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။
                                   </p>
                                 </button>
                               )}
@@ -3403,8 +3411,8 @@ onTuned={() => {
                 {/* Doorway Hotspot Mapping on Corridor Scene (pathway_326_main.jpg) */}
                 <InteractiveHotspot
                   id="return-room-4b"
-                  name="Door to Room 4B"
-                  cursorTooltip="Step Back into Room 4B"
+                  name="အခန်း ၄B တံခါး"
+                  cursorTooltip="အခန်း ၄B သို့ ပြန်ဝင်ရန်"
                   polygonPoints="0,15 16,18 16,92 0,98"
                   onClick={() => {
                     sound.playPaperRustle();
@@ -3430,19 +3438,19 @@ onTuned={() => {
                   >
                     <img
                       src={PHASE_3_ASSETS.cardPathwayLeft}
-                      alt="West Wing"
+                      alt="အနောက်တောင်ပံ"
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
                       <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        WEST WING
+                        အနောက်တောင်ပံ
                       </span>
                       <h3
                         className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
-                        STAIRWELL & WASHROOM
+                        လှေကားခင်းနှင့် ရေချိုးခန်း
                       </h3>
                     </div>
                   </motion.div>
@@ -3460,19 +3468,19 @@ onTuned={() => {
                   >
                     <img
                       src={PHASE_3_ASSETS.cardPathwayRight}
-                      alt="East Wing"
+                      alt="အရှေ့တောင်ပံ"
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
                       <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        EAST WING
+                        အရှေ့တောင်ပံ
                       </span>
                       <h3
                         className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                       >
-                        LOCKERS & SHRINE
+                        လော့ကာများနှင့် နတ်ကွန်း
                       </h3>
                     </div>
                   </motion.div>
@@ -3487,9 +3495,9 @@ onTuned={() => {
                 {/* Left Archway (Communal Washroom Entrance) */}
                 <InteractiveHotspot
                   id="landing_communal_washroom"
-                  name="Communal Washroom Entrance"
+                  name="ဘုံရေချိုးခန်း အဝင်ဝ"
                   polygonPoints="0,10 44,15 44,80 0,98"
-                  cursorTooltip="[Enter Communal Washroom]"
+                  cursorTooltip="[ဘုံရေချိုးခန်း အတွင်းဝင်ရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(null);
@@ -3500,9 +3508,9 @@ onTuned={() => {
                 {/* Right Staircase (Stairwell Descent) */}
                 <InteractiveHotspot
                   id="landing_downstairs_stairwell"
-                  name="Downstairs Concrete Stairwell"
+                  name="အောက်ထပ် ကွန်ကရစ်လှေကား"
                   polygonPoints="70,40 85,40 78,77 57,70"
-                  cursorTooltip="[Descend Stairwell]"
+                  cursorTooltip="[လှေကားဆင်း သွားရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setActiveMonologue(null);
@@ -3626,13 +3634,13 @@ onTuned={() => {
             {phase3Location === 'seance_climax_flashback' && (
               <InteractiveHotspot
                 id="seance_climax_return_grounds"
-                name="Return to Outer Grounds"
+                name="အပြင်ဘက် ခြံဝင်းသို့ ပြန်သွားရန်"
                 x={0}
                 y={0}
                 width={100}
                 height={100}
                 shape="rect"
-                cursorTooltip="[Emerge into the Rain-Swept Grounds]"
+                cursorTooltip="[မိုးထဲစိုနေသော ခြံဝင်းသို့ ထွက်လာရန်]"
                 onClick={() => {
                   sound.playPaperRustle();
                   try {
@@ -3649,9 +3657,9 @@ onTuned={() => {
                 {/* 1. Cement Wash Basin & Soaked Uniforms (Left Side) */}
                 <InteractiveHotspot
                   id="washroom_basin_trough"
-                  name="Cement Wash Basin & Soaked Uniforms"
+                  name="ဘိလပ်မြေ လေလွှတ်စင်နှင့် စိုစွတ်နေသော ယူနီဖောင်းများ"
                   polygonPoints="12,55 18,55 34,73 9,80"
-                  cursorTooltip="[Inspect Wash Basin]"
+                  cursorTooltip="[လေလွှတ်စင်ကို စစ်ဆေးရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setPhase3Message(null);
@@ -3662,9 +3670,9 @@ onTuned={() => {
                 {/* 2. Third Cubicle Stall Door (Recessed Door Panel) */}
                 <InteractiveHotspot
                   id="washroom_stall_cubicle"
-                  name="Third Cubicle Stall Door"
+                  name="တတိယအခန်း ဆိုးစင်တံခါး"
                   polygonPoints="48,30 57,26 56.5,77.5 48,74"
-                  cursorTooltip="[Inspect Bloodstained Stall]"
+                  cursorTooltip="[သွေးစွန်းနေသော အခန်းကို စစ်ဆေးရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setPhase3Message(null);
@@ -3675,13 +3683,13 @@ onTuned={() => {
                 {/* 3. Ceiling Ropes & Drainage Pipe (Top Center) */}
                 <InteractiveHotspot
                   id="washroom_overhead_pipe"
-                  name="Overhead Pipe & Coiled Rope"
+                  name="အပေါ်ပိုက်လုံးနှင့် ကြိုးခွေ"
                   x={60}
                   y={8}
                   width={8}
                   height={20}
                   shape="rect"
-                  cursorTooltip="[Inspect Overhead Rope]"
+                  cursorTooltip="[အပေါ်ဘက်ကြိုးကို စစ်ဆေးရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setPhase3Message(null);
@@ -3692,9 +3700,9 @@ onTuned={() => {
                 {/* 4. Cracked Mirror & Sinks (Right Side) */}
                 <InteractiveHotspot
                   id="washroom_cracked_mirror"
-                  name="Cracked Wall Mirror & Sinks"
+                  name="အက်နေသော နံရံမှန်နှင့် လေလွှတ်စင်များ"
                   polygonPoints="71,33 94,29 95,53 71,52"
-                  cursorTooltip="[Inspect Mirror & Sinks]"
+                  cursorTooltip="[မှန်နှင့် လေလွှတ်စင်များကို စစ်ဆေးရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setPhase3Message(null);
@@ -3709,12 +3717,12 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="washroom_basin_pocket"
-                  name="Floating Cotton Shirt Pocket"
+                  name="ရေပေါ်မျောနေသော ချည်အင်္ကျီအိတ်"
                   polygonPoints="60,50 66,50 68,66 57,66"
                   cursorTooltip={
                     !hasSmallBrassKey
-                      ? '[Search Soaked Shirt Pocket]'
-                      : '[Soaked Uniform Pocket (Empty)]'
+                      ? '[စိုစွတ်နေသော အင်္ကျီအိတ်ကို ရှာဖွေရန်]'
+                      : '[စိုစွတ်နေသော ယူနီဖောင်းအိတ် (ဗလာ)]'
                   }
                   onClick={() => {
                     if (!hasSmallBrassKey) {
@@ -3740,9 +3748,9 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="washroom_stall_details"
-                  name="Bloodstained Stall Echo"
+                  name="သွေးစွန်းနေသော အခန်း သံယောင်"
                   polygonPoints="58,55 75,55 75,89 58,89"
-                  cursorTooltip="[Examine Stall Echo & Hair Ribbon]"
+                  cursorTooltip="[အခန်းသံယောင်နှင့် ဆံသိုင်းကြိုးကို စစ်ဆေးရန်]"
                   onClick={() => {
                     sound.playDramaticSting();
                     setActiveMonologue(
@@ -3758,12 +3766,12 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="washroom_rope_drainage"
-                  name="Overhead Coiled Rope"
+                  name="အပေါ်ဘက် ကြိုးခွေ"
                   polygonPoints="55,10 75,10 75,85 55,85"
                   cursorTooltip={
                     !hasNylonRope
-                      ? '[Take Coiled Nylon Rope]'
-                      : '[Drainage Pipe (Rope Retrieved)]'
+                      ? '[နိုင်လွန်ကြိုးခွေကို ယူရန်]'
+                      : '[ရေမြောင်းပိုက် (ကြိုးရယူပြီး)]'
                   }
                   onClick={() => {
                     if (!hasNylonRope) {
@@ -3789,19 +3797,19 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="washroom_mirror_etching"
-                  name="Bottom Mirror Frame"
+                  name="မှန်အောက်ဘောင်"
                   polygonPoints="15,71 85,71 88,79 12,79"
                   cursorTooltip={
                     !washroomMirrorScratched
-                      ? '[Wipe Bottom Mirror Frame]'
-                      : '[Read Etched Scrawl: Locker 14 - 1998]'
+                      ? '[မှန်အောက်ဘောင်ကို သုတ်ရန်]'
+                      : '[ခြစ်ရေးထားသော စာကို ဖတ်ရန်: လော့ကာ ၁၄ - ၁၉၉၈]'
                   }
                   onClick={() => {
                     setWashroomMirrorScratched(true);
                     addDiscoveredClue('mirror_locker_scrawl');
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "—'Locker 14 - 1998” လို့ ဘောင်ပေါ်မှာ ခြစ်ရေးထားတယ်။မှန်တွေ မကွဲခင် တစ်ယောက်ယောက်က ဒီစာကို ချန်ထားခဲ့တာပဲ။'—"
+                      "—'လော့ကာ ၁၄ - ၁၉၉၈” လို့ ဘောင်ပေါ်မှာ ခြစ်ရေးထားတယ်။မှန်တွေ မကွဲခင် တစ်ယောက်ယောက်က ဒီစာကို ချန်ထားခဲ့တာပဲ။'—"
                     );
                   }}
                 />
@@ -3820,9 +3828,9 @@ onTuned={() => {
                 >
                   {/* Card A: Lockers */}
                   <RouteCard
-                    sectorLabel="SECTOR A • LOCKERS"
-                    title="STUDENT LOCKER BAY"
-                    description="Metal lockers from 1998. Belongings of May, Sandar, and dorm residents."
+                    sectorLabel="ကဏ္ဍ A • လော့ကာများ"
+                    title="ကျောင်းသား လော့ကာခန်း"
+                    description="၁၉၉၈ ခုနှစ်က သတ္တုလော့ကာများ။ မေ၊ စန္ဒာ နှင့် အိပ်ဆောင်နေသူများ၏ ပစ္စည်းများ။"
                     imagePath={PHASE_3_ASSETS.cardEastLockers}
                     onClick={() => {
                       sound.playMenuSelect();
@@ -3833,9 +3841,9 @@ onTuned={() => {
 
                   {/* Card B: Prayer Room */}
                   <RouteCard
-                    sectorLabel="SECTOR B • SANCTUARY"
-                    title="PRAYER ROOM & ALTAR"
-                    description="Ancient Burmese Nat shrine with offering bowls and incense tiers."
+                    sectorLabel="ကဏ္ဍ B • နတ်ကွန်း"
+                    title="နတ်ကွန်းခန်းနှင့် စင်"
+                    description="ပူဇော်ထည့်ခွက်များနှင့် နံ့သာပေါင်းတင်ရာစင်များရှိသော ရှေးဟောင်း မြန်မာ့နတ်ကွန်း။"
                     imagePath={PHASE_3_ASSETS.cardEastPrayer}
                     onClick={() => {
                       sound.playMenuSelect();
@@ -3846,9 +3854,9 @@ onTuned={() => {
 
                   {/* Card C: Caretaker Archive */}
                   <RouteCard
-                    sectorLabel="SECTOR C • ARCHIVE"
-                    title="CARETAKER ARCHIVE"
-                    description="Warden's locked records office secured by a heavy brass tumbler combination lock."
+                    sectorLabel="ကဏ္ဍ C • မှတ်တမ်းခန်း"
+                    title="အလုပ်သမား မှတ်တမ်းခန်း"
+                    description="လေးလံသော ကြေးဝါ ဂဏန်း ၃ လုံးသော့ဖြင့် လုံခြုံထားသော အလုပ်သမား၏ သော့ခတ်ထားသည့် မှတ်တမ်းရုံးခန်း။"
                     imagePath={PHASE_3_ASSETS.cardEastCaretaker}
                     lockState={
                       currentChapter >= 2 || chapter1Completed
@@ -3871,9 +3879,9 @@ onTuned={() => {
                   {/* Card D: Pathway 326 (The Overlook Balcony) - Dynamically revealed when currentChapter >= 2 && natAudienceConcluded */}
                   <RouteCard
                     visible={currentChapter >= 2 && natAudienceConcluded}
-                    sectorLabel="PATHWAY 326"
-                    title="THE OVERLOOK BALCONY"
-                    description="Padlocked fire door forced ajar. Monsoon rain lashing the eaves."
+                    sectorLabel="အဆောင်လမ်းသွယ် ၃၂၆"
+                    title="ရှေ့မြင်ကွင်း ဝရန်တာ"
+                    description="သော့ခလောက်ခတ်ထားသော မီးဘေးတံခါးကို အတင်းရဲရဲ ဖွင့်ထားသည်။ မုတ်သုံမိုးက အိမ်စွန်းများကို ပြင်းထန်စွာ ရိုက်ခတ်နေသည်။"
                     imagePath="/assets/scenes/balcony_rain_night.jpg"
                     isSpecial
                     onClick={() => {
@@ -3963,13 +3971,13 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="locker_spider_retreat"
-                  name="Scurrying Cellar Spiders"
+                  name="ခုတ်ပြေးနေသော မြေအောက်ခန်း ပင့်ကူများ"
                   x={0}
                   y={0}
                   width={100}
                   height={100}
                   shape="rect"
-                  cursorTooltip="[Step Back from Infestation]"
+                  cursorTooltip="[အမြောက်အများ နှင့် ပြန်ဆုတ်ရန်]"
                   onClick={() => {
                     sound.playPaperRustle();
                     setPhase3Location('lockers_main');
@@ -4027,13 +4035,13 @@ onTuned={() => {
               <>
                 <InteractiveHotspot
                   id="prayer_room_altar_approach"
-                  name="Guardian Nat Altar"
+                  name="အစောင့်နတ် စင်"
                   x={32}
                   y={10}
                   width={36}
                   height={66}
                   shape="rect"
-                  cursorTooltip="[Approach Guardian Nat Altar]"
+                  cursorTooltip="[အစောင့်နတ်စင်သို့ ချဉ်းကပ်ရန်]"
                   onClick={() => {
                     sound.playMenuSelect();
                     setPhase3Message(null);
@@ -4104,7 +4112,7 @@ onTuned={() => {
           <ThoughtMonologueOverlay
             text={isTyping ? displayedText : (displayedText || currentStep.text)}
             onDismiss={advanceDialogue}
-            hintText="[click anywhere to continue]"
+            hintText="[ဆက်လည်ရန် နေရာမရွေး နှိပ်ပါ]"
           />
         </>
       ) : (
@@ -4157,7 +4165,7 @@ onTuned={() => {
                   activeInvestigatingLoc?.lines[locLineIndex]?.speakerType === 'mama_may' ? (
                   <InkPortrait
                     characterId="mama_may"
-                    speakerName="Mama May (1998)"
+                    speakerName="မမမေ (၁၉၉၈)"
                     isSpeaking={true}
                     position="right"
                     size="lg"
@@ -4176,7 +4184,7 @@ onTuned={() => {
               locationTag={
                 mode === 'investigating_location' && activeInvestigatingLoc
                   ? `[${activeInvestigatingLoc.title.toUpperCase()}]`
-                  : '[2026 HOSTEL SEANCE — ROOM 4B]'
+                  : '[၂၀၂၆ အဆောင် နတ်ဝင်ပွဲ — အခန်း ၄B]'
               }
               canRewind={
                 (mode === 'phase1_2' && currentLineIndex > 0) ||
@@ -4186,14 +4194,14 @@ onTuned={() => {
               onAdvance={advanceDialogue}
               advanceActionText={
                 mode === 'phase1_2' && currentP12Line.isClimax
-                  ? 'TRIGGER CLIMAX'
+                  ? 'အထွတ်အထိပ် စတင်ရန်'
                   : mode === 'investigating_location' &&
                     activeInvestigatingLoc &&
                     locLineIndex >= activeInvestigatingLoc.lines.length - 1
                   ? activeInvestigatingLoc.tier === 3 && activeInvestigatingLoc.isCorrectRoute
-                    ? 'UNCOVER TRUTH'
-                    : 'RETURN TO PATHS'
-                  : 'CONTINUE'
+                    ? 'အမှန်တရား ဖော်ထုတ်ရန်'
+                    : 'လမ်းများသို့ ပြန်သွားရန်'
+                  : 'ဆက်လုပ်ရန်'
               }
             />
           </>
@@ -4226,25 +4234,25 @@ onTuned={() => {
               </div>
 
               <span className="text-xs font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                INVESTIGATION MILESTONE
+                စုံစမ်းစစ်ဆေးမှု မှတ်တိုင်
               </span>
               <h3
                 className="text-3xl sm:text-4xl font-black text-[#c2d6cc] tracking-wider uppercase mt-1 mb-1"
                 style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
               >
-                CHAPTER 1 COMPLETED
+အခန်း ၁ ပြီးပြည့်စုံပြီ
               </h3>
               <p className="text-[#82a996] font-mono text-xs mb-2 font-bold">
-                INVESTIGATOR: {selectedCharacter.name.toUpperCase()} ({selectedCharacter.archetype.toUpperCase()})
+                စုံစမ်းစစ်ဆေးသူ: {selectedCharacter.name.toUpperCase()} ({selectedCharacter.archetype.toUpperCase()})
               </p>
 
               <div className="grid grid-cols-2 gap-2 my-4 text-xs font-mono text-[#c2d6cc]">
                 <div className="p-2.5 rounded-lg bg-[#18221d] border border-[#2c3d34]">
-                  <div className="text-[10px] text-[#82a996]/70">STARTING COMPOSURE</div>
+                  <div className="text-[10px] text-[#82a996]/70">စတင် စိတ်တည်ငြိမ်မှု</div>
                   <div className="text-[#c2d6cc] font-bold text-sm">{composure}%</div>
                 </div>
                 <div className="p-2.5 rounded-lg bg-[#18221d] border border-[#2c3d34]">
-                  <div className="text-[10px] text-[#82a996]/70">TIME ELAPSED</div>
+                  <div className="text-[10px] text-[#82a996]/70">အချိန် ကုန်ဆုံးသွားသည်</div>
                   <div className="text-[#c2d6cc] font-bold text-sm">
                     {Math.floor((600 - timeLeft) / 60)}m {(600 - timeLeft) % 60}s
                   </div>
@@ -4252,12 +4260,12 @@ onTuned={() => {
               </div>
 
               <p className="text-[#c2d6cc]/90 text-xs sm:text-sm font-mono mb-6 leading-relaxed">
-                You navigated the multi-tier 1998 hostel corridors, recovered the Caretaker's Bribe Ledger, encountered Mama May's corpse at the chained dried well, and retrieved the Courtyard Key. Your composure will determine your mental fortitude in Chapter 2!
+                သင်သည် အစုအပုံလိုက် အဆင့်များရှိသည့် ၁၉၉၈ အဆောင်စင်္ကြံများကို ဖြတ်သန်းခဲ့ပြီး၊ အလုပ်သမား၏ လာဘ်ငွေမှတ်တမ်းကို ပြန်လည်ရယူကာ၊ သံကြိုးချည်ထားသော ရေခန်းခြောက်အင်းတွင် မမမေ၏ အလောင်းကို တွေ့ကြုံခဲ့ပြီး ဝင်းရှိ ရေတွင်းဟောင်း ကြေးသော့ကို ရယူခဲ့သည်။ သင့်စိတ်တည်ငြိမ်မှုသည် အခန်း ၂ တွင် သင့်စိတ်ဆန္ဒခွန်အားကို ဆုံးဖြတ်ပေးလိမ့်မည်!
               </p>
 
               <div className="p-3.5 rounded-xl bg-[#18221d]/70 border border-[#2c3d34] flex items-center justify-center gap-3 text-[#c2d6cc] text-sm font-mono mb-6">
                 <Sparkles className="w-5 h-5 text-[#6ee7b7] animate-spin" />
-                <span className="font-bold">CHAPTER 2: UNDERSTANDING IS NOW UNLOCKED!</span>
+                <span className="font-bold">အခန်း ၂: နားလည်မှု ယခု ဖွင့်လှစ်ပြီ!</span>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -4270,7 +4278,7 @@ onTuned={() => {
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                 >
                   <Play className="w-4 h-4 fill-current" />
-                  <span>ENTER CHAPTER 2</span>
+                  <span>အခန်း ၂ သို့ ဝင်ရန်</span>
                 </button>
 
                 <button
@@ -4281,7 +4289,7 @@ onTuned={() => {
                   className="py-3 px-5 rounded-xl bg-[#121815] hover:bg-[#18221d] text-[#82a996] hover:text-[#c2d6cc] border border-[#2c3d34] hover:border-[#4d6e5e] font-bold uppercase tracking-wider transition-all cursor-pointer"
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                 >
-                  CHAPTER SELECT
+အခန်း ရွေးချယ်မှု
                 </button>
               </div>
             </motion.div>
@@ -4316,7 +4324,7 @@ onTuned={() => {
               <div className="relative w-full h-56 bg-[#0b0f0d] overflow-hidden">
                 <img
                   src={ROOM_4B_ASSETS.compassZoom}
-                  alt="Magnetic Compass"
+                  alt="သံလိုက်အိမ်မြှောင်"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121815] via-transparent to-transparent" />
@@ -4346,21 +4354,21 @@ onTuned={() => {
                     className="text-2xl sm:text-3xl font-black text-[#c2d6cc] uppercase tracking-wider"
                     style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                   >
-                    ANTIQUE MAGNETIC COMPASS
+                    ရှေးဟောင်း သံလိုက်အိမ်မြှောင်
                   </h3>
                 </div>
 
                 <p className="text-xs sm:text-sm font-mono text-[#c2d6cc]/90 leading-relaxed">
-                  An antique brass directional compass with N, E, S, W markings. Its magnetic needle twitches toward paranormal anomalies.
+                  N, E, S, W အမှတ်အသားများပါသော ရှေးဟောင်း ကြေးဝါ လမ်းညွှန်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများဆီသို့ တုန်ခါညွှန်ပြနေသည်။
                 </p>
 
                 <div className="p-3.5 rounded-xl bg-[#18221d]/60 border border-[#2c3d34] text-xs font-mono text-[#c2d6cc] leading-relaxed space-y-1">
                   <div className="font-bold text-[#82a996] uppercase flex items-center gap-1.5">
                     <Radio className="w-3.5 h-3.5 text-[#6ee7b7] animate-pulse" />
-                    <span>PARANORMAL ATTRACTION DETECTED:</span>
+                    <span>သဘာဝလွန် ဆွဲဆောင်မှု ဖော်ထုတ်တွေ့ရှိပြီ:</span>
                   </div>
                   <div className="text-[#c2d6cc]/90">
-                    The magnetic needle twitches erratically, trembling against the curved glass and pointing with uncanny persistence directly toward the locked room door.
+                    သံလိုက်အပ်သည် ကန္တာရ အကောင်းမွန် မဟုတ်ဘဲ တုန်ယင်နေပြီး၊ ကွေးနေသော မှန်ကို မှီတုန်ယင်ကာ သော့ခတ်ထားသော ခန်းတံခါးဆီသို့ မယုံနိုင်လောက်အောင် ဇွတ်ညွှန်ပြနေသည်။
                   </div>
                 </div>
 
@@ -4372,7 +4380,7 @@ onTuned={() => {
                     }}
                     className="px-6 py-2 rounded-xl bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
                   >
-                    CLOSE COMPASS VIEW
+                    အိမ်မြှောင်မြင်ကွင်းကို ပိတ်ရန်
                   </button>
                 </div>
               </div>
@@ -4416,19 +4424,19 @@ onTuned={() => {
               </div>
 
               <span className="text-xs font-mono font-bold tracking-widest text-red-400 uppercase">
-                TEMPORAL DISPLACEMENT COLLAPSED
+                အချိန်ကာလ ရွှေ့ပြောင်းမှု ပြိုကျခဲ့သည်
               </span>
               <h3
                 className="text-3xl sm:text-4xl font-black text-red-200 tracking-wider uppercase mt-1 mb-2"
                 style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
               >
-                INVESTIGATION FAILED
+                စုံစမ်းစစ်ဆေးမှု မအောင်မြင်ခဲ့ပါ
               </h3>
 
               <p className="text-[#c2a6a6] font-mono text-xs sm:text-sm mb-6 leading-relaxed">
                 {timeLeft <= 0
-                  ? 'The 10-minute temporal synchronization window expired. Your anchor to August 1998 dissolved into the void.'
-                  : 'Your mental composure shattered under the supernatural horror and suffocating atmosphere of the hostel.'}
+                  ? '၁၀ မိနစ် အချိန်ကာလ ထပ်တူပြုခြင်း ကာလ ကုန်ဆုံးသွားသည်။ ၁၉၉၈ ဩဂုတ်လသို့ သင့်ကို ဆုံချည်ထားသော ကျောက်ဆူးသည် လေဟာနယ်ထဲတွင် ပျော်ဝင်သွားသည်။'
+                  : 'သင်၏ စိတ်တည်ငြိမ်မှုသည် သဘာဝလွန် ကြောက်မက်ဖွယ်ရာများနှင့် အဆောင်၏ မွန်းကြပ်သော လေထုအောက်တွင် ပြိုကွဲသွားသည်။'}
               </p>
 
               <div className="w-full flex flex-col sm:flex-row gap-3">
@@ -4437,14 +4445,14 @@ onTuned={() => {
                   className="flex-1 py-3 px-4 rounded-xl bg-red-900/80 hover:bg-red-800 text-red-100 border border-red-700 hover:border-red-500 font-mono font-bold tracking-wider text-xs uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  <span>RESTART CHAPTER</span>
+                  <span>အခန်း ပြန်စရန်</span>
                 </button>
 
                 <button
                   onClick={() => navigate('/chapters')}
                   className="py-3 px-5 rounded-xl bg-[#161212] hover:bg-[#221a1a] text-stone-400 hover:text-stone-200 border border-stone-800 font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
                 >
-                  RETURN TO TITLE
+                  ခေါင်းစဉ်သို့ ပြန်သွားရန်
                 </button>
               </div>
             </motion.div>
@@ -4466,7 +4474,7 @@ onTuned={() => {
             {/* Large distressing horror typography */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-40">
               <span className="font-serif tracking-widest text-red-600 font-extrabold text-xl md:text-3xl uppercase drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse">
-                SOMETHING JUST SLIPPED PAST BEHIND ME...
+                တစ်ခုခု ငါ့နောက်က ရုတ်တရက် ဖြတ်ပြေးသွားတယ်...
               </span>
             </div>
           </div>
@@ -4485,32 +4493,32 @@ onTuned={() => {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16241d] border border-[#2b4235] text-[#86af99] text-[11px] font-mono tracking-widest uppercase mb-4">
                 <Sparkles className="w-3.5 h-3.5 text-[#4d6e5e]" />
-                CHAPTER 01 COMPLETED
+                အခန်း ၀၁ ပြီးပြည့်စုံပြီ
               </div>
 
               <h2
                 className="text-3xl sm:text-4xl font-black text-[#d1e3da] tracking-wider uppercase mb-2"
                 style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
               >
-                BLIND START • COMPLETED
+                မျက်စိမှိတ် အစမှတ် • ပြီးပြည့်စုံပြီ
               </h2>
 
               <p className="text-sm font-mono text-[#8fa89b] max-w-md mx-auto mb-6 leading-relaxed">
-                "— The flames burn cold blue... the bronze bell rings in my mind. The Guardian has awakened. —"
+                "— မီးလျှံများ အေးစက်စက် အပြာရောင်ထွက်နေသည်... ကြေးခေါင်းလောင်းသံ ငါ့စိတ်ထဲ မြည်နေသည်။ အစောင့်နတ် နိုးထလာပြီ။ —"
               </p>
 
               <div className="p-4 rounded-xl bg-[#151f1a]/80 border border-[#223229] text-left text-xs font-mono text-[#b4c9bf] mb-6 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400">STATUS:</span>
-                  <span className="text-[#86af99] font-bold">GUARDIAN NAT AWAKENED</span>
+                  <span className="text-stone-400">အခြေအနေ:</span>
+                  <span className="text-[#86af99] font-bold">အစောင့်နတ် နိုးထခဲ့သည်</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400">COMPOSURE MAINTAINED:</span>
+                  <span className="text-stone-400">စိတ်တည်ငြိမ်မှု ထိန်းသိမ်းနိုင်ခဲ့သည်:</span>
                   <span className="text-[#86af99] font-bold">{composure}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-stone-400">ROUTE UNLOCKED:</span>
-                  <span className="text-[#86af99] font-bold">CHAPTER 02 • WHISPERS IN THE COURTYARD</span>
+                  <span className="text-stone-400">လမ်းကြောင်း ဖွင့်လှစ်ပြီ:</span>
+                  <span className="text-[#86af99] font-bold">အခန်း ၀၂ • ဝင်းထဲက တီးတိုးသံများ</span>
                 </div>
               </div>
 
@@ -4522,7 +4530,7 @@ onTuned={() => {
                   }}
                   className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] text-xs font-mono font-bold tracking-wider uppercase transition-all shadow-lg hover:scale-105 cursor-pointer"
                 >
-                  CHAPTER SELECTION →
+                  အခန်း ရွေးချယ်မှု →
                 </button>
                 <button
                   onClick={() => {
@@ -4532,7 +4540,7 @@ onTuned={() => {
                   }}
                   className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#151e19] hover:bg-[#1b2721] border border-[#283830] text-[#a1b8ac] text-xs font-mono tracking-wider uppercase transition-all cursor-pointer"
                 >
-                  REPLAY CHAPTER 1
+                  အခန်း ၁ ပြန်ကစားရန်
                 </button>
               </div>
             </motion.div>
@@ -4543,7 +4551,7 @@ onTuned={() => {
       {/* 14. Chapter Transition Modal (Chapter 1 -> Chapter 2 or Chapter 2 -> Chapter 3) */}
       <ChapterTransitionModal
         isOpen={isChapterTransitionOpen}
-        overTitle="စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးစီးပြီ (PHASE COMPLETED)"
+        overTitle="စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးစီးပြီ (အဆင့် ပြီးစီး)"
         completedChapterTitle={
           stairwayGateUnlocked || currentChapter === 2 || currentChapter === 3 || Boolean(chapter2Completed)
             ? 'အခန်း ၂ - အမှန်တရားကို နားလည်ခြင်း'
@@ -4570,7 +4578,7 @@ onTuned={() => {
       <ChapterTransitionModal
         isOpen={isChapter3TransitionOpen}
         isFinalChapter={true}
-        overTitle="စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးစီးပြီ (PHASE COMPLETED)"
+        overTitle="စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးစီးပြီ (အဆင့် ပြီးစီး)"
         completedChapterTitle="အခန်း ၃ ပြီးစီးပြီ"
         saveButtonText="ပြီးဆုံးပြီ / ထွက်မည်"
         onFinish={handleFinishChapterThree}

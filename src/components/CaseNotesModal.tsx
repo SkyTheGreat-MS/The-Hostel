@@ -148,7 +148,7 @@ export const MASTER_CLUES: Record<string, ClueData> = {
     location: 'လော့ကာ ၃၂ (စန္ဒာ)',
     category: 'primary',
     description:
-      "စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော ခေါက်ထားသည့် စာလွှာများ... 'Sandar, လက်ဖက်ရည်ဆိုင် (tea shop) သွားတဲ့ကိစ္စကို မေ ရိပ်မိနေပြီ။ ငါတို့အကြောင်း မေ သိသွားရင် ငါတို့နှစ်ယောက်စလုံး ဒီအဆောင်မှာ ဆက်နေလို့ မရတော့ဘူး။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ထုတ်ပြသနေသည်။",
+      "စန္ဒာ (Sandar) ထံ လိပ်မူပြီး 'K.Z.' ဟု လက်မှတ်ရေးထိုးထားသော ခေါက်ထားသည့် စာလွှာများ... 'Sandar, လက်ဖက်ရည်ဆိုင်  သွားတဲ့ကိစ္စကို မေ ရိပ်မိနေပြီ။ ငါတို့အကြောင်း မေ သိသွားရင် ငါတို့နှစ်ယောက်စလုံး ဒီအဆောင်မှာ ဆက်နေလို့ မရတော့ဘူး။' မမမေ ၏ နောက်ကွယ်မှ သစ္စာဖောက်မှုကို ဖော်ထုတ်ပြသနေသည်။",
   },
   nat_testimony_may_murder: {
     id: 'nat_testimony_may_murder',
@@ -293,7 +293,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               </div>
               <div>
                 <span className="text-[9px] font-mono tracking-[0.2em] text-[#00ffb4]/50 uppercase font-semibold block">
-                  အမှုတွဲမှတ်တမ်း &bull; သြဂုတ် ၁၉၉၈ ဖြစ်ရပ် (CASE FILE)
+                  အမှုတွဲမှတ်တမ်း &bull; သြဂုတ် ၁၉၉၈ ဖြစ်ရပ် (အမှုမှတ်တမ်း)
                 </span>
                 <h2
                   className="text-2xl sm:text-3xl font-black text-[#d4ede3] tracking-[0.15em] uppercase leading-none"

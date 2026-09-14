@@ -162,7 +162,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       }
       setActiveMonologue?.(
         MONOLOGUE_LINES.STAIRWAY_GATE_LOCKED_NO_KEY ||
-          '— "A heavy brass padlock bound tight by rusted industrial chains. The gate seals the exterior stairwell leading down to the hostel courtyard and the main compound gate. It requires a heavy iron key." —'
+          '— လေးလံသော ကြေးဝါသော့ခလောက်ကို သံချေးတက်နေသော စက်မှုသုံးသံကြိုးများဖြင့် တင်းကျပ်စွာ ချည်နှောင်ထားသည်။ ထိုတံခါးသည် ကျောင်းဝင်း ရင်ပြင်နှင့် အဓိက အဆောင်နယ်နိမိတ် တံခါးထို့သို့ ဆင်းသည့် ပြင်ပလှေကားကို ပိတ်ထားသည်။ လေးလံသော သံသော့တစ်ခု လိုအပ်သည်။ —'
       );
       addDiscoveredClue?.('clue_stairway_gate_locked');
     } else {
@@ -356,7 +356,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/stairway_gate_inspection.jpg';
         }}
-        alt="Stairway Exit Accordion Gate Inspection"
+        alt="မြေညီထပ် လှေကားထွက်ပေါက်တံခါး"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />

@@ -36,7 +36,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
     setInventory((prev) => (prev.includes('battery_pair') ? prev : [...prev, 'battery_pair']));
     addDiscoveredClue('battery_pair_acquired');
     setActiveMonologue(
-      '— ဖယောင်းစက္ကူဖြင့် ထုပ်ထားသော လေးလံသည့် D-cell ဓာတ်ခဲကြီး နှစ်လုံး။ ငုတ်တိုင်များ သန့်ရှင်းပြီး ဓာတ်အားပြည့်ဝနေဆဲ ဖြစ်သည်။ —'
+      '— ဖယောင်းစက္ကူဖြင့် ထုပ်ထားသော လေးလံသည့် ဒီဆဲလ် ဓာတ်ခဲကြီး နှစ်လုံး။ ငုတ်တိုင်များ သန့်ရှင်းပြီး ဓာတ်အားပြည့်ဝနေဆဲ ဖြစ်သည်။ —'
     );
   };
 
@@ -46,25 +46,25 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
       addDiscoveredClue('clue_radio_freq_1042');
     }
     setActiveMonologue(
-      '— စာအုပ်အဖုံးဘေးတွင် ခဲတံဖြင့် ခြစ်ရေးထားသည် - \'104.2 AM — သန်းခေါင်ကျော် ဂစ်တာသံစဉ် လွင့်ပျံ့ရာနေရာ\'။ —'
+      '— စာအုပ်အဖုံးဘေးတွင် ခဲတံဖြင့် ခြစ်ရေးထားသည် - \'၁၀၄.၂ AM — သန်းခေါင်ကျော် ဂစ်တာသံစဉ် လွင့်ပျံ့ရာနေရာ\'။ —'
     );
   };
 
-  const batteriesTooltip = batteriesTaken ? 'ဖယောင်းစက္ကူ ဗလာ' : 'D-cell ဓာတ်ခဲကြီးများကို ယူမည်';
-  const notebookTooltip = 'ခြစ်ရာများပါသော ဗလာစာအုပ်ကို စစ်ဆေးမည်';
+  const batteriesTooltip = batteriesTaken ? 'ဖယောင်းစက္ကူ ဗလာ' : 'ဓာတ်ခဲများကို စစ်ဆေးရန်';
+  const notebookTooltip = 'ဓာတုဗေဒ မှတ်စုကို စစ်ဆေးရန်';
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black select-none">
       <img
         src="/assets/scenes/locker_10_interior.jpg"
-        alt="Locker 10 interior"
+        alt="လော့ကာ ၁၀ အတွင်းပိုင်း"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
 
       <InteractiveHotspot
         id="locker10_batteries"
-        name="Dry-Cell Batteries"
+        name="ဓာတ်ခဲအကြီးများ (Dry-Cell)"
         polygonPoints="50,44 63,45 63,65 50,63"
         cursorTooltip={batteriesTooltip}
         onClick={handleBatteriesClick}
@@ -72,7 +72,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
 
       <InteractiveHotspot
         id="locker10_notebook"
-        name="Chemistry Notebook"
+        name="ဓာတုဗေဒ မှတ်စုစာအုပ်"
         polygonPoints="48,24 55,24 61,42 53,42"
         cursorTooltip={notebookTooltip}
         onClick={handleNotebookClick}

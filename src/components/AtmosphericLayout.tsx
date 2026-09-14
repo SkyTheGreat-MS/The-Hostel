@@ -32,12 +32,12 @@ export interface AtmosphericLayoutProps {
 
 export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
   children,
-  headerTitle = "THE SPIRIT'S LABYRINTH",
-  headerSubtitle = 'HOSTEL 1998 • TEMPORAL INVESTIGATION',
+  headerTitle = "ဝိညာဉ်၏ ဝင်္ကပါ",
+  headerSubtitle = 'ဟော်စတယ် ၁၉၉၈ • အချိန်ကာလ စုံစမ်းစစ်ဆေးမှု',
   showRain = true,
   showBackNav = true,
   backTo = '/chapters',
-  backLabel = 'Back to Chapters',
+  backLabel = 'အခန်းများသို့ ပြန်သွားရန်',
   backgroundImage,
   hideBackground = false,
   scene,
@@ -80,7 +80,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
           <img
             src={getAssetBackground(effectiveBg)}
-            alt="Atmospheric Background"
+            alt="နောက်ခံ ရုပ်ပုံ"
             onError={(e) => {
               e.currentTarget.src = DEFAULT_BACKGROUND_JPG;
             }}
@@ -134,7 +134,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
             <Link
               to="/"
               className="group flex items-center gap-2.5 text-stone-400 hover:text-[#82a996] transition-colors"
-              title="Return to Main Menu"
+              title="ပင်မမီနူးသို့ ပြန်သွားရန်"
             >
               <div className="w-8 h-8 rounded-lg bg-[#18221d] border border-[#2c3d34] flex items-center justify-center group-hover:border-[#4d6e5e] group-hover:bg-[#22352b] transition-all shadow-md">
                 <Ghost className="w-4 h-4 text-[#82a996] group-hover:text-[#a7c4b5] transition-colors" />
@@ -145,7 +145,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
                     {headerTitle}
                   </span>
                   <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#18221d] border border-[#2c3d34] text-[#82a996]">
-                    1998 ECHO
+                    ၁၉၉၈ ပြန်သံ
                   </span>
                 </div>
                 <span className="text-[11px] text-[#7d998b] font-mono hidden sm:block">
@@ -169,7 +169,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
             <button
               onClick={toggleSound}
-              aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+              aria-label={isMuted ? 'အသံဖွင့်ရန်' : 'အသံပိတ်ရန်'}
               className={`p-2 rounded-lg border transition-all ${
                 isMuted
                   ? 'bg-[#111714] border-[#223028] text-stone-500 hover:text-stone-300'

@@ -7,57 +7,57 @@ export interface InventoryItemDef {
 export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
   bobby_pin: {
     id: 'bobby_pin',
-    shortLabel: 'Pin 4B',
+    shortLabel: 'ဆံ',
     icon: 'key',
   },
   wooden_table_leg: {
     id: 'wooden_table_leg',
-    shortLabel: 'Wood',
+    shortLabel: 'ပျဉ်',
     icon: 'hammer',
   },
   wooden_bat: {
     id: 'wooden_bat',
-    shortLabel: 'Wood',
+    shortLabel: 'ပျဉ်',
     icon: 'hammer',
   },
   brass_key: {
     id: 'brass_key',
-    shortLabel: 'Key 32',
+    shortLabel: 'သော့-၃၂',
     icon: 'key',
   },
   small_brass_key_32: {
     id: 'small_brass_key_32',
-    shortLabel: 'Key 32',
+    shortLabel: 'သော့-၃၂',
     icon: 'key',
   },
   nylon_rope: {
     id: 'nylon_rope',
-    shortLabel: 'Rope',
+    shortLabel: 'ကြိုး',
     icon: 'wind',
   },
   coiled_nylon_rope: {
     id: 'coiled_nylon_rope',
-    shortLabel: 'Rope',
+    shortLabel: 'ကြိုး',
     icon: 'wind',
   },
   black_beeswax_candle: {
     id: 'black_beeswax_candle',
-    shortLabel: 'Candle',
+    shortLabel: 'ဖယောင်း',
     icon: 'flame',
   },
   matchbox_three_stars: {
     id: 'matchbox_three_stars',
-    shortLabel: 'Match',
+    shortLabel: 'မီး',
     icon: 'flame',
   },
   bronze_prayer_bell: {
     id: 'bronze_prayer_bell',
-    shortLabel: 'Bell',
+    shortLabel: 'လောင်း',
     icon: 'bell',
   },
   magnetic_compass: {
     id: 'magnetic_compass',
-    shortLabel: 'Compass',
+    shortLabel: 'မြှောင်',
     icon: 'compass',
   },
   /**
@@ -67,7 +67,7 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
    */
   battery_pair: {
     id: 'battery_pair',
-    shortLabel: 'Batts',
+    shortLabel: 'ဓာတ်',
     icon: 'zap',
   },
   /**
@@ -75,37 +75,37 @@ export const ITEM_DATABASE: Record<string, InventoryItemDef> = {
    */
   letter_ko_zaw: {
     id: 'letter_ko_zaw',
-    shortLabel: 'Letter',
+    shortLabel: 'စာ',
     icon: 'mail',
   },
   clue_letter_4b: {
     id: 'clue_letter_4b',
-    shortLabel: 'Letter',
+    shortLabel: 'စာ',
     icon: 'mail',
   },
   key_14: {
     id: 'key_14',
-    shortLabel: 'Key 14',
+    shortLabel: 'သော့-၁၄',
     icon: 'key',
   },
   key_stairway_gate: {
     id: 'key_stairway_gate',
-    shortLabel: 'Gate Key',
+    shortLabel: 'တံခါးသော့',
     icon: 'key',
   },
   iron_pulley: {
     id: 'iron_pulley',
-    shortLabel: 'Pulley',
+    shortLabel: 'ဘီး',
     icon: 'anchor',
   },
   rusty_machete: {
     id: 'rusty_machete',
-    shortLabel: 'Blade',
+    shortLabel: 'ဓား',
     icon: 'sword',
   },
   cassette_tape_may: {
     id: 'cassette_tape_may',
-    shortLabel: 'Tape 1998',
+    shortLabel: 'တိတ်',
     icon: 'disc',
   },
 };

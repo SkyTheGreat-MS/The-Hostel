@@ -145,7 +145,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
                 type="button"
                 onClick={() => cycleDigit(idx, 'up')}
                 className="text-[#8c7447] hover:text-[#d4af37] text-xs font-bold p-1 cursor-pointer transition-transform active:-translate-y-0.5"
-                title={`Increment tumbler ${idx + 1}`}
+                title={`ဂဏန်းတံ မြှင့်တင်ရန် ${idx + 1}`}
               >
                 ▲
               </button>
@@ -158,7 +158,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
                 type="button"
                 onClick={() => cycleDigit(idx, 'down')}
                 className="text-[#8c7447] hover:text-[#d4af37] text-xs font-bold p-1 cursor-pointer transition-transform active:translate-y-0.5"
-                title={`Decrement tumbler ${idx + 1}`}
+                title={`ဂဏန်းတံ လျှော့ချရန် ${idx + 1}`}
               >
                 ▼
               </button>

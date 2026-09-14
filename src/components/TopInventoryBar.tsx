@@ -49,7 +49,7 @@ export const TopInventoryBar: React.FC<TopInventoryBarProps> = ({
         onClick={handleOpen}
         className="ml-1 px-2 py-1 rounded bg-[#18261f] hover:bg-[#23382c] border border-[#355241] text-[10px] font-mono tracking-wider text-[#a3c2b2] uppercase flex items-center gap-1 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
       >
-        <span>INV</span>
+        <span>ပစ္စည်း</span>
         {inventory.length > 3 && (
           <span className="text-[9px] text-amber-300 font-bold">+{inventory.length - 3}</span>
         )}

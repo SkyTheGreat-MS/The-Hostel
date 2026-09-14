@@ -300,7 +300,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/balcony_rain_night.jpg';
         }}
-        alt="Pathway 326 The Overlook Balcony"
+        alt="ရှေ့မြင်ကွင်း ဝရန်တာ"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 pointer-events-none" />
@@ -313,15 +313,15 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
         onReturn={handleReturnToEastFork}
         returnDestination="EAST FORK"
         areaZone="PATHWAY 326"
-        areaName="THE OVERLOOK BALCONY"
+        areaName="ရှေ့မြင်ကွင်း ဝရန်တာ"
       />
 
       {/* 4. Transistor Radio Hotspot on Bench */}
       <InteractiveHotspot
         id="balcony_transistor_radio"
-        name="Transistor Radio"
+        name="ထရန်စစ္စတာ ရေဒီယိုခုံ"
         polygonPoints="60,55 73,57 73,74 60,69"
-        cursorTooltip="[ထရန်စစ္စတာ ရေဒီယိုကို စစ်ဆေးမည်]"
+        cursorTooltip="ထရန်စစ္စတာ ရေဒီယိုကို စစ်ဆေးရန်"
         onClick={() => {
           sound.playBenchInspect();
           setActiveMonologue?.(null);
@@ -337,7 +337,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
             animate={{ opacity: isDissolving ? 0 : 1 }}
             transition={{ duration: isDissolving ? 1 : 0.4 }}
             src="/assets/characters/may_spectral_balcony.png"
-            alt="Spectral May"
+            alt="မမမေ၏ သရဲရိပ်"
             className={`absolute bottom-0 left-[7%] z-10 h-[68%] max-w-[38%] object-contain pointer-events-none drop-shadow-[0_0_24px_rgba(177,235,206,0.7)] ${
               isDissolving ? 'filter blur-sm brightness-125' : ''
             }`}
@@ -377,7 +377,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                       setShowHandoverPrompt(false);
                     }}
                     className="p-2 rounded-xl bg-black/85 border border-[#2d4436] text-stone-400 hover:text-white text-xs font-mono cursor-pointer"
-                    title="Dismiss"
+                    title="ပယ်ဖျက်"
                   >
                     ✕
                   </button>
@@ -405,7 +405,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
-              alt="Key 14"
+              alt="သော့ (၁၄)"
               className="w-20 h-20 object-contain drop-shadow-[0_0_12px_rgba(251,191,36,0.85)] rotate-45 pointer-events-none"
             />
             
@@ -414,8 +414,8 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
           {/* Interactive Key 14 Hotspot */}
           <InteractiveHotspot
             id="balcony_key_14_floor"
-            name="Tarnished Key (14)"
-            cursorTooltip="ဟောင်းနွမ်းနေသော သော့ (၁၄) ကို ယူမည်"
+            name="သော့ (၁၄)"
+            cursorTooltip="သော့ (၁၄) ကို ကောက်ယူရန်"
             polygonPoints="48,70 54,70 56,82 49,82"
             onClick={handlePickupKey14}
           />

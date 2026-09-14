@@ -88,7 +88,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           onError={(e) => {
             e.currentTarget.src = '/assets/scenes/caretaker_spectral_climax.jpg';
           }}
-          alt="Caretaker's Archive - Spectral Climax"
+          alt="အလုပ်သမား မှတ်တမ်းခန်း - သရဲဖြစ်စဉ် အထွတ်အထိပ်"
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
         />
 
@@ -114,15 +114,15 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
               setActiveMonologue?.('— မွန်းကြပ်နေသော ရုံးခန်းထဲမှ စိုစွတ်သော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
             }
           }}
-          returnDestination="EAST FORK"
-          areaZone="ROOM 101"
-          areaName="CARETAKER ARCHIVE"
+          returnDestination="အရှေ့လမ်းခွဲ"
+          areaZone="အခန်း ၁၀၁"
+          areaName="အလုပ်သမား မှတ်တမ်းခန်း"
         />
 
         {/* Hotspot Inspection Guard: Dark Doorway on bottom-left edge */}
         <InteractiveHotspot
           id="caretaker_dark_doorway"
-          name="Dark Doorway"
+          name="မှောင်မည်းသော တံခါးပေါက်"
           x={3}
           y={55}
           width={22}
@@ -152,7 +152,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
         onError={(e) => {
           e.currentTarget.src = PHASE_3_ASSETS.caretakerOfficeOverview || '/assets/scenes/caretaker_office_overview.jpg';
         }}
-        alt="Caretaker's Archive - Investigation"
+        alt="အလုပ်သမား မှတ်တမ်းခန်း - စစ်ဆေးမှုမြင်ကွင်း"
         className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
       />
 
@@ -167,21 +167,21 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             setActiveMonologue?.('— ရုံးခန်းထဲမှ စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ထွက်လာခဲ့သည်။ —');
           }
         }}
-        returnDestination="EAST FORK"
-        areaZone="ROOM 101"
-        areaName="CARETAKER ARCHIVE"
+        returnDestination="အရှေ့လမ်းခွဲ"
+        areaZone="အခန်း ၁၀၁"
+        areaName="အလုပ်သမား မှတ်တမ်းခန်း"
       />
 
       {/* 1. Wooden Supply Shelf (2 candles) */}
       <InteractiveHotspot
         id="caretaker_supply_shelf"
-        name="2 Black Candles on the shelf"
+        name="စင်ပေါ်က ဖယောင်းတိုင်နက် ၂ တိုင်"
         x={89}
         y={45}
         width={10}
         height={22}
         shape="rect"
-        cursorTooltip={!hasCaretakerCandles ? '[အနက်ရောင် ပျားဖယောင်းတိုင် ၂ တိုင် ယူမည်]' : '[ပစ္စည်းတင်စင် (ဗလာ)]'}
+        cursorTooltip={!hasCaretakerCandles ? '[ဖယောင်းတိုင်များကို ယူရန်]' : '[ပစ္စည်းတင်စင် (ဗလာ)]'}
         onClick={() => {
           if (!hasCaretakerCandles) {
             setHasCaretakerCandles && setHasCaretakerCandles(true);
@@ -202,13 +202,13 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
       {/* 2. Glass Counter Cabinet (Bronze Prayer Bell) */}
       <InteractiveHotspot
         id="caretaker_glass_cabinet"
-        name="Glass Display Cabinet"
+        name="မှန်ပြတင်းကြီး ခင်းကျင်းခန်း"
         x={5}
         y={56}
         width={18}
         height={30}
         shape="rect"
-        cursorTooltip={!hasBronzeBell ? '[ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်းကို ယူမည်]' : '[မှန်ဘောင် (ဗလာဖြစ်နေသည်)]'}
+        cursorTooltip={!hasBronzeBell ? '[ခင်းကျင်းခန်းကို စစ်ဆေးရန်]' : '[မှန်ဘောင် (ဗလာဖြစ်နေသည်)]'}
         onClick={() => {
           if (!hasBronzeBell) {
             addInventoryItem && addInventoryItem('bronze_prayer_bell');
@@ -216,7 +216,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— မှန်ဘောင်ထဲတွင် - ကြေးဝါဖြင့် ပြုလုပ်ထားသော ခေါင်းလောင်းတစ်လုံး ရှိသည်။ ဘေးပတ်လည်တွင် ရိုးရာနတ်စာများ ထွင်းထုထားသည်။ ရရှိပစ္စည်း - ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်း (Bronze Prayer Bell)။ —'
+                '— မှန်ဘောင်ထဲတွင် - ကြေးဝါဖြင့် ပြုလုပ်ထားသော ခေါင်းလောင်းတစ်လုံး ရှိသည်။ ဘေးပတ်လည်တွင် ရိုးရာနတ်စာများ ထွင်းထုထားသည်။ ရရှိပစ္စည်း - ယဇ်ပူဇော်ရာ ကြေးဝါခေါင်းလောင်း (ကြေးခေါင်းလောင်းငယ်)။ —'
               );
           } else {
             sound.playPaperRustle();
@@ -228,11 +228,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
       {/* 3. Center Desk Ledger (Chapter 1 Conclusion Trigger) */}
       <InteractiveHotspot
         id="caretaker_desk_ledger"
-        name="Caretaker 1998 Ledger"
+        name="အလုပ်သမား ၁၉၉၈ မှတ်တမ်းစာအုပ်"
         polygonPoints="50,54 80,60 83,85 39,65"
         cursorTooltip={
           hasCaretakerCandles && hasBronzeBell
-            ? '[ဖွင့်ထားသော မှတ်တမ်းစာအုပ်ကို ဖတ်မည် — အခန်း ၁ အဆုံးသတ်ရန်]'
+            ? '[မှတ်တမ်းစာအုပ်ကို ဖတ်ရန်]'
             : '[အဆောင်မှူး စားပွဲကို စစ်ဆေးမည်]'
         }
         onClick={() => {

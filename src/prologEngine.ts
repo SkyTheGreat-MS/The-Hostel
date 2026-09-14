@@ -28,8 +28,8 @@ export function createInitialState(selectedMC: MCId = 'thazin'): GameState {
     ritePerformed: null,
     finalAccusation: null,
     historyLog: [
-      'Ritual performed in 2026. The offering glass shattered.',
-      'You awaken alone on the dusty floorboards of Room 4B in August 1998.',
+      '၂၀၂၆ ခုနှစ်တွင် ရိုးရာထုံးတမ်း ပြုလုပ်ခဲ့သည်။ ပူဇော်သော ဖန်ခွက် ကွဲအက်သွားသည်။',
+      '၁၉၉၈ ခုနှစ် ဩဂုတ်လတွင် အခန်း ၄B ၏ ဖုန်ထူသော ကြမ်းခင်းပေါ်တွင် သင်တစ်ယောက်တည်း နိုးထလာသည်။',
     ],
     inventory: [],
     activeInspectSubScene: 'main',
@@ -136,7 +136,7 @@ export function exploreLocation(state: GameState, locationId: string): GameState
         discoveredClues: Array.from(new Set([...nextState.discoveredClues, 'glitch_body_glimpse'])),
         historyLog: [
           ...nextState.historyLog,
-          `Exploring ${loc ? loc.name : locationId}... A horrifying distortion ripples across the corridor. A glitching spectral silhouette manifests and vanishes, leaving a temporal residue. (Chapter 1 Complete — Chapter 2 Unlocked!)`,
+          `${loc ? loc.name : locationId} ကို စူးစမ်းနေသည်... ကြောက်မက်ဖွယ် ပုံပျက်မှုတစ်ခု စင်္ကြံအတွင်း လှိုင်းထစ်သွားသည်။ တုန်ခါနေသော သဘာဝလွန် အရိပ်ရုပ်သည် ပေါ်လာပြီး ပျောက်ကွယ်သွားကာ အချိန်ပိုင်း အကြွင်းအကျန်ကို ချန်ထားခဲ့သည်။ (အခန်း ၁ ပြီးပြည့်စုံ — အခန်း ၂ ဖွင့်လှစ်ပြီ!)`,
         ],
       };
       nextState = applyComposureDamage(nextState, 10, 'supernatural_direct');
@@ -146,7 +146,7 @@ export function exploreLocation(state: GameState, locationId: string): GameState
         explorationCount: newCount,
         historyLog: [
           ...nextState.historyLog,
-          `Wandered through ${loc ? loc.name : locationId}. The air is freezing and the silence is deafening (${newCount}/3 explorations).`,
+          `${loc ? loc.name : locationId} ကို ဖြတ်သန်း လျှောက်လှမ်းခဲ့သည်။ လေထုသည် အလွန်အေးပြီး တိတ်ဆိတ်မှုက နားပင်းလောက်သည် (${newCount}/၃ စူးစမ်းမှု).`,
         ],
       };
       nextState = applyComposureDamage(nextState, 4, 'supernatural_direct');

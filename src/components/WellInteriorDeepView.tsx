@@ -171,7 +171,7 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
       {/* Background Graphic */}
       <img
         src="/assets/scenes/well_interior_deep.jpg"
-        alt="Deep Well Interior and Drainage Grate"
+        alt="ရေတွင်းနက် အတွင်းခွက်"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
       />
 

@@ -411,8 +411,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           {/* Guardian Nat Sprite */}
           <img
             src="/assets/characters/guardian_nat_neutral.png"
-            alt="Hostel Guardian Nat"
-            title="Inquire with Guardian Nat"
+            alt="အစောင့်နတ်"
+            title="အစောင့်နတ်အား မေးမြန်းရန်"
             onClick={() => {
               sound.playGhostWhisper();
               setIsNatDialogueOpen(true);
@@ -659,17 +659,17 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredSocket({
-              text: '[Ring Ceremonial Bell]',
+              text: '[ကြေးခေါင်းလောင်း လှုပ်ခတ်ရန်]',
               x: 74.0,
               y: 40.0,
             });
           }}
           onMouseLeave={() => setHoveredSocket(null)}
-          title="Ring Ceremonial Bronze Bell"
+          title="ကြေးခေါင်းလောင်း လှုပ်ခတ်ရန်"
           className="absolute z-30 cursor-pointer pointer-events-auto group"
           style={{ left: '68.0%', top: '42.0%', width: '12%', height: '24%' }}
         >
-          <span className="sr-only">Ring Bronze Bell</span>
+          <span className="sr-only">ကြေးခေါင်းလောင်း လှုပ်ခတ်မည်</span>
           {/* Subtle pulsing highlight around the bell */}
           <div className="w-full h-full rounded-full group-hover:bg-amber-400/10 border border-transparent group-hover:border-amber-300/30 transition-all duration-300" />
         </button>

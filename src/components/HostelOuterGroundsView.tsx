@@ -95,7 +95,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
       {/* Background Graphic */}
       <img
         src="/assets/scenes/hostel_outer_grounds_rain.jpg"
-        alt="Hostel Outer Grounds"
+        alt="မြေညီထပ် အဆောင်ဝင်းနှင့် ခြံဝတံခါး"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/hostel_outer_grounds_rain.jpg';
@@ -110,7 +110,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         {/* Hotspot 1: Return to Building / Stairway */}
         <InteractiveHotspot
           id="grounds_stairway_exit"
-          name="Return to Stairway Entrance"
+          name="လှေကားအဝင်ဝသို့ ပြန်သွားရန်"
           cursorTooltip="လှေကားအဝင်ဝသို့ ပြန်သွားမည်"
           polygonPoints="0,32 15,30 15,65 0,65"
           onClick={handleReturnToStairway}
@@ -119,7 +119,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         {/* Hotspot 2: Main Compound Gate */}
         <InteractiveHotspot
           id="grounds_compound_gate"
-          name="Perimeter Compound Gate"
+          name="နယ်နိမိတ် ခြံဝတံခါး"
           cursorTooltip="ခြံဝင်းတံခါးကြီးကို စစ်ဆေးမည်"
           polygonPoints="34,22 57,22 57,65 34,65"
           onClick={handleInspectCompoundGate}
@@ -128,7 +128,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         {/* Hotspot 3: Subterranean Bicycle Garage Ramp */}
         <InteractiveHotspot
           id="grounds_garage_ramp"
-          name="Subterranean Garage Ramp"
+          name="မြေအောက်ကားဂိုဒေါင် လျှောစောက်လမ်း"
           cursorTooltip="ဂိုဒေါင်ထဲသို့ ဆင်းသွားမည်"
           polygonPoints="1,66 28,66 43,80 32,99 0,99"
           onClick={handleEnterGarage}
@@ -137,7 +137,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
         {/* Hotspot 4: Ancient Banyan Tree & Well Curb */}
         <InteractiveHotspot
           id="grounds_banyan_well"
-          name="Ancient Banyan Tree & Well"
+          name="ရှေးဟောင်း ညောင်ပင်နှင့် ရေတွင်း"
           cursorTooltip="ညောင်ပင်ကြီးနှင့် ရေတွင်းဆီသို့ ချဉ်းကပ်မည်"
           polygonPoints="58,0 100,0 100,92 58,92"
           onClick={handleInspectBanyanWell}

@@ -53,7 +53,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
       {/* Background Graphic */}
       <img
         src="/assets/scenes/compound_iron_gate_inspection.jpg"
-        alt="Perimeter Compound Gate Close-up"
+        alt="အဆောင် နယ်နိမိတ် ခြံဝတံခါး"
         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         onError={(e) => {
           e.currentTarget.src = 'assets/scenes/compound_iron_gate_inspection.jpg';

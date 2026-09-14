@@ -23,8 +23,8 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
   completedChapterTitle = 'အခန်း ၁: အမှောင်ထဲက အစ',
   nextPhaseTag = 'နောက်တစ်ဆင့်သို့ ဝင်ရောက်နေသည်',
   nextChapterTitle,
-  continueButtonText = 'Continue Investigation →',
-  saveButtonText = 'Save & Exit to Chapter Selection',
+  continueButtonText = 'စုံစမ်းစစ်ဆေးမှု ဆက်လုပ်ရန် →',
+  saveButtonText = 'အခန်းရွေးချယ်မှုသို့ သိမ်းဆည်းပြီး ထွက်ရန်',
   isFinalChapter = false,
   onContinueToChapterTwo,
   onContinue,
@@ -130,7 +130,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
                 : 'w-full sm:w-1/2 py-3 px-4 bg-[#141b17] hover:bg-[#1a241f] border border-[#273830] text-[#8fa89b] hover:text-[#c2d6cc] text-xs'
             } rounded-lg font-mono tracking-wider uppercase transition-all cursor-pointer`}
           >
-            {isFinalChapter ? (saveButtonText || 'FINISH / EXIT') : saveButtonText}
+            {isFinalChapter ? (saveButtonText || 'ပြီးဆုံး / ထွက်ရန်') : saveButtonText}
           </button>
         </motion.div>
       </div>

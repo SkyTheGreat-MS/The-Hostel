@@ -61,17 +61,17 @@ export const RouteCard: React.FC<RouteCardProps> = ({
           </span>
           {lockState === 'locked' && (
             <span className="text-stone-400 flex items-center gap-1 text-[9px] font-mono shrink-0">
-              <Lock className="w-3 h-3" /> LOCKED
+              <Lock className="w-3 h-3" /> သော့ခတ်ထားသည်
             </span>
           )}
           {lockState === 'unlocked' && (
             <span className="text-[#6ee7b7] flex items-center gap-1 text-[9px] font-mono shrink-0">
-              <Unlock className="w-3 h-3" /> UNLOCKED
+              <Unlock className="w-3 h-3" /> သော့ဖွင့်ထားသည်
             </span>
           )}
           {lockState === 'abandoned' && (
             <span className="text-[#8fa89b] flex items-center gap-1 text-[9px] font-mono shrink-0">
-              <Lock className="w-3 h-3 text-[#5a7a69]" /> ABANDONED
+              <Lock className="w-3 h-3 text-[#5a7a69]" /> စွန့်ပစ်ထားသည်
             </span>
           )}
         </div>

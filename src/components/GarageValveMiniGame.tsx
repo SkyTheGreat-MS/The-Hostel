@@ -240,7 +240,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           {/* 1. Drained Garage Background (Gains opacity as progress increases) */}
           <img
             src="/assets/scenes/garage_subterranean_rain.jpg"
-            alt="Drained Garage Background"
+            alt="ရေခန်းခြောက်ထားသော ကားဂိုဒေါင်နောက်ခံ"
             className="absolute inset-0 w-full h-full object-cover"
             style={{ opacity: Math.max(0.15, progress / 100) }}
             onError={(e) => {
@@ -251,7 +251,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           {/* 2. Submerged Garage Background (Fades out as progress increases) */}
           <img
             src="/assets/scenes/garage_subterranean_rain_submerged.jpg"
-            alt="Submerged Garage Background"
+            alt="ရေမြုပ်နေသော ကားဂိုဒေါင်နောက်ခံ"
             className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
             style={{ opacity: Math.max(0, 1 - progress / 90) }}
             onError={(e) => {
@@ -297,10 +297,10 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           <div className="w-full text-center pb-4 border-b border-[#1c2b22] space-y-1">
             <div className="flex items-center justify-center gap-2 text-[#799988] font-mono text-[11px] tracking-[0.25em] uppercase">
               <Droplets className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-              <span>SUBTERRANEAN SLUICE SYSTEM • မြေအောက် ရေနုတ်အဆို့ရှင်</span>
+              <span>မြေအောက် ရေလွှဲစနစ် • မြေအောက် ရေနုတ်အဆို့ရှင်</span>
             </div>
             <h2 className="font-serif italic text-lg sm:text-2xl text-[#d4e4db] tracking-wide">
-              လေးလံသော ရေနုတ်အဆို့ရှင်ဘီး (Drainage Valve)
+              လေးလံသော ရေနုတ်အဆို့ရှင်ဘီး (ရေမြောင်း ပိုက်ချောက်ခေါင်း)
             </h2>
           </div>
 
@@ -331,7 +331,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           {/* Interactive Cast-Iron Valve Wheel Graphic */}
           <div className="relative w-52 h-52 sm:w-64 sm:h-64 my-2 flex items-center justify-center cursor-pointer group"
             onClick={handleTurnValve}
-            title="Click or press Spacebar to turn valve"
+            title="အဆို့ရှင်ကို လှည့်ရန် ကလစ်နှိပ်ပါ သို့မဟုတ် SPACEBAR နှိပ်ပါ"
           >
             {/* Pressure / Momentum Ripple on Keypress */}
             {isPressedVisual && (
