@@ -121,7 +121,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_compound_gate"
           name="Perimeter Compound Gate"
           cursorTooltip="Examine Compound Gate"
-          polygonPoints="34,22 57,22 57,65 34,65"
+          polygonPoints="44,28 58,28 58,54 44,54"
           onClick={handleInspectCompoundGate}
         />
 
@@ -130,7 +130,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_garage_ramp"
           name="Subterranean Garage Ramp"
           cursorTooltip="Descend into Garage"
-          polygonPoints="1,66 28,66 43,80 32,99 0,99"
+          polygonPoints="20,55 42,55 46,68 34,78 16,78 13,66"
           onClick={handleEnterGarage}
         />
 
@@ -139,7 +139,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_banyan_well"
           name="Ancient Banyan Tree & Well"
           cursorTooltip="Approach Banyan Tree & Well"
-          polygonPoints="58,0 100,0 100,92 58,92"
+          polygonPoints="58,9 90,9 90,86 58,86"
           onClick={handleInspectBanyanWell}
         />
       </div>

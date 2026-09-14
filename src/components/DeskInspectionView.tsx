@@ -125,7 +125,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
           } else {
             sound.playMenuSelect();
             setActiveMonologue(
-              '— The chipped enamel mug has already been shifted aside. Nothing else underneath. —'
+              '— ပဲ့နေသော စတီးကြွေခွက်ကို ဖယ်ထားပြီးဖြစ်သည်။ အောက်တွင် ဘာမျှမရှိတော့ပါ။ —'
             );
           }
         }}
@@ -167,7 +167,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
         onClick={() => {
           sound.playPaperRustle();
           setActiveMonologue(
-            "— Physics and chemistry lecture notes from 1998... Someone scribbled: 'Strange voltage drops and vibrations in the hallway past 11 PM...' —"
+            "— ၁၉၉၈ ခုနှစ်က ရူပဗေဒနှင့် ဓာတုဗေဒ မှတ်စုများ... 'ည ၁၁ နာရီနောက်ပိုင်း စင်္ကြံလမ်းမှာ ထူးဆန်းတဲ့ ဗို့အားကျဆင်းမှုတွေနဲ့ တုန်ခါမှုတွေ ဖြစ်နေတယ်...' —"
           );
         }}
       />
@@ -213,10 +213,10 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
               {/* Letter Parchment Reader Content */}
               <div className="relative rounded-xl bg-[#080d0a]/90 border border-[#1e2f25] p-5 sm:p-6 mb-5 font-mono text-xs sm:text-sm leading-relaxed text-[#bad3c7] shadow-inner space-y-3">
                 <div className="text-[11px] text-[#5e8270] tracking-wider uppercase border-b border-[#18261e] pb-1">
-                  [ Creased lined notebook page — Hasty Burmese script ]
+                  [ ခေါက်ရာတွန့်နေသော မျဉ်းကျား ဗလာစာအုပ်စာရွက် — ကမန်းကတန်းရေးထားသော မြန်မာစာ ]
                 </div>
                 <p className="italic text-[#d8eae1] tracking-wide pt-1">
-                  “May — I left the tape where we said, behind the vent in 326. Don't let Sandar take the room key from your locker. Meet me on the terrace when the curfew bell rings. — Ko Zaw”
+                  “မေ — ကိုယ်တို့ပြောထားတဲ့ နေရာမှာ တိပ်ခွေထားခဲ့တယ်... — ကိုဇော်”
                 </p>
               </div>
 

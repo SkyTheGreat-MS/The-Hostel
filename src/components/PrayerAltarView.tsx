@@ -185,8 +185,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (candlesPlaced[spikeIndex]) {
       setActiveMonologue(
         candlesLit[spikeIndex]
-          ? "The tallow flame burns cold and steady."
-          : "A black beeswax candle is already mounted here."
+          ? "ဖယောင်းမီးတောက်သည် အေးစက်ငြိမ်သက်စွာ လောင်ကျွမ်းနေသည်။"
+          : "အနက်ရောင် ဖယောင်းတိုင်တစ်တိုင်ကို ဤနေရာတွင် တပ်ဆင်ထားပြီးဖြစ်သည်။"
       );
       return;
     }
@@ -253,7 +253,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     const hasBellItem = hasBronzeBell || inventory.includes('bronze_prayer_bell');
     if (!hasBellItem) {
       sound.playPaperRustle();
-      setActiveMonologue("— An empty wooden ring. It was crafted to hold a ceremonial bell. —");
+      setActiveMonologue("— သစ်သားကွင်းအလွတ်တစ်ခု။ ၎င်းကို ပူဇော်ပွဲသုံး ခေါင်းလောင်းချိတ်ဆွဲရန် ပြုလုပ်ထားခြင်းဖြစ်သည်။ —");
       return;
     }
 
@@ -314,7 +314,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     sound.playChime(true);
     sound.playGhostWhisper();
     setActiveMonologue(
-      "— The resonant chime of the bronze bell shivers across the damp masonry... A cold wind sweeps through the hall. The Guardian Nat has awakened. —"
+      "— ကြေးခေါင်းလောင်း၏ ပဲ့တင်သံသည် စိုစွတ်နေသော နံရံများကြားတွင် တုန်ခါသွားသည်... လေအေးတစ်ချက် ခန်းမထဲသို့ ဖြတ်တိုက်သွားသည်။ နတ်စောင့်ကြီး နိုးထလာပြီဖြစ်သည်။ —"
     );
   };
 
@@ -326,7 +326,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playGhostWhisper();
       setDialogueState({
         speaker: 'Hostel Guardian Nat',
-        line: 'M၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။',
+        line: '၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။',
         active: true,
       });
       return;

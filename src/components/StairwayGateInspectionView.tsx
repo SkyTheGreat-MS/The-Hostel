@@ -147,7 +147,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
       }
       setActiveMonologue?.(
         MONOLOGUE_LINES.STAIRWAY_GATE_LOCKED_NO_KEY ||
-          '— "A heavy brass padlock bound tight by rusted industrial chains. The gate seals the exterior stairwell leading down to the hostel courtyard and the main compound gate. It requires a heavy iron key." —'
+          '— "သံချေးတက်နေသော သံကြိုးတုတ်ကြီးများဖြင့် တင်းကျပ်စွာ ချည်နှောင်ထားသည့် လေးလံသော ကြေးဝါသော့ခလောက်ကြီး..." —'
       );
       addDiscoveredClue?.('clue_stairway_gate_locked');
     } else {
@@ -224,7 +224,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
 
     // 5. Display the completion thought line
     setActiveMonologue?.(
-      '— The iron key turns with a sharp snap. The rusted chains fall away, and the accordion gate slides open to the cold night air. —'
+      '— သံသော့တံသည် ကျယ်လောင်သော ကလစ်အသံဖြင့် လည်သွားသည်... —'
     );
 
     // 6. After a 1.2-second delay, mount ChapterTransitionModal directly

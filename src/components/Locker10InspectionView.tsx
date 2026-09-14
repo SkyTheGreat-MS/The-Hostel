@@ -46,7 +46,7 @@ export const Locker10InspectionView: React.FC<Locker10InspectionViewProps> = ({
       addDiscoveredClue('clue_radio_freq_1042');
     }
     setActiveMonologue(
-      '— Scratched into the cover margin in pencil: \'104.2 AM — where the acoustic session plays past midnight\'. —'
+      '— "104.2 AM" ရေးခြစ်ထားသော မှတ်စု။ —'
     );
   };
 

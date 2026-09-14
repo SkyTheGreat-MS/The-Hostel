@@ -105,7 +105,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
           onClick={() => {
             if (!hasSmallBrassKey) {
               sound.playLockJiggle();
-              setActiveMonologue("Locker 32 is locked shut. The keyhole is small and brass.");
+              setActiveMonologue("လော့ကာ ၃၂ ကို သော့ခတ်ထားသည်။ သော့ပေါက်သည် သေးငယ်ပြီး ကြေးဝါရောင်ဖြစ်သည်။");
             } else {
               sound.playKeyUnlock();
               setPhase3Location('locker_32');

@@ -201,7 +201,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           id="garage_drain_valve"
           name="Drainage Valve Wheel"
           cursorTooltip={garageDrained ? "Examine Open Valve" : "Turn Drainage Valve"}
-          polygonPoints="12,45 22,45 22,62 12,62"
+          polygonPoints="29,42 43,42 43,66 29,66"
           onClick={handleDrainValve}
         />
 
@@ -219,7 +219,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           id="garage_caretaker_log"
           name="Caretaker's Maintenance Log"
           cursorTooltip="Read Caretaker's Log"
-          polygonPoints="68,48 76,48 76,58 68,58"
+          polygonPoints="11,36 30,36 30,52 11,52"
           onClick={handleInspectLog}
         />
 
@@ -229,7 +229,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
             id="garage_tool_pulley"
             name="Heavy Iron Pulley"
             cursorTooltip={garageDrained ? "Take Iron Pulley" : "Examine Submerged Object"}
-            polygonPoints="77,52 84,52 84,65 77,65"
+            polygonPoints="4,53 18,53 18,77 4,77"
             onClick={handleTakePulley}
           />
         )}
@@ -240,7 +240,7 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
             id="garage_tool_machete"
             name="Rusty Machete"
             cursorTooltip={garageDrained ? "Take Rusty Machete" : "Examine Submerged Blade"}
-            polygonPoints="85,42 93,42 93,68 85,68"
+            polygonPoints="1,84 26,68 31,72 16,85"
             onClick={handleTakeMachete}
           />
         )}

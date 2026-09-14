@@ -287,7 +287,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
 
     // 6. Notification banner
     setRoomBanner?.({
-      text: "Retrieved Key 14 from the balcony terrace. Corresponds to Locker 14.",
+      text: "လသာဆောင် ဝရန်တာမှ လော့ကာ ၁၄ ၏ သော့ကို ရရှိပါပြီ။",
       type: 'success',
     });
   };

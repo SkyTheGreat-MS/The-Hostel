@@ -73,7 +73,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
     } else if (setPhase3Location) {
       setPhase3Location('east_fork');
       if (setActiveMonologue) {
-        setActiveMonologue('— Stepped out of the suffocating office back into the damp corridor fork. —');
+        setActiveMonologue('— မွန်းကျပ်ဖွယ်ကောင်းသော ရုံးခန်းထဲမှထွက်ကာ စိုစွတ်နေသော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ရောက်လာသည်။ —');
       }
     }
   };
@@ -111,7 +111,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
               onStepBack();
             } else {
               setPhase3Location?.('east_fork');
-              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+              setActiveMonologue?.('— မွန်းကျပ်ဖွယ်ကောင်းသော ရုံးခန်းထဲမှထွက်ကာ စိုစွတ်နေသော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ရောက်လာသည်။ —');
             }
           }}
           returnDestination="EAST FORK"
@@ -135,7 +135,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
               onStepBack();
             } else {
               setPhase3Location?.('east_fork');
-              setActiveMonologue?.('— Stepped out of the suffocating office back into the damp corridor fork. —');
+              setActiveMonologue?.('— မွန်းကျပ်ဖွယ်ကောင်းသော ရုံးခန်းထဲမှထွက်ကာ စိုစွတ်နေသော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ရောက်လာသည်။ —');
             }
           }}
         />
@@ -164,7 +164,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             onStepBack();
           } else {
             setPhase3Location?.('east_fork');
-            setActiveMonologue?.('— Stepped out of the office back into the corridor fork. —');
+            setActiveMonologue?.('— မွန်းကျပ်ဖွယ်ကောင်းသော ရုံးခန်းထဲမှထွက်ကာ စိုစွတ်နေသော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ရောက်လာသည်။ —');
           }
         }}
         returnDestination="EAST FORK"
@@ -190,11 +190,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— On the high shelf: Locker 09 က ဖယောင်းတိုင်နဲ့ တစ်ပုံစံတည်း အနက်ရောင်ဖယောင်းတိုင် ၂ တိုင်ရှိတယ်။ အခုဆို ၃ တိုင်ပြည့်ပြီ။—'
+                '— အပေါ်စင်တွင်: လော့ကာ ဝ၉ က ဖယောင်းတိုင်နဲ့ တစ်ပုံစံတည်း အနက်ရောင်ဖယောင်းတိုင် ၂ တိုင်ရှိတယ်။ အခုဆို ၃ တိုင်ပြည့်ပြီ။—'
               );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue && setActiveMonologue('— The supply shelf is bare now. Nothing remains except dried cobwebs. —');
+            setActiveMonologue && setActiveMonologue('— ပစ္စည်းတင်စင်ပေါ်တွင် ယခု ဘာမှမရှိတော့ပါ။ ခြောက်သွေ့နေသော ပင့်ကူအိမ်များမှလွဲ၍ ဘာမျှမကျန်တော့ပါ။ —');
           }
         }}
       />
@@ -216,11 +216,11 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— Inside the glass display: မှန်ဘောင်ထဲမှာ ကြေးဝါနဲ့လုပ်ထားတဲ့ ခေါင်းလောင်းတစ်လုံးရှိတယ်။ အနားမှာ ရိုးရာနတ်စာတွေ ထွင်းထားတယ်။ Acquired: Bronze Prayer Bell. —'
+                '— မှန်ပြခန်းအတွင်း: မှန်ဘောင်ထဲမှာ ကြေးဝါနဲ့လုပ်ထားတဲ့ ခေါင်းလောင်းတစ်လုံးရှိတယ်။ အနားမှာ ရိုးရာနတ်စာတွေ ထွင်းထားတယ်။ ရရှိသောပစ္စည်း: ကြေးဆုတောင်းခေါင်းလောင်း။ —'
               );
           } else {
             sound.playPaperRustle();
-            setActiveMonologue && setActiveMonologue('— The glass display cabinet is empty. —');
+            setActiveMonologue && setActiveMonologue('— မှန်ပြခန်းမှာ အလွတ်ဖြစ်နေသည်။ —');
           }
         }}
       />

@@ -63,7 +63,7 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   {
     id: 'inquiry_who_haunts',
     label: 'ဒီအဆောင်ကို ခြောက်လှန့်နေတာ ဘယ်သူလဲ?',
-    playerLine: 'Who is the woman haunting this wing?',
+    playerLine: 'ဒီအဆောင်ကို ခြောက်လှန့်နေတဲ့ အမျိုးသမီးက ဘယ်သူလဲ။',
     clueId: 'nat_testimony_may_murder',
     natResponses: [
       {
@@ -77,7 +77,7 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   {
     id: 'inquiry_locker_14_key',
     label: 'Locker 14 သော့က ဘယ်မှာလဲ?',
-    playerLine: 'Where can I find the key to Locker 14?',
+    playerLine: 'လော့ကာ ၁၄ ရဲ့ သော့ကို ဘယ်မှာ ရှာတွေ့နိုင်မလဲ။',
     clueId: 'nat_testimony_locker_key',
     natResponses: [
       {
@@ -92,7 +92,7 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   {
     id: 'inquiry_caretaker_attack',
     label: "အဆောင်မှူးရုံးမှာ ငါ့ကို ဘာလို့တိုက်ခိုက်တာလဲ?",
-    playerLine: "Why did she attack me in the Caretaker's office?",
+    playerLine: "ကျောင်းစောင့်ရုံးခန်းထဲမှာ သူမ ကျွန်တော့်ကို ဘာလို့ တိုက်ခိုက်ခဲ့တာလဲ။",
     clueId: 'nat_testimony_office_attack',
     natResponses: [
       {
@@ -106,7 +106,7 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   {
     id: 'inquiry_dried_well',
     label: 'အပြင်က ရေတွင်းခြောက်ဆီ ဘယ်လိုသွားရမလဲ?',
-    playerLine: 'How do I reach the dried well outside?',
+    playerLine: 'အပြင်က ရေတွင်းခြောက်ဆီကို ဘယ်လိုသွားရမလဲ။',
     clueId: 'nat_testimony_banyan_well',
     natResponses: [
       {
@@ -175,7 +175,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
   const [activeTab, setActiveTab] = useState<'inventory' | 'clues'>('inventory');
   const [selectedTargetId, setSelectedTargetId] = useState<string | null>(null);
   const [activeResponseText, setActiveResponseText] = useState<string>(
-    activeResponse || 'Mortals who tread the forgotten halls of 1998... What have you brought before this altar?'
+    activeResponse || '၁၉၉၈ ခုနှစ်ရဲ့ မေ့ပျောက်ခံ ခန်းမတွေမှာ လျှောက်လှမ်းနေကြတဲ့ သေတတ်သူတို့... ဒီနတ်စင်ရှေ့ကို မင်းတို့ ဘာတွေ ယူဆောင်လာခဲ့သလဲ။'
   );
   const [isShuddering, setIsShuddering] = useState<boolean>(false);
   const [isScreenGlitching, setIsScreenGlitching] = useState<boolean>(false);
@@ -400,7 +400,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500/20 via-black/60 to-transparent" />
           <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.25)_3px,transparent_4px)]" />
           <div className="font-mono text-rose-300 font-black tracking-widest text-sm uppercase px-4 py-2 bg-black/80 border border-rose-500/80 rounded-lg shadow-2xl">
-            [LAW OF REALITY VIOLATION • TABOO UTTERANCE]
+            [ပကတိတရား ချိုးဖောက်မှု • တားမြစ်ထားသော စကားလုံးကို ရေရွတ်ခြင်း]
           </div>
         </div>
       )}

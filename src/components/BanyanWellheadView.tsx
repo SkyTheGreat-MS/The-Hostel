@@ -219,7 +219,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         <InteractiveHotspot
           id="banyan_overhead_branch"
           name="Overhanging Branch & Iron Eye-Bolt"
-          polygonPoints="68,14 78,14 78,64 68,64"
+          polygonPoints="51,22 55,22 55,36 51,36"
           cursorTooltip={getBranchTooltip()}
           onClick={handleOverheadBranch}
         />
@@ -228,7 +228,7 @@ export const BanyanWellheadView: React.FC<BanyanWellheadViewProps> = ({
         <InteractiveHotspot
           id="banyan_well_curb"
           name="Ancient Wellhead Curb & Shaft"
-          polygonPoints="60,68 95,68 95,95 60,95"
+          polygonPoints="33,45 63,45 63,77 33,77"
           cursorTooltip={getWellTooltip()}
           onClick={handleWellCurb}
         />

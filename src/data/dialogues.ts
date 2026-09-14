@@ -7,7 +7,7 @@
 /** Inner thought monologue lines triggered by specific game actions */
 export const MONOLOGUE_LINES = {
   BALCONY_RETURN_FROM_BENCH:
-    '--- Stepped off the rain-swept balcony back into the East Fork corridor. ---',
+    '--- မိုးပက်နေသော လသာဆောင်မှထွက်ကာ အရှေ့လမ်းခွဲ စင်္ကြံထဲသို့ ပြန်ရောက်လာသည်။ ---',
   BALCONY_RADIO_STATIC_DISSOLVE:
     '--- The harsh static dissolves into an acoustic melody... echoing out into the monsoon rain. ---',
   RADIO_NO_POWER:
@@ -18,33 +18,33 @@ export const MONOLOGUE_LINES = {
     '--- The compartment is empty. The contact springs are dry. It takes two heavy D-cell batteries to operate. ---',
   RADIO_BATTERIES_INSERTED:
     '--- The springs bite into the terminals. Faint hum vibrates through the speaker grille. ---',
-  LOCKER_32_LOCKED: 'Locker 32 is locked shut. The keyhole is small and brass.',
+  LOCKER_32_LOCKED: 'လော့ကာ ၃၂ ကို သော့ခတ်ထားသည်။ သော့ပေါက်သည် သေးငယ်ပြီး ကြေးဝါရောင်ဖြစ်သည်။',
   CORRIDOR_SHADOW_SCARE:
-    '--- A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) ---',
+    '--- စင်္ကြံမျက်နှာကြက်ပေါ်တွင် အရိပ်မည်းကြီးတစ်ခု ဖြတ်ပြေးသွားသည်! သံပိုက်ကြီးများ အသံမြည်သွားသည်... (စိတ်တည်ငြိမ်မှု -၅%) ---',
   LOCKER_09_EMPTIED:
     '--- Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. ---',
   SPIDER_SCARE:
     '--- Gah! Scurrying cellar spiders spill from behind the rusted vent slats! (-2% Composure) ---',
   CARETAKER_RETURN_TO_FORK:
-    '--- Stepped out of the suffocating office back into the damp corridor fork. ---',
+    '--- မွန်းကျပ်ဖွယ်ကောင်းသော ရုံးခန်းထဲမှထွက်ကာ စိုစွတ်နေသော စင်္ကြံလမ်းခွဲဆီသို့ ပြန်ရောက်လာသည်။ ---',
   LOCKER_10_BATTERY_FOUND:
     '--- Two heavy D-cell batteries, still sealed in their packaging. The exercise book beside them is water-stained. ---',
   // Room 4B Desk Letter Loot Chain
   DESK_MUG_MOVED:
-    '--- Moving the enamel mug reveals a folded sheet of lined paper tucked against the wood. ---',
+    '--- စတီးကြွေခွက်ကို ဖယ်လိုက်သောအခါ သစ်သားဖြင့်ဖိထားသော ခေါက်ထားသည့် မျဉ်းကျားစာရွက်တစ်ရွက်ကို တွေ့ရသည်။ ---',
   DESK_LETTER_TEXT:
-    "May — I left the tape where we said, behind the vent in 326. Don't let Sandar take the room key from your locker. Meet me on the terrace when the curfew bell rings. — Ko Zaw",
+    'မေ — ကိုယ်တို့ပြောထားတဲ့ နေရာမှာ တိပ်ခွေထားခဲ့တယ်... — ကိုဇော်',
   DESK_LETTER_LOOTED:
-    '— "The letter is safely in my coat. Sandar won\'t find it here now." —',
+    '— "စာကို ကျွန်တော့် အင်္ကျီအိတ်ကပ်ထဲ လုံခြုံစွာ ထည့်ထားလိုက်ပြီ..." —',
   DESK_SURFACE_EMPTY:
-    '— "The letter is safely in my coat. Sandar won\'t find it here now." —',
+    '— "စာကို ကျွန်တော့် အင်္ကျီအိတ်ကပ်ထဲ လုံခြုံစွာ ထည့်ထားလိုက်ပြီ..." —',
   // Spectral May Balcony Handover & Key 14
   MAY_PANIC_MISSING_LETTER:
-    '— "She’s coming up... I heard her sandals on the wet floor. I left his letter on the study desk. Sandar will see his handwriting... she’ll know." —',
+    '— "သူမ တက်လာနေပြီ... စိုနေတဲ့ကြမ်းပြင်ပေါ်က သူမရဲ့ ဖိနပ်သံကို ငါကြားနေရတယ်... စန္ဒာ သူ့လက်ရေးကို မြင်သွားလိမ့်မယ်... သူမ သိသွားလိမ့်မယ်။" —',
   MAY_HANDOVER_RELIEF:
-    '— "He really did leave it for me... Then she never read it. She never had to know." —',
+    '— "သူ တကယ်ပဲ ငါ့အတွက် ထားခဲ့တာပဲ... ဒါဆို သူမ ဘယ်တော့မှ ဖတ်ဖြစ်မှာ မဟုတ်ဘူး။ သူမ သိစရာ အကြောင်းမရှိတော့ဘူး။" —',
   KEY_14_PICKUP:
-    '— "Stamped with \'14\'. This belongs to Locker 14 in the dorm bay." —',
+    '— "\'၁၄\' လို့ တံဆိပ်ရိုက်နှိပ်ထားတယ်။ ဒါ အိပ်ဆောင်ဘေးက လော့ကာ ၁၄ ရဲ့ သော့ပဲ။" —',
   // Locker 14 Padlock Unlock & Interior
   LOCKER_14_LOCKED_NO_KEY:
     '— "Locked tight with a small barrel cylinder. May\'s personal locker... the key is nowhere here." —',
@@ -57,7 +57,7 @@ export const MONOLOGUE_LINES = {
     '— The iron key has already been taken. Only rust rings remain on the shelf. —',
   // Stairway Exit Accordion Gate & Chapter 3 Escape
   STAIRWAY_GATE_LOCKED_NO_KEY:
-    '— "A heavy brass padlock bound tight by rusted industrial chains. The gate seals the exterior stairwell leading down to the hostel courtyard and the main compound gate. It requires a heavy iron key." —',
+    '— "သံချေးတက်နေသော သံကြိုးတုတ်ကြီးများဖြင့် တင်းကျပ်စွာ ချည်နှောင်ထားသည့် လေးလံသော ကြေးဝါသော့ခလောက်ကြီး..." —',
   STAIRWAY_GATE_UNLOCKED_SUCCESS:
     '— "The iron key turns with a sharp snap. The rusted chains fall away, and the accordion gate slides open to the cold night air and the stairwell leading out into the rain." —',
   OUTER_GROUNDS_ENTRY:
@@ -67,13 +67,13 @@ export const MONOLOGUE_LINES = {
 /** Nat guardian spirit canonical dialogue responses, keyed by topic ID */
 export const NAT_DIALOGUE = {
   may_identity:
-    "Her name was May. A warden's favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.",
+    "သူမရဲ့နာမည်က မေ...",
   locker_14_key:
-    'The key was cast into the incinerator behind the mess hall. You will never hold it.',
+    'သော့ကို မီးဖိုထဲ ပစ်ထည့်လိုက်တယ်...',
   broken_locket:
-    'The pendant of appeasement... He ripped it from her collar before the silence took her. Return it to her sight, and her fury will pause.',
+    'ဖြေလျော့စေတဲ့ ဆွဲသီး...',
   warden_ledger:
-    '...The ink of mortal bureaucrats does not echo in the spirit veil. I know nothing of his papers.',
+    '...သေတတ်သူ အရာရှိတွေရဲ့ မင်ရည်...',
   banyan_well:
-    '...The dry mouth beneath the roots cannot be named! Utter it again and I shall leave you to her claws!',
+    '...အမြစ်တွေအောက်က ခြောက်သွေ့နေတဲ့ ပါးစပ်ကို နာမည်ခေါ်လို့ မရဘူး!...',
 } as const;

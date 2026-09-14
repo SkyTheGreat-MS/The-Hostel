@@ -70,7 +70,7 @@ export const CompoundGateInspectionView: React.FC<CompoundGateInspectionViewProp
           id="gate_chains_padlock"
           name="Padlocked Industrial Chains"
           cursorTooltip="Examine Locked Chains"
-          polygonPoints="38,30 62,30 65,72 35,72"
+          polygonPoints="37,52 68,52 68,84 37,84"
           onClick={handleInspectChains}
         />
 

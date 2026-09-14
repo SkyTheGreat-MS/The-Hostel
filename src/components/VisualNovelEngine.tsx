@@ -299,7 +299,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'A freezing gust rushes down the hall. A shadowy silhouette of a weeping student flickers erratically in and out of view, glitching like corrupted magnetic tape.',
+          text: 'စင်္ကြံတစ်လျှောက် အေးစက်သောလေပြင်းတစ်ချက် တိုက်ခတ်သွားသည်။ ငိုကြွေးနေသော ကျောင်းသူတစ်ဦး၏ အရိပ်မည်းတစ်ခုသည် ပျက်စီးနေသော သံလိုက်တိပ်ခွေတစ်ခုလို တဖျတ်ဖျတ်လင်းကာ ပေါ်လာလိုက် ပျောက်သွားလိုက် ဖြစ်နေသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -340,7 +340,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Clank! A heavy padlock rattles against the security gate. A dark shadow stretches unnaturally across the concrete steps, sending a wave of dread down your spine.',
+          text: 'ဒေါင်! လုံခြုံရေးသံပန်းတံခါးမှ သော့ခလောက်ကြီးလှုပ်ခတ်သွားသည်။ ကွန်ကရစ်လှေကားထစ်များပေါ်တွင် အရိပ်မည်းကြီးတစ်ခု ပုံမှန်မဟုတ်ဘဲ ရှည်ထွက်လာကာ ကျောချမ်းဖွယ် ကြောက်ရွံ့မှုလှိုင်းတစ်ခု ဖြတ်ပြေးသွားစေသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -381,7 +381,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'In the cracked mirror shards, your reflection is not alone—a pale, weeping girl in a stained longyi stands right behind you, her throat marked by dark bruises!',
+          text: 'အက်ကွဲနေသော မှန်စများထဲတွင် သင့်အရိပ်တစ်ခုတည်း မဟုတ်ပေ—စွန်းထင်းနေသော လုံချည်နှင့် ငိုကြွေးနေသည့် ဖြူဖျော့ဖျော့ မိန်းကလေးတစ်ဦး သင့်နောက်တည့်တည့်တွင် ရပ်နေပြီး သူမ၏လည်ပင်းတွင် ညိုမည်းနေသော ဒဏ်ရာများကို တွေ့ရသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -429,7 +429,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Click-clack... Click-clack... In the pitch-black corner, an antique typewriter begins depressing keys on its own: "SEALED BENEATH THE WELL FOR 5,000 KYATS".',
+          text: 'ကလစ်-ကလပ်... ကလစ်-ကလပ်... အမှောင်အတိကျနေသော ထောင့်တစ်နေရာမှ ရှေးဟောင်းလက်နှိပ်စက်တစ်ခုသည် ၎င်းဘာသာ ခလုတ်များနှိပ်ကာ စာရိုက်နေသည်: "ကျပ် ၅,၀၀၀ ဖြင့် ရေတွင်းအောက်တွင် ပိတ်လှောင်ထားသည်"။',
           soundCue: 'hover',
           isGlitch: true,
         },
@@ -470,7 +470,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Screeech! A piece of chalk slides across the blackboard on its own, rapidly sketching an ancient Burmese nat offering shrine with blood-red symbols.',
+          text: 'ဂျစ်! မြေဖြူခဲတစ်တောင့်သည် ကျောက်သင်ပုန်းပေါ်တွင် ၎င်းဘာသာ ရွေ့လျားသွားပြီး သွေးရောင်သင်္ကေတများပါဝင်သည့် ရှေးဟောင်း နတ်စင်တစ်ခုကို အလျင်အမြန် ပုံဆွဲနေသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -507,7 +507,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'A basement hatch... The trapdoor is partially lifted, leaking oily, black floodwater into the corridor.',
+          text: 'မြေအောက်ခန်းတံခါး... တံခါးပေါက်တစ်ပိုင်းပွင့်နေပြီး ဆီဝဲနေသော ရေမည်းများ စင်္ကြံထဲသို့ ယိုစိမ့်ထွက်နေသည်။',
         },
         {
           speakerType: 'environment',
@@ -559,7 +559,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Beneath the sacred banyan tree, the stone Guardian Nat sits in rigid, cold meditation. Suddenly, above the well, the horrifying, glitching corpse of Mama May flickers violently into existence!',
+          text: 'ညောင်ပင်အောက်တွင် ကျောက်ဆစ် နတ်စောင့်ကြီးသည် တောင့်တင်းအေးစက်စွာ တရားထိုင်နေသည်။ ရုတ်တရက် ရေတွင်းအထက်တွင် ကြောက်မက်ဖွယ်ကောင်းလှသော မေမေ့ (Mama May) ၏ ရုပ်အလောင်းကြီး တဖျတ်ဖျတ်လင်းကာ ထိတ်လန့်ဖွယ် ပေါ်လာသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -609,7 +609,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Creak... Squeak... The rusted pedal of a vintage bicycle begins spinning furiously on its own, throwing off flecks of mud and water!',
+          text: 'ကျွီ... ကျွီ... သံချေးတက်နေသော ရှေးဟောင်းစက်ဘီးတစ်စီး၏ လီဗာသည် ၎င်းဘာသာ အရှိန်ပြင်းပြင်းလည်လာပြီး ရွှံ့နှင့် ရေစက်များ ပန်းထွက်လာသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -649,7 +649,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Through the iron bars, you see the dark streets of 1998... A shadowy figure holding a black umbrella stands motionless in the downpour, staring directly at you before vanishing into thin air!',
+          text: 'သံတိုင်များကြားမှ ၁၉၉၈ ခုနှစ်၏ မှောင်မိုက်နေသော လမ်းမများကို သင်တွေ့ရသည်... ထီးမည်းဆောင်းထားသော အရိပ်တစ်ခုသည် သည်းထန်စွာရွာသွန်းနေသော မိုးထဲတွင် မလှုပ်မယှက်ရပ်ကာ သင့်ကို စိုက်ကြည့်နေပြီးနောက် လေထဲသို့ ပျောက်ကွယ်သွားသည်။',
           soundCue: 'drone',
           isGlitch: true,
         },
@@ -1255,7 +1255,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         setIsCompassVibrating(true);
         setTimeout(() => setIsCompassVibrating(false), 3000);
         setActiveMonologue(
-          "— Dried smear marks on the latch... and cold water dripping down my neck. Someone was trying to claw their way out. —"
+          "— သော့ချက်ပေါ်မှ ခြောက်သွေ့နေသော အစွန်းအထင်းများ... နှင့် ကျွန်ုပ်၏ လည်ပင်းပေါ်သို့ ကျဆင်းလာသော ရေအေးစက်များ။ တစ်စုံတစ်ယောက်သည် ကုတ်ခြစ်ပြီး အပြင်သို့ထွက်ပြေးရန် ကြိုးစားခဲ့ပုံရသည်။ —"
         );
       }
     }
@@ -1569,7 +1569,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
       // 3. Trigger pickup thought monologue
       setActiveMonologue(
-        "A hefty piece of solid teak timber. Heavy enough to force open a jammed latch, but it will make serious noise."
+        "ခိုင်ခံ့သော ကျွန်းသစ်သားတုံးကြီးတစ်ခု။ ပိတ်ဆို့နေသော သော့ကို အတင်းဖွင့်နိုင်လောက်အောင် လေးလံသော်လည်း ဆူညံသံအကြီးအကျယ် ထွက်လာလိမ့်မည်။"
       );
     }
   };
@@ -1613,7 +1613,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (method === 'bobby_pin') {
       sound.playChime(true);
       setRoomBanner({
-        text: `${selectedCharacter.name} gently guides the bent steel bobby pin into the keyway. The tumblers align silently... Click. The lock opens without a sound.`,
+        text: `${selectedCharacter.name} ကလစ်။ သော့ခလောက် အသံမမြည်ဘဲ ပွင့်သွားသည်။`,
         type: 'success',
       });
       setTimeout(() => {
@@ -1634,7 +1634,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setComposure((c) => Math.max(0, c - 15));
       setDoorSmashed(true);
       setRoomBanner({
-        text: 'CRASH! The heavy teak timber strikes the deadbolt with violent force! Splintered wood shrieks as the door bursts open, echoing down Pathway 326...',
+        text: 'ဝုန်း!...',
         type: 'warn',
       });
       setTimeout(() => {
@@ -1920,7 +1920,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setKey14Collected(false);
     sound.startAmbient();
     setActiveMonologue(
-      "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. The communal prayer room altar awaits. —"
+      "— အခန်း ၂: နားလည်သဘောပေါက်ခြင်း — အရှေ့လမ်းခွဲ စင်္ကြံတွင် ရပ်နေသည်။ ဘုံဆုတောင်းခန်း နတ်စင်က စောင့်ကြိုနေသည်။ —"
     );
     navigate('/chapters/2');
   };
@@ -2001,7 +2001,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     sound.playGhostWhisper();
     sound.playDramaticSting();
     setActiveMonologue(
-      "— \"You do not know who holds the cord... Ask the Guardian before you burn...\" The shadows violently erupt from the desk ledger! —"
+      "— \"ကြိုးကို ဘယ်သူကိုင်ထားလဲဆိုတာ မင်းမသိဘူး... မင်းမီးမရှို့ခင် နတ်စောင့်ကို အရင်မေးပါ...\" စားပွဲပေါ်ရှိ စာရင်းစာအုပ်ထဲမှ အရိပ်မည်းများ အကြမ်းပတမ်း ပေါက်ကွဲထွက်လာသည်! —"
     );
   };
 
@@ -2237,7 +2237,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           setIsScreenShaking(false);
           setCorridorShadowFlash(false);
         }, 900);
-        setActiveMonologue("— A heavy shadow darts across the corridor ceiling! The iron pipes groan... (-5% Composure) —");
+        setActiveMonologue("— စင်္ကြံမျက်နှာကြက်ပေါ်တွင် အရိပ်မည်းကြီးတစ်ခု ဖြတ်ပြေးသွားသည်! သံပိုက်ကြီးများ အသံမြည်သွားသည်... (စိတ်တည်ငြိမ်မှု -၅%) —");
       } else {
         sound.playPaperRustle();
         setActiveMonologue(null);
@@ -2513,7 +2513,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 sound.playPaperRustle();
                 if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
                   sound.playError();
-                  setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+setActiveMonologue("— ပူဇော်မှု မပြီးမြောက်သေးပါ။ မီးမမွှေးမီ ဖယောင်းတိုင် သုံးတိုင် စိုက်ထူထားရမည်။ —");
                 }
               }}
             />
@@ -2899,7 +2899,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       sound.playChime(true);
                       sound.playPaperRustle();
                       setRoomBanner({
-                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပါသည်! — သံချေးတက်နေသော ကတ္တီပါစီတန်းထားသည့် သံဘူးခွံအတွင်း၌ ရှေးဟောင်း ကြေးဝါ သံလိုက်အိမ်မြှောင်တစ်ခု ရှိနေသည်။',
                         type: 'success',
                       });
                       setIsCompassModalOpen(true);
@@ -2990,7 +2990,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       sound.playChime(true);
                       sound.playPaperRustle();
                       setRoomBanner({
-                        text: 'COMPASS FOUND! — An antique brass magnetic compass resting inside a rusted velvet-lined tin box.',
+                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပါသည်! — သံချေးတက်နေသော ကတ္တီပါစီတန်းထားသည့် သံဘူးခွံအတွင်း၌ ရှေးဟောင်း ကြေးဝါ သံလိုက်အိမ်မြှောင်တစ်ခု ရှိနေသည်။',
                         type: 'success',
                       });
                       setIsCompassModalOpen(true);
@@ -3025,7 +3025,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     onClick={() => {
                       sound.playMenuSelect();
                       setActiveMonologue(
-                        "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
+                        "— သစ်သားတုံးကို ယူလိုက်ပြီ။ ကြမ်းပြင်ထဲသို့ နစ်ဝင်နေသော ကောက်ကွေးနေသည့် ကျွန်းသစ်သားအောက်ခံပြားသာ ကျန်တော့သည်။ —"
                       );
                     }}
                   />
@@ -3045,7 +3045,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     sound.playPaperRustle();
                     addDiscoveredClue('curfew_calendar_1998');
                     setActiveMonologue(
-                      "— August 14, 1998 circled in red ink... 'All wing exits chained after 11:30 PM. No unauthorized departures.' —"
+                      "— ၁၉၉၈ ခုနှစ် ဩဂုတ်လ ၁၄ ရက်ကို မင်နီဖြင့် ဝိုင်းထားသည်... 'ည ၁၁:၃၀ နောက်ပိုင်း အဆောင်ထွက်ပေါက်အားလုံးကို သံကြိုးခတ်ထားမည်။ ခွင့်ပြုချက်မရှိဘဲ ထွက်ခွာခြင်းမပြုရ။' —"
                     );
                   }}
                 />
@@ -3114,7 +3114,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       <div className="space-y-3">
                         <div className="py-4 px-4 rounded-xl bg-[#151f1a]/80 border border-[#223229]">
                           <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                            The deadbolt is disengaged. Door 4B is wide open to Pathway 326.
+                            သော့ကျင်တံ ပွင့်နေသည်...
                           </p>
                         </div>
                         <button
@@ -3140,7 +3140,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
                           <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
                             <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
-                              The deadbolt is engaged from the other side. Locked.
+                              သော့ကျင်တံကို တစ်ဖက်မှ ပိတ်ထားသည်။ သော့ခတ်ထားသည်။
                             </p>
                           </div>
                         )}
@@ -3635,7 +3635,7 @@ onTuned={() => {
                     } else {
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— The pocket is empty now. Just cold, murky water soaked into the seams. —"
+                        "— ယခု အိတ်ကပ်ထဲတွင် ဘာမှမရှိတော့ပါ။ ချုပ်ရိုးများထဲတွင် စိမ့်ဝင်နေသော အေးစက်စက် ရေနောက်များသာ ရှိတော့သည်။ —"
                       );
                     }
                   }}
@@ -3684,7 +3684,7 @@ onTuned={() => {
                     } else {
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— The overhead drainage pipe is now bare. Nothing else hangs from the ceiling. —"
+                        "— ခေါင်းပေါ်ရှိ ရေဆင်းပိုက်တွင် ယခု ဘာမျှမရှိတော့ပါ။ မျက်နှာကြက်တွင် ချိတ်ဆွဲထားသော အခြားအရာမရှိပါ။ —"
                       );
                     }
                   }}
@@ -3898,12 +3898,12 @@ onTuned={() => {
                   sound.playSuccessTune();
                   setCaretakerDoorUnlocked(true);
                   setActiveMonologue(
-                    "— Heavy metallic clank! The weathered brass latch drops open, unlocking the caretaker office door. —"
+                    "— လေးလံသော သတ္တုသံ ဂျလောက်! ဆွေးမြေ့နေသော ကြေးဝါသော့ ပွင့်ကျသွားသည်... —"
                   );
                   setPhase3Location('caretaker_office_main');
                 }}
                 onCombinationAttemptFailed={() => {
-                  setActiveMonologue("— The lock shackle rattles stubbornly. Incorrect tumbler combination. —");
+                  setActiveMonologue("— သော့ခလောက် ခိုင်မာစွာ အသံမြည်သွားသည်။ ဂဏန်းတွဲ မှားယွင်းနေသည်။ —");
                 }}
               />
             )}
@@ -4185,7 +4185,7 @@ onTuned={() => {
           sound.playPaperRustle();
           if (itemId === 'matchbox_three_stars' && phase3Location === 'prayer_altar' && altarCandlesPlaced < 3) {
             sound.playError();
-            setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+            setActiveMonologue("— ပူဇော်မှု မပြီးမြောက်သေးပါ။ မီးမမွှေးမီ ဖယောင်းတိုင် သုံးတိုင် စိုက်ထူထားရမည်။ —");
           }
         }}
       />
@@ -4353,7 +4353,7 @@ onTuned={() => {
             {/* Large distressing horror typography */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-40">
               <span className="font-serif tracking-widest text-red-600 font-extrabold text-xl md:text-3xl uppercase drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse">
-                SOMETHING JUST SLIPPED PAST BEHIND ME...
+                ငါ့အနောက်ကနေ တစ်ခုခု ဖြတ်သွားသလိုပဲ...
               </span>
             </div>
           </div>

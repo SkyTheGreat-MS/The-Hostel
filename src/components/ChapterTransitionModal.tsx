@@ -19,9 +19,9 @@ export interface ChapterTransitionModalProps {
 
 export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
   isOpen,
-  overTitle = 'INVESTIGATION PHASE COMPLETED',
-  completedChapterTitle = 'CHAPTER 1: BLIND START',
-  nextPhaseTag = 'ENTERING NEXT PHASE',
+  overTitle = 'စုံစမ်းစစ်ဆေးမှု အဆင့် ပြီးမြောက်ပါပြီ',
+  completedChapterTitle = 'အခန်း ၁: အမှောင်ထဲက အစ',
+  nextPhaseTag = 'နောက်တစ်ဆင့်သို့ ဝင်ရောက်နေသည်',
   nextChapterTitle,
   continueButtonText = 'Continue Investigation →',
   saveButtonText = 'Save & Exit to Chapter Selection',
@@ -35,7 +35,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
     ? undefined
     : nextChapterTitle !== undefined
     ? nextChapterTitle
-    : 'CHAPTER 2: UNDERSTANDING';
+    : 'အခန်း ၂: နားလည်သဘောပေါက်ခြင်း';
 
   useEffect(() => {
     if (isOpen) {
