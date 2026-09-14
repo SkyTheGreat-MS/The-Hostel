@@ -1,77 +1,132 @@
-# Hostel 1998: Spirit Labyrinth (Prolog Prototype)
+# The Hostel (Hostel 1998: Spirit Labyrinth)
 
-A text-based Prolog logic & content prototype for a narrative horror game set in a traditional Myanmar university hostel.
-
-## Premise
-
-In 2026, six university friends perform a traditional *nat-calling* ritual that summons **Mama May**, a young woman murdered in the hostel in 1998. When the offering glass shatters, the player-chosen Main Character (MC) falls unconscious and awakens alone in a 1998 temporal echo of the hostel.
-
-The five friends in 2026 attempt to revive the MC (acting as the environmental turn countdown). There is no cross-time communication: the MC must unravel the mystery alone before time, composure, or grief limits expire.
+> A 1998 Myanmar Hostel Supernatural Mystery Visual Novel & Point-and-Click Adventure built with **React 19**, **TypeScript**, **Vite**, **Tailwind CSS 4**, and an authoritative **Prolog** declarative logic engine.
 
 ---
 
-## Two Entities in 1998
+## 📖 About The Project
 
-1. **Mama May (Victim)**:
-   - **CANNOT lie**, but never speaks plain facts due to the trauma of her demise.
-   - Her words are symbolic and poetic riddles that must be decoded against discovered physical clues.
-   - Misreading her raises her grief (+15). Correctly decoding her soothes her spirit (-10).
+### Narrative Premise
+In **2026**, six university students gather in an abandoned dormitory to perform an ancient *nat-calling* ritual. Their goal: uncover the truth behind the unsolved **1998 murder of student Mama May**. When the ritual offering glass shatters, the chosen protagonist (MC) loses consciousness and awakens trapped inside an isolated **1998 temporal echo** of the hostel.
 
-2. **The Hostel Guardian Nat**:
-   - Offers information in **PAIRS of statements** where **EXACTLY ONE is true** and one is false.
-   - He is not evil, but tests the mortal's discernment against physical evidence.
-   - Trusting the wrong half of a pair asserts `used_unverified_claim/2`, causing a betrayal composure hit and flagging the player as `deceived` in the ending resolution.
+The five friends in 2026 attempt to maintain the metaphysical anchor and revive the MC, acting as the environmental countdown clock. The protagonist must navigate the haunted corridors, solve environmental puzzles, gather physical evidence, interrogate spiritual entities, and decode the murder mystery before composure collapses or the temporal anchor dissolves forever.
 
----
-
-## Ground Truth (`spirit_fact/2`)
-
-```prolog
-spirit_fact(victim_name, mama_may).
-spirit_fact(true_killer, sandar).               % Mama May's roommate
-spirit_fact(true_cause, strangled).
-spirit_fact(true_body_location, dried_well).
-spirit_fact(red_herring_suspect, ko_zaw).       % Boyfriend (innocent, hates pink)
-spirit_fact(secret_connection, aye_aye, sandar).% Aye Aye (2026 friend) is Sandar's niece
-```
+### Dual Spiritual Entities
+1. **Mama May (The Victim)**:
+   - Cannot lie, but due to the trauma of her death, speaks only in poetic, symbolic riddles.
+   - Decoding her clues soothes her spirit; misinterpreting her increases her grief.
+2. **The Hostel Guardian Nat (The Gatekeeper)**:
+   - Speaks in **pairs of statements** where **exactly one is true** and one is false.
+   - Tests mortal discernment against physical proof discovered in the rooms. Trusting an unverified claim causes psychological damage and flags the protagonist as deceived.
 
 ---
 
-## How to Run the Prolog Prototype
+## 🎮 Game Structure & Chapters
+
+- **Chapter 1: The Locked Room (Room 4B)**:
+  Awaken in the decaying bedroom. Search desk drawers, find hairpins, keys, and examine the cracked wardrobe to unlock the heavy door into the corridor.
+- **Chapter 2: Corridors of the Past (East & West Wings)**:
+  Explore the communal washrooms, student locker bay, the sacred prayer shrine altar, and the locked Caretaker's office. Decipher the 6-digit padlock combination (`290418`), endure spectral encounters, and interrogate the Guardian Nat.
+- **Chapter 3: The Depths & The Seance Climax**:
+  Escape into the stormy courtyard. Pump out the flooded subterranean garage via the interactive valve mini-game, cut overgrown banyan roots, rig an iron pulley and rope into the dried well, insert May's lost cassette tape, and crawl through the opened storm conduit into the final Room 101 seance circle.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend UI & Presentation**: React 19, TypeScript 5.8, Vite 6, Tailwind CSS 4, Motion/React.
+- **Authoritative Logic Core**: Prolog (`spirit_labyrinth.pl`) & TypeScript Bridge (`PrologBridge.ts`).
+- **Audio Synthesizer**: Web Audio API procedural synthesizer (`audioEngine.ts`) generating dynamic rain, drones, footsteps, and hollow bells, combined with HTML5 audio streaming for story songs (`may_cassette_tape_song.mp3`).
+- **Localization**: Full bilingual support in English and standard Myanmar Unicode 5.1+ (UTF-8).
+
+---
+
+## 🚀 How to Run the Project
 
 ### Prerequisites
-- [SWI-Prolog](https://www.swi-prolog.org/) (version 8.x or 9.x)
-
-### Running the Interactive Game
-```bash
-swipl -s spirit_labyrinth.pl -g play
-```
-
-### Running the PLUnit Test Suite
-```bash
-swipl -s spirit_labyrinth.pl -g "run_tests, halt."
-```
+- **Node.js**: v18.0.0 or later (v20+ recommended)
+- **npm**: v9.0.0 or later
+- *(Optional)* [SWI-Prolog](https://www.swi-prolog.org/) 8.x/9.x (if you wish to run the standalone terminal Prolog prototype or unit test suite).
 
 ---
 
-## Endings Matrix
+### Installation & Setup
 
-| Ending | Trigger Conditions |
-|---|---|
-| `true_rest` | Valid accusation (`sandar`, `strangled`, `dried_well`), rite performed, low grief, no unverified claims. |
-| `twist_ending` | Correct accusation & rite + discovered the `antique_locket` connecting Aye Aye to Sandar. |
-| `deceived` | Player trusted false Guardian pair (`used_unverified_claim/2`) or falsely accused Ko Zaw. |
-| `misunderstood` | Player misread Mama May's symbolic riddles (`misread_fact/2`). |
-| `time_expired` | `time_remaining/1` reached 0 (the 2026 anchor dissolved). |
-| `composure_zero` | `player_composure/1` reached 0 (psychological collapse). |
-| `grief_overflow` | `mama_may_grief/1` reached 100 (spirit turned into a vengeful poltergeist). |
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/SkyTheGreat-MS/The-Hostel.git
+   cd The-Hostel
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the Development Server**:
+   ```bash
+   npm run dev
+   ```
+   The application will start with hot-module reloading at:
+   ```
+   http://localhost:3000
+   ```
+
+4. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+   Compiles and minifies assets into the `dist/` directory.
+
+5. **Preview Production Build**:
+   ```bash
+   npm run preview
+   ```
+
+6. **Type Check & Lint**:
+   ```bash
+   npm run lint
+   # or: npx tsc --noEmit
+   ```
 
 ---
 
-## Out-of-Scope Elements (Documented MVP Boundaries)
+### (Optional) Running Standalone Prolog Logic & Tests
 
-As specified in the prototype design:
-1. **Multi-character real-time fear coordination**: Archetypes define static fear multipliers; full dynamic party fear management is reserved for the full engine.
-2. **2026 Friend-trust / lie system**: Friends remain outside the 1998 temporal bubble, serving strictly as the countdown mechanism rather than interactive agents.
-3. **Identity-confusion puzzle**: Cut to focus on paired truth logic and symbolic riddle decoding.
-4. **Full graphical hostel navigation & sound engine**: Terminal I/O logic prototype only.
+To explore or verify the pure Prolog rules engine independently of the web browser:
+
+- **Run Interactive Terminal Game**:
+  ```bash
+  swipl -s spirit_labyrinth.pl -g play
+  ```
+
+- **Run Prolog Unit Test Suite (PLUnit)**:
+  ```bash
+  swipl -s spirit_labyrinth.pl -g "run_tests, halt."
+  ```
+
+---
+
+## 🕹️ Controls & Gameplay Mechanics
+
+- **Mouse Navigation & Inspection**: Click highlighted hotspot areas to inspect objects, pick up clues, or move between rooms.
+- **Inventory Bar**: Displays currently held items. Click items to inspect or combine with environment targets.
+- **Garage Valve Mini-Game**: Rapidly press the **Spacebar** to turn the rusted drainage valve against water pressure until the meter reaches 100%.
+- **Composure / Sanity Meter**: Frightening events, wrong combination attempts, and deception drain composure. Reaching 0% results in psychological collapse.
+- **Temporal Countdown Clock**: Tracks remaining time before the 2026 psychic anchor breaks.
+- **Audio & Pause Settings**: Click the speaker icon in the top HUD to toggle mute, or press Escape / Pause to access the options menu.
+
+---
+
+## 📚 Technical Documentation
+
+For an in-depth explanation of how TypeScript, React, state persistence, and Prolog (facts, rules, predicates, and bridge queries) work together under the hood, refer to:
+
+👉 **[Architecture & Prolog Logic Guide (`PROLOG_AND_ARCHITECTURE_GUIDE.md`)](./PROLOG_AND_ARCHITECTURE_GUIDE.md)**
+
+---
+
+## 👥 Authors & Acknowledgements
+
+- Developed by the **The-Hostel Development Team**.
+- Original concept inspired by traditional Myanmar folklore, nat rituals, and 1990s university dormitory mysteries.
