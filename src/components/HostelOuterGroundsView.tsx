@@ -112,7 +112,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_stairway_exit"
           name="လှေကားအဝင်ဝသို့ ပြန်သွားရန်"
           cursorTooltip="လှေကားအဝင်ဝသို့ ပြန်သွားမည်"
-          polygonPoints="0,32 15,30 15,65 0,65"
+          polygonPoints="5,38 12,38 12,62 5,62"
           onClick={handleReturnToStairway}
         />
 
@@ -121,7 +121,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_compound_gate"
           name="နယ်နိမိတ် ခြံဝတံခါး"
           cursorTooltip="ခြံဝင်းတံခါးကြီးကို စစ်ဆေးမည်"
-          polygonPoints="34,22 57,22 57,65 34,65"
+          polygonPoints="46,42 57,42 57,56 46,56"
           onClick={handleInspectCompoundGate}
         />
 
@@ -130,7 +130,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_garage_ramp"
           name="မြေအောက်ကားဂိုဒေါင် လျှောစောက်လမ်း"
           cursorTooltip="ဂိုဒေါင်ထဲသို့ ဆင်းသွားမည်"
-          polygonPoints="1,66 28,66 43,80 32,99 0,99"
+          polygonPoints="28,64 40,64 33,80 28,80"
           onClick={handleEnterGarage}
         />
 
@@ -139,7 +139,7 @@ export const HostelOuterGroundsView: React.FC<HostelOuterGroundsViewProps> = ({
           id="grounds_banyan_well"
           name="ရှေးဟောင်း ညောင်ပင်နှင့် ရေတွင်း"
           cursorTooltip="ညောင်ပင်ကြီးနှင့် ရေတွင်းဆီသို့ ချဉ်းကပ်မည်"
-          polygonPoints="58,0 100,0 100,92 58,92"
+          polygonPoints="61,10 90,10 90,80 61,80"
           onClick={handleInspectBanyanWell}
         />
       </div>

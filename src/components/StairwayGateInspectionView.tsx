@@ -373,7 +373,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
         >
           <g className="group/poly pointer-events-auto cursor-pointer" style={{ pointerEvents: 'all' }}>
             <polygon
-              points="37.2,51.6 67.7,51.6 67.7,84.4 37.2,84.4"
+              points="55,34.5 62,34 62,50 55,50"
               style={{ pointerEvents: 'all' }}
               fill="white"
               fillOpacity={0.001}

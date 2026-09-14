@@ -198,7 +198,7 @@ export const WellInteriorDeepView: React.FC<WellInteriorDeepViewProps> = ({
           id="well_storm_conduit"
           name="ရေနုတ်မြောင်း သံဆန်ခါတံခါး"
           cursorTooltip={getConduitTooltip()}
-          polygonPoints="32,38 43,38 43,58 32,58"
+          polygonPoints="68,38 88,38 88,80 68,78"
           onClick={handleStormConduitGrating}
         />
 

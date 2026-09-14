@@ -291,9 +291,9 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
               <InteractiveHotspot
                 id="locker_14_cassette_tape"
                 name="Unlabeled Micro-Cassette"
-                cursorTooltip="မိုက်ခရိုတိပ်ခွေကို ယူမည်"
+                cursorTooltip="စာအုပ်ကြားက မိုက်ခရိုတိပ်ခွေကို ယူမည်"
                 onClick={handleTakeTape}
-                polygonPoints="35,45 65,45 65,75 35,75"
+                polygonPoints="38,45 53,36 65,65 45,75"
               />
             )}
 
@@ -304,7 +304,7 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
                 name="Stairway Gate Key"
                 cursorTooltip="လှေကားထွက်ပေါက်တံခါးသော့ကို ယူမည်"
                 onClick={handleTakeKey}
-                polygonPoints="34,76 66,76 66,94 34,94"
+                polygonPoints="22,49 38,56 38,84 22,76"
               />
             )}
           </>
