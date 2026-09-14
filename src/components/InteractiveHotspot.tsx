@@ -62,13 +62,19 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
         >
           <g
             className="group/poly pointer-events-auto cursor-pointer"
+            style={{ pointerEvents: 'all' }}
             onClick={onClick}
             onMouseEnter={() => sound.playMenuHover()}
           >
             {/* Invisible Hitbox + Hover Moss/Iron Perspective Glow */}
             <polygon
               points={polygonPoints}
-              className="fill-transparent stroke-transparent transition-all duration-300 group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/5 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]"
+              style={{ pointerEvents: 'all' }}
+              fill="white"
+              fillOpacity={0.001}
+              onClick={onClick}
+              onMouseEnter={() => sound.playMenuHover()}
+              className="cursor-pointer pointer-events-auto transition-all duration-300 stroke-transparent group-hover:stroke-[#82a996]/60 group-hover:stroke-[0.5] group-hover:fill-[#82a996]/10 group-hover:filter group-hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)] hover:stroke-[#82a996]/60 hover:stroke-[0.5] hover:fill-[#82a996]/10 hover:filter hover:drop-shadow-[0_0_8px_rgba(130,169,150,0.3)]"
             />
             <title>{cursorTooltip || name}</title>
           </g>

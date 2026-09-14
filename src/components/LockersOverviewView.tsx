@@ -1,9 +1,12 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { sound } from '../audioEngine';
 import { Phase3Location } from '../types';
 
 export interface LockersOverviewViewProps {
   hasSmallBrassKey: boolean;
+  hasKey14?: boolean;
+  inventory?: string[];
+  locker14Unlocked?: boolean;
   setPhase3Location: (loc: Phase3Location) => void;
   setActiveMonologue: (msg: string | null) => void;
   applyComposureDamage?: (amount: number, reason?: string) => void;
@@ -13,6 +16,9 @@ export interface LockersOverviewViewProps {
 
 export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
   hasSmallBrassKey,
+  hasKey14,
+  inventory = [],
+  locker14Unlocked = false,
   setPhase3Location,
   setActiveMonologue,
   applyComposureDamage,
@@ -25,6 +31,14 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
     y: number;
     align?: 'center' | 'right';
   } | null>(null);
+
+  const playerHasKey14 = Boolean(
+    hasKey14 ||
+    (Array.isArray(inventory) &&
+      inventory.some(
+        (i) => typeof i === 'string' && (i === 'key_14' || i.toLowerCase().includes('key_14'))
+      ))
+  );
 
   const handleSpiderScare = () => {
     sound.playCreepInsect();
@@ -47,20 +61,28 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 1. Locker 14 (Top-Left Tier, marked '14') */}
         <polygon
           id="hotspot-locker-14"
-          points="14,10 21.5,10 21.5,57 14,57"
+          points="14,5 21.5,10 21.5,57 14,57"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
             setHoveredLocker({
-              text: 'Inspect Locker 14',
+              text: locker14Unlocked
+                ? 'Open Locker 14 (Unlocked)'
+                : playerHasKey14
+                ? 'Inspect Locker 14 [Key 14 Available]'
+                : 'Inspect Locker 14 (Locked)',
               x: 18.8,
-              y: 9.5,
+              y: 13.5,
             });
           }}
           onMouseLeave={() => setHoveredLocker(null)}
           onClick={() => {
             sound.playPaperRustle();
-            setPhase3Location('locker_14');
+            if (locker14Unlocked) {
+              setPhase3Location('locker_14_interior');
+            } else {
+              setPhase3Location('locker_14');
+            }
           }}
         >
           <title>Inspect Locker 14 (Mama May)</title>
@@ -96,7 +118,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 3. Locker 09 (Top-Right Tier, marked '09') */}
         <polygon
           id="hotspot-locker-09"
-          points="86.8,10 95.5,7 95.8,65 86.8,63"
+          points="86.8,5 95.5,1 95.8,65 86.8,63"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -119,7 +141,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 10 (Bottom-Right Tier, marked '10') */}
         <polygon
           id="hotspot-locker-10"
-          points="86.8,58 95.5,56 95.8,95 86.8,98"
+          points="72,21 76,16 76,57 72,56"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-[#385947]/30 stroke-[#4a7a60]/50 hover:stroke-[#78b394] stroke-[0.3] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();
@@ -142,7 +164,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
         {/* 4. Locker 21 / 37 (Spider Jump Scare Click on Left/Right middle lockers) */}
         <polygon
           id="hotspot-locker-spider"
-          points="31.2,23 34.2,28 34.2,55 31.2,57"
+          points="31.2,24 34.2,28 34.2,55 31.2,56"
           className="pointer-events-auto cursor-pointer fill-transparent hover:fill-red-950/20 stroke-transparent hover:stroke-red-500/40 stroke-[0.2] transition-all"
           onMouseEnter={() => {
             sound.playMenuHover();

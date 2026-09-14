@@ -81,7 +81,47 @@
     advance_nat_dialogue/0,
     % Section 10: Chapter 2 Caretaker Return & Movement exports
     path/2,
-    leave_caretaker_office/0
+    leave_caretaker_office/0,
+    % Section 11: Room 4B Desk Letter Loot Chain & Balcony Handover
+    desk_4b_looted/0,
+    take_desk_letter/0,
+    may_accepts_handover/0,
+    may_resolved/0,
+    handover_letter/0,
+    pickup_key_14/0,
+    floor_has/1,
+    % Section 12: Locker 14 Padlock & Interior
+    locker_unlocked/1,
+    unlock_locker_14/0,
+    % Section 13: Stairway Exit Accordion Gate & Chapter 3 Escape
+    stairway_gate_unlocked/0,
+    escaped_interior/0,
+    unlock_stairway_gate/0,
+    % Section 14: Chapter 3 Courtyard & Garage Topology, State & Items
+    garage_drained/0,
+    drain_garage/0,
+    take_garage_item/1,
+    can_take_garage_item/1,
+    take_locker_tape/0,
+    can_take_locker_item/1,
+    take_stairway_key/0,
+    % Section 15: Chapter 3 Banyan Wellhead Rigging & Well Descent
+    well_roots_severed/0,
+    well_pulley_rigged/0,
+    well_rope_rigged/0,
+    well_descent_ready/0,
+    cut_banyan_roots/0,
+    mount_well_pulley/0,
+    rig_well_rope/0,
+    descend_into_well/0,
+    % Section 16: Chapter 3 Well Interior Cassette Puzzle & Conduit Unlock
+    cassette_inserted/0,
+    cassette_played/0,
+    conduit_unlocked/0,
+    insert_cassette_tape/0,
+    play_cassette_tape/0,
+    unlock_storm_conduit/0,
+    chapter3_completed/0
 ]).
 
 :- dynamic current_location/1.
@@ -97,7 +137,11 @@
 :- dynamic nat_summoned/1.
 :- dynamic chapter/1.
 :- dynamic chapter_phase/2.
+:- dynamic locker_unlocked/1.
+:- dynamic stairway_gate_unlocked/0.
+:- dynamic escaped_interior/0.
 :- dynamic chapter_1_completed/0.
+:- dynamic chapter3_completed/0.
 :- dynamic unlocked_location/1.
 
 % Chapter 2 Guardian Nat Interrogation & Law of Reality Dynamic State
@@ -131,13 +175,41 @@
 :- dynamic caretaker_latch_unlocked/0.
 :- dynamic nat_dialogue_step/1.
 
+% Room 4B Desk Letter Loot Chain State & Balcony May Handover
+:- dynamic desk_4b_looted/0.
+:- dynamic may_resolved/0.
+:- dynamic floor_has/1.
+
+% Locker 14 Padlock & Interior Dynamic State
+:- dynamic locker_unlocked/1.
+:- dynamic locker_14_looted/0.
+
+% Chapter 3 Courtyard & Garage Dynamic State
+:- dynamic garage_drained/0.
+
+% Chapter 3 Banyan Wellhead Rigging Dynamic State
+:- dynamic well_roots_severed/0.
+:- dynamic well_pulley_rigged/0.
+:- dynamic well_rope_rigged/0.
+
+% Chapter 3 Well Interior Dynamic State
+:- dynamic cassette_inserted/0.
+:- dynamic cassette_played/0.
+:- dynamic conduit_unlocked/0.
+
 % Top-level defaults for interactive evaluation & bridge queries
-:- assertz(nat_summoned).
-:- assertz(nat_persistent_state(summoned)).
+:- assertz(nat_persistent_state(dormant)).
 :- assertz(composure(100)).
-:- assertz(current_location(prayer_altar)).
-:- assertz(chapter(2)).
-:- assertz(chapter_phase(2, 1)).
+:- assertz(current_location(room_4b_main)).
+:- assertz(chapter(1)).
+:- assertz(chapter_phase(1, 1)).
+:- assertz(current_chapter(1)).
+:- assertz(time_remaining(600)).
+:- assertz(player_composure(100)).
+:- assertz(player_time_remaining(600)).
+:- assertz(door_state(room_4b_door, locked)).
+:- assertz(door_state(stairwell_exit_gate, locked)).
+:- assertz(caretaker_door(locked)).
 :- assertz(nat_dialogue_step(1)).
 :- assertz(inquiry_count(0)).
 
@@ -174,6 +246,15 @@ location(prayer_room_main).
 location(prayer_altar).
 location(balcony_326).
 location(balcony).
+
+% Chapter 3 Exterior & Garage Locations
+location(hostel_outer_grounds).
+location(compound_iron_gate).
+location(garage_subterranean).
+location(banyan_wellhead).
+location(locker_14_interior).
+location(well_interior_deep).
+location(room_101_seance_flashback).
 
 % Bidirectional and Directional Passages
 connected(room_4b_main, room_4b_desk).
@@ -251,6 +332,35 @@ can_traverse(prayer_room_main, east_fork).
 can_traverse(prayer_room_main, prayer_altar).
 can_traverse(prayer_altar, prayer_room_main).
 
+% Traversal from Stairway Gate to Outer Grounds (requires stairway gate unlocked)
+can_traverse(stairwell_gate, hostel_outer_grounds) :-
+    stairway_gate_unlocked.
+can_traverse(hostel_outer_grounds, stairwell_gate).
+
+% Courtyard Hub Connections
+can_traverse(hostel_outer_grounds, compound_iron_gate).
+can_traverse(compound_iron_gate, hostel_outer_grounds).
+
+can_traverse(hostel_outer_grounds, garage_subterranean).
+can_traverse(garage_subterranean, hostel_outer_grounds).
+
+can_traverse(hostel_outer_grounds, banyan_wellhead).
+can_traverse(banyan_wellhead, hostel_outer_grounds).
+
+% Locker 14 Interior Navigation (requires locker 14 unlocked)
+can_traverse(locker_14, locker_14_interior) :-
+    locker_unlocked(14).
+can_traverse(locker_14_interior, locker_14).
+
+% Descent is only traversable when the complete rigging setup is prepared
+can_traverse(banyan_wellhead, well_interior_deep) :-
+    well_descent_ready.
+can_traverse(well_interior_deep, banyan_wellhead).
+
+can_traverse(well_interior_deep, room_101_seance_flashback) :-
+    conduit_unlocked.
+can_traverse(room_101_seance_flashback, well_interior_deep).
+
 % Path-based traversal for chapter movements
 can_traverse(From, To) :-
     path(From, To).
@@ -274,12 +384,34 @@ item(bronze_prayer_bell, caretaker_office_main, 'A ceremonial temple bell made o
 % deliberately distinct from Locker Bay supplies.
 item(brass_bell, caretaker_office_main, 'A ceremonial altar bell from the Caretaker archive.').
 item(tallow_candles_black, caretaker_office_main, 'Black altar tallow candles from the Caretaker archive.').
+item(letter_ko_zaw, room_4b_desk, 'Creased lined paper addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.').
+item(key_14, balcony_floor, 'A tarnished brass key stamped with the number 14. Tied with frayed nylon string.').
+% Chapter 3 Registered Items
+item(cassette_tape_may, locker_14_interior, 'Unlabeled micro-cassette tape dated 1998.08.12. Left behind by Ko Zaw.').
+/* --- Stairway Gate Key Item --- */
+item(key_stairway_gate, locker_14_interior, 'A heavy iron key stamped with "STAIRWAY EXTR" for the ground floor security gate.').
+item(iron_pulley, garage_subterranean, 'Heavy cast-iron pulley wheel with an open bronze suspension hook.').
+item(rusty_machete, garage_subterranean, 'Blackened steel groundskeeper clearing machete with a rubber-grip handle.').
 
 % ==============================================================================
 % 3. INITIALIZATION & RESTART ROUTINES
 % ==============================================================================
 
 init_game_state :-
+    retractall(desk_4b_looted),
+    retractall(may_resolved),
+    retractall(floor_has(_)),
+    retractall(locker_unlocked(_)),
+    retractall(locker_14_looted),
+    retractall(stairway_gate_unlocked),
+    retractall(escaped_interior),
+    retractall(garage_drained),
+    retractall(well_roots_severed),
+    retractall(well_pulley_rigged),
+    retractall(well_rope_rigged),
+    retractall(cassette_inserted),
+    retractall(cassette_played),
+    retractall(conduit_unlocked),
     retractall(current_location(_)),
     retractall(inventory(_)),
     retractall(clue_discovered(_)),
@@ -302,8 +434,10 @@ init_game_state :-
     retractall(chapter_phase(_, _)),
     retractall(current_chapter(_)),
     retractall(chapter_1_completed),
+    retractall(chapter3_completed),
     retractall(unlocked_location(_)),
     retractall(caretaker_power_killed),
+    retractall(caretaker_spectral_climax),
     retractall(room_state(_, _)),
     retractall(player_has(_)),
     retractall(caretaker_latch_unlocked),
@@ -312,6 +446,9 @@ init_game_state :-
     retractall(topic_exhausted(_)),
     retractall(nat_persistent_state(_)),
     retractall(inquiry_count(_)),
+    retractall(player_time_remaining(_)),
+    retractall(player_composure(_)),
+    retractall(selected_investigator(_)),
     
     assertz(current_location(room_4b_main)),
     assertz(inventory([])),
@@ -320,7 +457,7 @@ init_game_state :-
     assertz(caretaker_door(locked)),
     assertz(altar_candle_count(0)),
     assertz(altar_bell_placed(false)),
-    assertz(nat_persistent_state(summoned)),
+    assertz(nat_persistent_state(dormant)),
     assertz(nat_summoned(false)),
     assertz(nat_dialogue_step(1)),
     assertz(inquiry_count(0)),
@@ -329,6 +466,8 @@ init_game_state :-
     assertz(current_chapter(1)),
     assertz(composure(100)),
     assertz(time_remaining(600)), % 10:00 Countdown
+    assertz(player_composure(100)),
+    assertz(player_time_remaining(600)),
     assertz(subscene_state(desk_mug_moved, false)),
     assertz(subscene_state(stall_horror_triggered, false)).
 
@@ -368,6 +507,35 @@ inspect_target(ceramic_mug, desk_mug_moved) :-
     retract(subscene_state(desk_mug_moved, false)),
     assertz(subscene_state(desk_mug_moved, true)),
     assertz(clue_discovered(hairpin_revealed)).
+
+% Room 4B Desk Loot Chain: Taking Ko Zaw's secret letter
+take_desk_letter :-
+    \+ desk_4b_looted,
+    assertz(player_has(letter_ko_zaw)),
+    assertz(desk_4b_looted).
+
+% May Handover Prerequisite Check: May only accepts handover if player possesses Ko Zaw's letter
+may_accepts_handover :-
+    player_has(letter_ko_zaw).
+
+% May Handover Execution: Consumes Ko Zaw's letter, resolves May's spirit, drops Key 14 on balcony floor
+handover_letter :-
+    player_has(letter_ko_zaw),
+    retractall(player_has(letter_ko_zaw)),
+    assertz(may_resolved),
+    assertz(floor_has(key_14)).
+
+% Key 14 Pickup Action: Takes Key 14 from the balcony floor into player inventory
+pickup_key_14 :-
+    floor_has(key_14),
+    retractall(floor_has(key_14)),
+    assertz(player_has(key_14)).
+
+% Locker 14 Padlock Unlock Execution: Consumes Key 14, unlocks Locker 14
+unlock_locker_14 :-
+    player_has(key_14),
+    retract(player_has(key_14)),
+    assertz(locker_unlocked(14)).
 
 % Inspecting the bloodstained third stall door
 inspect_target(bloodstained_stall, stall_checked) :-
@@ -769,6 +937,10 @@ item_display_meta(black_beeswax_candle, 'Candle', candle).
 item_display_meta(matchbox_three_stars, 'Match', match).
 item_display_meta(bronze_prayer_bell, 'Bell', bell).
 item_display_meta(magnetic_compass, 'Compass', compass).
+item_display_meta(cassette_tape_may, 'Tape 1998', tape).
+item_display_meta(key_stairway_gate, 'Gate Key', key).
+item_display_meta(iron_pulley, 'Pulley', gear).
+item_display_meta(rusty_machete, 'Machete', blade).
 
 % Inventory query returning short labels directly
 get_player_inventory_labels(LabeledItems) :-
@@ -891,3 +1063,161 @@ advance_nat_dialogue :-
     Next is Current + 1,
     retractall(nat_dialogue_step(_)),
     assertz(nat_dialogue_step(Next)).
+
+% ==============================================================================
+% 12. LOCKER 14 UNLOCK
+% ==============================================================================
+
+unlock_locker_14 :-
+    (player_has(key_14) ; has_item(key_14)),
+    \+ locker_unlocked(14),
+    retractall(player_has(key_14)),
+    retractall(inventory(key_14)),
+    assertz(locker_unlocked(14)).
+
+% ==============================================================================
+% 13. STAIRWAY EXIT ACCORDION GATE & CHAPTER 3 ESCAPE
+% ==============================================================================
+
+unlock_stairway_gate :-
+    (player_has(key_stairway_gate) ; has_item(key_stairway_gate)),
+    \+ stairway_gate_unlocked,
+    retractall(player_has(key_stairway_gate)),
+    retractall(inventory(key_stairway_gate)),
+    assertz(stairway_gate_unlocked),
+    assertz(escaped_interior).
+
+% ==============================================================================
+% 14. CHAPTER 3: GARAGE FLOODWATER & ITEM RETRIEVAL RULES
+% ==============================================================================
+
+% Draining the subterranean garage floodwater
+drain_garage :-
+    current_location(garage_subterranean),
+    \+ garage_drained,
+    assertz(garage_drained).
+
+% Locker 14: Taking May's cassette tape
+take_locker_tape :-
+    current_location(locker_14_interior),
+    locker_unlocked(14),
+    \+ locker_14_looted,
+    assertz(player_has(cassette_tape_may)),
+    assertz(locker_14_looted).
+
+% Ensure it can be taken from Locker 14 interior along with the tape
+can_take_locker_item(key_stairway_gate) :-
+    current_location(locker_14_interior),
+    locker_unlocked(14),
+    \+ player_has(key_stairway_gate).
+
+take_stairway_key :-
+    current_location(locker_14_interior),
+    locker_unlocked(14),
+    \+ player_has(key_stairway_gate),
+    assertz(player_has(key_stairway_gate)),
+    ( inventory(Inv) ->
+        retract(inventory(Inv)),
+        assertz(inventory([key_stairway_gate | Inv]))
+    ;
+        assertz(inventory([key_stairway_gate]))
+    ).
+
+% Garage Items: Checking pickup eligibility
+can_take_garage_item(Item) :-
+    current_location(garage_subterranean),
+    garage_drained,
+    member(Item, [iron_pulley, rusty_machete]),
+    \+ player_has(Item).
+
+% Garage Items: Taking pulley or machete
+take_garage_item(Item) :-
+    can_take_garage_item(Item),
+    assertz(player_has(Item)),
+    ( inventory(Inv) ->
+        retract(inventory(Inv)),
+        assertz(inventory([Item | Inv]))
+    ;
+        assertz(inventory([Item]))
+    ).
+
+% ==============================================================================
+% 15. CHAPTER 3: BANYAN WELLHEAD RIGGING & DESCENT PUZZLE
+% ==============================================================================
+
+% Step 1: Chop the constricting aerial roots with the groundskeeper's machete
+cut_banyan_roots :-
+    current_location(banyan_wellhead),
+    \+ well_roots_severed,
+    ( player_has(rusty_machete) ; has_item(rusty_machete) ),
+    assertz(well_roots_severed).
+
+% Step 2: Mount the heavy cast-iron pulley onto the ancient branch eye-bolt
+mount_well_pulley :-
+    current_location(banyan_wellhead),
+    well_roots_severed,
+    \+ well_pulley_rigged,
+    ( player_has(iron_pulley) ; has_item(iron_pulley) ),
+    assertz(well_pulley_rigged),
+    retractall(player_has(iron_pulley)),
+    ( inventory(Inv) -> delete(Inv, iron_pulley, NewInv), retract(inventory(Inv)), assertz(inventory(NewInv)) ; true ).
+
+% Step 3: Thread the nylon rope through the pulley wheel
+rig_well_rope :-
+    current_location(banyan_wellhead),
+    well_pulley_rigged,
+    \+ well_rope_rigged,
+    ( player_has(coiled_nylon_rope) ; has_item(coiled_nylon_rope) ; player_has(nylon_rope) ; has_item(nylon_rope) ),
+    assertz(well_rope_rigged),
+    retractall(player_has(coiled_nylon_rope)),
+    retractall(player_has(nylon_rope)),
+    ( inventory(Inv) -> 
+        delete(Inv, coiled_nylon_rope, I1), 
+        delete(I1, nylon_rope, NewInv), 
+        retract(inventory(Inv)), 
+        assertz(inventory(NewInv)) 
+    ; true ).
+
+% Verification check for well descent readiness
+well_descent_ready :-
+    well_roots_severed,
+    well_pulley_rigged,
+    well_rope_rigged.
+
+% Descend down the rope
+descend_into_well :-
+    well_descent_ready,
+    retractall(current_location(_)),
+    assertz(current_location(well_interior_deep)).
+
+% ==============================================================================
+% 16. CHAPTER 3: WELL INTERIOR CASSETTE PUZZLE & CONDUIT UNLOCK
+% ==============================================================================
+
+% Insert cassette tape into the portable player found on the well floor
+insert_cassette_tape :-
+    current_location(well_interior_deep),
+    \+ cassette_inserted,
+    ( player_has(cassette_tape_may) ; has_item(cassette_tape_may) ),
+    assertz(cassette_inserted),
+    retractall(player_has(cassette_tape_may)),
+    ( inventory(Inv) -> delete(Inv, cassette_tape_may, NewInv), retract(inventory(Inv)), assertz(inventory(NewInv)) ; true ).
+
+% Play the inserted cassette tape to reveal the final message & unlock the storm culvert
+play_cassette_tape :-
+    current_location(well_interior_deep),
+    cassette_inserted,
+    \+ cassette_played,
+    assertz(cassette_played),
+    assertz(conduit_unlocked).
+
+% Unlatch or force the storm culvert drainage gate once the tape has been played
+unlock_storm_conduit :-
+    current_location(well_interior_deep),
+    cassette_played,
+    \+ conduit_unlocked,
+    assertz(conduit_unlocked).
+
+
+
+

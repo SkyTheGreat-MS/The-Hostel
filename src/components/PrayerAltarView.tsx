@@ -128,7 +128,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     active: boolean;
   }>({
     speaker: 'Hostel Guardian Nat',
-    line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+    line: 'မင်းက ၁၉၉၈ ခုနှစ်က လူမဟုတ်ဘူး: မင်းရဲ့ ဝိညာဉ်ထဲမှာ အတုအယောင်အနံ့အသက် ရနေတယ်... မင်းက ဒီစင်္ကြံလမ်းနဲ့မထိုက်တန်တဲ့သူပဲ: ဘာလို ငါ့ကို နှိးလိုက်ရတာလဲ',
     active: false,
   });
 
@@ -145,7 +145,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     // the Caretaker ledger, so revisiting this scene cannot complete Chapter 1.
     setPhase3Location('east_fork');
     setActiveMonologue(
-      '— "The rain falls heaviest where the girls used to gather for secret music. Seek the terrace where wire catches the sky… she waits where the wind never settles." —'
+      '—"မိုးက အပြင်းဆုံးရွာတဲ့နေရာက မိန်းကလေးတွေ တိတ်တိတ်လေး သီချင်းလာဆိုကြတဲ့နေရာပဲ။ မိုးကောင်းကင်ကို ထိနေတဲ့ သံကြိုးတွေရှိတဲ့ ဝရန်တာကို ရှာ... လေက ဘယ်တော့မှ မငြိမ်တဲ့နေရာမှာ သူမ စောင့်နေတယ်။"—'
     );
   };
 
@@ -177,7 +177,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   const handlePlaceCandle = (spikeIndex: number) => {
     if (natSummoned || isNatManifested) {
       sound.playGhostWhisper();
-      setActiveMonologue("— The black beeswax candles burn with steady pale-blue sulfur flames, sustaining the Guardian Nat's presence. —");
+      setActiveMonologue("—အနက်ရောင်ပျားဖယောင်းတိုင်တွေက အပြာဖျော့ဖျော့ မီးတောက်တွေနဲ့ တည်တည်ငြိမ်ငြိမ် လောင်နေတယ်။ အစောင့်နတ်ရဲ့ အစွမ်းကို ဆက်ထိန်းပေးနေသလိုပဲ။");
       return;
     }
 
@@ -197,7 +197,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     if (heldCandles <= 0) {
       sound.playError();
       setActiveMonologue(
-        "— An iron candle spike. I have no more ritual candles to mount. The altar still needs more tallow. —"
+        "—ဖယောင်းတိုင်စိုက်တံပဲ။ စိုက်စရာ ယဇ်ပူဇော်တဲ့ ဖယောင်းတိုင် ငါ့ဆီမှာ မကျန်တော့ဘူး။ စင်ပေါ်မှာ ဆီမီးပူဇော်တဲ့ဖယောင်းတိုင် ထပ်လိုသေးတယ်။—"
       );
       return;
     }
@@ -222,7 +222,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
     // 3. Decrement available candle counter
     setHasBlackCandlesCount((prev) => Math.max(0, prev - 1));
 
-    setActiveMonologue(`Mounted a thick black beeswax candle onto Spike #${spikeIndex + 1}.`);
+    setActiveMonologue(`အနက်ရောင် ဖယောင်းတိုင်ကို ဆူးတိုင်#${spikeIndex + 1}ပေါ် တပ်လိုက်တယ်။`);
   };
 
   // Handle Placing Bell on Pedestal
@@ -231,7 +231,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playGhostWhisper();
       setDialogueState({
         speaker: 'Hostel Guardian Nat',
-        line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+        line: '၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။  ',
         active: true,
       });
       return;
@@ -244,7 +244,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       } else {
         sound.playPaperRustle();
         setActiveMonologue(
-          "— The ceremonial bronze prayer bell rests on its carved pedestal. The candles must be lit before ringing. —"
+          "—ကြေးဝါခေါင်းလောင်းက သူ့ခုံပေါ်မှာ ရှိတယ်။ ခေါင်းလောင်းမတီးခင် ဖယောင်းတိုင်တွေကို အရင်မီးညှိရမယ်။—"
         );
       }
       return;
@@ -259,14 +259,14 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
 
     sound.playPaperRustle();
     setHasPlacedBell(true);
-    setActiveMonologue("— Positioned the ceremonial bronze prayer bell onto the circular wooden stand. —");
+    setActiveMonologue("—ကြေးဝါခေါင်းလောင်းကို အဝိုင်းပုံ သစ်သားခုံပေါ်မှာ တင်လိုက်ပြီ။—");
   };
 
   // Match Striking Logic & Composure-Penalty System
   const handleStrikeMatch = () => {
     if (candlesPlaced.filter(Boolean).length < 3) {
       sound.playError();
-      setActiveMonologue("— The rite is incomplete. Three pillars of wax must stand before the fire can be struck. —");
+      setActiveMonologue("—အခမ်းအနား မပြည့်စုံသေးဘူး... မီးမထွန်းခင် ဖယောင်းတိုင် ၃ တိုင်ကို အရင်စီထားရမယ်။—");
       return;
     }
 
@@ -289,17 +289,17 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playMatchSnap();
       setActiveMonologue(
         nextFails === 1
-          ? "The match snapped in my trembling fingers! The cold dampness here is thick..."
-          : "Another match sputtered out! My hands won't stay steady..."
+          ? "လက်တုန်တုန်နဲ့ မီးခြစ်က မီးငြိမ်းသွားပြီ!ဒီနေရာက စိုစွတ်အေးစက်လွန်းတယ်…"
+          : "နောက်တစ်ချောင်းလည်း ငြိမ်းသွားပြန်ပြီ… လက်တွေ မငြိမ်ဘူး..."
       );
     } else {
       // Successful strike (or forced catch on match 3)
       if (isFinalMatch && roll < failChance) {
         // Final desperate catch: high mental toll
         setComposure((c) => Math.max(5, c - 14));
-        setActiveMonologue("The final match nearly crumbled, but the sulfur finally caught! The flame bites cold...");
+        setActiveMonologue("နောက်ဆုံးမီးခြစ်တစ်ချောင်းလည်း ပျက်တော့မလို… ဒါပေမဲ့ ဆာလဖာက မီးစွဲသွားပြီ!ဟာ… မီးက အေးစက်စက်နဲ့…");
       } else {
-        setActiveMonologue("The sulfur ignites with a hiss, casting pale blue light across the altar.");
+        setActiveMonologue("မီးစွဲပြီး ယဇ်ပလ္လင်ကို အပြာဖျော့ဖျော့ အလင်းပေးနေတယ်။");
       }
 
       setMatchesRemaining(0);
@@ -326,7 +326,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       sound.playGhostWhisper();
       setDialogueState({
         speaker: 'Hostel Guardian Nat',
-        line: 'Mortals who tread the forgotten halls of 1998... You have lit the sacred tallow and struck the bronze. Speak your truth, or be lost to her wrath.',
+        line: 'M၁၉၉၈ ခုနှစ်ရဲ့ မေ့လျော့နေတဲ့ အဆောင်ထဲကို ဝင်လာတဲ့ လူသား … အမှန်တရားကို ပြောပါ။ မဟုတ်ရင် သူမရဲ့ အမျက်ထဲမှာ ပျောက်ကွယ်သွားလိမ့်မယ်။',
         active: true,
       });
       return;

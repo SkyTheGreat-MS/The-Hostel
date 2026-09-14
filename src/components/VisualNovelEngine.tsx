@@ -7,7 +7,6 @@ import { MCId, MCCharacter, Room4BSubScene, Phase3Location } from '../types';
 import { CHARACTERS, ROOM_4B_ASSETS, PHASE_3_ASSETS, ITEMS } from '../gameData';
 import { InkPortrait, getCharacterPortraitSrc } from './InkPortrait';
 import { CharacterSelectModal } from './CharacterSelectModal';
-import { CharacterSelectScreen } from './CharacterSelectScreen';
 import { PauseModal } from './PauseModal';
 import { CaseNotesModal } from './CaseNotesModal';
 import { DialogueOverlay, ThoughtMonologueOverlay } from './DialogueOverlay';
@@ -19,7 +18,9 @@ import {
   lockChapterOneAndSave,
   loadActiveGameProgress,
   ACTIVE_SAVE_KEY,
+  useGameStore,
 } from '../gameStore';
+import { PrologBridge } from '../services/PrologBridge';
 import { ChapterProgressSave } from '../types';
 import {
   Volume2,
@@ -70,14 +71,28 @@ import { Locker32ZoomView } from './Locker32ZoomView';
 import { Locker09ZoomView } from './Locker09ZoomView';
 import { LockersOverviewView } from './LockersOverviewView';
 import { Locker10InspectionView } from './Locker10InspectionView';
+import { Locker14InteriorView } from './Locker14InteriorView';
 import { PrayerAltarView } from './PrayerAltarView';
 import { CaretakerOfficeView } from './CaretakerOfficeView';
 import { BalconySceneView } from './BalconySceneView';
 import { RadioBenchInspectionView } from './RadioBenchInspectionView';
+import { DeskInspectionView } from './DeskInspectionView';
+import { StairwayGateInspectionView, BalconyStairwayGateView } from './StairwayGateInspectionView';
+import { HostelOuterGroundsView, OuterGroundsView } from './HostelOuterGroundsView';
+import { CompoundGateInspectionView } from './CompoundGateInspectionView';
+import { GarageSubterraneanView } from './GarageSubterraneanView';
+import { BanyanWellheadView } from './BanyanWellheadView';
+import { WellInteriorDeepView } from './WellInteriorDeepView';
+import { Room101SeanceClimaxView } from './Room101SeanceClimaxView';
+import { WashroomMirrorView, CrackedMirrorInspectionView } from './WashroomMirrorView';
 import { SceneNavBar } from './SceneNavBar';
 import { TopInventoryBar } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
+import { ThoughtLine } from './common/ThoughtLine';
+import { RouteCard } from './common/RouteCard';
+export { ThoughtLine } from './common/ThoughtLine';
+export { RouteCard } from './common/RouteCard';
 
 export const LockerBayView = LockersOverviewView;
 export const CaretakerArchiveView = CaretakerOfficeView;
@@ -86,10 +101,19 @@ export {
   Locker32ZoomView,
   Locker09ZoomView,
   Locker10InspectionView,
+  Locker14InteriorView,
   LockersOverviewView,
   PrayerAltarView,
   CaretakerOfficeView,
   BalconySceneView,
+  RadioBenchInspectionView,
+  DeskInspectionView,
+  StairwayGateInspectionView,
+  BalconyStairwayGateView,
+  OuterGroundsView,
+  HostelOuterGroundsView,
+  WashroomMirrorView,
+  CrackedMirrorInspectionView,
   SceneNavBar,
   TopInventoryBar,
   InventoryDrawerModal,
@@ -119,7 +143,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'May Jewel',
     characterId: 'may_jewel',
     pos: 'left',
-    text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက မှော်ပညာစာအုပ်ဟောင်းတစ်ခု တွေ့ခဲ့တယ်။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားကြည့်ရအောင်။',
+    text: 'ဟိုဘက်အဆောင်ဟောင်းကနေ ၁၉၉၈ တုန်းက စာအုပ်ဟောင်းတစ်ခု တွေ့ထားတယ်တဲ့။ \'ကြေးမုံ-ရေတွင်း သစ္စာဆိုခြင်း\' တဲ့။ ကစားရအောင်။',
     soundCue: 'paper',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
@@ -139,7 +163,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Hsu Myat Shein',
     characterId: 'hsu_myat_shein',
     pos: 'right',
-    text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတာ နာမည်ကြီးတယ်။',
+    text: 'မလုပ်တာကောင်းမယ်။ ၁၉၉၈ ဩဂုတ်လတုန်းက မမမေ ဆိုတဲ့ စီနီယာအစ်မ ဒီအဆောင်မှာ ပျောက်သွားတယ်လို့ ကြားဖူးတယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -158,7 +182,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Mona',
     characterId: 'mona',
     pos: 'right',
-    text: 'ကြောက်နေရင် ပြန်လိုရတယ်။ အမှန်တရားသိချင်ရင်တော့ ကစားကြည့်မယ်။',
+    text: 'ကြောက်နေရင် ပြန်လိုရတယ်။ အမှန်တရားသိချင်ရင်တော့ ကစားကြမယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -167,7 +191,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'May Jewel',
     characterId: 'may_jewel',
     pos: 'left',
-    text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ၁၉၉၈ က ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
+    text: 'အားလုံး ဖန်ခွက်ပေါ် လက်တင်လိုက်။ ဒီအခန်းထဲမှာ ဝိညာဉ်များ... ရှိရင် ကိုယ်ထင်ပြပါ။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
 
@@ -190,7 +214,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
     speaker: 'Mona & Hsu Myat Shein',
     characterId: 'mona',
     pos: 'right',
-    text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးစက်စက် လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
+    text: 'ဖန်ခွက်က သူ့ဘာသာရွေ့ပြီး မ မ မေ လို စာလုံးဖော်နေတယ်။ ငါ့လည်ပင်းကို လေအေးအေးကြီး လာမှုတ်သွားသလိုပဲ အပြင်မှာလည်း ခြေသံတွေကြားနေရတယ်။',
     bgImage: ROOM_4B_ASSETS.seance2026,
   },
   {
@@ -270,7 +294,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'Pathway 326... The air in this corridor smells of stagnant water and old cedar. The lights are dead, replaced by flickering kerosene shadows.',
+          text: 'စင်္ကြံလမ်း ၃၂၆... ဒီစစင်္ကြံလမ်းထဲမှာ ရေပုပ်နံ့နဲ့ သစ်သားဟောင်းနံ့တွေ ကြီးပဲ။ မီးတွေလည်းမရှိတော့ဘူး၊ ယိမ်းထိုးနေတဲ့ ရေနံဆီမီးအိမ် အရိပ်တွေပဲ ကျန်တော့တယ်။',
           soundCue: 'paper',
         },
         {
@@ -281,12 +305,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'Look at the doorframe to Room 304... There are deep, desperate fingernail claw marks gouged into the wood. Pinned beside it is an August 1998 Missing Notice for Mama May.',
+          text: 'အခန်း ၃၀၄ ရဲ့ တံခါးဘောင်ကို ကြည့်လိုက်စမ်း... သစ်သားပေါ်မှာ လက်သည်းနဲ့ အသည်းအသန် ကုတ်ခြစ်ထားတဲ့ အရာတွေ ကြီးပဲ။ အဲဒီဘေးမှာ ဩဂုတ်လ ၁၉၉၈ ခုနှစ်က ပျောက်ဆုံးသွားတဲ့ မမမေ ရဲ့ အကြောင်း ကြော်ငြာစာရွက်ကို စိုက်ထားတယ်...။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'The draft is flowing toward the administrative wing downstairs... That is the only way down to ground level!',
+          text: 'လေတွေက အောက်ထပ် ရုံးခန်းဘက်ဆီကို တိုက်နေတာပဲ... အဲဒီလမ်းကပဲ မြေညီထပ်ကို ဆင်းလို့ရတဲ့ တစ်ခုတည်းသော လမ်းထင်တယ်!"',
         },
       ],
     },
@@ -312,7 +336,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The east stairs... I can barely breathe in here. The air is stagnant, thick with the smell of rusted iron and old kerosene.',
+          text: 'အရှေ့ဘက်လှေကားပဲ ငါကောင်းကောင်းအသက်ရှုလို့ မရတော့ဘူး။ သံချေးနံ့နဲ့ ရေနံဆီဟောင်းနံ့တွေကြီးပဲ။',
         },
         {
           speakerType: 'environment',
@@ -322,12 +346,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The gate is padlocked from the outside! Pinned to the wire is the caretaker’s August 1998 curfew log—he locked this wing before midnight! This way is impassable.',
+          text: 'တံခါးအပြင်ကနေ သော့ခတ်ထားတယ်! ဇကာမှာ ၁၉၉၈ ဩဂုတ်လက ညမထွက်ရ လို့အစောင့်ရေးထားတယ်... သူ ညသန်းခေါင် မတိုင်ခင် ဒီဘက်အဆောင်ကို ခတ်သွားခဲ့တာပဲ! ဒီလမ်းတော့ သွားလို့မရတော့ဘူး။',
           soundCue: 'paper',
         },
         {
           speakerType: 'player',
-          text: 'I wasted precious time coming here... My pulse is racing. I must turn back and find an unblocked path!',
+          text: 'အချိန်တွေ အလကား ကုန်သွားပြီ... ရင်တွေလည်း တော်တော်ခုန်နေပြီ။ မြန်မြန်အနောက်ပြန်ပြီး သော့မခတ်ထားတဲ့ လမ်းကို မြန်မြန် ရှာရမယ်!"',
         },
       ],
     },
@@ -353,7 +377,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The communal washroom... The mirrors over the porcelain basins are shattered into jagged cobwebs of silver.',
+          text: 'အများသုံးရေချိုးခန်း… မှန်တွေက အစိတ်စိတ်အမြွှာမြွှာ ကွဲနေတာပဲ…',
         },
         {
           speakerType: 'environment',
@@ -363,12 +387,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'AHHH! S-she vanished! But look in the cracked drain... A bloodstained carved jasmine hairpin! It belonged to Mama May!',
+          text: 'အာ့! သူ… သူပျောက်သွားပြီ!ဟိုမှာ… ရေမြောင်းထဲက သွေးစွန်းနေတဲ့ စံပယ်ပန်းဆံထိုး! မမမေရဲ့ ပစ္စည်းပဲ။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'She struggled with someone right here before they dragged her away. There is no exterior exit here... I need to get out of this room now!',
+          text: 'ဒီမှာ တစ်ယောက်ယောက်နဲ့ ရုန်းရင်းဆန်ခတ်ဖြစ်ခဲ့တာပဲ။ထွက်ပေါက်လည်း မရှိဘူး… ဒီကနေ အမြန်ထွက်မှဖြစ်မယ်!',
         },
       ],
     },
@@ -400,7 +424,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The caretaker’s office... The room has been ransacked, with old student dossiers and rent sheets strewn across the floor.',
+          text: 'အဆောင်မှူးရုံး…အခန်းထဲက ပစ္စည်းတွေ အကုန်ရှုပ်ပွနေတယ်… ကျောင်းသားမှတ်တမ်းတွေလည်း ကြမ်းပြင်ပေါ် ပြန့်ကျဲနေတယ်။',
           soundCue: 'paper',
         },
         {
@@ -411,12 +435,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'Inside an overturned steel lockbox, there’s an official cash receipt dated August 14, 1998. It confirms a 5,000 Kyats bribe paid to seal off the courtyard well with concrete!',
+          text: 'ဟော… သံသေတ္တာထဲမှာ ၁၉၉၈၊ ဩဂုတ် ၁၄ ရက်နေ့က ငွေလက်ခံဖြတ်ပိုင်း!၅,၀၀၀ လာဘ်ပေးပြီး ခြံဝင်းထဲက ရေတွင်းကို ဘိလပ်မြေနဲ့ ပိတ်ခိုင်းထားတာပဲ…',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'The back door leads straight into the courtyard where the well is located. The draft is blowing the door open!',
+          text: 'နောက်တံခါးက ရေတွင်းရှိတဲ့ ခြံဝင်းကို တန်းရောက်တယ်။ဟာ… လေတိုက်ပြီး တံခါးပွင့်လာပြီ!',
         },
       ],
     },
@@ -442,7 +466,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The old study hall... The benches are overturned and covered in thick mold. Every single window is reinforced with iron bars.',
+          text: 'စာကြည့်ခန်းဟောင်း…ခုံတွေအကုန်လဲကျပြီး မှိုတွေနဲ့ ဖုံးနေတယ်။ ပြတင်းပေါက်တွေလည်း သံတိုင်တွေနဲ့ ပိတ်ထားတယ်…',
         },
         {
           speakerType: 'environment',
@@ -452,12 +476,12 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'These are Mama May’s occult notes on guardian spirits... The text reads: "The Nat does not protect the dead; it holds the curse bound inside the stones."',
+          text: 'ဒါ မမေ့ရဲ့ နတ်စောင့်တွေအကြောင်း မှတ်စုတွေပဲ…"နတ်က လူသေကို မကာကွယ်ဘူး… ကျိန်စာကို ကျောက်တုံးတွေထဲမှာ ချည်နှောင်ထားတာ…"',
           soundCue: 'paper',
         },
         {
           speakerType: 'player',
-          text: 'All doors in this study hall are deadbolted. I cannot escape through here!',
+          text: 'တံခါးတွေအကုန် သော့ခတ်ထားတယ်။ ဒီကနေ ထွက်လို့မရဘူး!',
         },
       ],
     },
@@ -487,18 +511,18 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'environment',
-          text: 'Splaaash! From the black depths of the hatch, a pale, waterlogged hand thrusts upward, clawing at the wooden frame before sinking back into the murky deep!',
+          text: 'မြေအောက်ခန်းပေါက်?! တံခါးနည်းနည်းပွင့်ပြီး အနက်ရောင်ရေတွေ စီးနေတယ်…',
           soundCue: 'drone',
           isGlitch: true,
         },
         {
           speakerType: 'player',
-          text: 'WHAT WAS THAT?! Beside the opening sits an empty sack of quick-dry cement and a rusted masonry trowel from August 1998.',
+          text: 'ဟာ! ဘာကြီးလဲ?!ဘေးမှာ ဘိလပ်မြေအိတ်အဟောင်းနဲ့ သံချေးတက်နေတဲ့ ပန်းရန်သမားတံတောင်… ၁၉၉၈ ခုနှစ်ကပဲ!',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'This chute is completely flooded and dangerous. I must step back immediately!',
+          text: 'အောက်က ရေပြည့်နေတာ… အန္တရာယ်များတယ်။ အမြန်နောက်ဆုတ်ရမယ်!',
         },
       ],
     },
@@ -530,7 +554,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The courtyard... The torrential rain is pounding against the cracked flagstones. At the center stands an ancient brick well wrapped in rusted iron chains and barbed wire.',
+          text: 'ခြံဝင်း…မိုးတွေသည်းထန်နေတယ်… အလယ်မှာ သံချေးတက်သံကြိုးတွေနဲ့ ဆူးကြိုးတွေ ပတ်ထားတဲ့ ရေတွင်းဟောင်းကြီးရှိတယ်။',
           soundCue: 'drone',
         },
         {
@@ -541,21 +565,21 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'mama_may',
-          text: 'They threw me into this well alive in August 1998... and poured wet concrete over my cries. But the seal is cracking. The killer still walks freely in the city.',
+          text: '၁၉၉၈ ဩဂုတ်မှာ သူတို့က ငါ့ကို အသက်ရှင်လျက် ဒီရေတွင်းထဲ ပစ်ချပြီး ဘိလပ်မြေနဲ့ ဖုံးပိတ်ခဲ့တာ…ဒါပေမဲ့ အခု အဖုံးက အက်လာပြီ… လူသတ်သမားကတော့ အပြင်မှာ လွတ်လွတ်လပ်လပ် ရှိနေတုန်းပဲ။',
           soundCue: 'drone',
         },
         {
           speakerType: 'player',
-          text: 'Her corpse... it was sealed right here inside the dried well! And the Guardian Nat was placed here to bind her restless soul! The entire hostel is cursed!',
+          text: 'မမမေအလောင်းကို ဒီရေတွင်းထဲမှာပဲ ပိတ်ထားတာ… သူ့ဝိညာဉ်ကို ချည်နှောင်ဖို့ နတ်စောင့်ကိုပါ ဒီမှာထားခဲ့တယ်။ဒီအဆောင်တစ်ခုလုံး ကျိန်စာသင့်နေပြီ!',
         },
         {
           speakerType: 'mama_may',
-          text: 'If you want to survive and escape this hostel alive, take my brass key. In Chapter 2, you must decipher the nat’s four directions and open the well.',
+          text: 'အသက်ရှင်လွတ်မြောက်ချင်ရင် ဒီကြေးဝါသော့ကိုယူ။ အခန်း ၂ မှာ နတ်ရဲ့ အရပ်လေးမျက်နှာကို ဖော်ထုတ်ပြီး ရေတွင်းကို ဖွင့်ရမယ်။',
           soundCue: 'select',
         },
         {
           speakerType: 'player',
-          text: 'I understand now... I have to escape this 1998 temporal echo and uncover the full truth in Chapter 2 before the entity claims my soul!',
+          text: 'နားလည်ပြီ… ဒီ ၁၉၉၈ ခုနှစ်ရဲ့ အချိန်ပဲ့တင်သံထဲက လွတ်ပြီး အမှန်တရားအကုန် ဖော်ထုတ်ရမယ်… မဟုတ်ရင် ဒီအရာက ငါ့ဝိညာဉ်ကို သိမ်းသွားလိမ့်မယ်!',
         },
       ],
     },
@@ -581,7 +605,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The bicycle shed in the corner of the courtyard... A dozen rusted 1990s bicycles are tangled in thick, impenetrable bramble vines.',
+          text: 'ခြံထောင့်က စက်ဘီးရုံ…၉၀ ခုနှစ်က စက်ဘီးအဟောင်းတွေနဲ့ ဆူးတွေ ပိတ်နေတယ်။ ဒီဘက်ကလည်း လမ်းမရှိဘူး!',
         },
         {
           speakerType: 'environment',
@@ -591,11 +615,11 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The back perimeter wall here has collapsed into jagged brick rubble and razor wire. There is no passage through this barrier!',
+          text: 'စက်ဘီးအဟောင်းတွေနဲ့ ဆူးတွေ ပိတ်နေတယ်။ ဒီဘက်ကလည်း လမ်းမရှိဘူး!',
         },
         {
           speakerType: 'player',
-          text: 'The dried well in the center of the courtyard is the only place radiating supernatural energy.',
+          text: 'အလယ်က ရေတွင်းကပဲ ထူးဆန်းတဲ့စွမ်းအင် ထွက်နေတယ်… ဒါ ငါ့ရဲ့ တစ်ခုတည်းသောလမ်းပဲ။',
         },
       ],
     },
@@ -621,7 +645,7 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
       lines: [
         {
           speakerType: 'player',
-          text: 'The front entrance gate of the hostel... Towering black iron spikes reach into the rainy night.',
+          text: 'အဆောင်ရှေ့တံခါး…မိုးရေထဲမှာ အမြင့်ကြီးတဲ့ သံချွန်တံခါးကြီးက ကြောက်စရာကောင်းအောင် ရှိနေတယ်…',
         },
         {
           speakerType: 'environment',
@@ -631,11 +655,11 @@ const ALL_TIERED_LOCATIONS: Record<number, ExplorationLocation[]> = {
         },
         {
           speakerType: 'player',
-          text: 'The gate is triple-chained with a heavy government padlock from the outside! Nobody can leave through the front gate!',
+          text: 'သံတံခါးကို သံကြိုးသုံးထပ်နဲ့ အပြင်က သော့ခတ်ထားတယ်။ ဒီကနေ ထွက်လို့မရဘူး!',
         },
         {
           speakerType: 'player',
-          text: 'The supernatural rupture originates from the dried well near the banyan tree. That is my only path!',
+          text: 'ထူးဆန်းတဲ့စွမ်းအင်က ညောင်ပင်နားက ရေတွင်းကနေ ထွက်နေတာ… ငါသွားရမယ့်နေရာက အဲဒီမှာပဲ!',
         },
       ],
     },
@@ -666,6 +690,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setSelectedInventoryItem,
     deskMugMoved,
     setDeskMugMoved,
+    desk4bLooted,
+    setDesk4bLooted,
     hasMagneticCompass,
     setHasMagneticCompass,
     doorSmashed,
@@ -688,6 +714,26 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setWashroomMirrorScratched,
     stairwellGateInspected,
     setStairwellGateInspected,
+    mayResolved,
+    setMayResolved,
+    key14OnFloor,
+    setKey14OnFloor,
+    key14Collected,
+    setKey14Collected,
+    locker14Unlocked,
+    setLocker14Unlocked,
+    stairwayGateKeyTaken,
+    setStairwayGateKeyTaken,
+    stairwayGateUnlocked,
+    setStairwayGateUnlocked,
+    chapter3Unlocked,
+    setChapter3Unlocked,
+    chapter3Completed,
+    setChapter3Completed,
+    garageDrained,
+    removeItem,
+    advanceToChapter,
+    removeInventoryItem,
     resetProgress,
     resetChapterOneProgress,
   } = useGameProgress();
@@ -709,7 +755,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
 
   // Room 4B Point-and-Click States
-  const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' } | null>(null);
+  const [roomBanner, setRoomBanner] = useState<{ text: string; type: 'info' | 'success' | 'warn' | 'warning' } | null>(null);
   const [isScreenShaking, setIsScreenShaking] = useState<boolean>(false);
   const [isCompassModalOpen, setIsCompassModalOpen] = useState<boolean>(false);
   const [inspectingItem, setInspectingItem] = useState<string | null>(null);
@@ -748,6 +794,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const [corridorShadowFlash, setCorridorShadowFlash] = useState<boolean>(false);
   const [currentChapter, setCurrentChapter] = useState<number>(initialChapter || 1);
   const [isChapterTransitionOpen, setIsChapterTransitionOpen] = useState<boolean>(false);
+  const [isChapter3TransitionOpen, setIsChapter3TransitionOpen] = useState<boolean>(false);
   const [isInventoryDrawerOpen, setIsInventoryDrawerOpen] = useState<boolean>(false);
   const [isNatDialogueActive, setIsNatDialogueActive] = useState<boolean>(false);
   const [natAudienceConcluded, setNatAudienceConcluded] = useState<boolean>(false);
@@ -787,6 +834,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setCurrentScreen('gameplay');
     }
   }, [isGameOver, isChapterFinished, mode]);
+
+  useEffect(() => {
+    if (phase3Location === 'seance_climax_flashback') {
+      const timer = setTimeout(() => {
+        try {
+          sound.playPhaseComplete();
+        } catch {}
+        setIsChapter3TransitionOpen(true);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [phase3Location]);
 
   // ONLY true pause freezes the world clock and mental attrition:
   const isSystemPaused = isPaused || currentScreen !== 'gameplay';
@@ -853,7 +912,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
     const activeSave = loadActiveGameProgress();
-    if (initialChapter === 2 || (!initialChapter && activeSave && activeSave.chapter === 2 && activeSave.chapter1Completed)) {
+    if (
+      initialChapter === 2 ||
+      initialChapter === 3 ||
+      (!initialChapter && activeSave && (activeSave.chapter === 2 || activeSave.chapter === 3) && activeSave.chapter1Completed)
+    ) {
       if (activeSave?.selectedCharacterId) {
         const char = CHARACTERS.find((c) => c.id === activeSave.selectedCharacterId);
         if (char) setSelectedCharacter(char);
@@ -861,42 +924,52 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (typeof activeSave?.composure === 'number') {
         setComposure(activeSave.composure);
       }
-      setCurrentChapter(2);
-      setPhase(2);
-      setPhase3Location(activeSave?.phase3Location || 'east_fork');
-      setCurrentScene('pathway_326_main');
+      const isCh3 = activeSave?.chapter === 3 || initialChapter === 3 || Boolean(activeSave?.chapter3Unlocked);
+      setCurrentChapter(isCh3 ? 3 : 2);
+      setPhase(isCh3 ? 3 : 2);
+      const targetPhase3Loc = isCh3
+        ? (activeSave?.chapter === 3 && activeSave?.phase3Location && activeSave.phase3Location !== 'east_fork'
+            ? activeSave.phase3Location
+            : 'hostel_outer_grounds')
+        : (activeSave?.phase3Location || 'east_fork');
+      setPhase3Location(targetPhase3Loc);
+      setCurrentScene(isCh3 ? 'hostel_outer_grounds_main' : 'pathway_326_main');
       setCurrentSubScene(null);
       setMode('phase3');
       setChapter1Completed(true);
       setCaretakerDoorUnlocked(true);
-      setHasBlackCandlesCount(3);
-      setHasMatchesCount(3);
-      setHasBronzeBell(true);
-      setHasReadLocker32Note(true);
-      setHasReadSandarLetters(true);
-      setDoorUnlocked(true);
-      if (activeSave?.natAudienceConcluded) setNatAudienceConcluded(true);
-      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
-      if (activeSave?.radioTuned) setRadioTuned(true);
+      if (isCh3) {
+        setChapter3Unlocked(true);
+        setStairwayGateUnlocked(true);
+        setStairwayGateKeyTaken(true);
+        setLocker14Unlocked(true);
+        setMayResolved(true);
+      }
+      // CRITICAL FIX: Trust activeSave fields — never force-set ritual item counts
+      if (typeof activeSave?.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(activeSave.hasBlackCandlesCount);
+      if (typeof activeSave?.hasMatchesCount === 'number') setHasMatchesCount(activeSave.hasMatchesCount);
+      if (activeSave?.hasBronzeBell) setHasBronzeBell(true);
+      if (activeSave?.hasReadLocker32Note) setHasReadLocker32Note(true);
+      if (activeSave?.hasReadSandarLetters) setHasReadSandarLetters(true);
       if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
       if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
+      // Only restore radio state if batteries were actually inserted and not still in inventory
+      const invHasBatteries = (activeSave?.inventory || []).includes('battery_pair');
+      const hasBatteries = Boolean(activeSave?.radioHasBatteries) && !invHasBatteries;
+      setRadioHasBatteries(hasBatteries);
+      setRadioTuned(hasBatteries && Boolean(activeSave?.radioTuned));
+      if (activeSave?.mayResolved) setMayResolved(true);
+      if (activeSave?.key14OnFloor) setKey14OnFloor(true);
+      if (activeSave?.key14Collected) setKey14Collected(true);
+      if (activeSave?.locker14Unlocked) setLocker14Unlocked(true);
+      if (activeSave?.stairwayGateKeyTaken) setStairwayGateKeyTaken(true);
       if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
       if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
-      setInventory(
-        activeSave?.inventory && activeSave.inventory.length > 0
-          ? activeSave.inventory
-          : [
-              'bobby_pin',
-              'wooden_bat',
-              'small_brass_key_32',
-              'coiled_nylon_rope',
-              'black_beeswax_candle',
-              'black_beeswax_candle',
-              'black_beeswax_candle',
-              'matchbox_three_stars',
-              'bronze_prayer_bell',
-            ]
-      );
+      if (activeSave?.desk4bLooted) setDesk4bLooted(true);
+      // CRITICAL FIX: Trust the saved inventory exactly — no phantom item fallback
+      if (activeSave?.inventory) {
+        setInventory(activeSave.inventory);
+      }
       sound.startAmbient();
       return;
     }
@@ -922,6 +995,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setHasSmallBrassKey(Boolean(save.hasSmallBrassKey));
       setHasNylonRope(Boolean(save.hasNylonRope));
       setDeskMugMoved(Boolean(save.deskMugMoved));
+      setDesk4bLooted(Boolean(save.desk4bLooted));
       setDoorUnlocked(Boolean(save.doorUnlocked));
       if (typeof save.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(save.hasBlackCandlesCount);
       if (typeof save.hasMatchesCount === 'number') setHasMatchesCount(save.hasMatchesCount);
@@ -940,8 +1014,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setCorridorShadowScareTriggered(Boolean(save.corridorShadowScareTriggered));
       setChapter1Completed(Boolean(save.chapter1Completed));
       setNatAudienceConcluded(Boolean(save.natAudienceConcluded));
-      if (activeSave?.radioHasBatteries) setRadioHasBatteries(true);
-      if (activeSave?.radioTuned) setRadioTuned(true);
+      setRadioHasBatteries(false);
+      setRadioTuned(false);
+      setMayResolved(Boolean(save.mayResolved));
+      setKey14OnFloor(Boolean(save.key14OnFloor));
+      setKey14Collected(Boolean(save.key14Collected));
+      setLocker14Unlocked(Boolean(save.locker14Unlocked));
+      setStairwayGateKeyTaken(Boolean(save.stairwayGateKeyTaken));
       if (typeof save.composure === 'number') setComposure(save.composure);
       if (typeof save.timerSeconds === 'number') setTimeLeft(save.timerSeconds);
 
@@ -984,6 +1063,15 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasReadSandarLetters,
         hasCaretakerCandles,
         altarCandlesPlaced,
+        // Pass actual ritual item counts so they persist across browser refreshes
+        hasMatchesCount,
+        hasBlackCandlesCount,
+        hasBronzeBell,
+        mayResolved,
+        key14OnFloor,
+        key14Collected,
+        locker14Unlocked,
+        stairwayGateKeyTaken,
       });
       return;
     }
@@ -993,7 +1081,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       mode === 'location_select' ||
       mode === 'investigating_location'
     ) {
-      const currentPhaseNum: 1 | 2 | 3 = mode === 'room_escape' || mode === 'awakening' ? 2 : 3;
+      const currentPhaseNum: 1 | 2 | 3 = mode === 'room_escape' || (mode as string) === 'awakening' ? 2 : 3;
       saveChapterOneProgress({
         chapter: 1,
         currentPhase: currentPhaseNum,
@@ -1007,6 +1095,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         hasSmallBrassKey,
         hasNylonRope,
         deskMugMoved,
+        desk4bLooted,
         doorUnlocked,
         composure,
         timerSeconds: timeLeft,
@@ -1027,6 +1116,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         askedNatTopics,
         corridorShadowScareTriggered,
         chapter1Completed: false,
+        mayResolved,
+        key14OnFloor,
+        key14Collected,
+        locker14Unlocked,
+        stairwayGateKeyTaken,
       });
 
       // Synchronize active save state to maintain Chapter 2 lock while playing Chapter 1
@@ -1058,6 +1152,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           hasReadLocker32Note,
           hasReadSandarLetters,
           hasCaretakerCandles,
+          desk4bLooted,
+          mayResolved,
+          key14OnFloor,
+          key14Collected,
+          locker14Unlocked,
+          stairwayGateKeyTaken,
           composure,
           timerSeconds: timeLeft,
           timestamp: Date.now(),
@@ -1073,6 +1173,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     discoveredClues,
     doorUnlocked,
     deskMugMoved,
+    desk4bLooted,
     hasBobbyPin,
     hasWoodenBat,
     hasMagneticCompass,
@@ -1102,6 +1203,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     radioHasBatteries,
     radioTuned,
     hasCaretakerCandles,
+    mayResolved,
+    key14OnFloor,
+    key14Collected,
+    locker14Unlocked,
+    stairwayGateKeyTaken,
   ]);
 
   // Current active dialogue line for Phase 1 & 2
@@ -1318,10 +1424,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             e.preventDefault();
             sound.playPaperRustle();
             setPhase3Location('washroom_main');
-          } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+          } else if (
+            phase3Location === 'stairwell_gate' ||
+            phase3Location === 'stairway_gate_inspection' ||
+            phase3Location === 'washroom_main'
+          ) {
             e.preventDefault();
             sound.playPaperRustle();
             setPhase3Location('west_split_landing');
+          } else if (phase3Location === 'hostel_outer_grounds') {
+            e.preventDefault();
+            sound.playPaperRustle();
+            setPhase3Location('stairway_gate_inspection');
           } else if (phase3Location === 'west_split_landing') {
             e.preventDefault();
             sound.playPaperRustle();
@@ -1485,7 +1599,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: true,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure: method === 'bobby_pin' ? composure : Math.max(0, composure - 15),
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1554,7 +1673,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: false,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure,
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1605,7 +1729,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasSmallBrassKey,
       hasNylonRope,
       deskMugMoved,
+      desk4bLooted,
       doorUnlocked: false,
+      mayResolved,
+      key14OnFloor,
+      key14Collected,
+      locker14Unlocked,
       composure,
       timerSeconds: timeLeft,
       timestamp: Date.now(),
@@ -1654,6 +1783,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       hasWoodenBat: false,
       hasSmallBrassKey: false,
       hasNylonRope: false,
+      desk4bLooted: false,
       hasBlackCandlesCount: 0,
       hasMatchesCount: 0,
       hasBronzeBell: false,
@@ -1662,6 +1792,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       altarBellPlaced: false,
       natSummoned: false,
       hasConsultedNat: false,
+      mayResolved: false,
+      key14OnFloor: false,
+      key14Collected: false,
+      locker14Unlocked: false,
       composure: 100,
       timerSeconds: 600,
       timestamp: Date.now(),
@@ -1698,10 +1832,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setHasSmallBrassKey(false);
     setHasNylonRope(false);
     setDeskMugMoved(false);
+    setDesk4bLooted(false);
     setDoorUnlocked(false);
     setWashroomStallChecked(false);
     setWashroomMirrorScratched(false);
     setStairwellGateInspected(false);
+    setMayResolved(false);
+    setKey14OnFloor(false);
+    setKey14Collected(false);
+    setLocker14Unlocked(false);
+    setStairwayGateKeyTaken(false);
     setHasBlackCandlesCount(0);
     setHasMatchesCount(0);
     setHasBronzeBell(false);
@@ -1715,6 +1855,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setAltarBellPlaced(false);
     setNatSummoned(false);
     setHasConsultedNat(false);
+    setRadioHasBatteries(false);
+    setRadioTuned(false);
     setCorridorShadowScareTriggered(false);
     setKeypadInput('');
     setSpectralClimaxActive(false);
@@ -1771,6 +1913,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     setMode('phase3');
     setChapter1Completed(true);
     setCaretakerDoorUnlocked(true);
+    setRadioHasBatteries(false);
+    setRadioTuned(false);
+    setMayResolved(false);
+    setKey14OnFloor(false);
+    setKey14Collected(false);
     sound.startAmbient();
     setActiveMonologue(
       "— CHAPTER 2: UNDERSTANDING — Standing at the East Fork corridor. The communal prayer room altar awaits. —"
@@ -1786,6 +1933,63 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     lockChapterOneAndSave(selectedCharacter.id, composure, inventory, timeLeft, resolve);
     // 2. Route directly to Chapter Selection page
     navigate('/chapters');
+  };
+
+  const handleFinishChapterThree = () => {
+    setIsChapter3TransitionOpen(false);
+    sound.stopAllAmbience();
+    sound.playMenuSelect();
+
+    // 1. Mark Chapter 3 completed in Context & Store
+    setChapter3Completed?.(true);
+    completeChapter(3);
+
+    try {
+      localStorage.setItem('spirits_labyrinth_ch3_completed', 'true');
+      const activeSave = JSON.parse(localStorage.getItem('spirits_labyrinth_active_save') || '{}');
+      activeSave.chapter3Completed = true;
+      activeSave.highestChapterCompleted = Math.max(activeSave.highestChapterCompleted || 0, 3);
+      activeSave.currentChapter = 3;
+      activeSave.chapter = 3;
+      localStorage.setItem('spirits_labyrinth_active_save', JSON.stringify(activeSave));
+
+      const prog = JSON.parse(localStorage.getItem('spirits_labyrinth_progress_v1') || '{}');
+      prog.chapter3Completed = true;
+      prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 3);
+      localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
+
+      useGameStore.setState({ chapter3Completed: true, highestChapterCompleted: 3 });
+
+      PrologBridge.queryOnce('assertz(chapter3_completed)');
+    } catch {}
+
+    // 2. Navigate to Chapter Selection page
+    navigate('/chapters');
+  };
+
+  const handleContinueToChapterThree = () => {
+    sound.playMenuSelect();
+
+    // 1. Authoritative chapter bump (preserving inventory)
+    advanceToChapter(3);
+    setCurrentChapter(3);
+
+    // 2. Set authoritative scene & location
+    setStairwayGateUnlocked(true);
+    setChapter3Unlocked(true);
+    setPhase3Location('hostel_outer_grounds');
+
+    // 3. Sync Prolog engine
+    try {
+      if (typeof (window as any).prologEngine?.query === 'function') {
+        (window as any).prologEngine.query(
+          'retractall(player_has(key_stairway_gate)), assertz(stairway_gate_unlocked), assertz(escaped_interior).'
+        );
+      }
+    } catch {}
+
+    // 4. Trigger scene transition audio
+    sound.playRainOutdoor();
   };
 
   // Caretaker Office Climax Handler
@@ -1862,7 +2066,13 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     if (mode === 'phase3') {
       if (phase3Location === 'hallway_threshold') return PHASE_3_ASSETS.pathwayThreshold;
       if (phase3Location === 'west_split_landing') return PHASE_3_ASSETS.westSplitLanding;
-      if (phase3Location === 'stairwell_gate') return PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate' || phase3Location === 'balcony_stairway_gate') return PHASE_3_ASSETS.stairwayGateInspection || PHASE_3_ASSETS.stairwellGateLocked;
+      if (phase3Location === 'compound_iron_gate') return '/assets/scenes/compound_iron_gate_inspection.jpg';
+      if (phase3Location === 'garage_subterranean') return garageDrained ? '/assets/scenes/garage_subterranean_rain.jpg' : '/assets/scenes/garage_subterranean_rain_submerged.jpg';
+      if (phase3Location === 'banyan_wellhead') return '/assets/scenes/banyan_wellhead_exterior.jpg';
+      if (phase3Location === 'well_interior_deep' || phase3Location === 'room_101_seance_flashback') return '/assets/scenes/well_interior_deep.jpg';
+      if (phase3Location === 'seance_climax_flashback') return PHASE_3_ASSETS.seanceClimaxFlashback || '/assets/scenes/seance_climax_flashback.jpg';
+      if (phase3Location === 'hostel_outer_grounds') return PHASE_3_ASSETS.hostelOuterGrounds || '/assets/scenes/hostel_outer_grounds_rain.jpg';
       if (phase3Location === 'washroom_main') return PHASE_3_ASSETS.washroomOverview;
       if (phase3Location === 'washroom_basin') return PHASE_3_ASSETS.washroomBasinZoom;
       if (phase3Location === 'washroom_stall') return PHASE_3_ASSETS.washroomStallZoom;
@@ -1874,7 +2084,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       if (phase3Location === 'locker_32') return PHASE_3_ASSETS.locker32Zoom;
       if (phase3Location === 'locker_09') return PHASE_3_ASSETS.locker09Zoom;
       if (phase3Location === 'locker_10') return '/assets/scenes/locker_10_interior.jpg';
-      if (phase3Location === 'locker_14') return PHASE_3_ASSETS.locker14Zoom;
+      if (phase3Location === 'locker_14') return locker14Unlocked ? PHASE_3_ASSETS.locker14Interior : PHASE_3_ASSETS.locker14Zoom;
+      if (phase3Location === 'locker_14_interior') return PHASE_3_ASSETS.locker14Interior;
       if (phase3Location === 'locker_spider') return PHASE_3_ASSETS.lockerSpiderZoom;
       if (phase3Location === 'prayer_room_main') return PHASE_3_ASSETS.prayerRoomOverview;
       if (phase3Location === 'prayer_altar') return PHASE_3_ASSETS.prayerAltarZoom;
@@ -1913,7 +2124,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         case 'west_split_landing':
           return 'WEST WING • SPLIT LANDING';
         case 'stairwell_gate':
-          return 'WEST WING • STAIRWELL GATE';
+        case 'stairway_gate_inspection':
+        case 'stairway_exit_gate':
+          return 'GROUND FLOOR • STAIRWAY EXIT GATE';
+        case 'hostel_outer_grounds':
+          return 'GROUND FLOOR • HOSTEL COURTYARD & COMPOUND GATE';
         case 'washroom_main':
           return 'WEST WING • COMMUNAL WASHROOM';
         case 'washroom_basin':
@@ -1968,9 +2183,36 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     ) {
       sound.playPaperRustle();
       setPhase3Location('washroom_main');
-    } else if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
+    } else if (
+      phase3Location === 'stairwell_gate' ||
+      phase3Location === 'stairway_gate_inspection' ||
+      phase3Location === 'stairway_exit_gate' ||
+      phase3Location === 'balcony_stairway_gate' ||
+      phase3Location === 'washroom_main'
+    ) {
       sound.playPaperRustle();
       setPhase3Location('west_split_landing');
+    } else if (phase3Location === 'hostel_outer_grounds') {
+      try {
+        sound.playDoorCreak();
+      } catch {
+        sound.playPaperRustle();
+      }
+      setPhase3Location('stairway_gate_inspection');
+    } else if (phase3Location === 'well_interior_deep') {
+      sound.playPaperRustle();
+      setPhase3Location('banyan_wellhead');
+    } else if (
+      phase3Location === 'compound_iron_gate' ||
+      phase3Location === 'garage_subterranean' ||
+      phase3Location === 'banyan_wellhead' ||
+      phase3Location === 'seance_climax_flashback'
+    ) {
+      sound.playPaperRustle();
+      setPhase3Location('hostel_outer_grounds');
+    } else if (phase3Location === 'radio_bench_inspection') {
+      sound.playPaperRustle();
+      setPhase3Location('balcony_326');
     } else if (phase3Location === 'west_split_landing') {
       sound.playPaperRustle();
       setPhase3Location('hallway_threshold');
@@ -1979,6 +2221,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       phase3Location === 'locker_09' ||
       phase3Location === 'locker_10' ||
       phase3Location === 'locker_14' ||
+      phase3Location === 'locker_14_interior' ||
       phase3Location === 'locker_spider'
     ) {
       sound.playPaperRustle();
@@ -2023,14 +2266,39 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
   // Unified Return Destination Label
   const getPhase3ReturnDestination = (): string => {
-    if (phase3Location === 'stairwell_gate' || phase3Location === 'washroom_main') {
-      return 'LANDING';
+    if (phase3Location === 'hostel_outer_grounds') {
+      return 'STAIRWAY GATE';
+    }
+    if (
+      phase3Location === 'garage_subterranean' ||
+      phase3Location === 'compound_iron_gate' ||
+      phase3Location === 'banyan_wellhead'
+    ) {
+      return 'COURTYARD';
+    }
+    if (phase3Location === 'well_interior_deep') {
+      return 'WELLHEAD';
+    }
+    if (phase3Location === 'room_101_seance_flashback' || phase3Location === 'seance_climax_flashback') {
+      return '';
+    }
+    if (
+      phase3Location === 'stairwell_gate' ||
+      phase3Location === 'stairway_gate_inspection' ||
+      phase3Location === 'stairway_exit_gate' ||
+      phase3Location === 'balcony_stairway_gate' ||
+      phase3Location === 'washroom_main'
+    ) {
+      return 'SPLIT LANDING';
     }
     if (phase3Location === 'west_split_landing') {
       return 'HALLWAY';
     }
     if (phase3Location.startsWith('washroom_')) {
       return 'WASHROOM';
+    }
+    if (phase3Location === 'radio_bench_inspection') {
+      return 'BALCONY';
     }
     if (phase3Location.startsWith('locker_')) {
       return 'LOCKER BAY';
@@ -2062,7 +2330,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       case 'west_split_landing':
         return { zone: 'WEST WING', name: 'SPLIT LANDING' };
       case 'stairwell_gate':
-        return { zone: 'WEST WING', name: 'STAIRWELL GATE' };
+      case 'stairway_gate_inspection':
+      case 'stairway_exit_gate':
+      case 'balcony_stairway_gate':
+        return { zone: 'GROUND FLOOR', name: 'STAIRWAY EXIT GATE' };
+      case 'hostel_outer_grounds':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'HOSTEL COURTYARD & COMPOUND GATE' };
+      case 'compound_iron_gate':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'COMPOUND IRON GATE' };
+      case 'garage_subterranean':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'SUBTERRANEAN GARAGE' };
+      case 'banyan_wellhead':
+        return { zone: 'GROUND FLOOR EXTERIOR', name: 'BANYAN TREE & WELL' };
+      case 'well_interior_deep':
+        return { zone: 'SUBTERRANEAN CONDUIT', name: 'DEEP WELL SHAFT' };
+      case 'room_101_seance_flashback':
+      case 'seance_climax_flashback':
+        return { zone: 'CONDUIT CLIMAX', name: 'ROOM 101 SEANCE CIRCLE' };
       case 'washroom_main':
         return { zone: 'WEST WING', name: 'COMMUNAL WASHROOM' };
       case 'washroom_basin':
@@ -2085,6 +2369,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         return { zone: 'LOCKER BAY', name: 'LOCKER 10' };
       case 'locker_14':
         return { zone: 'LOCKER BAY', name: 'LOCKER 14' };
+      case 'locker_14_interior':
+        return { zone: 'LOCKER BAY', name: 'LOCKER 14 INTERIOR' };
       case 'locker_spider':
         return { zone: 'LOCKER BAY', name: 'RUSTED VENT' };
       case 'prayer_room_main':
@@ -2099,6 +2385,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       case 'balcony_326':
       case 'balcony':
         return { zone: 'PATHWAY 326', name: 'THE OVERLOOK BALCONY' };
+      case 'radio_bench_inspection':
+        return { zone: 'PATHWAY 326', name: 'RADIO BENCH' };
       default:
         return { zone: 'PATHWAY 326', name: 'CORRIDOR' };
     }
@@ -2497,7 +2785,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         <div className="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
           {/* Sub-scene Header Bar */}
           <div className="w-full flex items-center justify-between px-4 sm:px-8 pt-16 sm:pt-20 pb-1 z-30 pointer-events-auto">
-            {mode === 'room_escape' && activeInspectSubScene !== 'main' ? (
+            {mode === 'room_escape' && activeInspectSubScene !== 'main' && activeInspectSubScene !== 'desk' ? (
               <button
                 onClick={() => {
                   sound.playPaperRustle();
@@ -2515,19 +2803,19 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               <div />
             )}
 
-            <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
-              {mode === 'awakening' || activeInspectSubScene === 'main'
-                ? 'ROOM 4B • DORMITORY ROOM'
-                : activeInspectSubScene === 'desk'
-                ? 'INSPECTING • STUDY DESK'
-                : activeInspectSubScene === 'stool'
-                ? 'INSPECTING • BEDSIDE STOOL'
-                : activeInspectSubScene === 'wardrobe'
-                ? 'INSPECTING • WARDROBE FOOTING'
-                : activeInspectSubScene === 'calendar'
-                ? 'INSPECTING • WALL CALENDAR'
-                : 'INSPECTING • ROOM DOOR'}
-            </div>
+            {activeInspectSubScene !== 'desk' && (
+              <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
+                {mode === 'awakening' || activeInspectSubScene === 'main'
+                  ? 'ROOM 4B • DORMITORY ROOM'
+                  : activeInspectSubScene === 'stool'
+                  ? 'INSPECTING • BEDSIDE STOOL'
+                  : activeInspectSubScene === 'wardrobe'
+                  ? 'INSPECTING • WARDROBE FOOTING'
+                  : activeInspectSubScene === 'calendar'
+                  ? 'INSPECTING • WALL CALENDAR'
+                  : 'INSPECTING • ROOM DOOR'}
+              </div>
+            )}
           </div>
 
           {/* Observation Feedback Toast */}
@@ -2639,7 +2927,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   id="main_door"
                   name="Room Door 4B"
                   cursorTooltip={doorUnlocked ? "Exit to Pathway 326" : "Room Door 4B"}
-                  polygonPoints="79,5 99.5,5 99.5,95 79,95"
+                  polygonPoints="80,8 99.5,5 99.5,98 79,93"
                   onClick={() => {
                     if (doorUnlocked) {
                       sound.playPaperRustle();
@@ -2660,85 +2948,23 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
             {/* SUB-SCENE 2: STUDY DESK ZOOM (Hover-Discovery Hotspots) */}
             {activeInspectSubScene === 'desk' && (
-              <>
-                {/* Enamel Mug: SVG perspective polygon outline */}
-                <InteractiveHotspot
-                  id="desk_enamel_mug"
-                  name="Chipped Enamel Mug"
-                  cursorTooltip={deskMugMoved ? 'Shifted Enamel Mug' : 'Chipped Enamel Mug (Move Aside)'}
-                  polygonPoints="14.5,23.5 25.5,22 28.5,31 31.5,41 29,52 24.5,56.5 15.5,55 14,35"
-                  onClick={() => {
-                    if (!deskMugMoved) {
-                      setDeskMugMoved(true);
-                      addDiscoveredClue('roster_slip_1998');
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— A 1998 cleaning roster tucked under the mug. Room 4B was assigned to students May and Sandar. Clue logged to Case Notes. —"
-                      );
-                    } else {
-                      sound.playMenuSelect();
-                      setActiveMonologue(
-                        "— The chipped enamel mug has already been shifted aside. Nothing else underneath. —"
-                      );
-                    }
-                  }}
-                />
-
-                {/* Duty Roster Papers: SVG perspective polygon outline */}
-                <InteractiveHotspot
-                  id="desk_roster_slip"
-                  name="1998 Cleaning Roster Slip"
-                  cursorTooltip="Examine Cleaning Duty Roster (Aug 1998)"
-                  polygonPoints="15,42.5 3.5,57.5 22.5,93 39.5,70 33,52 27,56"
-                  onClick={() => {
-                    if (!deskMugMoved) {
-                      setDeskMugMoved(true);
-                      addDiscoveredClue('roster_slip_1998');
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— A 1998 cleaning roster tucked under the mug. Room 4B was assigned to students May and Sandar. Clue logged to Case Notes. —"
-                      );
-                    } else {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— 1998 Cleaning Duty Roster: Room 4B was assigned to May and Sandar for August 1998. —"
-                      );
-                    }
-                  }}
-                />
-
-                {/* Bobby Pin / Clip in Ceramic Tray (hidden when already collected) */}
-                {!hasInventoryItem('bobby_pin') && (
-                  <InteractiveHotspot
-                    id="desk_ceramic_tray"
-                    name="Bent Steel Bobby Pin"
-                    cursorTooltip="Inspect Ceramic Tray (Bent Steel Pin)"
-                    polygonPoints="48.5,28 56.5,28 52,36.5 48.5,36.5"
-                    onClick={() => {
-                      addInventoryItem('bobby_pin');
-                      sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'Searching through dried ink nibs in the ceramic tray, you retrieve a sturdy bent steel bobby pin! Added to inventory.',
-                        type: 'success',
-                      });
-                    }}
-                  />
-                )}
-
-                {/* Lecture Books & Notebook */}
-                <InteractiveHotspot
-                  id="desk_lecture_books"
-                  name="Lecture Notebooks"
-                  cursorTooltip="Physics & Chemistry Lecture Notes (1998)"
-                 polygonPoints="35,83 72,69 79,96 35,96"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "— Physics and chemistry lecture notes from 1998... Someone scribbled: 'Strange voltage drops and vibrations in the hallway past 11 PM...' —"
-                    );
-                  }}
-                />
-              </>
+              <DeskInspectionView
+                deskMugMoved={deskMugMoved}
+                setDeskMugMoved={setDeskMugMoved}
+                desk4bLooted={Boolean(desk4bLooted)}
+                setDesk4bLooted={setDesk4bLooted}
+                inventory={inventory}
+                addInventoryItem={addInventoryItem}
+                addDiscoveredClue={addDiscoveredClue}
+                setActiveMonologue={setActiveMonologue}
+                setRoomBanner={setRoomBanner}
+                onStepBack={() => {
+                  sound.playPaperRustle();
+                  setActiveInspectSubScene('main');
+                  setRoomBanner(null);
+                }}
+                hasBobbyPin={hasBobbyPin}
+              />
             )}
 
             {/* SUB-SCENE 3: BEDSIDE STOOL & COMPASS */}
@@ -2790,32 +3016,20 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     onClick={handlePickupWoodenBat}
                   />
                 ) : (
-                  /* Once collected, keep spot inactive / pointer-events-none */
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    aria-hidden="true"
+                  /* Wardrobe Baseboard Lore Inspect (rendered only after bat is taken) */
+                  <InteractiveHotspot
+                    id="wardrobe_baseboard"
+                    name="Wardrobe Baseboard"
+                    cursorTooltip="Wardrobe Baseboard"
+                    polygonPoints="35.5,19.5 40.5,20.5 41.5,23.5 32.5,81 29.5,82.5 25.5,80.5 34.5,21.5"
+                    onClick={() => {
+                      sound.playMenuSelect();
+                      setActiveMonologue(
+                        "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
+                      );
+                    }}
                   />
                 )}
-
-                {/* Wardrobe Baseboard Lore Inspect */}
-                <InteractiveHotspot
-                  id="wardrobe_baseboard"
-                  name="Wardrobe Baseboard"
-                  cursorTooltip="Wardrobe Baseboard"
-                  x={10}
-                  y={75}
-                  width={80}
-                  height={22}
-                  shape="rect"
-                  onClick={() => {
-                    sound.playMenuSelect();
-                    setActiveMonologue(
-                      hasWoodenBat || inventory.includes('wooden_bat')
-                        ? "— The wooden timber has been taken. Only the warped teak baseboard remains, settled deep into the floorboards. —"
-                        : "— Solid teak baseboard from the nineties, warped by monsoon moisture. The heavy wardrobe footing has settled deep into the floorboards. —"
-                    );
-                  }}
-                />
               </>
             )}
 
@@ -3040,7 +3254,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           composure={composure}
           setComposure={setComposure}
           discoveredClues={discoveredClues}
+          radioHasBatteries={radioHasBatteries}
           radioTuned={radioTuned}
+          mayResolved={mayResolved}
+          setMayResolved={setMayResolved}
+          key14OnFloor={key14OnFloor}
+          setKey14OnFloor={setKey14OnFloor}
+          key14Collected={key14Collected}
+          setKey14Collected={setKey14Collected}
+          addInventoryItem={addInventoryItem}
+          removeInventoryItem={removeInventoryItem}
+          addDiscoveredClue={addDiscoveredClue}
+          setRoomBanner={setRoomBanner}
           onStepBack={() => {
             try {
               sound.playDoorCreak();
@@ -3204,23 +3429,126 @@ onTuned={() => {
               </>
             )}
 
-            {/* SUB-SCENE 3: GROUND FLOOR STAIRWELL LANDING */}
-            {phase3Location === 'stairwell_gate' && (
-              <>
-                <InteractiveHotspot
-                  id="stairwell_gate_padlock"
-                  name="Padlock & Scissor Gate"
-                  polygonPoints="55,32 64,32 60,55 55,55"
-                  cursorTooltip="[Examine Heavy Padlock & Chain]"
-                  onClick={() => {
-                    setStairwellGateInspected(true);
-                    sound.playDramaticSting();
-                    setActiveMonologue(
-                      "— A heavy accordion gate... padlocked with clean chain links from the outside. No brute force will budge this. I need a key, or heavy bolt cutters. —"
-                    );
-                  }}
-                />
-              </>
+            {/* SUB-SCENE 3: STAIRWAY EXIT ACCORDION GATE & PADLOCK */}
+            {(phase3Location === 'stairwell_gate' || phase3Location === 'stairway_gate_inspection' || phase3Location === 'stairway_exit_gate' || phase3Location === 'balcony_stairway_gate') && (
+              <StairwayGateInspectionView
+                inventory={inventory}
+                setInventory={setInventory}
+                removeInventoryItem={removeInventoryItem}
+                removeItem={removeItem}
+                stairwayGateUnlocked={stairwayGateUnlocked}
+                setStairwayGateUnlocked={setStairwayGateUnlocked}
+                chapter3Unlocked={chapter3Unlocked}
+                setChapter3Unlocked={setChapter3Unlocked}
+                advanceToChapter={advanceToChapter}
+                setActiveMonologue={setActiveMonologue}
+                addDiscoveredClue={addDiscoveredClue}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location('west_split_landing')}
+                onSaveAndExit={handleSaveAndExit}
+              />
+            )}
+
+            {/* SUB-SCENE: HOSTEL OUTER GROUNDS / COURTYARD (CHAPTER 3) */}
+            {phase3Location === 'hostel_outer_grounds' && (
+              <HostelOuterGroundsView
+                onNavigate={(target) => {
+                  if (target === 'balcony_stairway_gate' || target === 'stairway_exit_gate' || target === 'stairway_gate_inspection') {
+                    setPhase3Location(stairwayGateUnlocked ? 'west_split_landing' : 'stairway_gate_inspection');
+                  } else {
+                    setPhase3Location(target as Phase3Location);
+                    if (target === 'compound_iron_gate') {
+                      setActiveMonologue(
+                        "— The massive iron compound gate is bound in heavy padlocks and overgrown thorns. Beyond lies the unpaved mud road leading toward Mawlamyine. —"
+                      );
+                    } else if (target === 'garage_subterranean') {
+                      setActiveMonologue(
+                        "— A slick concrete ramp descends into the flooded bicycle garage below. The smell of oil and stagnant water wafts up from the dark. —"
+                      );
+                    } else if (target === 'banyan_wellhead') {
+                      setActiveMonologue(
+                        "— The twisted roots of the ancient banyan tree encircle the stone well. Deep whispers bubble up from the dark water below... —"
+                      );
+                    }
+                  }
+                }}
+                setActiveMonologue={setActiveMonologue}
+                addDiscoveredClue={addDiscoveredClue}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location(stairwayGateUnlocked ? 'west_split_landing' : 'stairway_gate_inspection')}
+              />
+            )}
+
+            {/* SUB-SCENE: COMPOUND IRON GATE CLOSE-UP (CHAPTER 3) */}
+            {phase3Location === 'compound_iron_gate' && (
+              <CompoundGateInspectionView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: SUBTERRANEAN BICYCLE GARAGE (CHAPTER 3) */}
+            {phase3Location === 'garage_subterranean' && (
+              <GarageSubterraneanView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: BANYAN WELLHEAD & RIGGING (CHAPTER 3) */}
+            {phase3Location === 'banyan_wellhead' && (
+              <BanyanWellheadView
+                onReturn={() => setPhase3Location('hostel_outer_grounds')}
+                onNavigate={(destination) => setPhase3Location(destination as Phase3Location)}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: DEEP WELL SHAFT & CASSETTE PUZZLE (CHAPTER 3) */}
+            {phase3Location === 'well_interior_deep' && (
+              <WellInteriorDeepView
+                onReturn={() => setPhase3Location('banyan_wellhead')}
+                onNavigate={(destination) => setPhase3Location(destination as Phase3Location)}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SUB-SCENE: ROOM 101 SEANCE CLIMAX FLASHBACK (CHAPTER 3) */}
+            {phase3Location === 'room_101_seance_flashback' && (
+              <Room101SeanceClimaxView
+                onComplete={() => {
+                  setPhase3Location('seance_climax_flashback');
+                  setActiveMonologue("— You emerge from the trance back on the rain-swept grounds, the curse of Room 101 broken. —");
+                  setTimeout(() => {
+                    try {
+                      sound.playPhaseComplete();
+                    } catch {}
+                    setIsChapter3TransitionOpen(true);
+                  }, 1200);
+                }}
+                setActiveMonologue={setActiveMonologue}
+              />
+            )}
+
+            {/* SCENE: SEANCE CLIMAX FLASHBACK / EPILOGUE */}
+            {phase3Location === 'seance_climax_flashback' && (
+              <InteractiveHotspot
+                id="seance_climax_return_grounds"
+                name="Return to Outer Grounds"
+                x={0}
+                y={0}
+                width={100}
+                height={100}
+                shape="rect"
+                cursorTooltip="[Emerge into the Rain-Swept Grounds]"
+                onClick={() => {
+                  sound.playPaperRustle();
+                  try {
+                    sound.playPhaseComplete();
+                  } catch {}
+                  setIsChapter3TransitionOpen(true);
+                }}
+              />
             )}
 
             {/* SUB-SCENE 4: COMMUNAL WASHROOM OVERVIEW */}
@@ -3302,7 +3630,7 @@ onTuned={() => {
                       setHasSmallBrassKey(true);
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— Waterlogged student shirts from twenty-eight years ago. Wait... there's something hard tucked into the seam of this pocket. —"
+                        "— လွန်ခဲ့တဲ့ ၂၈ နှစ်ကတည်းက ရေစိုနေတဲ့ ရှပ်အင်္ကျီတွေ။နေပါဦး...ဒီအိတ်ကပ်ထဲမှာ မာတဲ့ပစ္စည်းတစ်ခုခု ထိုးထည့်ထားတာပဲ။—"
                       );
                     } else {
                       sound.playPaperRustle();
@@ -3326,7 +3654,7 @@ onTuned={() => {
                   onClick={() => {
                     sound.playDramaticSting();
                     setActiveMonologue(
-                      "— Dried smear marks on the latch... and cold water dripping down my neck. Someone was trying to claw their way out. —"
+                      "—တံခါးဂျက်ပေါ်မှာ ခြောက်သွားတဲ့ သွေးကွက်တွေ ပြီးတော့ ငါ့လည်ပင်းပေါ်ကို အေးစက်စက်ကျလာတဲ့ ရေစက်တွေ။တစ်ယောက်ယောက်က အတင်းအပြင်ထွက်ဖို အသည်းအသန်ကြိုးစားခဲ့တာပဲ။—"
                     );
                   }}
                 />
@@ -3351,7 +3679,7 @@ onTuned={() => {
                       setHasNylonRope(true);
                       sound.playPaperRustle();
                       setActiveMonologue(
-                        "— A coiled nylon rope dangling from the rusty drainage pipe... This might hold my weight. Acquired: Coiled Nylon Rope. —"
+                        "—ခွေထားတဲ့ နိုင်လွန်ကြိုးခွေကြီး... ငါ့ကိုယ်အလေးချိန်လောက်တော့ ခံနိုင်လောက်တယ်—"
                       );
                     } else {
                       sound.playPaperRustle();
@@ -3381,7 +3709,7 @@ onTuned={() => {
                     addDiscoveredClue('mirror_locker_scrawl');
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "— 'Locker 14 - 1998' scratched into the frame. Someone left this note before the mirrors shattered. —"
+                      "—'Locker 14 - 1998” လို့ ဘောင်ပေါ်မှာ ခြစ်ရေးထားတယ်။မှန်တွေ မကွဲခင် တစ်ယောက်ယောက်က ဒီစာကို ချန်ထားခဲ့တာပဲ။'—"
                     );
                   }}
                 />
@@ -3399,75 +3727,44 @@ onTuned={() => {
                   }`}
                 >
                   {/* Card A: Lockers */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR A • LOCKERS"
+                    title="STUDENT LOCKER BAY"
+                    description="Metal lockers from 1998. Belongings of May, Sandar, and dorm residents."
+                    imagePath={PHASE_3_ASSETS.cardEastLockers}
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
                       setPhase3Location('lockers_main');
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastLockers}
-                      alt="Lockers Area"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        SECTOR A • LOCKERS
-                      </span>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        STUDENT LOCKER BAY
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Metal lockers from 1998. Belongings of May, Sandar, and dorm residents.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card B: Prayer Room */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR B • SANCTUARY"
+                    title="PRAYER ROOM & ALTAR"
+                    description="Ancient Burmese Nat shrine with offering bowls and incense tiers."
+                    imagePath={PHASE_3_ASSETS.cardEastPrayer}
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
                       setPhase3Location('prayer_room_main');
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastPrayer}
-                      alt="Prayer Room"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
-                        SECTOR B • SANCTUARY
-                      </span>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        PRAYER ROOM & ALTAR
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Ancient Burmese Nat shrine with offering bowls and incense tiers.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card C: Caretaker Archive */}
-                  <motion.div
-                    whileHover={{ scale: 1.03, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
+                  <RouteCard
+                    sectorLabel="SECTOR C • ARCHIVE"
+                    title="CARETAKER ARCHIVE"
+                    description="Warden's locked records office secured by a heavy brass tumbler combination lock."
+                    imagePath={PHASE_3_ASSETS.cardEastCaretaker}
+                    lockState={
+                      currentChapter >= 2 || chapter1Completed
+                        ? 'abandoned'
+                        : caretakerDoorUnlocked
+                        ? 'unlocked'
+                        : 'locked'
+                    }
                     onClick={() => {
                       sound.playMenuSelect();
                       setPhase3Message(null);
@@ -3477,91 +3774,30 @@ onTuned={() => {
                         setPhase3Location('caretaker_office_main');
                       }
                     }}
-                    className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
-                  >
-                    <img
-                      src={PHASE_3_ASSETS.cardEastCaretaker}
-                      alt="Caretaker Office"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                    <div className="relative z-10 space-y-1 text-left">
-                      <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-mono font-bold tracking-widest uppercase">
-                        {currentChapter >= 2 || chapter1Completed ? (
-                          <span className="text-[#8fa89b] flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-[#5a7a69]" /> ABANDONED (CH. 2)
-                          </span>
-                        ) : caretakerDoorUnlocked ? (
-                          <span className="text-[#6ee7b7] flex items-center gap-1">
-                            <Unlock className="w-3 h-3 text-[#6ee7b7]" /> UNLOCKED
-                          </span>
-                        ) : (
-                          <span className="text-stone-400 flex items-center gap-1">
-                            <Lock className="w-3 h-3 text-stone-400" /> PADLOCK LOCKED
-                          </span>
-                        )}
-                      </div>
-                      <h3
-                        className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                      >
-                        CARETAKER ARCHIVE
-                      </h3>
-                      <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
-                        Warden's locked records office secured by a heavy brass tumbler combination lock.
-                      </p>
-                    </div>
-                  </motion.div>
+                  />
 
                   {/* Card D: Pathway 326 (The Overlook Balcony) - Dynamically revealed when currentChapter >= 2 && natAudienceConcluded */}
-                  {currentChapter >= 2 && natAudienceConcluded && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 0.4 }}
-                      whileHover={{ scale: 1.03, y: -4 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
+                  <RouteCard
+                    visible={currentChapter >= 2 && natAudienceConcluded}
+                    sectorLabel="PATHWAY 326"
+                    title="THE OVERLOOK BALCONY"
+                    description="Padlocked fire door forced ajar. Monsoon rain lashing the eaves."
+                    imagePath="/assets/scenes/balcony_rain_night.jpg"
+                    isSpecial
+                    onClick={() => {
+                      try {
+                        sound.playDoorPush();
+                      } catch {
                         try {
-                          sound.playDoorPush();
+                          sound.playDoorCreak();
                         } catch {
-                          try {
-                            sound.playDoorCreak();
-                          } catch {
-                            sound.playMenuSelect();
-                          }
+                          sound.playMenuSelect();
                         }
-                        setPhase3Message(null);
-                        setPhase3Location('balcony_326');
-                      }}
-                      className="group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border border-emerald-500/60 hover:border-emerald-400 bg-[#121815]/95 cursor-pointer shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4 ring-1 ring-emerald-500/40"
-                    >
-                      <img
-                        src="/assets/scenes/balcony_rain_night.jpg"
-                        onError={(e) => {
-                          e.currentTarget.src = 'assets/scenes/balcony_rain_night.jpg';
-                        }}
-                        alt="Pathway 326"
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
-                      <div className="relative z-10 space-y-1 text-left">
-                        <span className="text-[9px] sm:text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                          PATHWAY 326
-                        </span>
-                        <h3
-                          className="text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-emerald-300 transition-colors"
-                          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                        >
-                          THE OVERLOOK BALCONY
-                        </h3>
-                        <p className="text-[10px] sm:text-[11px] font-mono text-stone-300 line-clamp-2 leading-tight">
-                          Padlocked fire door forced ajar. Monsoon rain lashing the eaves.
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
+                      }
+                      setPhase3Message(null);
+                      setPhase3Location('balcony_326');
+                    }}
+                  />
                 </div>
               </div>
             )}
@@ -3570,6 +3806,9 @@ onTuned={() => {
             {phase3Location === 'lockers_main' && (
               <LockersOverviewView
                 hasSmallBrassKey={hasSmallBrassKey}
+                hasKey14={inventory.includes('key_14')}
+                inventory={inventory}
+                locker14Unlocked={locker14Unlocked}
                 setPhase3Location={setPhase3Location}
                 setActiveMonologue={setActiveMonologue}
                 setComposure={setComposure}
@@ -3579,112 +3818,26 @@ onTuned={() => {
 
             {/* ZOOM: LOCKER 32 INTERIOR */}
             {phase3Location === 'locker_32' && (
-              <>
-                {/* 1. Hotspot: Pinned Pink Hostel Slip (Top-Right) */}
-                <InteractiveHotspot
-                  id="locker-32-pink-slip"
-                  name="Pink Hostel Overwrite Slip"
-                  polygonPoints="62,22 75,24 74,55 60,52"
-                  cursorTooltip="Examine Pinned Slip"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "An official hostel maintenance slip: 'Warden Office Electronic Push-Latch Overwrite: 8 1 4 0 9 2.' Below it in faint pencil: 'Note: Caretaker mirrors all sequence inputs for emergency security.'"
-                    );
-                    setHasReadLocker32Note(true);
-                    addDiscoveredClue('cipher_note_32');
-                  }}
-                />
-
-                {/* 2. Hotspot: Bundle of Folded Letters marked K.Z. (Bottom-Right) */}
-                <InteractiveHotspot
-                  id="locker-32-letters"
-                  name="Folded Love Letters"
-                  polygonPoints="63,63 75,56 82,64 68,75"
-                  cursorTooltip="Read Folded Letters"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "Folded letters addressed to Sandar, signed 'K.Z.'... 'Sandar, she is getting suspicious about the tea shop visits. If May finds out about us, neither of us can stay in this hostel.'"
-                    );
-                    setHasReadSandarLetters(true);
-                    addDiscoveredClue('sandar_kozaw_letters');
-                  }}
-                />
-
-                {/* 3. Optional Hotspot: Stacked Course Books (Bottom-Left) */}
-                <InteractiveHotspot
-                  id="locker-32-books"
-                  name="Old Engineering Textbooks"
-                  polygonPoints="39.5,56 46,47 61,48 58,59"
-                  cursorTooltip="Inspect Books"
-                  onClick={() => {
-                    sound.playPaperRustle();
-                    setActiveMonologue(
-                      "Heavy textbooks belonging to Sandar. The covers are warped with moisture and smelling of damp mildew."
-                    );
-                  }}
-                />
-              </>
+              <Locker32ZoomView
+                setActiveMonologue={setActiveMonologue}
+                setHasReadLocker32Note={setHasReadLocker32Note}
+                setHasReadSandarLetters={setHasReadSandarLetters}
+                addDiscoveredClue={addDiscoveredClue}
+              />
             )}
 
             {/* ZOOM: LOCKER 09 INTERIOR */}
             {phase3Location === 'locker_09' && (
-              <>
-                {/* 1. Black Beeswax Candle (Left Center) */}
-                {!hasLocker09Candle && (
-                  <InteractiveHotspot
-                    id="locker-09-candle"
-                    name="Black Beeswax Candle"
-                    polygonPoints="47,39 55,39 55,75 47,75"
-                    cursorTooltip="Take Black Candle"
-                    onClick={() => {
-                      sound.playItemPickup();
-                      setHasLocker09Candle(true);
-                      setHasBlackCandlesCount((prev) => prev + 1);
-                      setInventory((prev) => [...prev, 'black_beeswax_candle']);
-                      setActiveMonologue(
-                        "A thick black beeswax candle. Heavy, cold, and smells faintly of sweet oil. Ideal for the prayer altar."
-                      );
-                    }}
-                  />
-                )}
-
-                {/* 2. Vintage Burmese Matchbox (Right Center) */}
-                {!hasLocker09Matchbox && (
-                  <InteractiveHotspot
-                    id="locker-09-matchbox"
-                    name="Three-Shooting-Stars Matchbox"
-                    polygonPoints="59,35 72,38 72,75 59,70"
-                    cursorTooltip="Take Matchbox"
-                    onClick={() => {
-                      sound.playPaperRustle();
-                      setHasLocker09Matchbox(true);
-                      setHasMatchesCount(3);
-                      setInventory((prev) => [...prev, 'matchbox_three_stars']);
-                      setActiveMonologue(
-                        "A box of 'Three-Shooting-Stars' safety matches. There are only three dry matches left inside."
-                      );
-                    }}
-                  />
-                )}
-
-                {/* Emptied Feedback Hotspot */}
-                {hasLocker09Candle && hasLocker09Matchbox && (
-                  <InteractiveHotspot
-                    id="locker-09-empty"
-                    name="Locker 09 (Emptied)"
-                    polygonPoints="36,0 90,0 90,84 36,84"
-                    cursorTooltip="Locker 09 (Emptied)"
-                    onClick={() => {
-                      sound.playPaperRustle();
-                      setActiveMonologue(
-                        "— Locker 09 is emptied. The remaining shelves hold only damp insect droppings and rusted shelf pins. —"
-                      );
-                    }}
-                  />
-                )}
-              </>
+              <Locker09ZoomView
+                hasLocker09Candle={hasLocker09Candle}
+                hasLocker09Matchbox={hasLocker09Matchbox}
+                setHasLocker09Candle={setHasLocker09Candle}
+                setHasLocker09Matchbox={setHasLocker09Matchbox}
+                setHasBlackCandlesCount={setHasBlackCandlesCount}
+                setHasMatchesCount={setHasMatchesCount}
+                setInventory={setInventory}
+                setActiveMonologue={setActiveMonologue}
+              />
             )}
             {phase3Location === 'locker_10' && (
               <Locker10InspectionView
@@ -3697,27 +3850,20 @@ onTuned={() => {
               />
             )}
 
-            {/* ZOOM: LOCKER 14 PADLOCK */}
-            {phase3Location === 'locker_14' && (
-              <>
-                <InteractiveHotspot
-                  id="locker_14_cylinder"
-                  name="Barrel Cylinder Lock"
-                  x={40}
-                  y={15}
-                  width={23}
-                  height={48}
-                  shape="rect"
-                  cursorTooltip="[Inspect Barrel Lock]"
-                  onClick={() => {
-                    sound.playDramaticSting();
-                    setActiveMonologue(
-                      "— Locked tight with a small barrel cylinder. May's personal locker... the key is nowhere here. —"
-                    );
-                    addDiscoveredClue('clue_locker_14_found');
-                  }}
-                />
-              </>
+            {/* ZOOM: LOCKER 14 INTERIOR */}
+            {(phase3Location === 'locker_14' || phase3Location === 'locker_14_interior') && (
+              <Locker14InteriorView
+                locker14Unlocked={locker14Unlocked}
+                setLocker14Unlocked={setLocker14Unlocked}
+                inventory={inventory}
+                setInventory={setInventory}
+                removeInventoryItem={removeInventoryItem}
+                setPhase3Location={setPhase3Location}
+                onReturn={() => setPhase3Location('lockers_main')}
+                setActiveMonologue={setActiveMonologue}
+                setRoomBanner={setRoomBanner}
+                addDiscoveredClue={addDiscoveredClue}
+              />
             )}
 
             {/* ZOOM: LOCKER SPIDERS */}
@@ -3941,17 +4087,11 @@ onTuned={() => {
         )
       )}
 
-      {/* Universal "Thought Monologue" Component for Object Examinations & Observations */}
-      <AnimatePresence>
-        {activeMonologue && phase3Location !== 'prayer_altar' && (
-          <ThoughtMonologueOverlay
-            key="universal-thought-monologue"
-            text={activeMonologue}
-            onDismiss={() => setActiveMonologue(null)}
-            hintText="[click to dismiss]"
-          />
-        )}
-      </AnimatePresence>
+      {/* Universal "ThoughtLine" Monologue Component for Object Examinations & Observations */}
+      <ThoughtLine
+        message={phase3Location !== 'prayer_altar' ? activeMonologue : null}
+        onDismiss={() => setActiveMonologue(null)}
+      />
 
       {/* Close 16:9 Strict Aspect Ratio Letterbox Stage */}
       </div>
@@ -4292,6 +4432,17 @@ onTuned={() => {
         isOpen={isChapterTransitionOpen}
         onContinueToChapterTwo={handleContinueToChapterTwo}
         onSaveAndExit={handleSaveAndExit}
+      />
+
+      {/* 15. Chapter 3 Completion Modal (Game Complete) */}
+      <ChapterTransitionModal
+        isOpen={isChapter3TransitionOpen}
+        isFinalChapter={true}
+        overTitle="INVESTIGATION PHASE COMPLETED"
+        completedChapterTitle="CHAPTER 3 COMPLETED"
+        saveButtonText="FINISH / EXIT"
+        onFinish={handleFinishChapterThree}
+        onSaveAndExit={handleFinishChapterThree}
       />
     </div>
   );

@@ -116,6 +116,7 @@ export type Phase3Location =
   | 'locker_09'
   | 'locker_10'
   | 'locker_14'
+  | 'locker_14_interior'
   | 'locker_spider'
   | 'prayer_room_main'
   | 'prayer_altar'
@@ -124,7 +125,17 @@ export type Phase3Location =
   | 'caretaker_office'
   | 'balcony_326'
   | 'balcony'
-  | 'radio_bench_inspection';
+  | 'radio_bench_inspection'
+  | 'stairway_gate_inspection'
+  | 'stairway_exit_gate'
+  | 'balcony_stairway_gate'
+  | 'hostel_outer_grounds'
+  | 'seance_climax_flashback'
+  | 'compound_iron_gate'
+  | 'garage_subterranean'
+  | 'banyan_wellhead'
+  | 'well_interior_deep'
+  | 'room_101_seance_flashback';
 
 export interface GameState {
   chapter: number;
@@ -294,7 +305,22 @@ export interface ActiveSaveState {
   hasReadLocker32Note?: boolean;
   hasReadSandarLetters?: boolean;
   hasCaretakerCandles?: boolean;
+  hasLocker09Candle?: boolean;
+  hasLocker09Matchbox?: boolean;
   altarCandlesPlaced?: number;
+  desk4bLooted?: boolean;
+  mayResolved?: boolean;
+  key14OnFloor?: boolean;
+  key14Collected?: boolean;
+  locker14Unlocked?: boolean;
+  stairwayGateKeyTaken?: boolean;
+  stairwayGateUnlocked?: boolean;
+  chapter2Completed?: boolean;
+  chapter3Completed?: boolean;
+  chapter3Unlocked?: boolean;
+  maxUnlockedChapter?: number;
+  unlockedChapters?: number[];
+  highestChapterCompleted?: number;
   timestamp: number;
 }
 
@@ -311,6 +337,7 @@ export interface ChapterProgressSave {
   hasSmallBrassKey: boolean;
   hasNylonRope: boolean;
   deskMugMoved: boolean;
+  desk4bLooted?: boolean;
   doorUnlocked: boolean;
   composure: number;
   timerSeconds: number;
@@ -331,5 +358,17 @@ export interface ChapterProgressSave {
   askedNatTopics?: string[];
   corridorShadowScareTriggered?: boolean;
   chapter1Completed?: boolean;
+  chapter2Completed?: boolean;
+  chapter3Completed?: boolean;
+  chapter3Unlocked?: boolean;
+  maxUnlockedChapter?: number;
+  unlockedChapters?: number[];
+  highestChapterCompleted?: number;
   natAudienceConcluded?: boolean;
+  mayResolved?: boolean;
+  key14OnFloor?: boolean;
+  key14Collected?: boolean;
+  locker14Unlocked?: boolean;
+  stairwayGateKeyTaken?: boolean;
+  stairwayGateUnlocked?: boolean;
 }

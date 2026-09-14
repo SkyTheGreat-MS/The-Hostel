@@ -94,6 +94,22 @@ export const MASTER_CLUES: Record<string, ClueData> = {
     description:
       'Cleaning Duty Log (Aug 1998) assigning Room 4B to students May and Sandar.',
   },
+  clue_may_letter: {
+    id: 'clue_may_letter',
+    title: "Ko Zaw's Folded Letter",
+    location: 'Room 4B (Study Desk)',
+    category: 'primary',
+    description:
+      "A secret note from Ko Zaw warning May not to let Sandar take her locker key, and revealing a tape hidden behind the vent in 326.",
+  },
+  clue_key_14: {
+    id: 'clue_key_14',
+    title: 'Key 14 (Tarnished Brass Key)',
+    location: 'Pathway 326 (Balcony Terrace)',
+    category: 'primary',
+    description:
+      'Key 14 retrieved from the balcony terrace. Corresponds to Locker 14 in the dorm bay.',
+  },
   curfew_calendar_1998: {
     id: 'curfew_calendar_1998',
     title: 'August 1998 Wall Calendar',
@@ -200,6 +216,14 @@ export const MASTER_CLUES: Record<string, ClueData> = {
     location: 'Locker 32 (Sandar)',
     category: 'primary',
     description: 'Stolen letters between Sandar and Ko Zaw exposing a secret affair that drove a violent wedge between dorm sisters.',
+  },
+  clue_stairway_key_found: {
+    id: 'clue_stairway_key_found',
+    title: 'Stairway Gate Key',
+    location: 'Locker 14 (Mama May)',
+    category: 'item',
+    description:
+      'A heavy, blackened iron key found on the lower shelf of May’s locker. Ko Zaw hid it here so May could bypass the curfew gate to reach the terrace.',
   },
   clue_physics_chem_notes_1998: {
     id: 'clue_physics_chem_notes_1998',

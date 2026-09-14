@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sound } from '../audioEngine';
-import { SceneNavBar } from './SceneNavBar';
 
 export interface RadioBenchInspectionViewProps {
   inventory: string[];
@@ -43,9 +42,9 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
       const audio = new Audio('/assets/audio/sfx/radio_static.mp3');
       audio.loop = true;
       audio.volume = 0.25;
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
       staticAudioRef.current = audio;
-    } catch {}
+    } catch { }
   }, []);
 
   const stopStaticLoop = useCallback(() => {
@@ -53,7 +52,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
     try {
       staticAudioRef.current.pause();
       staticAudioRef.current.currentTime = 0;
-    } catch {}
+    } catch { }
     staticAudioRef.current = null;
   }, []);
 
@@ -155,19 +154,13 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-      <SceneNavBar
-        onReturn={onReturn}
-        returnDestination="BALCONY"
-        areaZone="PATHWAY 326"
-        areaName="RADIO BENCH"
-      />
 
       <div className="absolute inset-0 z-30 pointer-events-none">
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           {/* Battery Compartment - Lower right open hatch with spring terminals */}
           <polygon
             id="hotspot-battery-compartment"
-            points="61.5,47.5 71.8,48.0 77.2,50.0 77.0,79.5 69.8,79.5 61.5,78.2"
+            points="65,50 77.2,50.0 77.0,84 65,88"
             className="pointer-events-auto cursor-pointer fill-transparent hover:fill-emerald-500/15 stroke-transparent hover:stroke-emerald-400 hover:stroke-[0.8] hover:[stroke-dasharray:2,2] transition-all duration-200"
             onMouseEnter={() => {
               sound.playMenuHover();
@@ -180,9 +173,11 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
           </polygon>
 
           {/* Tuning Dial - Center frequency knob */}
-          <polygon
-            id="hotspot-tuning-dial"
-            points="40,32 60,32 60,52 40,52"
+          <ellipse
+            cx="53"   // center x-coordinate
+            cy="40"   // center y-coordinat
+            rx="8"
+            ry="16"   // radius
             className="pointer-events-auto cursor-pointer fill-transparent hover:fill-emerald-500/15 stroke-transparent hover:stroke-emerald-400 hover:stroke-[0.8] hover:[stroke-dasharray:2,2] transition-all duration-200"
             onMouseEnter={() => {
               sound.playMenuHover();
@@ -192,7 +187,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
             onClick={handleTuningDialClick}
           >
             <title>Adjust Tuning Dial</title>
-          </polygon>
+          </ellipse>
         </svg>
 
         {/* Hover tooltip anchored above the hovered hotspot */}

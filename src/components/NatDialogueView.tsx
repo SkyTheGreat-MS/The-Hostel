@@ -62,12 +62,12 @@ export interface NatInquiryWithClue extends NatInquiryOption {
 export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   {
     id: 'inquiry_who_haunts',
-    label: 'Who is the woman haunting this wing?',
+    label: 'ဒီအဆောင်ကို ခြောက်လှန့်နေတာ ဘယ်သူလဲ?',
     playerLine: 'Who is the woman haunting this wing?',
     clueId: 'nat_testimony_may_murder',
     natResponses: [
       {
-        text: "Her name was May. A warden's favorite, choke-strangled in the quiet dark of monsoon week. Her grievance anchors this entire floor.",
+        text: "နာမည်ကမေ… မိုးရာသီတစ်ပတ်မှာ လည်ပင်းညှစ်သတ်ခံခဲ့ရတဲ့ အဆောင်မိန်းကလေးပဲ။",
         veracity: 'truth',
         caseNoteSnippet: '[NOTE: May was strangled inside the hostel during monsoon term 1998.]',
         spritePose: 'neutral',
@@ -76,12 +76,12 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   },
   {
     id: 'inquiry_locker_14_key',
-    label: 'Where can I find the key to Locker 14?',
+    label: 'Locker 14 သော့က ဘယ်မှာလဲ?',
     playerLine: 'Where can I find the key to Locker 14?',
     clueId: 'nat_testimony_locker_key',
     natResponses: [
       {
-        text: 'The key was thrown into the incinerator behind the mess hall. You will never open it.',
+        text: 'မီးဖိုနောက်က မီးဖိုဖျက်စက်ထဲ ပစ်ချခဲ့တယ်။ မင်းဘယ်တော့မှ ဖွင့်လို့မရဘူး။',
         veracity: 'deceit',
         caseNoteSnippet:
           '[NOTE: Nat claimed the key was incinerated behind the mess hall. DEDUCTION: Contradicts Locker 32 notes confirming May carries the key around her neck—a deliberate deceit.]',
@@ -91,12 +91,12 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   },
   {
     id: 'inquiry_caretaker_attack',
-    label: "Why did she attack me in the Caretaker's office?",
+    label: "အဆောင်မှူးရုံးမှာ ငါ့ကို ဘာလို့တိုက်ခိုက်တာလဲ?",
     playerLine: "Why did she attack me in the Caretaker's office?",
     clueId: 'nat_testimony_office_attack',
     natResponses: [
       {
-        text: 'She guards what was taken from her. The one who silenced her fled toward the courtyard. Until her neck is freed of shame, every living soul looks like her murderer.',
+        text: 'သူ့ဆီက ယူသွားတာကို သူကစောင့်ရှောက်နေတယ်။ သတ်ခဲ့တဲ့လူက ခြံဝင်းဘက် ထွက်ပြေးသွားတယ်။ အသက်ရှင်နေသူတိုင်းကို လူသတ်သမားလို့ပဲ မြင်နေမှာ…  ',
         veracity: 'truth',
         caseNoteSnippet: '[NOTE: May mistakes anyone in the office for her killer until calmed.]',
         spritePose: 'warning',
@@ -105,12 +105,12 @@ export const NAT_INQUIRIES: NatInquiryWithClue[] = [
   },
   {
     id: 'inquiry_dried_well',
-    label: 'How do I reach the dried well outside?',
+    label: 'အပြင်က ရေတွင်းခြောက်ဆီ ဘယ်လိုသွားရမလဲ?',
     playerLine: 'How do I reach the dried well outside?',
     clueId: 'nat_testimony_banyan_well',
     natResponses: [
       {
-        text: '...The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.',
+        text: '...ညောင်ပင်အောက်က ရေတွင်းကို မမေးနဲ့… အဲဒီအကြောင်း ပြောလိုက်ရင် မင်းပါ အဲဒီထဲ နစ်သွားလိမ့်မယ်။',
         veracity: 'forbidden_silence',
         caseNoteSnippet:
           '[NOTE: The dry mouth beneath the banyan tree cannot be spoken of. To name the pit is to drown within it.]',
@@ -129,22 +129,22 @@ export interface OpeningSequenceItem {
 export const OPENING_SEQUENCE: OpeningSequenceItem[] = [
   {
     speaker: 'Hostel Guardian Nat',
-    text: 'You are not of 1998. Your soul smells of cold glass and synthetic lights... You do not belong in this corridor. Why have you awakened me?',
+    text: 'မင်းက ၁၉၉၈ ခုနှစ်ကလူမဟုတ်ဘူး: မင်းရဲ့ ဝိညာဉ်ထဲမှာ အေးစက်စက် ဖန်ခွက်တွေ၊ အတုအယောင် မီးရောင်တွေရဲ့ အနံ့အသက် ရနေတယ်... မင်းက ဒီစင်္ကြံလမ်းနဲ့ မထိုက်တန်တဲ့သူပဲ။ ဘာလို ငါ့ကို နှိးလိုက်ရတာလဲ',
     pose: 'neutral',
   },
   {
     speaker: 'Moe',
-    text: "I didn't choose to be here. We held a ritual in Room 4B in the future... something dragged me back into this maze.",
+    text: "ငါ ဒီကိုလာချင်လို့ လာတာမဟုတ်ဘူး။ အနာဂတ်မှာ အခန်း 4B မှာ ကစားနေရင်း… တစ်ခုခုက ငါ့ကို ဒီဝင်္ကပါထဲ ပြန်ဆွဲခေါ်လာတာပဲ။",
     pose: 'neutral',
   },
   {
     speaker: 'Hostel Guardian Nat',
-    text: 'The wheel turns backward... I understand now. You seek an exit. But the spirit who wanders this wing will tear your flesh before you ever touch the outer gate.',
+    text: 'သံသရာစက်ဘီးက နောက်ပြန်လည်နေပြီပေါ့... အေးလေ၊ ငါ သဘောပေါက်ပါပြီ။ မင်းထွက်ပေါက်ရှာနေတာပဲ: ဒါပေမဲ့ ဒီအဆောင်မှာ လှည့်ပတ်ကျက်စားနေတဲ့ ဝိညာဉ်ဟာ မင်း အပြင်တံခါးဝကို မရောက်ခင်မှာပဲ မင်းရဲ့ အသားစတွေကို ဆုတ်ဖြဲပစ်လိမ့်မယ်',
     pose: 'pensive',
   },
   {
     speaker: 'Hostel Guardian Nat',
-    text: 'Present what you carry or what you have unearthed. Yet know this: the laws of this threshold bind my tongue. For every truth I bestow upon you, the shadows weave a falsehood. Believe blindly, and you will share her grave.',
+    text: 'မင်းယူဆောင်လာတာ ဒါမှမဟုတ် တူးဖော်ရရှိထားတာတွေကို အရှေ့ထုတ်ပြစမ်း! ဒါပေမဲ့ ဒါကိုတော့ မှတ်ထားပါ... ဒီနယ်နိမိတ်ရဲ့ နိယာမတွေက ငါ့ပါးစပ်ကို ချည်နှောင်ထားတယ်။ ငါ မင်းကို အမှန်တရားတစ်ခု ပြောပြတိုင်း၊ အရိပ်မဲတွေက မုသားတစ်ခုကို လုပ်ကြလိမ့်မယ်။ ယုံကြည်မိရင်တော့ မင်းလည်း သူနဲ့အတူ ဂူတစ်ကျင်းတည်း ဝင်ရလိမ့်မယ်',
     pose: 'warning',
   },
 ];
