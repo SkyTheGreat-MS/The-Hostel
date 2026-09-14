@@ -21,7 +21,7 @@ export const Locker32ZoomView: React.FC<Locker32ZoomViewProps> = ({
       <InteractiveHotspot
         id="locker-32-pink-slip"
         name="Pink Hostel Overwrite Slip"
-        polygonPoints="60,10 77,12 76,48 59,42"
+        polygonPoints="63,25 75,27 75,57 61,54"
         cursorTooltip="တွဲထားသော စလစ်စက္ကူကို စစ်ဆေးမည်"
         onClick={() => {
           sound.playPaperRustle();
@@ -39,7 +39,7 @@ export const Locker32ZoomView: React.FC<Locker32ZoomViewProps> = ({
       <InteractiveHotspot
         id="locker-32-letters"
         name="Folded Love Letters"
-        polygonPoints="60,50 83,52 84,77 60,75"
+        polygonPoints="60,60 76,55 82,65 68,70"
         cursorTooltip="ခေါက်ထားသော စာလွှာများကို ဖတ်မည်"
         onClick={() => {
           sound.playPaperRustle();
@@ -57,7 +57,7 @@ export const Locker32ZoomView: React.FC<Locker32ZoomViewProps> = ({
       <InteractiveHotspot
         id="locker-32-books"
         name="Old Engineering Textbooks"
-        polygonPoints="38,40 61,42 62,74 38,72"
+        polygonPoints="38,55 58,56 58,74 38,72"
         cursorTooltip="စာအုပ်များကို စစ်ဆေးမည်"
         onClick={() => {
           sound.playPaperRustle();
