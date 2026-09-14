@@ -3699,7 +3699,7 @@ onTuned={() => {
                     addDiscoveredClue('mirror_locker_scrawl');
                     sound.playPaperRustle();
                     setActiveMonologue(
-                      "— 'Locker 14 - 1998' scratched into the frame. Someone left this note before the mirrors shattered. —"
+                      "—'Locker 14 - 1998” လို့ ဘောင်ပေါ်မှာ ခြစ်ရေးထားတယ်။မှန်တွေ မကွဲခင် တစ်ယောက်ယောက်က ဒီစာကို ချန်ထားခဲ့တာပဲ။'—"
                     );
                   }}
                 />

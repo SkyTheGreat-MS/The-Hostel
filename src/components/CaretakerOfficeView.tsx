@@ -98,7 +98,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               try { sound.playPaperRustle(); } catch {}
-              setActiveMonologue?.("— The office power is dead. May's lingering chill is all that remains. I should return to the fork. —");
+              setActiveMonologue?.("— ရုံးခန်းထဲမှာ မီးမရှိတော့ဘူး။ မမမေရဲ့ အေးစက်စက်အငွေ့ပဲ ကျန်နေတယ်။ လမ်းခွဲဆီ ပြန်သွားရမယ်။—");
             }
           }}
         />
@@ -190,7 +190,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— On the high shelf: two additional black beeswax candles matching the one from Locker 09. Now I have 3 candles. —'
+                '— On the high shelf: Locker 09 က ဖယောင်းတိုင်နဲ့ တစ်ပုံစံတည်း အနက်ရောင်ဖယောင်းတိုင် ၂ တိုင်ရှိတယ်။ အခုဆို ၃ တိုင်ပြည့်ပြီ။—'
               );
           } else {
             sound.playPaperRustle();
@@ -216,7 +216,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— Inside the glass display: an ornate cast bronze hand bell with traditional spirit runes etched into the lip. Acquired: Bronze Prayer Bell. —'
+                '— Inside the glass display: မှန်ဘောင်ထဲမှာ ကြေးဝါနဲ့လုပ်ထားတဲ့ ခေါင်းလောင်းတစ်လုံးရှိတယ်။ အနားမှာ ရိုးရာနတ်စာတွေ ထွင်းထားတယ်။ Acquired: Bronze Prayer Bell. —'
               );
           } else {
             sound.playPaperRustle();
@@ -242,7 +242,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                '— August 1998... The entries end abruptly on the night May disappeared. I have what I need to awaken the shrine. —'
+                '— ဩဂုတ် ၁၉၉၈... မေပျောက်သွားတဲ့ညရောက်တော့ မှတ်တမ်းက ရုတ်တရက် ပြတ်သွားတယ်။ နတ်ကို နိုးဖို့ လိုတာအကုန် ရပြီ။—'
               );
             // Give the thought a beat, then begin the transition while still in this room.
             setTimeout(() => {
@@ -253,7 +253,7 @@ export const CaretakerOfficeView: React.FC<CaretakerOfficeViewProps> = ({
             sound.playPaperRustle();
             setActiveMonologue &&
               setActiveMonologue(
-                "— The warden's ledger details the secret shrine... but I still need the bell and the offering candles from this room before confronting the Nat. —"
+                "—အဆောင်မှူးရဲ့ မှတ်တမ်းထဲမှာ လျှို့ဝှက်နတ်စင်အကြောင်း အကုန်ရေးထားတယ်... ဒါပေမဲ့ နတ်နဲ့ မတွေ့ခင် ဒီအခန်းထဲက ခေါင်းလောင်းနဲ့ ပူဇော်ဖို့ ဖယောင်းတိုင်တွေကို အရင်ယူရဦးမယ်။—"
               );
           }
         }}
