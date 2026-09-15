@@ -5,6 +5,7 @@ import { InteractiveHotspot } from './common/InteractiveHotspot';
 import { SceneNavBar } from './common/SceneNavBar';
 import { MONOLOGUE_LINES } from '../data/dialogues';
 import { FileText, X } from 'lucide-react';
+import { PrologBridge } from '../services/PrologBridge';
 
 export interface DeskInspectionViewProps {
   deskMugMoved: boolean;
@@ -88,6 +89,11 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
       text: "ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။",
       type: 'success',
     });
+
+    // 8. Synchronize Prolog state
+    try {
+      PrologBridge.queryOnce('take_desk_letter.');
+    } catch {}
   };
 
   return (

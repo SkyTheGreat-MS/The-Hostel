@@ -386,6 +386,7 @@ item(brass_bell, caretaker_office_main, 'A ceremonial altar bell from the Careta
 item(tallow_candles_black, caretaker_office_main, 'Black altar tallow candles from the Caretaker archive.').
 item(letter_ko_zaw, room_4b_desk, 'Creased lined paper addressed to May in hasty, elegant Burmese script. Hidden beneath a wooden inkstand.').
 item(key_14, balcony_floor, 'A tarnished brass key stamped with the number 14. Tied with frayed nylon string.').
+item(battery_pair, locker_10, 'Two zinc-carbon D-cell batteries for transistor radio.').
 % Chapter 3 Registered Items
 item(cassette_tape_may, locker_14_interior, 'Unlabeled micro-cassette tape dated 1998.08.12. Left behind by Ko Zaw.').
 /* --- Stairway Gate Key Item --- */
@@ -512,16 +513,32 @@ inspect_target(ceramic_mug, desk_mug_moved) :-
 take_desk_letter :-
     \+ desk_4b_looted,
     assertz(player_has(letter_ko_zaw)),
-    assertz(desk_4b_looted).
+    assertz(desk_4b_looted),
+    ( inventory(Inv) ->
+        retract(inventory(Inv)),
+        assertz(inventory([letter_ko_zaw | Inv]))
+    ;
+        assertz(inventory([letter_ko_zaw]))
+    ).
 
-% May Handover Prerequisite Check: May only accepts handover if player possesses Ko Zaw's letter
+% May Handover Prerequisite Check: May only accepts handover if player possesses Ko Zaw's letter and is not yet resolved
 may_accepts_handover :-
-    player_has(letter_ko_zaw).
+    \+ may_resolved,
+    (player_has(letter_ko_zaw) ; has_item(letter_ko_zaw)).
 
 % May Handover Execution: Consumes Ko Zaw's letter, resolves May's spirit, drops Key 14 on balcony floor
 handover_letter :-
-    player_has(letter_ko_zaw),
+    may_accepts_handover,
     retractall(player_has(letter_ko_zaw)),
+    retractall(player_has(clue_letter_4b)),
+    ( inventory(Inv) ->
+        delete(Inv, letter_ko_zaw, Inv1),
+        delete(Inv1, clue_letter_4b, NewInv),
+        retract(inventory(Inv)),
+        assertz(inventory(NewInv))
+    ;
+        true
+    ),
     assertz(may_resolved),
     assertz(floor_has(key_14)).
 
@@ -529,13 +546,13 @@ handover_letter :-
 pickup_key_14 :-
     floor_has(key_14),
     retractall(floor_has(key_14)),
-    assertz(player_has(key_14)).
-
-% Locker 14 Padlock Unlock Execution: Consumes Key 14, unlocks Locker 14
-unlock_locker_14 :-
-    player_has(key_14),
-    retract(player_has(key_14)),
-    assertz(locker_unlocked(14)).
+    assertz(player_has(key_14)),
+    ( inventory(Inv) ->
+        retract(inventory(Inv)),
+        assertz(inventory([key_14 | Inv]))
+    ;
+        assertz(inventory([key_14]))
+    ).
 
 % Inspecting the bloodstained third stall door
 inspect_target(bloodstained_stall, stall_checked) :-
@@ -941,6 +958,9 @@ item_display_meta(cassette_tape_may, 'Tape 1998', tape).
 item_display_meta(key_stairway_gate, 'Gate Key', key).
 item_display_meta(iron_pulley, 'Pulley', gear).
 item_display_meta(rusty_machete, 'Machete', blade).
+item_display_meta(letter_ko_zaw, 'Letter', mail).
+item_display_meta(key_14, 'Key 14', key).
+item_display_meta(battery_pair, 'Battery', zap).
 
 % Inventory query returning short labels directly
 get_player_inventory_labels(LabeledItems) :-
@@ -1072,7 +1092,13 @@ unlock_locker_14 :-
     (player_has(key_14) ; has_item(key_14)),
     \+ locker_unlocked(14),
     retractall(player_has(key_14)),
-    retractall(inventory(key_14)),
+    ( inventory(Inv) ->
+        delete(Inv, key_14, NewInv),
+        retract(inventory(Inv)),
+        assertz(inventory(NewInv))
+    ;
+        true
+    ),
     assertz(locker_unlocked(14)).
 
 % ==============================================================================
@@ -1083,7 +1109,13 @@ unlock_stairway_gate :-
     (player_has(key_stairway_gate) ; has_item(key_stairway_gate)),
     \+ stairway_gate_unlocked,
     retractall(player_has(key_stairway_gate)),
-    retractall(inventory(key_stairway_gate)),
+    ( inventory(Inv) ->
+        delete(Inv, key_stairway_gate, NewInv),
+        retract(inventory(Inv)),
+        assertz(inventory(NewInv))
+    ;
+        true
+    ),
     assertz(stairway_gate_unlocked),
     assertz(escaped_interior).
 
@@ -1103,7 +1135,13 @@ take_locker_tape :-
     locker_unlocked(14),
     \+ locker_14_looted,
     assertz(player_has(cassette_tape_may)),
-    assertz(locker_14_looted).
+    assertz(locker_14_looted),
+    ( inventory(Inv) ->
+        retract(inventory(Inv)),
+        assertz(inventory([cassette_tape_may | Inv]))
+    ;
+        assertz(inventory([cassette_tape_may]))
+    ).
 
 % Ensure it can be taken from Locker 14 interior along with the tape
 can_take_locker_item(key_stairway_gate) :-

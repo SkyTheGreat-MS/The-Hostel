@@ -22,6 +22,9 @@ export interface PrologBridgeState {
   cassetteInserted: boolean;
   cassettePlayed: boolean;
   conduitUnlocked: boolean;
+  desk4bLooted?: boolean;
+  mayResolved?: boolean;
+  key14OnFloor?: boolean;
 }
 
 /**
@@ -80,6 +83,9 @@ class PrologBridgeService {
     cassetteInserted: false,
     cassettePlayed: false,
     conduitUnlocked: false,
+    desk4bLooted: false,
+    mayResolved: false,
+    key14OnFloor: false,
   };
 
   constructor() {
@@ -114,6 +120,9 @@ class PrologBridgeService {
       cassetteInserted: false,
       cassettePlayed: false,
       conduitUnlocked: false,
+      desk4bLooted: false,
+      mayResolved: false,
+      key14OnFloor: false,
     };
   }
 
@@ -151,6 +160,18 @@ class PrologBridgeService {
       if (combined.locker14Looted) {
         this.state.locker14Looted = true;
         this.inMemoryFacts.add('locker_14_looted');
+      }
+      if (combined.desk4bLooted) {
+        this.state.desk4bLooted = true;
+        this.inMemoryFacts.add('desk_4b_looted');
+      }
+      if (combined.mayResolved) {
+        this.state.mayResolved = true;
+        this.inMemoryFacts.add('may_resolved');
+      }
+      if (combined.key14OnFloor) {
+        this.state.key14OnFloor = true;
+        this.inMemoryFacts.add('floor_has(key_14)');
       }
       if (combined.wellRootsSevered) {
         this.state.wellRootsSevered = true;
@@ -373,12 +394,87 @@ class PrologBridgeService {
       return !this.state.inventory.includes('key_stairway_gate') && !this.inMemoryFacts.has('player_has(key_stairway_gate)');
     }
 
+    // take_desk_letter
+    if (trimmed === 'take_desk_letter') {
+      if (this.inMemoryFacts.has('desk_4b_looted')) return false;
+      this.state.desk4bLooted = true;
+      this.inMemoryFacts.add('desk_4b_looted');
+      this.inMemoryFacts.add('player_has(letter_ko_zaw)');
+      if (!this.state.inventory.includes('letter_ko_zaw')) {
+        this.state.inventory.push('letter_ko_zaw');
+      }
+      try {
+        await assertPrologFact('desk_4b_looted');
+        await assertPrologFact('player_has(letter_ko_zaw)');
+      } catch {}
+      return true;
+    }
+
+    // may_accepts_handover
+    if (trimmed === 'may_accepts_handover') {
+      if (this.inMemoryFacts.has('may_resolved')) return false;
+      return (
+        this.state.inventory.includes('letter_ko_zaw') ||
+        this.inMemoryFacts.has('player_has(letter_ko_zaw)')
+      );
+    }
+
+    // handover_letter
+    if (trimmed === 'handover_letter') {
+      const accepts = await this.queryOnce('may_accepts_handover');
+      if (!accepts) return false;
+      this.state.mayResolved = true;
+      this.state.key14OnFloor = true;
+      this.inMemoryFacts.add('may_resolved');
+      this.inMemoryFacts.add('floor_has(key_14)');
+      this.inMemoryFacts.delete('player_has(letter_ko_zaw)');
+      this.inMemoryFacts.delete('player_has(clue_letter_4b)');
+      this.state.inventory = this.state.inventory.filter(
+        (i) => i !== 'letter_ko_zaw' && i !== 'clue_letter_4b'
+      );
+      try {
+        await assertPrologFact('may_resolved');
+        await assertPrologFact('floor_has(key_14)');
+        await retractAllProlog('player_has(letter_ko_zaw)');
+        await retractAllProlog('player_has(clue_letter_4b)');
+      } catch {}
+      return true;
+    }
+
+    // pickup_key_14
+    if (trimmed === 'pickup_key_14') {
+      if (!this.inMemoryFacts.has('floor_has(key_14)') && !this.state.key14OnFloor) return false;
+      this.state.key14OnFloor = false;
+      this.inMemoryFacts.delete('floor_has(key_14)');
+      this.inMemoryFacts.add('player_has(key_14)');
+      if (!this.state.inventory.includes('key_14')) {
+        this.state.inventory.push('key_14');
+      }
+      try {
+        await retractAllProlog('floor_has(key_14)');
+        await assertPrologFact('player_has(key_14)');
+      } catch {}
+      return true;
+    }
+
     // 6. unlock_stairway_gate / stairway_gate_unlocked
     if (trimmed === 'unlock_stairway_gate') {
       this.state.stairwayGateUnlocked = true;
       this.state.escapedInterior = true;
       this.inMemoryFacts.add('stairway_gate_unlocked');
       this.inMemoryFacts.add('escaped_interior');
+      this.inMemoryFacts.delete('player_has(key_stairway_gate)');
+      this.inMemoryFacts.delete('player_has(stairway_gate_key)');
+      this.inMemoryFacts.delete('player_has(stairway_key)');
+      this.state.inventory = this.state.inventory.filter(
+        (i) => i !== 'key_stairway_gate' && i !== 'stairway_gate_key' && i !== 'stairway_key'
+      );
+      try {
+        await assertPrologFact('stairway_gate_unlocked');
+        await assertPrologFact('escaped_interior');
+        await retractAllProlog('player_has(key_stairway_gate)');
+        await retractAllProlog('player_has(stairway_gate_key)');
+      } catch {}
       return true;
     }
     if (trimmed === 'stairway_gate_unlocked') {
@@ -395,6 +491,12 @@ class PrologBridgeService {
     if (trimmed === 'unlock_locker_14') {
       this.state.locker14Unlocked = true;
       this.inMemoryFacts.add('locker_unlocked(14)');
+      this.inMemoryFacts.delete('player_has(key_14)');
+      this.state.inventory = this.state.inventory.filter((i) => i !== 'key_14');
+      try {
+        await assertPrologFact('locker_unlocked(14)');
+        await retractAllProlog('player_has(key_14)');
+      } catch {}
       return true;
     }
     if (trimmed === 'locker_unlocked(14)') {
@@ -637,6 +739,42 @@ class PrologBridgeService {
 
   async isConduitUnlocked(): Promise<boolean> {
     return this.queryOnce('conduit_unlocked.');
+  }
+
+  public setInventory(items: string[]): void {
+    this.state.inventory = [...items];
+    for (const fact of Array.from(this.inMemoryFacts)) {
+      if (fact.startsWith('player_has(')) {
+        this.inMemoryFacts.delete(fact);
+      }
+    }
+    items.forEach((item) => {
+      this.inMemoryFacts.add(`player_has(${item})`);
+    });
+    try {
+      retractAllProlog('player_has(_)');
+      items.forEach((item) => {
+        assertPrologFact(`player_has(${item})`);
+      });
+    } catch {}
+  }
+
+  // --- Room 4B Desk & Balcony May Operations ---
+
+  async takeDeskLetter(): Promise<boolean> {
+    return this.queryOnce('take_desk_letter.');
+  }
+
+  async mayAcceptsHandover(): Promise<boolean> {
+    return this.queryOnce('may_accepts_handover.');
+  }
+
+  async handoverLetter(): Promise<boolean> {
+    return this.queryOnce('handover_letter.');
+  }
+
+  async pickupKey14(): Promise<boolean> {
+    return this.queryOnce('pickup_key_14.');
   }
 
   async setLocation(location: string): Promise<void> {

@@ -100,43 +100,10 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
   // 2. Key 14 is visible on floor when dropped/resolved and not yet collected
   const isKeyVisibleOnFloor = isKey14OnFloor && !isKey14Collected;
 
-  // Robust letter detection across all item/clue ID aliases or desk loot state
+  // May's handover requires the physical letter item taken from Room 4B desk to be in inventory
   const hasLetter =
-    (Array.isArray(inventory) &&
-      inventory.some((item) => {
-        if (typeof item !== 'string') return false;
-        const lower = item.toLowerCase();
-        return (
-          lower === 'letter_ko_zaw' ||
-          lower === 'clue_letter_4b' ||
-          lower === 'clue_may_letter' ||
-          lower === 'sandar_kozaw_letters' ||
-          lower === 'clue_ko_zaw_letters' ||
-          lower.includes('letter')
-        );
-      })) ||
-    (Array.isArray(discoveredClues) &&
-      discoveredClues.some((clue) => {
-        if (typeof clue !== 'string') return false;
-        const lower = clue.toLowerCase();
-        return (
-          lower === 'clue_may_letter' ||
-          lower === 'clue_letter_4b' ||
-          lower === 'clue_ko_zaw_letters' ||
-          lower === 'sandar_kozaw_letters' ||
-          lower.includes('letter')
-        );
-      })) ||
-    (() => {
-      try {
-        const stored = localStorage.getItem('spirits_labyrinth_progress_v1');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          return Boolean(parsed?.desk4bLooted);
-        }
-      } catch {}
-      return false;
-    })();
+    Array.isArray(inventory) &&
+    (inventory.includes('letter_ko_zaw') || inventory.includes('clue_letter_4b'));
 
   // Auto-display handover action prompt pill ONLY when May is actually visible on the balcony
   useEffect(() => {
@@ -210,20 +177,12 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
     }, 120);
 
     // 2. Remove letter from inventory across all possible aliases
-    const letterIds = [
-      'letter_ko_zaw',
-      'clue_letter_4b',
-      'clue_may_letter',
-      'sandar_kozaw_letters',
-      'clue_ko_zaw_letters',
-    ];
+    const letterIds = ['letter_ko_zaw', 'clue_letter_4b'];
     if (removeInventoryItem) {
       letterIds.forEach((id) => removeInventoryItem(id));
     }
     if (setInventory) {
-      setInventory((prev) =>
-        prev.filter((i) => !letterIds.includes(i) && !i.toLowerCase().includes('letter'))
-      );
+      setInventory((prev) => prev.filter((i) => !letterIds.includes(i)));
     }
 
     // 3. Mark May as resolved in store & local state
@@ -273,19 +232,24 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
       setInventory((prev) => (prev.includes('key_14') ? prev : [...prev, 'key_14']));
     }
 
-    // 3. Update state
+    // 3. Synchronize Prolog state
+    try {
+      PrologBridge.queryOnce?.('pickup_key_14.');
+    } catch {}
+
+    // 4. Update state
     setKey14Collected?.(true);
     setLocalKey14Collected(true);
     setKey14OnFloor?.(false);
     setLocalKey14OnFloor(false);
 
-    // 4. Display thought line
+    // 5. Display thought line
     setActiveMonologue?.(MONOLOGUE_LINES.KEY_14_PICKUP);
 
-    // 5. Log clue to Case Notes
+    // 6. Log clue to Case Notes
     addDiscoveredClue?.('clue_key_14');
 
-    // 6. Notification banner
+    // 7. Notification banner
     setRoomBanner?.({
       text: "ဝရန်တာကြမ်းပြင်မှ သော့ (၁၄) ကို ကောက်ယူရရှိခဲ့သည်။ ဘီရိုအမှတ် ၁၄ အတွက် ဖြစ်သည်။",
       type: 'success',

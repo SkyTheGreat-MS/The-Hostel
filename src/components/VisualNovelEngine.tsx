@@ -987,32 +987,32 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       // CRITICAL FIX: Trust activeSave fields — never force-set ritual item counts
       if (typeof activeSave?.hasBlackCandlesCount === 'number') setHasBlackCandlesCount(activeSave.hasBlackCandlesCount);
       if (typeof activeSave?.hasMatchesCount === 'number') setHasMatchesCount(activeSave.hasMatchesCount);
-      if (activeSave?.hasBronzeBell) setHasBronzeBell(true);
-      if (activeSave?.hasReadLocker32Note) setHasReadLocker32Note(true);
-      if (activeSave?.hasReadSandarLetters) setHasReadSandarLetters(true);
-      if (activeSave?.hasCaretakerCandles) setHasCaretakerCandles(true);
+      setHasBronzeBell(Boolean(activeSave?.hasBronzeBell));
+      setHasReadLocker32Note(Boolean(activeSave?.hasReadLocker32Note));
+      setHasReadSandarLetters(Boolean(activeSave?.hasReadSandarLetters));
+      setHasCaretakerCandles(Boolean(activeSave?.hasCaretakerCandles));
       if (typeof activeSave?.altarCandlesPlaced === 'number') setAltarCandlesPlaced(activeSave.altarCandlesPlaced);
       // Only restore radio state if batteries were actually inserted and not still in inventory
       const invHasBatteries = (activeSave?.inventory || []).includes('battery_pair');
       const hasBatteries = Boolean(activeSave?.radioHasBatteries) && !invHasBatteries;
       setRadioHasBatteries(hasBatteries);
       setRadioTuned(hasBatteries && Boolean(activeSave?.radioTuned));
-      if (activeSave?.mayResolved) setMayResolved(true);
-      if (activeSave?.key14OnFloor) setKey14OnFloor(true);
-      if (activeSave?.key14Collected) setKey14Collected(true);
-      if (activeSave?.locker14Unlocked) setLocker14Unlocked(true);
-      if (activeSave?.stairwayGateKeyTaken) setStairwayGateKeyTaken(true);
-      if (activeSave?.discoveredClues && activeSave.discoveredClues.length > 0) setDiscoveredClues(activeSave.discoveredClues);
-      if (activeSave?.askedNatTopics && activeSave.askedNatTopics.length > 0) setAskedNatTopics(activeSave.askedNatTopics);
-      if (activeSave?.desk4bLooted) setDesk4bLooted(true);
+      setMayResolved(isCh3 ? true : Boolean(activeSave?.mayResolved));
+      setKey14OnFloor(isCh3 ? false : Boolean(activeSave?.key14OnFloor));
+      setKey14Collected(isCh3 ? true : Boolean(activeSave?.key14Collected));
+      setLocker14Unlocked(isCh3 ? true : Boolean(activeSave?.locker14Unlocked));
+      setStairwayGateKeyTaken(isCh3 ? true : Boolean(activeSave?.stairwayGateKeyTaken));
+      setDiscoveredClues(Array.isArray(activeSave?.discoveredClues) ? activeSave.discoveredClues : []);
+      setAskedNatTopics(Array.isArray(activeSave?.askedNatTopics) ? activeSave.askedNatTopics : []);
+      setDesk4bLooted(Boolean(activeSave?.desk4bLooted));
       if (typeof activeSave?.caretakerLockFailCount === 'number') setCaretakerLockFailCount(activeSave.caretakerLockFailCount);
-      if (activeSave?.garageDrained) {
-        setGarageDrained(true);
-        useGameStore.setState({ garageDrained: true });
-      }
+      const isGarageDrained = Boolean(activeSave?.garageDrained);
+      setGarageDrained(isGarageDrained);
+      useGameStore.setState({ garageDrained: isGarageDrained });
       // CRITICAL FIX: Trust the saved inventory exactly — no phantom item fallback
-      if (activeSave?.inventory) {
+      if (Array.isArray(activeSave?.inventory)) {
         setInventory(activeSave.inventory);
+        PrologBridge.setInventory(activeSave.inventory);
       }
       sound.startAmbient();
       return;

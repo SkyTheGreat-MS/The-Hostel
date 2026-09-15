@@ -85,41 +85,19 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
     ...storeInventory,
   ];
 
-  const hasGateKey =
-    combinedInventory.some((item) => {
-      if (typeof item !== 'string') return false;
-      const lower = item.toLowerCase();
-      return (
-        lower === 'key_stairway_gate' ||
-        lower === 'stairway_gate_key' ||
-        lower === 'stairway_key' ||
-        lower === 'gate_key' ||
-        lower === 'key_gate' ||
-        (lower.includes('stairway') && lower.includes('key')) ||
-        (lower.includes('gate') && lower.includes('key'))
-      );
-    }) ||
-    Boolean(storeState.stairwayGateKeyTaken) ||
-    (() => {
-      try {
-        const stored = localStorage.getItem('spirits_labyrinth_progress_v1');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          return Boolean(parsed?.stairwayGateKeyTaken);
-        }
-      } catch {}
-      return false;
-    })() ||
-    (() => {
-      try {
-        const activeSave = localStorage.getItem('spirits_labyrinth_active_save');
-        if (activeSave) {
-          const parsed = JSON.parse(activeSave);
-          return Boolean(parsed?.stairwayGateKeyTaken);
-        }
-      } catch {}
-      return false;
-    })();
+  const hasGateKey = combinedInventory.some((item) => {
+    if (typeof item !== 'string') return false;
+    const lower = item.toLowerCase();
+    return (
+      lower === 'key_stairway_gate' ||
+      lower === 'stairway_gate_key' ||
+      lower === 'stairway_key' ||
+      lower === 'gate_key' ||
+      lower === 'key_gate' ||
+      (lower.includes('stairway') && lower.includes('key')) ||
+      (lower.includes('gate') && lower.includes('key'))
+    );
+  });
 
   // Auto-display unlock action prompt pill when holding the gate key
   useEffect(() => {

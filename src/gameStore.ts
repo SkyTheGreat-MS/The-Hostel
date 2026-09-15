@@ -271,9 +271,9 @@ export function chapterOneReducer(
         inventory: nextInv,
         hasBobbyPin: nextInv.includes('bobby_pin'),
         hasWoodenBat: nextInv.includes('wooden_bat'),
-        hasMagneticCompass: nextInv.includes('magnetic_compass') || state.hasMagneticCompass,
-        hasSmallBrassKey: nextInv.includes('small_brass_key_32') || state.hasSmallBrassKey,
-        hasNylonRope: nextInv.includes('coiled_nylon_rope') || state.hasNylonRope,
+        hasMagneticCompass: nextInv.includes('magnetic_compass'),
+        hasSmallBrassKey: nextInv.includes('small_brass_key_32'),
+        hasNylonRope: nextInv.includes('coiled_nylon_rope'),
       };
     }
 
@@ -285,9 +285,9 @@ export function chapterOneReducer(
         inventory: nextInv,
         hasBobbyPin: nextInv.includes('bobby_pin'),
         hasWoodenBat: nextInv.includes('wooden_bat'),
-        hasMagneticCompass: nextInv.includes('magnetic_compass') || state.hasMagneticCompass,
-        hasSmallBrassKey: nextInv.includes('small_brass_key_32') || state.hasSmallBrassKey,
-        hasNylonRope: nextInv.includes('coiled_nylon_rope') || state.hasNylonRope,
+        hasMagneticCompass: nextInv.includes('magnetic_compass'),
+        hasSmallBrassKey: nextInv.includes('small_brass_key_32'),
+        hasNylonRope: nextInv.includes('coiled_nylon_rope'),
       };
     }
 
@@ -918,6 +918,19 @@ export function lockChapterOneAndSave(
     prog.highestChapterCompleted = Math.max(prog.highestChapterCompleted || 0, 1);
     prog.composure = recoveredComposure;
     prog.timerSeconds = rolloverTime;
+    prog.inventory = resolvedInventory;
+    prog.desk4bLooted = Boolean(extraFlags?.desk4bLooted);
+    prog.mayResolved = Boolean(extraFlags?.mayResolved);
+    prog.key14OnFloor = Boolean(extraFlags?.key14OnFloor);
+    prog.key14Collected = Boolean(extraFlags?.key14Collected);
+    prog.locker14Unlocked = Boolean(extraFlags?.locker14Unlocked);
+    prog.stairwayGateKeyTaken = Boolean(extraFlags?.stairwayGateKeyTaken);
+    prog.stairwayGateUnlocked = Boolean(extraFlags?.stairwayGateUnlocked);
+    prog.radioHasBatteries = Boolean(extraFlags?.radioHasBatteries);
+    prog.radioTuned = Boolean(extraFlags?.radioTuned);
+    prog.hasBronzeBell = hasBell;
+    prog.hasBlackCandlesCount = candleCount;
+    prog.hasMatchesCount = matchCount;
     localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
   } catch {}
 
@@ -980,6 +993,12 @@ export function advanceToChapterThreeAndSave(
     prog.phase3Location = 'hostel_outer_grounds';
     prog.composure = recoveredComposure;
     prog.timerSeconds = rolloverTime;
+    prog.inventory = chapterThreeSaveState.inventory;
+    prog.stairwayGateKeyTaken = true;
+    prog.locker14Unlocked = true;
+    prog.mayResolved = true;
+    prog.key14Collected = true;
+    prog.key14OnFloor = false;
     localStorage.setItem('spirits_labyrinth_progress_v1', JSON.stringify(prog));
   } catch {}
 
