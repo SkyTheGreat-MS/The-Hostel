@@ -69,7 +69,7 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
       )}
 
       {/* Narrative Climax Box */}
-      <div className="relative z-30 max-w-xl mx-6 p-6 rounded-2xl bg-black/80 border border-red-500/40 backdrop-blur-md text-center shadow-2xl">
+      <div className="relative z-30 max-w-xl mx-6 p-6 rounded-none bg-black/90 backdrop-blur-md text-center">
         <h2 className="text-2xl font-mono font-bold text-red-400 tracking-widest uppercase mb-3">
           [ ရေမြောင်းပေါက်သို့ ရောက်ရှိ — အခန်း ၁၀၁ ]
         </h2>
@@ -82,7 +82,7 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
         {step >= 2 && onComplete && (
           <button
             onClick={onComplete}
-            className="px-6 py-2.5 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-400/60 text-red-200 font-mono text-xs tracking-wider uppercase transition-colors cursor-pointer"
+            className="px-6 py-2.5 rounded-none bg-red-950/80 hover:bg-red-900 text-red-200 font-mono text-xs tracking-wider uppercase transition-colors cursor-pointer"
           >
             [ စုံစမ်းစစ်ဆေးမှု နိဂုံးသို့ ဆက်သွားမည် ]
           </button>

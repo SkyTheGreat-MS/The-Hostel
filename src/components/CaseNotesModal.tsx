@@ -274,18 +274,18 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           initial={{ scale: 0.92, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.92, opacity: 0 }}
-          className="relative w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden rounded-2xl border border-[#2a3a30]/80 shadow-[0_0_60px_rgba(0,255,180,0.06)]"
+          className="relative w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden rounded-none"
           style={{ background: 'linear-gradient(170deg, #1a221e 0%, #0e1511 50%, #121916 100%)' }}
         >
           {/* ═══════════ HEADER RIBBON ═══════════ */}
-          <div className="relative px-5 py-4 flex items-center justify-between border-b border-[#2a3a30]/60"
+          <div className="relative px-5 py-4 flex items-center justify-between"
             style={{ background: 'linear-gradient(90deg, #162018 0%, #1e2d24 50%, #162018 100%)' }}>
             {/* Left cluster */}
             <div className="flex items-center gap-3">
               {/* Bookmark ribbon */}
               <div className="flex flex-col items-center">
-                <div className="w-0.5 h-3 bg-[#6ea889]/30 rounded-full" />
-                <div className="w-8 h-10 bg-[#6ea889]/10 border border-[#6ea889]/25 rounded-sm flex items-center justify-center relative">
+                <div className="w-0.5 h-3 bg-[#6ea889]/30 rounded-none" />
+                <div className="w-8 h-10 bg-[#6ea889]/10 rounded-none flex items-center justify-center relative">
                   <Bookmark className="w-4 h-4 text-[#6ea889]/70" />
                   {/* Ribbon point */}
                   <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#6ea889]/25" />
@@ -309,7 +309,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="w-9 h-9 rounded-lg bg-[#0e1511] border border-[#2a3a30] text-[#6ea889]/50 hover:text-[#6ea889] hover:border-[#6ea889]/40 hover:bg-[#1a221e] transition-all cursor-pointer flex items-center justify-center"
+              className="w-9 h-9 rounded-none bg-transparent text-[#6ea889]/70 hover:text-[#e0f0e7] hover:bg-[#112319]/60 transition-colors cursor-pointer flex items-center justify-center"
               title="မှတ်စုစာအုပ် ပိတ်ရန် [ESC]"
             >
               <X className="w-4 h-4" />
@@ -320,25 +320,22 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
 
             {/* ── LEFT SIDEBAR: Investigator HUD ── */}
-            <div className="w-full md:w-64 lg:w-72 shrink-0 border-b md:border-b-0 md:border-r border-[#2a3a30]/60 flex flex-col p-4 gap-4 overflow-y-auto"
+            <div className="w-full md:w-64 lg:w-72 shrink-0 flex flex-col p-4 gap-4 overflow-y-auto"
               style={{ background: 'linear-gradient(180deg, #0f1a14 0%, #0e1511 100%)' }}>
 
               {/* ID Card */}
-              <div className="rounded-xl border border-[#2a3a30]/80 p-4 relative overflow-hidden"
+              <div className="rounded-none p-4 relative overflow-hidden"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                {/* Corner accents */}
-                <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#6ea889]/20 rounded-tl-xl" />
-                <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#6ea889]/20 rounded-br-xl" />
 
                 <div className="flex items-center gap-3 mb-3">
                   {/* Avatar silhouette */}
-                  <div className="w-14 h-14 rounded-full bg-[#0e1511] border-2 border-[#6ea889]/20 flex items-center justify-center relative overflow-hidden">
+                  <div className="w-14 h-14 rounded-none bg-[#0e1511] flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-[#6ea889]/5 to-transparent" />
                     <User className="w-7 h-7 text-[#6ea889]/30" />
                   </div>
                   <div className="min-w-0">
                     <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">စုံစမ်းစစ်ဆေးသူ (Investigator)</div>
-                    <div className="text-sm font-burmese font-bold text-[#b1d4c2] truncate">
+                    <div className="text-sm font-burmese font-bold text-[#b1d4c2] truncate leading-[1.75]">
                       {investigatorName}
                     </div>
                     <div className="text-[10px] font-mono text-[#6ea889]/60 uppercase tracking-wider">
@@ -353,7 +350,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               </div>
 
               {/* Composure Gauge — Circular Radial Ring */}
-              <div className="rounded-xl border border-[#2a3a30]/80 p-4 flex flex-col items-center gap-3"
+              <div className="rounded-none p-4 flex flex-col items-center gap-3"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
                 <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">
                   စိတ်တည်ငြိမ်မှု (Composure)
@@ -374,7 +371,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                   </svg>
                   {/* Center value */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className={`text-xl font-black ${compStatus.color}`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                    <span className={`text-xl font-black ${compStatus.color} tabular-nums`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
                       {composure}%
                     </span>
                   </div>
@@ -385,16 +382,16 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               </div>
 
               {/* Timer Module */}
-              <div className="rounded-xl border border-[#2a3a30]/80 p-4"
+              <div className="rounded-none p-4"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
                 <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase text-center mb-2">
                   ကျန်ရှိသော အချိန် (Remaining Time)
                 </div>
                 <div className="text-center">
-                  <span className="text-3xl font-black text-[#6ea889] tracking-widest" style={{ fontFamily: "'Bebas Neue', sans-serif", textShadow: '0 0 20px rgba(0,255,180,0.3)' }}>
+                  <span className="text-3xl font-black text-[#6ea889] tracking-widest tabular-nums" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
                     {timeFormatted}
                   </span>
-                  <span className="text-xs font-mono text-[#6ea889]/30 block">/ 10:00</span>
+                  <span className="text-xs font-mono text-[#6ea889]/30 block tabular-nums">/ 10:00</span>
                 </div>
                 {/* Segmented progress bar */}
                 <div className="flex gap-1 mt-3">
@@ -403,7 +400,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     return (
                       <div
                         key={i}
-                        className="flex-1 h-1.5 rounded-full transition-colors duration-500"
+                        className="flex-1 h-1.5 rounded-none transition-colors duration-500"
                         style={{
                           background: filled
                             ? timeLeftSeconds < 120
@@ -412,7 +409,6 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                               ? '#f59e0b'
                               : '#6ea889'
                             : '#1a2520',
-                          boxShadow: filled ? `0 0 4px ${timeLeftSeconds < 120 ? '#ef4444' : timeLeftSeconds < 300 ? '#f59e0b' : '#6ea889'}40` : 'none',
                         }}
                       />
                     );
@@ -425,7 +421,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
             <div className="flex-1 flex flex-col overflow-hidden">
 
               {/* Clue Inventory Slots */}
-              <div className="px-5 py-4 border-b border-[#2a3a30]/60">
+              <div className="px-5 py-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Search className="w-3.5 h-3.5 text-[#6ea889]/50" />
@@ -433,7 +429,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                       ရရှိထားသော သဲလွန်စများ (Clues)
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#6ea889]/30">
+                  <span className="text-[10px] font-mono tabular-nums text-[#6ea889]/40">
                     {filledSlots} / {totalSlots} ကွက်လပ် ဖြည့်ပြီး
                   </span>
                 </div>
@@ -444,19 +440,13 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     return (
                       <div
                         key={i}
-                        className={`aspect-square rounded-lg border flex flex-col items-center justify-center relative transition-all duration-300 ${
+                        className={`aspect-square rounded-none flex flex-col items-center justify-center relative transition-all duration-300 ${
                           clue
-                            ? 'border-[#6ea889]/30 bg-[#6ea889]/5'
-                            : 'border-[#2a3a30]/60 bg-[#0e1511]/60'
+                            ? 'bg-[#193828]/50 text-[#e0f0e7]'
+                            : 'bg-[#0e1511]/60'
                         }`}
                         title={clue ? `${clue.title}\n${clue.location}` : 'Empty slot'}
                       >
-                        {/* Corner brackets */}
-                        <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 border-t border-l border-[#6ea889]/20" />
-                        <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 border-t border-r border-[#6ea889]/20" />
-                        <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l border-[#6ea889]/20" />
-                        <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r border-[#6ea889]/20" />
-
                         {clue ? (
                           <>
                             <FileText className="w-4 h-4 text-[#6ea889]/60 mb-0.5" />
@@ -465,7 +455,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                             </span>
                           </>
                         ) : (
-                          <div className="w-3 h-3 rounded-full border border-[#2a3a30]/40" />
+                          <div className="w-2 h-2 rounded-none bg-[#2a3a30]/20" />
                         )}
                       </div>
                     );
@@ -480,7 +470,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
                 {discoveredClueIds.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="w-16 h-16 rounded-full border border-[#2a3a30] flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-none bg-[#141e19] flex items-center justify-center mb-4">
                       <Search className="w-7 h-7 text-[#6ea889]/15" />
                     </div>
                     <p className="text-sm font-mono text-[#d4ede3]/30 max-w-xs leading-relaxed">
@@ -494,11 +484,11 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     return (
                       <div
                         key={id}
-                        className="rounded-xl border border-[#2a3a30]/60 hover:border-[#6ea889]/20 transition-all p-4 relative overflow-hidden group"
+                        className="rounded-none p-4 relative overflow-hidden group"
                         style={{ background: 'linear-gradient(135deg, #141e19 0%, #18221d 100%)' }}
                       >
                         {/* Left accent line */}
-                        <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-full ${
+                        <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-none ${
                           clue.category === 'primary' ? 'bg-rose-500/60' :
                           clue.category === 'item' ? 'bg-[#6ea889]/50' :
                           'bg-[#2a3a30]'
@@ -508,17 +498,17 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                           <span className="text-[9px] font-mono font-semibold text-[#6ea889]/40 uppercase tracking-wider">
                             {clue.location}
                           </span>
-                          <span className={`text-[8px] font-mono uppercase px-2 py-0.5 rounded-md border shrink-0 ${
+                          <span className={`text-[8px] font-mono uppercase px-2 py-0.5 rounded-none shrink-0 ${
                             clue.category === 'item'
-                              ? 'bg-[#6ea889]/10 text-[#6ea889]/80 border-[#6ea889]/20'
+                              ? 'bg-[#6ea889]/10 text-[#6ea889]/80'
                               : clue.category === 'primary'
-                              ? 'bg-rose-950/60 text-rose-300/80 border-rose-800/40'
-                              : 'bg-[#1a2520]/80 text-[#d4ede3]/50 border-[#2a3a30]'
+                              ? 'bg-rose-950/60 text-rose-300/80'
+                              : 'bg-[#1a2520]/80 text-[#d4ede3]/50'
                           }`}>
                             {clue.category}
                           </span>
                         </div>
-                        <h4 className="text-sm font-burmese font-bold text-[#b1d4c2] pl-2 mb-1">
+                        <h4 className="text-sm font-burmese font-bold text-[#b1d4c2] pl-2 mb-1 leading-[1.75]">
                           {clue.title}
                         </h4>
                         <p className="text-xs text-[#b1d4c2]/80 font-burmese leading-[1.75] pl-2">
@@ -535,7 +525,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           </div>
 
           {/* ═══════════ FOOTER ═══════════ */}
-          <div className="px-5 py-3.5 border-t border-[#2a3a30]/60 flex items-center justify-between"
+          <div className="px-5 py-3.5 flex items-center justify-between"
             style={{ background: 'linear-gradient(90deg, #121916 0%, #162018 50%, #121916 100%)' }}>
             <div className="text-[9px] font-mono text-[#6ea889]/20 tracking-widest uppercase">
               အမှုတွဲမှတ်စု &bull; လုံခြုံရေးချန်နယ် (Case Notebook)
@@ -545,19 +535,9 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="px-6 py-2.5 rounded-xl font-bold font-mono text-xs uppercase tracking-wider cursor-pointer transition-all relative overflow-hidden group"
+              className="px-6 py-2.5 rounded-none font-bold font-mono text-xs uppercase tracking-wider cursor-pointer transition-colors relative overflow-hidden group hover:bg-[#29543e] text-[#d4ede3]"
               style={{
                 background: 'linear-gradient(135deg, #1a2a22 0%, #223830 100%)',
-                border: '1px solid rgba(0,255,180,0.2)',
-                color: '#d4ede3',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0,255,180,0.5)';
-                e.currentTarget.style.boxShadow = '0 0 20px rgba(0,255,180,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(0,255,180,0.2)';
-                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <span className="relative z-10">စုံစမ်းစစ်ဆေးမှု ဆက်လုပ်မည်</span>

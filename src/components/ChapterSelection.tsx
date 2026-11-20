@@ -36,12 +36,12 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   onSelect,
 }) => {
   const cardClass = isLocked
-    ? 'bg-[#0b100e]/80 border border-[#1a261f] opacity-40 cursor-not-allowed text-stone-600 rounded-xl pointer-events-none'
+    ? 'bg-[#0b100e]/50 opacity-40 cursor-not-allowed text-stone-600 rounded-none pointer-events-none'
     : isCompleted
-    ? 'bg-[#0e1411]/70 border border-[#1f2d24] text-stone-500 opacity-60 rounded-xl pointer-events-none select-none'
+    ? 'bg-[#0e1411]/70 text-stone-500 opacity-60 rounded-none pointer-events-none select-none'
     : isSelected || isActive
-    ? 'bg-[#141f19]/95 border-2 border-[#476756] shadow-[0_0_25px_rgba(71,103,86,0.35)] text-[#c2d6cc] backdrop-blur-md rounded-xl cursor-pointer'
-    : 'bg-[#101613]/90 border border-[#2b4235] hover:border-[#40614f] shadow-[0_0_15px_rgba(43,66,53,0.3)] hover:shadow-[0_0_22px_rgba(64,97,79,0.45)] text-stone-400 backdrop-blur-md rounded-xl cursor-pointer';
+    ? 'bg-[#141f19]/95 text-[#c2d6cc] backdrop-blur-md rounded-none cursor-pointer'
+    : 'bg-[#101613]/80 hover:bg-[#141f19] text-stone-400 backdrop-blur-md rounded-none cursor-pointer';
 
   return (
     <motion.div
@@ -69,21 +69,21 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
 
         {/* Status Pill */}
         {isCompleted ? (
-          <span className="inline-flex items-center gap-1 bg-[#131b16] border border-[#212f26] text-[#718579] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
+          <span className="inline-flex items-center gap-1 bg-[#131b16] text-[#718579] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-none">
             <CheckCircle2 className="w-3 h-3 text-[#586c62]" />
             CHAPTER {chapterNumber} COMPLETED
           </span>
         ) : isActive ? (
-          <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#a4c2b2] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded shadow-[0_0_10px_rgba(53,76,63,0.4)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-1 bg-[#1d2a23] text-[#a4c2b2] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-none">
+            <span className="w-1.5 h-1.5 rounded-none bg-emerald-400 animate-pulse" />
             ACTIVE INVESTIGATION
           </span>
         ) : !isLocked ? (
-          <span className="inline-flex items-center gap-1 bg-[#1d2a23] border border-[#354c3f] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
+          <span className="inline-flex items-center gap-1 bg-[#1d2a23] text-[#8fa89b] text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-none">
             {status || 'AVAILABLE'}
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 bg-[#121715] border border-[#1e2621] text-stone-500 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded">
+          <span className="inline-flex items-center gap-1 bg-[#121715] text-stone-500 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded-none">
             <Lock className="w-3 h-3 text-stone-500" />
             LOCKED
           </span>
@@ -120,14 +120,14 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
       </div>
 
       {/* Bottom Action Area */}
-      <div className="z-10 w-full pt-4 border-t border-[#233329] text-center">
+      <div className="z-10 w-full pt-4 text-center">
         {isLocked ? (
           <div className="py-2 flex flex-col items-center justify-center text-stone-500 font-mono text-xs">
             <Lock className="w-5 h-5 mb-1 text-stone-600" />
             <span>Finish Chapter {chapterNumber - 1} to unlock</span>
           </div>
         ) : isCompleted ? (
-          <div className="py-2.5 flex items-center justify-center gap-1.5 bg-[#121915]/60 border border-[#1c2720] rounded-lg text-[#63776c] font-mono text-xs tracking-wider uppercase">
+          <div className="py-2.5 flex items-center justify-center gap-1.5 bg-[#121915]/60 rounded-none text-[#63776c] font-mono text-xs tracking-wider uppercase">
             <CheckCircle2 className="w-3.5 h-3.5 text-[#4e6056]" />
             <span>CHAPTER {chapterNumber} COMPLETED</span>
           </div>
@@ -137,7 +137,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
               e.stopPropagation();
               onAction();
             }}
-            className="w-full py-3 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-sm tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.98]"
+            className="w-full py-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#d1e3da] font-mono text-sm tracking-wider transition-colors shadow-none flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
           >
             <Play className="w-4 h-4 fill-current" />
             <span>{buttonText || `CONTINUE CHAPTER ${chapterNumber}`}</span>
@@ -173,9 +173,9 @@ export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> =
           initial={{ scale: 0.95, y: 10 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.95, y: 10 }}
-          className="bg-[#121915] border border-[#2e4337] rounded-xl max-w-md w-full p-6 sm:p-8 shadow-2xl text-[#d1e3da] text-center"
+          className="bg-[#060b08]/96 rounded-none max-w-md w-full p-6 sm:p-8 text-[#d1e3da] text-center"
         >
-          <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#1b2b22] border border-[#375242] flex items-center justify-center text-amber-400">
+          <div className="w-12 h-12 mx-auto mb-3 rounded-none bg-[#101c15] flex items-center justify-center text-[#c7a458]">
             <RotateCcw className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-bold font-mono tracking-wider text-[#d1e3da] mb-2 uppercase">
@@ -187,13 +187,13 @@ export const RestartConfirmationModal: React.FC<RestartConfirmationModalProps> =
           <div className="flex gap-3 justify-center">
             <button
               onClick={onCancel}
-              className="px-4 py-2.5 rounded-lg bg-[#18221c] hover:bg-[#202c25] border border-[#2b3d32] text-[#8fa89b] text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#8fa89b] text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={onProceed}
-              className="px-4 py-2.5 rounded-lg bg-[#24382c] hover:bg-[#2f493a] border border-[#446652] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-lg"
+              className="px-4 py-2.5 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0ede6] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer shadow-none"
             >
               [ Restart from Chapter 1 ]
             </button>

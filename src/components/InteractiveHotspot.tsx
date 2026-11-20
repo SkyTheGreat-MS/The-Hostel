@@ -83,7 +83,7 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
         {/* Hover label / tooltip anchored above polygon center */}
         {cursorTooltip && (
           <span
-            className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
+            className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-30"
             style={{
               left: `${avgX}%`,
               top: `${minY}%`,
@@ -111,9 +111,7 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
       onClick={onClick}
       onMouseEnter={() => sound.playMenuHover()}
       style={containerStyle}
-      className={`absolute z-20 cursor-pointer group select-none ${
-        shape === 'circle' ? 'rounded-full' : 'rounded-lg'
-      }`}
+      className="absolute z-20 cursor-pointer group select-none rounded-none"
       title={name}
       aria-label={name}
       data-hotspot-id={id}
@@ -128,7 +126,7 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
       ) : (
         /* Light aura / glow boundary — strictly hidden until cursor hovers */
         <div
-          className="w-full h-full pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 border border-[#82a996]/40 bg-[#82a996]/5 shadow-[0_0_12px_rgba(130,169,150,0.25)] rounded-md"
+          className="w-full h-full pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#82a996]/10 rounded-none"
           style={clipPath ? { clipPath } : undefined}
         />
       )}
@@ -136,7 +134,7 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
       {/* Elegant minimalist tooltip that follows hover */}
       {cursorTooltip && (
         <span
-          className={`absolute left-1/2 px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg z-30 ${
+          className={`absolute left-1/2 px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30 ${
             (y ?? 0) < 15 ? 'top-full mt-2' : 'bottom-full mb-2'
           }`}
           style={{

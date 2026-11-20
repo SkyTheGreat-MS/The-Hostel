@@ -85,3 +85,22 @@ export const ANIMATIONS = {
   transitionNormalMs: 350,
   transitionSlowMs: 600,
 } as const;
+
+/**
+ * Anti-AI-Slop Geometry & Borderless Atmospheric Tokens
+ * Strictly adheres to docs/ui_ux_design_rules.md:
+ * - Rule 8: Group with spacing, no heavy card borderlines or boxed containers.
+ * - Rule 13: Remove unnecessary borders, glowing outlines, and embellishments.
+ * - Rule 18: Tabular numbers on dynamic indicators.
+ * - Pure 1998 institutional horror: sharp edges (rounded-none), zero borderlines,
+ *   natural dissolution into the dark environmental scene.
+ */
+export const GEOMETRY = {
+  sharp: 'rounded-none',
+  micro: 'rounded-[1px]',
+  hudContainer: 'bg-[#020504]/60 backdrop-blur-sm rounded-none',
+  hudItem: 'bg-[#020504]/60 backdrop-blur-sm rounded-none',
+  hudButton: 'bg-[#020504]/60 hover:bg-[#060b08]/90 text-[#b1d4c2] hover:text-[#e0f0e7] rounded-none transition-colors',
+  modal: 'bg-[#060b08]/95 backdrop-blur-md rounded-none shadow-none',
+} as const;
+

@@ -75,8 +75,8 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
     <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between p-4 sm:p-6 md:p-8 bg-[#0a0f0d]/95 backdrop-blur-xl text-[#c2d6cc] overflow-y-auto select-none">
       {/* Top Header Banner */}
       <div className="text-center space-y-2 mb-4 sm:mb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#16221c] border border-[#2c3d34] rounded-full text-xs text-[#82a996] uppercase tracking-widest font-mono shadow-md">
-          <span className="w-2 h-2 rounded-full bg-[#6ee7b7] animate-ping" />
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#060b08]/85 rounded-none text-xs text-[#82a996] uppercase tracking-widest font-mono">
+          <span className="w-1.5 h-1.5 rounded-none bg-[#6ee7b7] animate-pulse" />
           <span>အချိန်ကာလ ရွှေ့ပြောင်းမှု • ၁၉၉၈ ဩဂုတ်</span>
         </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-[#b2c7bd] tracking-widest uppercase drop-shadow-md">
@@ -100,18 +100,18 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
             <div
               key={char.id}
               onClick={() => handleCardClick(index)}
-              className={`group relative flex flex-col rounded-xl p-2.5 sm:p-3 cursor-pointer transition-all duration-200 ${
+              className={`group relative flex flex-col rounded-none p-2.5 sm:p-3 cursor-pointer transition-colors duration-150 ${
                 isSelected
-                  ? 'bg-[#101c15] border-2 border-[#6ea889] shadow-[0_0_20px_rgba(110,168,137,0.3)] text-[#e0f0e7] scale-[1.03] z-10'
-                  : 'bg-[#060b08]/90 border border-[#193828] text-stone-400 hover:border-[#29543e] hover:bg-[#101c15]'
+                  ? 'bg-[#101c15] text-[#e0f0e7] z-10'
+                  : 'bg-[#060b08]/90 text-stone-400 hover:bg-[#101c15]'
               }`}
             >
               {/* Number Badge */}
               <div
-                className={`absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold font-mono z-20 ${
+                className={`absolute top-2 left-2 w-5 h-5 rounded-none flex items-center justify-center text-xs font-bold font-mono z-20 ${
                   isSelected
-                    ? 'bg-[#193828] text-[#e0f0e7] font-black shadow-md border border-[#6ea889]'
-                    : 'bg-[#060b08] text-[#6ea889] border border-[#193828] group-hover:text-[#b1d4c2]'
+                    ? 'bg-[#193828] text-[#e0f0e7] font-black'
+                    : 'bg-[#060b08] text-[#6ea889] group-hover:text-[#b1d4c2]'
                 }`}
               >
                 {index + 1}
@@ -119,13 +119,13 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
 
               {/* Selected Check Indicator */}
               {isSelected && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#193828] text-[#6ea889] flex items-center justify-center z-20 shadow-md border border-[#6ea889]">
+                <div className="absolute top-2 right-2 w-5 h-5 rounded-none bg-[#193828] text-[#6ea889] flex items-center justify-center z-20">
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                 </div>
               )}
 
               {/* Character Portrait Frame */}
-              <div className="h-40 sm:h-44 w-full mb-2 overflow-hidden rounded-lg bg-[#020504] border border-[#193828]">
+              <div className="h-40 sm:h-44 w-full mb-2 overflow-hidden rounded-none bg-[#020504]">
                 <InkPortrait
                   characterId={char.id}
                   speakerName={char.name}
@@ -149,17 +149,17 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
               </div>
 
               {/* Dual Vitals Badges: HP (Green Heart) & Mind (Cyan Brain) */}
-              <div className="mt-2 pt-2 border-t border-[#193828] grid grid-cols-2 gap-1.5 text-[10px] font-mono text-center">
+              <div className="mt-2 pt-2 grid grid-cols-2 gap-1.5 text-[10px] font-mono tabular-nums text-center">
                 <div
                   title="သွေးသားကြံ့ခိုင်မှု (ရုပ်ပိုင်းဆိုင်ရာ အသက်)"
-                  className="bg-[#0b140f] text-[#6ea889] border border-[#193828] rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
+                  className="bg-[#0b140f] text-[#6ea889] rounded-none px-1.5 py-1 flex items-center justify-center gap-1 font-bold"
                 >
                   <Heart className="w-3 h-3 text-[#6ea889] shrink-0" />
                   <span>{profile.maxHp} HP</span>
                 </div>
                 <div
                   title="စိတ်တည်ငြိမ်မှု (စိတ်ပိုင်းဆိုင်ရာ ကြံ့ခိုင်မှု)"
-                  className="bg-[#0b140f] text-[#38bdf8] border border-[#193828] rounded px-1.5 py-1 flex items-center justify-center gap-1 font-bold shadow-sm"
+                  className="bg-[#0b140f] text-[#38bdf8] rounded-none px-1.5 py-1 flex items-center justify-center gap-1 font-bold"
                 >
                   <Brain className="w-3 h-3 text-[#38bdf8] shrink-0" />
                   <span>{profile.maxMind} M</span>
@@ -174,51 +174,51 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
       {(() => {
         const activeProfile = getCharacterProfile(activeChar.id);
         return (
-          <div className="max-w-5xl mx-auto w-full bg-[#060b08]/95 border border-[#193828] rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 backdrop-blur-md">
+          <div className="max-w-5xl mx-auto w-full bg-[#060b08]/96 rounded-none p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 backdrop-blur-md">
             <div className="flex items-start gap-4 w-full md:w-auto">
-              <div className="w-16 h-20 bg-[#020504] rounded-xl border border-[#193828] overflow-hidden shrink-0 shadow-md">
+              <div className="w-16 h-20 bg-[#020504] rounded-none overflow-hidden shrink-0 shadow-none">
                 <InkPortrait characterId={activeChar.id} isSpeaking={true} size="full" />
               </div>
               <div className="min-w-0 space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] uppercase font-mono font-bold px-2 py-0.5 bg-[#101c15] text-[#6ea889] border border-[#193828] rounded">
+                  <span className="text-[11px] uppercase font-mono font-bold px-2 py-0.5 bg-[#101c15] text-[#6ea889] rounded-none">
                     {activeChar.archetype}
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-burmese font-bold text-[#e0f0e7] tracking-wide truncate">
+                  <h2 className="text-xl sm:text-2xl font-burmese font-bold text-[#e0f0e7] tracking-wide truncate leading-[1.75]">
                     {activeChar.name}
                   </h2>
                 </div>
 
                 {/* Vitals & Defenses Readout */}
-                <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                  <span className="flex items-center gap-1 text-[#6ea889] font-bold bg-[#0b140f] px-2 py-0.5 rounded border border-[#193828]">
+                <div className="flex flex-wrap items-center gap-2 font-mono tabular-nums text-xs">
+                  <span className="flex items-center gap-1 text-[#6ea889] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none">
                     <Heart className="w-3.5 h-3.5 text-[#6ea889]" />
                     <span>သွေးသား {activeProfile.maxHp} HP</span>
                   </span>
-                  <span className="flex items-center gap-1 text-[#38bdf8] font-bold bg-[#0b140f] px-2 py-0.5 rounded border border-[#193828]">
+                  <span className="flex items-center gap-1 text-[#38bdf8] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none">
                     <Brain className="w-3.5 h-3.5 text-[#38bdf8]" />
                     <span>စိတ်တည်ငြိမ်မှု {activeProfile.maxMind} MIND</span>
                   </span>
                   {activeProfile.physicalDefense !== 1.0 && (
-                    <span className="text-[11px] font-burmese px-2 py-0.5 rounded border bg-[#0b140f] text-[#b1d4c2] border-[#193828]">
+                    <span className="text-[11px] font-burmese px-2 py-0.5 rounded-none bg-[#0b140f] text-[#b1d4c2] leading-[1.75]">
                       ရုပ်ပိုင်း: {activeProfile.physicalDefense < 1 ? `+${Math.round((1 - activeProfile.physicalDefense) * 100)}% ခံနိုင်ရည်` : `-${Math.round((activeProfile.physicalDefense - 1) * 100)}% ထိခိုက်လွယ်`}
                     </span>
                   )}
                   {activeProfile.mentalDefense !== 1.0 && (
-                    <span className="text-[11px] font-burmese px-2 py-0.5 rounded border bg-[#0b140f] text-[#b1d4c2] border-[#193828]">
+                    <span className="text-[11px] font-burmese px-2 py-0.5 rounded-none bg-[#0b140f] text-[#b1d4c2] leading-[1.75]">
                       စိတ်ပိုင်း: {activeProfile.mentalDefense < 1 ? `+${Math.round((1 - activeProfile.mentalDefense) * 100)}% ခံနိုင်ရည်` : `-${Math.round((activeProfile.mentalDefense - 1) * 100)}% ထိခိုက်လွယ်`}
                     </span>
                   )}
                 </div>
 
                 {/* Unique Passive Perk Card */}
-                <div className="mt-2 p-2 rounded-xl bg-[#0b140f] border border-[#193828] flex items-start gap-2">
+                <div className="mt-2 p-2 rounded-none bg-[#0b140f] flex items-start gap-2">
                   <Award className="w-4 h-4 text-[#c7a458] shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-burmese font-bold text-xs text-[#c7a458] block">
+                    <span className="font-burmese font-bold text-xs text-[#c7a458] block leading-[1.75]">
                       သီးသန့်စွမ်းရည်: {activeProfile.perkTitleBurmese}
                     </span>
-                    <span className="font-burmese text-xs text-[#b1d4c2] leading-relaxed block">
+                    <span className="font-burmese text-xs text-[#b1d4c2] leading-[1.75] block">
                       {activeProfile.perkDescBurmese}
                     </span>
                   </div>
@@ -229,7 +229,7 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
             {/* Action Button */}
             <button
               onClick={() => handleConfirmSelection(characters[selectedIdx])}
-              className="w-full md:w-auto px-6 py-3 rounded-xl bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] font-burmese font-bold text-sm tracking-wider transition-all duration-200 shadow-xl flex items-center justify-center gap-3 shrink-0 cursor-pointer active:scale-95 hover:scale-[1.01]"
+              className="w-full md:w-auto px-6 py-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-burmese font-bold text-sm tracking-wider transition-colors duration-150 flex items-center justify-center gap-3 shrink-0 cursor-pointer active:scale-[0.99] leading-[1.75]"
             >
               <span>စုံစမ်းစစ်ဆေးမှု စတင်မည် [၁၉၉၈]</span>
               <ChevronRight className="w-4 h-4 text-[#6ea889]" />

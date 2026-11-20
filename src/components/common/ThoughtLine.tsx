@@ -62,7 +62,7 @@ export const ThoughtLine: React.FC<ThoughtLineProps> = ({
           aria-live="polite"
         >
           {/* Borderless Organic Feathered Ambient Wash */}
-          <div className="relative thought-feather-wash py-3 px-6 rounded-2xl flex items-center justify-center">
+          <div className="relative thought-feather-wash py-3 px-6 rounded-none flex items-center justify-center">
             <p className="font-burmese text-sm sm:text-base text-[#d8eae2] text-center thought-subtitle-shadow leading-[1.75] tracking-wide">
               {message}
             </p>

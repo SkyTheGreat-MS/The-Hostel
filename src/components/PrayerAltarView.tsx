@@ -682,14 +682,14 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
         >
           <span className="sr-only">ကြေးခေါင်းလောင်း လှုပ်ခတ်မည်</span>
           {/* Subtle pulsing highlight around the bell */}
-          <div className="w-full h-full rounded-full group-hover:bg-amber-400/10 border border-transparent group-hover:border-amber-300/30 transition-all duration-300" />
+          <div className="w-full h-full rounded-none group-hover:bg-amber-400/10 transition-all duration-300" />
         </button>
       )}
 
       {/* Floating Dynamic Tooltip Badge */}
       {hoveredSocket && (
         <span
-          className="absolute px-2.5 py-1 rounded bg-[#0b140f]/95 border border-[#193828] text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-40 transition-all duration-150"
+          className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-40 transition-all duration-150 leading-[1.75]"
           style={{
             left: `${hoveredSocket.x}%`,
             top: `${hoveredSocket.y}%`,
@@ -714,34 +714,34 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
-                  className="p-3.5 rounded-xl bg-[#060b08]/95 border border-[#193828] backdrop-blur-md shadow-2xl space-y-2 pointer-events-auto"
+                  className="p-3.5 rounded-none bg-[#020504]/95 backdrop-blur-md space-y-2 pointer-events-auto"
                 >
-                  <div className="flex items-center justify-between text-xs font-burmese tracking-wider text-[#b1d4c2] uppercase">
+                  <div className="flex items-center justify-between text-xs font-burmese tracking-wider text-[#b1d4c2] uppercase leading-[1.75]">
                     <span className="flex items-center gap-1.5 font-bold">
                       <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                       ယဇ်ပူဇော်ရာ မီးညှိခြင်း
                     </span>
-                    <span className="text-[#6ea889] font-semibold">
+                    <span className="text-[#6ea889] font-semibold font-mono tabular-nums">
                       မီးခြစ်ဆံ {matchesRemaining} ချောင်း ကျန်သည်
                     </span>
                   </div>
 
                   {/* Fail rate & composure stat bar */}
-                  <div className="flex items-center justify-between text-xs font-burmese text-stone-400 bg-black/60 px-2.5 py-1 rounded border border-[#101c15]">
+                  <div className="flex items-center justify-between text-xs font-burmese text-stone-400 bg-black/60 px-2.5 py-1 rounded-none leading-[1.75]">
                     <span>
-                      စိတ်တည်ငြိမ်မှု - <strong className="text-amber-300 font-mono">{composure}%</strong>
+                      စိတ်တည်ငြိမ်မှု - <strong className="text-amber-300 font-mono tabular-nums">{composure}%</strong>
                     </span>
                     <span>
-                      မအောင်မြင်နိုင်ခြေ - <strong className="text-stone-300 font-mono">{failRateDisplay}%</strong>
+                      မအောင်မြင်နိုင်ခြေ - <strong className="text-stone-300 font-mono tabular-nums">{failRateDisplay}%</strong>
                     </span>
                   </div>
 
                   <button
                     onClick={handleStrikeMatch}
-                    className="w-full py-2 px-3 rounded-lg bg-[#101c15] hover:bg-[#193828] border border-[#193828] hover:border-[#6ea889] text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.01]"
+                    className="w-full py-2 px-3 rounded-none bg-[#101c15] hover:bg-[#193828] text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider leading-[1.75] transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                   >
                     <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-400" />
-                    <span>မီးခြစ်ဆံ ခြစ်မည် ({litCount}/၃ မီးလောင်နေ)</span>
+                    <span>မီးခြစ်ဆံ ခြစ်မည် (<span className="tabular-nums font-mono">{litCount}</span>/၃ မီးလောင်နေ)</span>
                   </button>
                 </motion.div>
               )}
@@ -753,20 +753,20 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
-                  className="p-3.5 rounded-xl bg-[#060b08]/95 border border-[#c7a458]/60 backdrop-blur-md shadow-2xl space-y-2 text-[#c2d6cc]"
+                  className="p-3.5 rounded-none bg-[#020504]/95 backdrop-blur-md space-y-2 text-[#c2d6cc]"
                 >
-                  <div className="flex items-center gap-2 font-burmese">
+                  <div className="flex items-center gap-2 font-burmese leading-[1.75]">
                     <Sparkles className="w-3.5 h-3.5 text-[#c7a458] animate-spin" />
                     <span className="text-xs font-bold text-[#c7a458] uppercase tracking-wider">
                       ယဇ်စင် ပြင်ဆင်ပြီး • နတ်ပူဇော်ပသမှု အခမ်းအနား
                     </span>
                   </div>
-                  <div className="text-xs font-burmese text-[#b1d4c2]/80 leading-relaxed">
+                  <div className="text-xs font-burmese text-[#b1d4c2]/80 leading-[1.75]">
                     ဖယောင်းတိုင်များသည် အေးစက်သောအပြာဖျော့ရောင်ဖြင့် လောင်ကျွမ်းနေသည်။ အစောင့်နတ်ကို ဖိတ်ခေါ်ရန် ကြေးဝါခေါင်းလောင်းကို တီးခတ်ပါ။
                   </div>
                   <button
                     onClick={handleRingBell}
-                    className="w-full py-2 px-3 rounded-lg bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-95 hover:scale-[1.01]"
+                    className="w-full py-2 px-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase leading-[1.75] transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                   >
                     <Bell className="w-3.5 h-3.5 fill-current text-[#c7a458]" />
                     <span>ယဇ်ပူဇော်ရာ ခေါင်းလောင်းကို တီးမည်</span>
@@ -781,15 +781,15 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 12 }}
-                  className="p-3.5 rounded-xl bg-[#060b08]/95 border border-[#193828] backdrop-blur-md shadow-2xl space-y-2 text-[#c2d6cc]"
+                  className="p-3.5 rounded-none bg-[#020504]/95 backdrop-blur-md space-y-2 text-[#c2d6cc]"
                 >
-                  <div className="flex items-center gap-2 font-burmese">
+                  <div className="flex items-center gap-2 font-burmese leading-[1.75]">
                     <Sparkles className="w-3.5 h-3.5 text-[#6ea889] animate-spin" />
                     <span className="text-xs font-bold text-[#6ea889] uppercase tracking-wider">
                       အစောင့်နတ် နိုးထလာပြီ
                     </span>
                   </div>
-                  <div className="text-xs font-burmese text-[#b1d4c2]/80 leading-relaxed">
+                  <div className="text-xs font-burmese text-[#b1d4c2]/80 leading-[1.75]">
                     အေးစက်သော ဆာလဖာမီးတောက်များ တည်ငြိမ်စွာ လောင်ကျွမ်းနေသည်။ အစောင့်နတ် ကိုယ်ထင်ပြလာပြီ။ စင်္ကြံလမ်းသို့ပြန်ပြီး အဆောင်မှူးအခန်းကို စစ်ဆေးပါ။
                   </div>
                   <div className="flex items-center gap-2 pt-1">
@@ -798,7 +798,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                         sound.playGhostWhisper();
                         setIsNatDialogueOpen(true);
                       }}
-                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#101c15] hover:bg-[#193828] border border-[#193828] hover:border-[#6ea889] text-[#b1d4c2] hover:text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.01] active:scale-95"
+                      className="flex-1 py-1.5 px-2 rounded-none bg-[#101c15] hover:bg-[#193828] text-[#b1d4c2] hover:text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase leading-[1.75] transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
                     >
                       <span>နတ်နှင့် စကားပြောမည်</span>
                     </button>
@@ -811,7 +811,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                           setPhase3Location('prayer_room_main');
                         }
                       }}
-                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#101c15] hover:bg-[#193828] border border-[#193828] hover:border-[#6ea889] text-[#b1d4c2] hover:text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-1 cursor-pointer hover:scale-[1.01] active:scale-95"
+                      className="flex-1 py-1.5 px-2 rounded-none bg-[#101c15] hover:bg-[#193828] text-[#b1d4c2] hover:text-[#e0f0e7] font-burmese text-xs font-bold tracking-wider uppercase leading-[1.75] transition-all flex items-center justify-center gap-1 cursor-pointer active:scale-95"
                     >
                       <span>ပြန်ထွက်မည်</span>
                     </button>

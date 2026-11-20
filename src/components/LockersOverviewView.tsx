@@ -188,7 +188,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
       {/* Dynamic Cursor Hover Tooltip Badge */}
       {hoveredLocker && (
         <span
-          className={`absolute px-2.5 py-1 rounded bg-[#0b140f]/95 border border-[#193828] text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none shadow-lg -translate-y-full mb-2 z-40 transition-all duration-150 ${
+          className={`absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none -translate-y-full mb-2 z-40 transition-all duration-150 leading-[1.75] ${
             hoveredLocker.align === 'right' ? '-translate-x-[85%]' : '-translate-x-1/2'
           }`}
           style={{

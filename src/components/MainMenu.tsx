@@ -261,7 +261,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       <div className="relative z-10 w-full h-full flex flex-col justify-between p-6 sm:p-10 lg:p-14 max-w-7xl mx-auto">
         {/* Top Header Bar: Sound Controls & Archival Metadata */}
         <div className="flex items-center justify-between w-full">
-          <div className="ml-auto flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded border border-stone-800/80 shadow-lg">
+          <div className="ml-auto flex items-center gap-2 bg-[#020504]/60 backdrop-blur-md px-3 py-1.5 rounded-none">
             <button
               id="menu-btn-audio-toggle"
               onClick={handleAudioToggle}
@@ -279,7 +279,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
           <div id="menu-title-anchor" className="mb-8 sm:mb-12">
             {/* Archival Case Stamp */}
             <div className="flex items-center gap-2 mb-2.5">
-              <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-mono tracking-widest bg-rose-950/80 border border-rose-800/80 text-rose-300 font-bold uppercase rounded shadow-sm">
+              <span className="px-2 py-0.5 text-[10px] sm:text-[11px] font-mono tracking-widest bg-rose-950/80 text-rose-300 font-bold uppercase rounded-none">
                 BURMESE FOLK-HORROR • 1998
               </span>
               <span className="text-xs text-stone-500 font-mono hidden sm:inline">
@@ -439,10 +439,10 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-[#060b08]/96 border border-[#193828] rounded-xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl text-[#b1d4c2] relative overflow-hidden"
+              className="bg-[#060b08]/96 rounded-none max-w-2xl w-full p-6 sm:p-8 text-[#b1d4c2] relative overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-[#112319] pb-4 mb-5">
+              <div className="flex items-center justify-between pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
                   <FileText className="w-5 h-5 text-[#6ea889]" />
                   <div>
@@ -456,7 +456,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="p-1.5 rounded-lg border border-[#112319] bg-[#0b140f] hover:bg-[#101c15] text-[#6ea889] hover:text-[#e0f0e7] transition-colors cursor-pointer"
+                  className="p-1.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#6ea889] hover:text-[#e0f0e7] transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -466,76 +466,76 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <div className="space-y-4 text-xs leading-relaxed max-h-[60vh] overflow-y-auto pr-2 text-[#b1d4c2]">
                 {/* How to Play & Your Mission */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                  <div className="p-3 bg-[#0b140f] rounded-none">
                     <h3 className="font-bold text-[#b1d4c2] text-sm mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Flame className="w-4 h-4 text-[#6ea889]" />
                       How to Play
                     </h3>
-                    <p className="text-[#6ea889] text-[11px] font-burmese">
+                    <p className="text-[#6ea889] text-[11px] font-burmese leading-[1.75]">
                       အတိတ်ကို ဖော်ထုတ်ပြီး ၁၉၉၈ မှ လွတ်မြောက်အောင် ရှာဖွေပါ။
                     </p>
                   </div>
 
-                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                  <div className="p-3 bg-[#0b140f] rounded-none">
                     <h3 className="font-bold text-[#b1d4c2] text-sm mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Target className="w-4 h-4 text-[#6ea889]" />
                       Your Mission
                     </h3>
-                    <p className="text-[#6ea889] text-[11px] font-burmese">
+                    <p className="text-[#6ea889] text-[11px] font-burmese leading-[1.75]">
                       &quot;မေ&quot; ဘာဖြစ်ခဲ့သည်ကို ဖော်ထုတ်ပြီး အချိန်မကုန်မီ နတ်ပူဇော်မှု အခမ်းအနားကို ပြီးမြောက်စေပါ။
                     </p>
                   </div>
                 </div>
 
                 {/* Game Flow */}
-                <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                <div className="p-3 bg-[#0b140f] rounded-none">
                   <h3 className="font-bold text-[#b1d4c2] text-sm mb-2 uppercase font-cinzel">
                     Investigation Flow
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[01]</span> CHOOSE
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">စုံစမ်းသူ ရွေးချယ်မှု</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">စုံစမ်းသူ ရွေးချယ်မှု</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[02]</span> EXPLORE
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">အဆောင်ကို ရှာဖွေရန်</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">အဆောင်ကို ရှာဖွေရန်</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[03]</span> FIND CLUES
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">ပစ္စည်းများ စစ်ဆေးရန်</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">ပစ္စည်းများ စစ်ဆေးရန်</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[04]</span> DEDUCE
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">သဲလွန်စများ ချိတ်ဆက်ရန်</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">သဲလွန်စများ ချိတ်ဆက်ရန်</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[05]</span> RITUAL
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">နတ်ပူဇော် တင်ဆက်ရန်</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">နတ်ပူဇော် တင်ဆက်ရန်</p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
-                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-none text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono tabular-nums">
                           <span className="text-[#6ea889]">[06]</span> ESCAPE
                         </p>
-                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">ပဟေဠိ ဖြေရှင်းရန်</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese leading-[1.75]">ပဟေဠိ ဖြေရှင်းရန်</p>
                       </div>
                     </div>
                   </div>
@@ -543,33 +543,33 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
                 {/* Composure & Grief */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                  <div className="p-3 bg-[#0b140f] rounded-none">
                     <h4 className="font-bold text-[#b1d4c2] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Brain className="w-3.5 h-3.5 text-[#6ea889]" />
                       Composure (တည်ငြိမ်မှု)
                     </h4>
-                    <p className="text-[#447d60] text-[11px] font-burmese">၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
+                    <p className="text-[#447d60] text-[11px] font-burmese leading-[1.75]">၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>
 
-                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#591010]">
+                  <div className="p-3 bg-[#0b140f] rounded-none">
                     <h4 className="font-bold text-[#fca5a5] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Skull className="w-3.5 h-3.5 text-[#ba2929]" />
                       Grief (ပူဆွေးမှု)
                     </h4>
-                    <p className="text-[#ba2929] text-[11px] font-burmese">၁၀၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
+                    <p className="text-[#ba2929] text-[11px] font-burmese leading-[1.75]">၁၀၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>
                 </div>
               </div>
 
               {/* Tip Box & Close Button */}
-              <div className="mt-6 pt-4 border-t border-[#112319] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="flex items-start gap-2 p-3 bg-[#0b140f] rounded-lg border border-[#193828] text-[11px] text-[#6ea889] sm:flex-1">
+              <div className="mt-6 pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex items-start gap-2 p-3 bg-[#0b140f] rounded-none text-[11px] text-[#6ea889] sm:flex-1">
                   <Lightbulb className="w-4 h-4 text-[#c7a458] shrink-0 mt-0.5" />
-                  <p className="font-burmese">နေရာအနှံ့ ရှာဖွေပါ။ သေချာဖတ်ရှုပါ။ ထင်မြင်ချက်များထက် လက်ဆုပ်လက်ကိုင် အထောက်အထားများကိုသာ ယုံကြည်ပါ။</p>
+                  <p className="font-burmese leading-[1.75]">နေရာအနှံ့ ရှာဖွေပါ။ သေချာဖတ်ရှုပါ။ ထင်မြင်ချက်များထက် လက်ဆုပ်လက်ကိုင် အထောက်အထားများကိုသာ ယုံကြည်ပါ။</p>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="px-5 py-2 bg-[#0b140f] hover:bg-[#101c15] border border-[#193828] hover:border-[#29543e] text-[#b1d4c2] hover:text-[#e0f0e7] font-bold rounded-lg text-xs transition-colors shrink-0 cursor-pointer"
+                  className="px-5 py-2 bg-[#0b140f] hover:bg-[#101c15] text-[#b1d4c2] hover:text-[#e0f0e7] font-bold rounded-none text-xs transition-colors shrink-0 cursor-pointer"
                 >
                   Return to Menu
                 </button>
@@ -593,17 +593,17 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-stone-900 border border-stone-700 rounded-xl max-w-xl w-full p-6 sm:p-8 shadow-2xl text-stone-200"
+              className="bg-[#080d0a]/98 rounded-none max-w-xl w-full p-6 sm:p-8 text-stone-200"
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-stone-800 pb-4 mb-5">
+              <div className="flex items-center justify-between pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
                   <SettingsIcon className="w-5 h-5 text-amber-400" />
                   <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200">Atmospheric Settings</h2>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="p-1.5 rounded-lg hover:bg-stone-800 text-stone-400 hover:text-white transition-colors"
+                  className="p-1.5 rounded-none hover:bg-stone-800 text-stone-400 hover:text-white transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -612,14 +612,14 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               {/* Setting controls */}
               <div className="space-y-4 text-xs">
                 {/* Audio Master Toggle */}
-                <div className="flex items-center justify-between p-3 bg-stone-950/80 rounded-lg border border-stone-800">
+                <div className="flex items-center justify-between p-3 bg-stone-950/80 rounded-none">
                   <div>
                     <span className="font-semibold text-stone-200 block">Procedural Audio Engine</span>
                     <span className="text-stone-400 text-[11px]">1998 Drone Synthesizer &amp; Tactile Clinks</span>
                   </div>
                   <button
                     onClick={handleAudioToggle}
-                    className={`px-3 py-1.5 rounded text-xs font-bold transition-colors ${
+                    className={`px-3 py-1.5 rounded-none text-xs font-bold transition-colors cursor-pointer ${
                       !isMuted ? 'bg-amber-600 text-stone-950' : 'bg-stone-800 text-stone-400'
                     }`}
                   >
@@ -628,35 +628,35 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 </div>
 
                 {/* Color Grading Presets */}
-                <div className="p-3 bg-stone-950/80 rounded-lg border border-stone-800">
+                <div className="p-3 bg-stone-950/80 rounded-none">
                   <span className="font-semibold text-stone-200 block mb-2">Color Grading &amp; Humid Hue</span>
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       onClick={() => setColorGrade('monsoon_green')}
-                      className={`p-2 rounded text-left border text-[11px] transition-all ${
+                      className={`p-2 rounded-none text-left text-[11px] transition-all cursor-pointer ${
                         colorGrade === 'monsoon_green'
-                          ? 'border-emerald-500 bg-emerald-950/50 text-emerald-200 font-bold'
-                          : 'border-stone-800 hover:border-stone-700 text-stone-400'
+                          ? 'bg-emerald-950/90 text-emerald-200 font-bold'
+                          : 'bg-stone-900/60 hover:bg-stone-800 text-stone-400'
                       }`}
                     >
                       Sickly Monsoon Green (Default)
                     </button>
                     <button
                       onClick={() => setColorGrade('guttering_wax')}
-                      className={`p-2 rounded text-left border text-[11px] transition-all ${
+                      className={`p-2 rounded-none text-left text-[11px] transition-all cursor-pointer ${
                         colorGrade === 'guttering_wax'
-                          ? 'border-amber-500 bg-amber-950/50 text-amber-200 font-bold'
-                          : 'border-stone-800 hover:border-stone-700 text-stone-400'
+                          ? 'bg-amber-950/90 text-amber-200 font-bold'
+                          : 'bg-stone-900/60 hover:bg-stone-800 text-stone-400'
                       }`}
                     >
                       Guttering Red Wax
                     </button>
                     <button
                       onClick={() => setColorGrade('archive_1998')}
-                      className={`p-2 rounded text-left border text-[11px] transition-all ${
+                      className={`p-2 rounded-none text-left text-[11px] transition-all cursor-pointer ${
                         colorGrade === 'archive_1998'
-                          ? 'border-cyan-500 bg-cyan-950/50 text-cyan-200 font-bold'
-                          : 'border-stone-800 hover:border-stone-700 text-stone-400'
+                          ? 'bg-cyan-950/90 text-cyan-200 font-bold'
+                          : 'bg-stone-900/60 hover:bg-stone-800 text-stone-400'
                       }`}
                     >
                       1998 Surveillance Tape
@@ -665,7 +665,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 </div>
 
                 {/* Visual Overlays Toggles */}
-                <div className="p-3 bg-stone-950/80 rounded-lg border border-stone-800 space-y-2.5">
+                <div className="p-3 bg-stone-950/80 rounded-none space-y-2.5">
                   <span className="font-semibold text-stone-200 block mb-1">Atmospheric Shaders &amp; Overlays</span>
                   <div className="flex items-center justify-between">
                     <span className="text-stone-300">Monsoon Rain Streaks</span>
@@ -673,7 +673,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                       type="checkbox"
                       checked={rainEnabled}
                       onChange={(e) => setRainEnabled(e.target.checked)}
-                      className="accent-amber-500 h-4 w-4 rounded cursor-pointer"
+                      className="accent-amber-500 h-4 w-4 rounded-none cursor-pointer"
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -682,7 +682,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                       type="checkbox"
                       checked={grainEnabled}
                       onChange={(e) => setGrainEnabled(e.target.checked)}
-                      className="accent-amber-500 h-4 w-4 rounded cursor-pointer"
+                      className="accent-amber-500 h-4 w-4 rounded-none cursor-pointer"
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -691,17 +691,17 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                       type="checkbox"
                       checked={scanlinesEnabled}
                       onChange={(e) => setScanlinesEnabled(e.target.checked)}
-                      className="accent-amber-500 h-4 w-4 rounded cursor-pointer"
+                      className="accent-amber-500 h-4 w-4 rounded-none cursor-pointer"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Close Button */}
-              <div className="mt-6 pt-4 border-t border-stone-800 flex justify-end">
+              <div className="mt-6 pt-4 flex justify-end">
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-lg text-xs transition-colors"
+                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-none text-xs transition-colors cursor-pointer"
                 >
                   Save &amp; Apply
                 </button>
@@ -725,9 +725,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-stone-900 border border-rose-900/60 rounded-xl max-w-md w-full p-6 shadow-2xl text-stone-200 text-center"
+              className="bg-[#080d0a]/98 rounded-none max-w-md w-full p-6 text-stone-200 text-center"
             >
-              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-rose-950/80 border border-rose-800 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-none bg-rose-950/80 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6 text-rose-500" />
               </div>
               <h2 className="text-2xl font-bold font-bebas tracking-wide text-rose-200 mb-2">
@@ -739,7 +739,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="px-4 py-2 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold transition-colors"
+                  className="px-4 py-2 rounded-none bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Stay in 1998
                 </button>
@@ -748,7 +748,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                     setActiveModal('none');
                     sound.playDramaticSting();
                   }}
-                  className="px-4 py-2 rounded-lg bg-rose-900 hover:bg-rose-800 text-white text-xs font-bold transition-colors"
+                  className="px-4 py-2 rounded-none bg-rose-900 hover:bg-rose-800 text-white text-xs font-bold transition-colors cursor-pointer"
                 >
                   Sever Link &amp; Return
                 </button>
