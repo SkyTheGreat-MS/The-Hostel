@@ -101,7 +101,7 @@ export const GEOMETRY = {
   hudContainer: 'bg-[#020504]/60 backdrop-blur-sm rounded-none',
   hudItem: 'bg-[#020504]/60 backdrop-blur-sm rounded-none',
   hudButton: 'bg-[#020504]/60 hover:bg-[#060b08]/90 text-[#b1d4c2] hover:text-[#e0f0e7] rounded-none transition-colors',
-  dialogueBox: 'bg-[#020504]/55 backdrop-blur-md rounded-none',
+  dialogueBox: 'dialogue-feather-wash backdrop-blur-sm rounded-none',
   modal: 'bg-[#060b08]/95 backdrop-blur-md rounded-none shadow-none',
 } as const;
 

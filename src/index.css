@@ -101,6 +101,16 @@ html, body {
     background: radial-gradient(ellipse at center, rgba(6, 11, 8, 0.88) 0%, rgba(6, 11, 8, 0.5) 55%, transparent 80%);
   }
 
+  /* Dialogue box feathered ambient backdrop wash (100% borderless, dissolves outward on all sides) */
+  .dialogue-feather-wash {
+    background: radial-gradient(ellipse 95% 85% at 50% 50%, rgba(2, 5, 4, 0.82) 0%, rgba(2, 5, 4, 0.55) 50%, rgba(2, 5, 4, 0.18) 75%, transparent 100%);
+  }
+
+  /* Speaker tab feathered ambient wash (dissolves outward on all sides) */
+  .speaker-feather-wash {
+    background: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(2, 5, 4, 0.85) 0%, rgba(2, 5, 4, 0.45) 55%, transparent 95%);
+  }
+
   @keyframes screenShake {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
     10% { transform: translate(-10px, -8px) rotate(-1.5deg); }
