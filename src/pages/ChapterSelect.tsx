@@ -33,20 +33,20 @@ interface ChapterItem {
 const CHAPTERS: ChapterItem[] = [
   {
     number: 1,
-    title: 'BLIND START',
-    subtitle: '1998 SEANCE',
+    title: 'မျက်စိမှိတ် အစမှတ်',
+    subtitle: '၁၉၉၈ ဝိညာဉ်ခေါ်ယူခြင်း',
     route: '/chapters/1',
   },
   {
     number: 2,
-    title: 'UNDERSTANDING',
-    subtitle: 'EAST WING INVESTIGATION',
+    title: 'နားလည်သဘောပေါက်ခြင်း',
+    subtitle: 'အရှေ့တောင်ပံ စုံစမ်းစစ်ဆေးမှု',
     route: '/chapters/2',
   },
   {
     number: 3,
-    title: 'CHAPTER 03',
-    subtitle: 'ESCAPE / THE OUTSIDE GROUNDS',
+    title: 'အခန်း ၀၃',
+    subtitle: 'ထွက်ပေါက် / အဆောင်ပြင်ပ ခြံဝင်း',
     route: '/game',
   },
 ];
@@ -232,7 +232,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
     if (chapterId > effectiveMaxChapter) {
       sound.playError();
       const requiredChapter = chapterId - 1;
-      setLockedNotice(`Finish Chapter ${requiredChapter} to unlock.`);
+      setLockedNotice(`ဖွင့်လှစ်ရန် အခန်း ${requiredChapter} ကို အရင်ပြီးအောင် ကစားပါ။`);
       setTimeout(() => setLockedNotice(null), 3000);
       return;
     }
@@ -375,26 +375,25 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
 
   return (
     <AtmosphericLayout
-      headerTitle="THE SPIRIT'S LABYRINTH"
-      headerSubtitle="INVESTIGATION CHAPTERS"
+      headerTitle="ဝိညာဉ်၏ ဝင်္ကပါ"
+      headerSubtitle="စုံစမ်းစစ်ဆေးမှု အခန်းများ"
       backgroundImage="/assets/chapter_select.jpg"
       backTo="/"
-      backLabel="Main Menu"
+      backLabel="ပင်မမီနူး"
     >
       <div className="flex-1 flex flex-col justify-center items-center relative w-full py-4 sm:py-8 select-none">
         {/* Title Header */}
         <div className="text-center mb-6 sm:mb-10">
-          <span className="text-[11px] font-mono tracking-widest text-[#8fa89b] uppercase font-semibold">
-            Select Investigation Phase
+          <span className="text-xs font-burmese tracking-widest text-[#8fa89b] uppercase font-semibold">
+            စုံစမ်းစစ်ဆေးမှု အဆင့် ရွေးချယ်ပါ
           </span>
           <h2
-            className="text-4xl sm:text-6xl font-black text-[#d1e3da] tracking-wider uppercase drop-shadow-lg"
-            style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+            className="text-3xl sm:text-5xl font-burmese font-black text-[#d1e3da] tracking-wide uppercase drop-shadow-lg leading-tight mt-1"
           >
-            CHAPTER SELECTION
+            အခန်း ရွေးချယ်မှု
           </h2>
-          <p className="text-xs font-mono text-[#8fa89b]/80 mt-1 tracking-wider">
-            [←/→] Select &bull; [ENTER] Play
+          <p className="text-xs font-mono text-[#8fa89b]/80 mt-2 tracking-wider">
+            [←/→] <span className="font-burmese">ရွေးရန်</span> &bull; [ENTER] <span className="font-burmese">စတင်ရန်</span>
           </p>
         </div>
 
@@ -405,13 +404,13 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-6 px-4 py-2 bg-[#141f19]/95 border border-[#354c3f] rounded-full flex items-center gap-2.5 text-[#a7c4b5] text-xs font-mono shadow-xl"
+              className="mb-6 px-4 py-2 bg-[#141f19]/95 rounded-none flex items-center gap-2.5 text-[#a7c4b5] text-xs font-burmese shadow-xl"
             >
               <Sparkles className="w-4 h-4 text-[#6ee7b7] animate-spin" />
               <span>
                 {justUnlockedChapter >= 4 || isChapter3Completed
-                  ? 'Thanks for playing!'
-                  : `Chapter ${justUnlockedChapter} is now unlocked!`}
+                  ? 'ကစားပေးသည့်အတွက် ကျေးဇူးတင်ပါသည်!'
+                  : `အခန်း ${justUnlockedChapter} ကို ဖွင့်လှစ်လိုက်ပါပြီ!`}
               </span>
               <button
                 onClick={clearJustUnlocked}
@@ -432,12 +431,12 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               setSelectedChapter((prev) => Math.max(1, prev - 1));
             }}
             disabled={selectedChapter === 1}
-            className={`flex absolute left-0 sm:-left-3 lg:-left-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-[#101613]/90 border border-[#233329] transition-all ${
+            className={`flex absolute left-0 sm:-left-3 lg:-left-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-none bg-[#101613]/90 transition-all ${
               selectedChapter === 1
                 ? 'opacity-20 cursor-not-allowed text-stone-700'
-                : 'hover:bg-[#16221c] hover:border-[#476756] text-stone-400 hover:text-[#c2d6cc] shadow-xl cursor-pointer'
+                : 'hover:bg-[#16221c] text-stone-400 hover:text-[#c2d6cc] cursor-pointer'
             }`}
-            aria-label="Previous Chapter"
+            aria-label="ယခင်အခန်း"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -446,10 +445,10 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
           <div className="w-full flex items-center justify-center gap-3 sm:gap-4 md:gap-6 py-6">
             {/* 1. Chapter 1 Card */}
             <ChapterCard
-              title="BLIND START"
-              subtitle="1998 SEANCE"
+              title="မျက်စိမှိတ် အစမှတ်"
+              subtitle="၁၉၉၈ ဝိညာဉ်ခေါ်ယူခြင်း"
               chapterNumber={1}
-              status={isChapter3Completed || 1 < effectiveMaxChapter ? 'CHAPTER 1 COMPLETED' : 'ACTIVE INVESTIGATION'}
+              status={isChapter3Completed || 1 < effectiveMaxChapter ? 'အခန်း ၁ ပြီးမြောက်ပါပြီ' : 'လက်ရှိ စုံစမ်းစစ်ဆေးမှု'}
               buttonText={
                 !isChapter3Completed && 1 === effectiveMaxChapter
                   ? ch1Save &&
@@ -457,8 +456,8 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
                       (ch1Save.inventory && ch1Save.inventory.length > 0) ||
                       (ch1Save.discoveredClues && ch1Save.discoveredClues.length > 0) ||
                       ch1Save.doorUnlocked)
-                    ? `CONTINUE (PHASE 0${ch1Save.currentPhase})`
-                    : 'START CHAPTER 1'
+                    ? `ဆက်လက်စုံစမ်းမည် (အဆင့် ၀${ch1Save.currentPhase})`
+                    : 'အခန်း ၁ စတင်မည်'
                   : undefined
               }
               isLocked={!isChapter3Completed && 1 > effectiveMaxChapter}
@@ -493,17 +492,17 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
 
             {/* 2. Chapter 2 Card */}
             <ChapterCard
-              title="UNDERSTANDING"
-              subtitle="EAST WING INVESTIGATION"
+              title="နားလည်သဘောပေါက်ခြင်း"
+              subtitle="အရှေ့တောင်ပံ စုံစမ်းစစ်ဆေးမှု"
               chapterNumber={2}
               status={
                 isChapter3Completed || 2 < effectiveMaxChapter
-                  ? 'CHAPTER 2 COMPLETED'
+                  ? 'အခန်း ၂ ပြီးမြောက်ပါပြီ'
                   : 2 === effectiveMaxChapter
-                  ? 'ACTIVE INVESTIGATION'
-                  : 'LOCKED'
+                  ? 'လက်ရှိ စုံစမ်းစစ်ဆေးမှု'
+                  : 'သော့ခတ်ထားသည်'
               }
-              buttonText={!isChapter3Completed && 2 === effectiveMaxChapter ? 'CONTINUE CHAPTER 2' : undefined}
+              buttonText={!isChapter3Completed && 2 === effectiveMaxChapter ? 'အခန်း ၂ ဆက်လက်စုံစမ်းမည်' : undefined}
               isLocked={!isChapter3Completed && 2 > effectiveMaxChapter}
               isCompleted={isChapter3Completed || 2 < effectiveMaxChapter}
               isActive={!isChapter3Completed && 2 === effectiveMaxChapter}
@@ -521,17 +520,17 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
 
             {/* 3. Chapter 3 Card */}
             <ChapterCard
-              title="CHAPTER 03"
-              subtitle="ESCAPE / THE OUTSIDE GROUNDS"
+              title="အခန်း ၀၃"
+              subtitle="ထွက်ပေါက် / အဆောင်ပြင်ပ ခြံဝင်း"
               chapterNumber={3}
               status={
                 isChapter3Completed
-                  ? 'CHAPTER 3 COMPLETED'
+                  ? 'အခန်း ၃ ပြီးမြောက်ပါပြီ'
                   : 3 === effectiveMaxChapter
-                  ? 'ACTIVE INVESTIGATION'
-                  : 'LOCKED'
+                  ? 'လက်ရှိ စုံစမ်းစစ်ဆေးမှု'
+                  : 'သော့ခတ်ထားသည်'
               }
-              buttonText={!isChapter3Completed && 3 === effectiveMaxChapter ? 'CONTINUE CHAPTER 3' : undefined}
+              buttonText={!isChapter3Completed && 3 === effectiveMaxChapter ? 'အခန်း ၃ ဆက်လက်စုံစမ်းမည်' : undefined}
               isLocked={!isChapter3Completed && 3 > effectiveMaxChapter}
               isCompleted={isChapter3Completed}
               isActive={!isChapter3Completed && 3 === effectiveMaxChapter}
@@ -555,12 +554,12 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               setSelectedChapter((prev) => Math.min(3, prev + 1));
             }}
             disabled={selectedChapter === 3}
-            className={`flex absolute right-0 sm:-right-3 lg:-right-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-[#101613]/90 border border-[#233329] transition-all ${
+            className={`flex absolute right-0 sm:-right-3 lg:-right-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-none bg-[#101613]/90 transition-all ${
               selectedChapter === 3
                 ? 'opacity-20 cursor-not-allowed text-stone-700'
-                : 'hover:bg-[#16221c] hover:border-[#476756] text-stone-400 hover:text-[#c2d6cc] shadow-xl cursor-pointer'
+                : 'hover:bg-[#16221c] text-stone-400 hover:text-[#c2d6cc] cursor-pointer'
             }`}
-            aria-label="Next Chapter"
+            aria-label="နောက်အခန်း"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -573,7 +572,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="mt-6 px-4 py-2 rounded-lg bg-[#181111]/90 border border-red-900/60 text-red-300 text-xs font-mono flex items-center gap-2 shadow-lg"
+              className="mt-6 px-4 py-2 rounded-none bg-[#181111]/90 text-red-300 text-xs font-burmese flex items-center gap-2"
             >
               <Lock className="w-3.5 h-3.5 text-red-400" />
               <span>{lockedNotice}</span>
@@ -595,10 +594,10 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               sound.playMenuHover();
               setShowRestartConfirm(true);
             }}
-            className="px-6 py-2.5 rounded-lg bg-[#121915]/90 hover:bg-[#1a2620] border border-[#2b3e32] hover:border-[#40614f] text-[#8fa89b] hover:text-[#d1e3da] font-mono text-xs tracking-widest uppercase transition-all duration-200 shadow-xl flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+            className="px-6 py-2.5 rounded-none bg-[#121915]/90 hover:bg-[#1a2620] text-[#8fa89b] hover:text-[#d1e3da] font-burmese text-xs tracking-wider uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-[0.98]"
           >
             <RotateCcw className="w-3.5 h-3.5 text-[#738f80]" />
-            <span>[ RESTART INVESTIGATION (CHAPTER 1) ]</span>
+            <span>[ အစမှ ပြန်လည်စုံစမ်းမည် (အခန်း ၁) ]</span>
           </button>
         </div>
 
@@ -609,7 +608,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               sound.playMenuHover();
               setSelectedChapter(1);
             }}
-            className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            className={`h-1.5 transition-all cursor-pointer ${
               selectedChapter === 1 ? 'w-6 bg-[#3d5749]' : 'w-1.5 bg-[#1b2620]'
             }`}
           />
@@ -618,7 +617,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               sound.playMenuHover();
               setSelectedChapter(2);
             }}
-            className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            className={`h-1.5 transition-all cursor-pointer ${
               selectedChapter === 2 ? 'w-6 bg-[#3d5749]' : 'w-1.5 bg-[#1b2620]'
             }`}
           />
@@ -627,7 +626,7 @@ export const ChapterSelect: React.FC<ChapterSelectProps> = ({ onClose }) => {
               sound.playMenuHover();
               setSelectedChapter(3);
             }}
-            className={`h-1.5 rounded-full transition-all cursor-pointer ${
+            className={`h-1.5 transition-all cursor-pointer ${
               selectedChapter === 3 ? 'w-6 bg-[#3d5749]' : 'w-1.5 bg-[#1b2620]'
             }`}
           />
