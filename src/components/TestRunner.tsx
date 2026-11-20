@@ -39,6 +39,13 @@ import { TopInventoryBar, ITEM_DATABASE } from './TopInventoryBar';
 import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { MASTER_CLUES } from './CaseNotesModal';
 import { CHARACTER_ROSTER, getCharacterProfile } from '../characterData';
+import {
+  GARAGE_HOTSPOTS,
+  GARAGE_HOTSPOT_BY_ID,
+  GARAGE_HOTSPOT_REVISION,
+  findOverlappingGarageHotspotSamples,
+  parseGaragePolygon,
+} from '../data/garageHotspots';
 import { CharacterSelectionView } from './CharacterSelectionView';
 import { CharacterSelectModal } from './CharacterSelectModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
@@ -3257,6 +3264,78 @@ export const TestRunner: React.FC = () => {
           'Fixed return button mounted at top-16 left-6 below HUD; doorway hotspot allows stepping back; sound.playDoorCreak plays; Prolog path/2 and leave_caretaker_office transitions to east_fork; composure and time preserved.',
         actual: `DoorCreak=${doorCreakExists}, PathCh1=${pathCh1Valid}, PathCh2=${pathCh2Valid}, Leave=${leaveValid}, Preserved=${statePreserved}`,
         trace: trace50,
+      });
+
+      // --------------------------------------------------------
+      // TEST 51: Phase 2 Garage Hotspot Spatial Separation
+      // --------------------------------------------------------
+      const start51 = performance.now();
+      const trace51: string[] = [];
+
+      // Verbatim Section 2.1 strings from docs/PHASE_2_GARAGE_SPATIAL_MAPPING.md.
+      const expectedGaragePolygons: Record<string, string> = {
+        garage_drain_valve: '68.5,42.0 78.5,39.0 82.0,48.0 77.0,58.0 68.0,56.0 65.5,48.0',
+        garage_bicycles: '28.0,62.0 54.0,58.0 64.0,66.0 60.0,86.0 26.0,84.0 22.0,72.0',
+        garage_caretaker_log: '6.0,52.0 22.0,52.0 24.0,68.0 8.0,70.0',
+        garage_tool_pulley: '51.5,18.0 60.0,18.0 61.5,32.0 55.0,36.0 49.5,30.0',
+        garage_tool_machete: '4.0,78.0 18.0,76.0 22.0,88.0 8.0,92.0',
+      };
+      const expectedGarageIds = Object.keys(expectedGaragePolygons);
+      const garageIdsValid =
+        GARAGE_HOTSPOTS.length === expectedGarageIds.length &&
+        expectedGarageIds.every((id) => GARAGE_HOTSPOTS.some((hotspot) => hotspot.id === id));
+      const garagePolygonStringsValid = expectedGarageIds.every(
+        (id) => GARAGE_HOTSPOT_BY_ID[id as keyof typeof GARAGE_HOTSPOT_BY_ID].polygonPoints === expectedGaragePolygons[id]
+      );
+      trace51.push(`Hotspot revision: ${GARAGE_HOTSPOT_REVISION}`);
+      trace51.push(`All 5 documented hotspot IDs present: ${garageIdsValid}`);
+      trace51.push(`All polygons match Section 2.1 verbatim: ${garagePolygonStringsValid}`);
+
+      const overlaps51 = findOverlappingGarageHotspotSamples(0.1);
+      const noOverlap51 = overlaps51.length === 0;
+      trace51.push(`Sampled overlapping points (step 0.1): ${overlaps51.length}`);
+      if (!noOverlap51) {
+        trace51.push(`First overlap: ${JSON.stringify(overlaps51[0])}`);
+      }
+
+      const bbox51 = (points: string) => {
+        const polygon = parseGaragePolygon(points);
+        const xs = polygon.map((p) => p[0]);
+        const ys = polygon.map((p) => p[1]);
+        return {
+          minX: Math.min(...xs),
+          maxX: Math.max(...xs),
+          minY: Math.min(...ys),
+          maxY: Math.max(...ys),
+        };
+      };
+      const valveBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_drain_valve.polygonPoints);
+      const bikesBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_bicycles.polygonPoints);
+      const pulleyBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.polygonPoints);
+      const logBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_caretaker_log.polygonPoints);
+
+      const valveBikesDisjointX = valveBox.minX > bikesBox.maxX;
+      const pulleyLogDisjointY = pulleyBox.maxY < logBox.minY;
+      trace51.push(
+        `Valve X ${valveBox.minX}-${valveBox.maxX} vs bicycles X ${bikesBox.minX}-${bikesBox.maxX}: disjoint=${valveBikesDisjointX}`
+      );
+      trace51.push(
+        `Pulley Y ${pulleyBox.minY}-${pulleyBox.maxY} vs caretaker log Y ${logBox.minY}-${logBox.maxY}: disjoint=${pulleyLogDisjointY}`
+      );
+
+      const passed51 =
+        garageIdsValid && garagePolygonStringsValid && noOverlap51 && valveBikesDisjointX && pulleyLogDisjointY;
+
+      testList.push({
+        id: 'test_phase_2_garage_hotspot_spatial_separation',
+        name: 'test(phase_2_garage_hotspot_spatial_separation)',
+        category: 'Phase 2 - Garage Spatial Mapping',
+        passed: passed51,
+        durationMs: Math.round((performance.now() - start51) * 100) / 100,
+        expected:
+          'Five hotspot polygons transcribed verbatim from Section 2.1 of the Phase 2 spec; caretaker desk and pulley hook never share a hit area; valve wheel X range is fully outside the bicycle heap X range; zero polygon overlaps at 0.1 sampling step.',
+        actual: `Revision=${GARAGE_HOTSPOT_REVISION}, Ids=${garageIdsValid}, ExactPolygons=${garagePolygonStringsValid}, Overlaps=${overlaps51.length}, ValveBikesX=${valveBikesDisjointX}, PulleyLogY=${pulleyLogDisjointY}`,
+        trace: trace51,
       });
     }
 

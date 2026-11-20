@@ -4,6 +4,7 @@ import { InteractiveHotspot } from './InteractiveHotspot';
 import { SceneNavBar } from './SceneNavBar';
 import { GarageValveMiniGame } from './GarageValveMiniGame';
 import { GarageBlueprintModal } from './GarageBlueprintModal';
+import { GARAGE_HOTSPOT_BY_ID, GARAGE_HOTSPOT_REVISION } from '../data/garageHotspots';
 import { sound } from '../utils/audio';
 import { useGameStore } from '../context/GameProgressContext';
 
@@ -210,42 +211,57 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
       )}
 
       {/* Interactive Hotspots Layer (disabled during drainage animation) */}
-      <div className={`absolute inset-0 z-20 ${isDraining ? 'opacity-50 pointer-events-none' : 'pointer-events-auto'}`}>
+      <div
+        className={`absolute inset-0 z-20 ${isDraining ? 'opacity-50 pointer-events-none' : 'pointer-events-auto'}`}
+        data-garage-hotspot-revision={GARAGE_HOTSPOT_REVISION}
+      >
         {/* Hotspot 1: Drainage Valve Wheel */}
         <InteractiveHotspot
           id="garage_drain_valve"
-          name="ရေနုတ်အဆို့ရှင်ဘီး"
-          cursorTooltip={garageDrained ? "[ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်]" : "[ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်]"}
-          polygonPoints="68.5,42.0 78.5,39.0 82.0,48.0 77.0,58.0 68.0,56.0 65.5,48.0"
+          name={GARAGE_HOTSPOT_BY_ID.garage_drain_valve.inGameName}
+          cursorTooltip={
+            garageDrained
+              ? GARAGE_HOTSPOT_BY_ID.garage_drain_valve.tooltipDrained
+              : GARAGE_HOTSPOT_BY_ID.garage_drain_valve.tooltipFlooded
+          }
+          polygonPoints={GARAGE_HOTSPOT_BY_ID.garage_drain_valve.polygonPoints}
           onClick={handleDrainValve}
+          isolatedHover
         />
 
         {/* Hotspot 2: Vintage 1990s Bicycles */}
         <InteractiveHotspot
           id="garage_bicycles"
-          name="၁၉၉၀ ကျောင်းသူစက်ဘီးဟောင်းများ"
-          cursorTooltip="[ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်]"
-          polygonPoints="28.0,62.0 54.0,58.0 64.0,66.0 60.0,86.0 26.0,84.0 22.0,72.0"
+          name={GARAGE_HOTSPOT_BY_ID.garage_bicycles.inGameName}
+          cursorTooltip={GARAGE_HOTSPOT_BY_ID.garage_bicycles.tooltipFlooded}
+          polygonPoints={GARAGE_HOTSPOT_BY_ID.garage_bicycles.polygonPoints}
           onClick={handleInspectBicycles}
+          isolatedHover
         />
 
         {/* Hotspot 3: Caretaker's Work Table & Log */}
         <InteractiveHotspot
           id="garage_caretaker_log"
-          name="အဆောင်မှူး၏ ထိန်းသိမ်းရေးမှတ်တမ်း"
-          cursorTooltip="[အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်]"
-          polygonPoints="6.0,52.0 22.0,52.0 24.0,68.0 8.0,70.0"
+          name={GARAGE_HOTSPOT_BY_ID.garage_caretaker_log.inGameName}
+          cursorTooltip={GARAGE_HOTSPOT_BY_ID.garage_caretaker_log.tooltipFlooded}
+          polygonPoints={GARAGE_HOTSPOT_BY_ID.garage_caretaker_log.polygonPoints}
           onClick={handleInspectLog}
+          isolatedHover
         />
 
         {/* Hotspot 4: Heavy Iron Pulley (hidden if collected) */}
         {!hasPulley && (
           <InteractiveHotspot
             id="garage_tool_pulley"
-            name="သံသွန်းစက်သီးကြီး"
-            cursorTooltip={garageDrained ? "[သံစက်သီးကို ယူမည်]" : "[ရေထဲက သံစက်သီးကို ကြည့်မည်]"}
-            polygonPoints="51.5,18.0 60.0,18.0 61.5,32.0 55.0,36.0 49.5,30.0"
+            name={GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.inGameName}
+            cursorTooltip={
+              garageDrained
+                ? GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.tooltipDrained
+                : GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.tooltipFlooded
+            }
+            polygonPoints={GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.polygonPoints}
             onClick={handleTakePulley}
+            isolatedHover
           />
         )}
 
@@ -253,10 +269,15 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         {!hasMachete && (
           <InteractiveHotspot
             id="garage_tool_machete"
-            name="သံချေးတက် ဓားမကြီး"
-            cursorTooltip={garageDrained ? "[သံချေးတက်ဓားမကို ယူမည်]" : "[ရေထဲက ဓားကို ကြည့်မည်]"}
-            polygonPoints="4.0,78.0 18.0,76.0 22.0,88.0 8.0,92.0"
+            name={GARAGE_HOTSPOT_BY_ID.garage_tool_machete.inGameName}
+            cursorTooltip={
+              garageDrained
+                ? GARAGE_HOTSPOT_BY_ID.garage_tool_machete.tooltipDrained
+                : GARAGE_HOTSPOT_BY_ID.garage_tool_machete.tooltipFlooded
+            }
+            polygonPoints={GARAGE_HOTSPOT_BY_ID.garage_tool_machete.polygonPoints}
             onClick={handleTakeMachete}
+            isolatedHover
           />
         )}
       </div>

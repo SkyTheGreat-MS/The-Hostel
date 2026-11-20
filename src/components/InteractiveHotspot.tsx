@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { sound } from '../audioEngine';
 
 export interface InteractiveHotspotProps {
@@ -19,6 +19,13 @@ export interface InteractiveHotspotProps {
   cursorTooltip?: string;
   onClick: () => void;
   disabled?: boolean;
+  /**
+   * Strict per-polygon hover isolation. When enabled, highlight + tooltip are
+   * driven by React state on THIS polygon only, never by the full-viewport
+   * `group` wrapper. Used by the Phase 2 garage hotspots, which must never
+   * cross-trigger even though all five SVG layers cover the same viewport.
+   */
+  isolatedHover?: boolean;
 }
 
 export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
@@ -37,7 +44,10 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
   cursorTooltip,
   onClick,
   disabled = false,
+  isolatedHover = false,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   if (disabled) return null;
 
   // Mode A: Perspective-molded SVG Polygon (Tailored Shape)
@@ -52,6 +62,50 @@ export const InteractiveHotspot: React.FC<InteractiveHotspotProps> = ({
       });
     const avgX = coords.reduce((acc, c) => acc + c.x, 0) / (coords.length || 1);
     const minY = Math.min(...coords.map((c) => c.y));
+
+    // Strict isolation mode: only the polygon itself is interactive and only
+    // this component's own hover state can light it up. No `group-hover`
+    // leakage between the five stacked full-viewport layers.
+    if (isolatedHover) {
+      return (
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none" data-hotspot-id={id}>
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none select-none"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            <polygon
+              points={polygonPoints}
+              role="button"
+              aria-label={cursorTooltip || name}
+              data-hotspot-polygon={id}
+              data-hovered={isHovered ? 'true' : 'false'}
+              style={{ pointerEvents: 'all' }}
+              onClick={onClick}
+              onMouseEnter={() => {
+                setIsHovered(true);
+                sound.playMenuHover();
+              }}
+              onMouseLeave={() => setIsHovered(false)}
+              fill={isHovered ? '#82a996' : '#ffffff'}
+              fillOpacity={isHovered ? 0.18 : 0.001}
+              stroke={isHovered ? '#b7d8c4' : 'transparent'}
+              strokeWidth={isHovered ? 0.5 : 0}
+              className="cursor-pointer transition-all duration-200"
+            />
+          </svg>
+
+          {cursorTooltip && isHovered && (
+            <span
+              className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
+              style={{ left: `${avgX}%`, top: `${minY}%` }}
+            >
+              {cursorTooltip}
+            </span>
+          )}
+        </div>
+      );
+    }
 
     return (
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20 select-none group" data-hotspot-id={id}>
