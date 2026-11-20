@@ -108,7 +108,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
           {!isFinalChapter && (
             <button
               onClick={handleContinue}
-              className="w-full sm:w-1/2 py-3 px-4 rounded-lg bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] font-burmese text-xs font-bold transition-all shadow-lg cursor-pointer active:scale-95 hover:scale-[1.01]"
+              className="w-full sm:w-1/2 py-3 px-4 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-burmese text-xs font-bold transition-colors cursor-pointer leading-[1.75]"
             >
               {continueButtonText}
             </button>
@@ -126,9 +126,9 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
             }}
             className={`${
               isFinalChapter
-                ? 'w-full py-3.5 px-6 bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] text-sm shadow-xl'
-                : 'w-full sm:w-1/2 py-3 px-4 bg-[#101c15] hover:bg-[#193828] border border-[#193828] text-[#8fa89b] hover:text-[#e0f0e7] text-xs'
-            } rounded-lg font-burmese transition-all cursor-pointer active:scale-95 hover:scale-[1.01]`}
+                ? 'w-full py-3.5 px-6 bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] text-sm'
+                : 'w-full sm:w-1/2 py-3 px-4 bg-[#101c15] hover:bg-[#193828] text-[#8fa89b] hover:text-[#e0f0e7] text-xs'
+            } rounded-none font-burmese transition-colors cursor-pointer leading-[1.75]`}
           >
             {isFinalChapter ? (saveButtonText || 'ပြီးဆုံး / ထွက်ရန်') : saveButtonText}
           </button>

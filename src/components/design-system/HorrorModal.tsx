@@ -68,13 +68,13 @@ export const HorrorModal: React.FC<HorrorModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className={`relative z-10 w-full ${maxWClass} bg-[#060b08]/96 border border-[#193828] rounded-xl shadow-[0_0_50px_rgba(2,5,4,0.95)] overflow-hidden flex flex-col ${className}`}
+            className={`relative z-10 w-full ${maxWClass} bg-[#060b08]/96 rounded-none overflow-hidden flex flex-col ${className}`}
             role="dialog"
             aria-modal="true"
           >
             {/* Header */}
             {(title || subtitle) && (
-              <div className="px-5 py-3.5 border-b border-[#112319] bg-[#020504]/60 flex items-center justify-between">
+              <div className="px-5 py-3.5 bg-[#020504]/60 flex items-center justify-between">
                 <div>
                   {subtitle && (
                     <span className="font-mono text-[10px] tracking-widest text-[#447d60] uppercase block">
@@ -90,7 +90,7 @@ export const HorrorModal: React.FC<HorrorModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg border border-[#112319] bg-[#0b140f] text-[#6ea889] hover:text-[#e0f0e7] hover:border-[#29543e] transition-colors cursor-pointer"
+                  className="p-1.5 rounded-none bg-transparent hover:bg-[#112319]/70 text-[#6ea889] hover:text-[#e0f0e7] transition-colors cursor-pointer"
                   title="Close"
                 >
                   <X className="w-4 h-4" />

@@ -36,6 +36,7 @@ export interface CaseNoteItem {
 export interface NatDialogueViewProps {
   composure: number;
   setComposure: React.Dispatch<React.SetStateAction<number>>;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   onConcludeAudience: () => void;
   characterName?: string;
   characterPortrait?: string;
@@ -152,6 +153,7 @@ export const OPENING_SEQUENCE: OpeningSequenceItem[] = [
 export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
   composure,
   setComposure,
+  applyDamage,
   onConcludeAudience,
   characterName = 'Moe',
   characterPortrait = '/assets/characters/moe_fear_bust.png',
@@ -214,10 +216,14 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
   // Shock damage application helper
   const applyComposureShock = (damage: number) => {
-    if (propApplyComposureShock) {
-      propApplyComposureShock(damage);
+    if (applyDamage) {
+      applyDamage(damage, 'mental', 'nat_taboo_shock');
+    } else {
+      if (propApplyComposureShock) {
+        propApplyComposureShock(damage);
+      }
+      setComposure((prev) => Math.max(0, prev - damage));
     }
-    setComposure((prev) => Math.max(0, prev - damage));
   };
 
   useEffect(() => {
@@ -234,11 +240,15 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
     if (!isOpeningComplete) return;
 
     const timer = setInterval(() => {
-      setComposure((prev) => Math.max(5, prev - 1));
+      if (applyDamage) {
+        applyDamage(1, 'mental', 'nat_presence_decay');
+      } else {
+        setComposure((prev) => Math.max(5, prev - 1));
+      }
     }, 8000);
 
     return () => clearInterval(timer);
-  }, [isOpeningComplete, setComposure]);
+  }, [isOpeningComplete, setComposure, applyDamage]);
 
   // Advance scripted opening sequence
   const handleAdvanceOpening = () => {
@@ -399,7 +409,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         <div className="fixed inset-0 z-50 pointer-events-none bg-rose-950/40 mix-blend-screen animate-pulse flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500/20 via-black/60 to-transparent" />
           <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.25)_3px,transparent_4px)]" />
-          <div className="font-mono text-rose-300 font-black tracking-widest text-sm uppercase px-4 py-2 bg-black/80 border border-rose-500/80 rounded-lg shadow-2xl">
+          <div className="font-burmese text-rose-300 font-bold text-sm px-4 py-2 bg-black/80 rounded-none leading-[1.75]">
             [ပကတိတရား ချိုးဖောက်မှု • တားမြစ်ထားသော စကားလုံးကို ရေရွတ်ခြင်း]
           </div>
         </div>
@@ -455,7 +465,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
               className="h-[95vh] max-h-[900px] w-auto object-cover object-top filter drop-shadow-[0_0_25px_rgba(74,122,96,0.45)] brightness-95"
             />
           </div>
-          <div className="mt-2 px-3 py-1 rounded bg-[#0b120e]/85 border border-[#2d4538] text-center">
+          <div className="mt-2 px-3 py-1 rounded-none bg-[#020504]/90 text-center">
             <span className="font-serif italic text-xs text-[#78b394] tracking-widest block">
               Hostel Guardian Nat
             </span>
@@ -472,16 +482,16 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         <div className="fixed bottom-4 inset-x-0 z-40 px-4 flex justify-center pointer-events-none">
           <div
             onClick={handleAdvanceOpening}
-            className="w-full max-w-4xl bg-[#0b120e]/92 border border-[#22352b] rounded-xl p-5 shadow-2xl backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[140px] cursor-pointer group"
+            className="w-full max-w-4xl bg-[#020504]/96 rounded-none p-5 backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[140px] cursor-pointer group"
           >
             {/* Header: Speaker & Step */}
-            <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#1b2b22]">
+            <div className="flex items-center justify-between pb-2 mb-2">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#4a7a60] animate-pulse" />
+                <span className="w-2 h-2 rounded-none bg-[#4a7a60] animate-pulse" />
                 <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                   {currentOpening.speaker === 'Moe' ? characterName : currentOpening.speaker}
                 </span>
-                <span className="font-mono text-[10px] text-[#4e6b5c]">
+                <span className="font-mono text-[10px] text-[#4e6b5c] tabular-nums">
                   • Step {openingStep + 1} of {OPENING_SEQUENCE.length}
                 </span>
               </div>
@@ -505,7 +515,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                   e.stopPropagation();
                   handleAdvanceOpening();
                 }}
-                className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
+                className="px-4 py-1.5 rounded-none bg-[#18261f] hover:bg-[#23382c] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer active:scale-95"
               >
                 {openingStep === OPENING_SEQUENCE.length - 1 ? 'Begin Interrogation [Enter ↵]' : 'Continue [Enter ↵]'}
               </button>
@@ -515,25 +525,25 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
       ) : (
         /* Cross-Examination Presentation & Response Box */
         <div className="fixed bottom-4 inset-x-0 z-40 px-4 flex justify-center pointer-events-none">
-          <div className="w-full max-w-4xl bg-[#0b120e]/95 border border-[#22352b] rounded-xl p-5 shadow-2xl backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[220px]">
+          <div className="w-full max-w-4xl bg-[#020504]/96 rounded-none p-5 backdrop-blur-md pointer-events-auto flex flex-col justify-between min-h-[220px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Left Column: Two-Tab Presentation Selector */}
               <div className="flex flex-col h-full">
                 {/* Header */}
-                <div className="flex items-center justify-between pb-1 mb-2 border-b border-[#1b2b22]">
+                <div className="flex items-center justify-between pb-1 mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#4a7a60] animate-pulse" />
+                    <span className="w-2 h-2 rounded-none bg-[#4a7a60] animate-pulse" />
                     <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                       Cross-Examination
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] text-[#4e6b5c]">
+                  <span className="font-mono text-[10px] text-[#4e6b5c] tabular-nums">
                     {askedTopics.length} Presented • Keys [1-9]
                   </span>
                 </div>
 
                 {/* Tab Switcher */}
-                <div className="flex gap-2 border-b border-[#1b2b22] pb-2 mb-3">
+                <div className="flex gap-2 pb-2 mb-3">
                   <button
                     type="button"
                     onClick={() => {
@@ -542,9 +552,9 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                       } catch {}
                       setActiveTab('inventory');
                     }}
-                    className={`px-3 py-1 rounded text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+                    className={`px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
                       activeTab === 'inventory'
-                        ? 'bg-[#18291f] text-emerald-300 border border-[#2b4737]'
+                        ? 'bg-[#18291f] text-emerald-300 font-bold'
                         : 'text-[#628070] hover:text-[#9bc2ad]'
                     }`}
                   >
@@ -558,9 +568,9 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                       } catch {}
                       setActiveTab('clues');
                     }}
-                    className={`px-3 py-1 rounded text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+                    className={`px-3 py-1 rounded-none text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer ${
                       activeTab === 'clues'
-                        ? 'bg-[#18291f] text-emerald-300 border border-[#2b4737]'
+                        ? 'bg-[#18291f] text-emerald-300 font-bold'
                         : 'text-[#628070] hover:text-[#9bc2ad]'
                     }`}
                   >
@@ -571,7 +581,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                 {/* Dynamic Inquiry Buttons List */}
                 <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
                   {activeList.length === 0 ? (
-                    <div className="p-3 text-center font-mono text-xs text-[#52705f] italic border border-dashed border-[#1f2d25] rounded-lg">
+                    <div className="p-3 text-center font-mono text-xs text-[#52705f] italic rounded-none bg-[#080e0a]">
                       {activeTab === 'inventory'
                         ? '[No carried items in inventory to present]'
                         : '[No case notes or clues discovered yet to inquire about]'}
@@ -582,13 +592,13 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                         key={entry.id}
                         type="button"
                         onClick={() => handlePresentTarget(entry.id, activeTab)}
-                        className="w-full text-left p-2.5 rounded-lg bg-[#0b140f] hover:bg-[#101c15] border border-[#193828] hover:border-[#29543e] text-xs font-burmese text-[#b1d4c2] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99]"
+                        className="w-full text-left p-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-xs font-burmese text-[#b1d4c2] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99] leading-[1.75]"
                       >
                         <span className="group-hover:text-[#e0f0e7] transition-colors flex items-center">
                           <ChevronRight className="w-3.5 h-3.5 mr-1 text-[#6ea889] shrink-0" />
                           <span>{activeTab === 'inventory' ? `ပစ္စည်းမေးမည်: ${entry.shortLabel}` : `မှတ်စုမေးမည်: ${entry.title}`}</span>
                         </span>
-                        <span className="text-[10px] font-mono text-[#ba2929] group-hover:text-[#fca5a5] transition-colors">
+                        <span className="text-[10px] font-mono tabular-nums text-[#ba2929] group-hover:text-[#fca5a5] transition-colors">
                           -0.8%
                         </span>
                       </button>
@@ -598,11 +608,11 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
               </div>
 
               {/* Right Column: Active Spoken Response & Controls */}
-              <div className="flex flex-col justify-between pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-[#1b2b22]">
+              <div className="flex flex-col justify-between pl-0 md:pl-4">
                 <div>
-                  <div className="flex items-center justify-between pb-1 mb-2 border-b border-[#1b2b22]">
+                  <div className="flex items-center justify-between pb-1 mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#4a7a60]" />
+                      <span className="w-2 h-2 rounded-none bg-[#4a7a60]" />
                       <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
                         Hostel Guardian Nat
                       </span>
@@ -621,7 +631,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                 </div>
 
                 {/* Footer Controls */}
-                <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#1b2b22]">
+                <div className="flex items-center justify-between pt-2 mt-2">
                   <div className="flex items-center gap-1.5 text-[10px] font-mono text-red-400/80">
                     <AlertTriangle className="w-3.5 h-3.5 text-red-400 animate-pulse" />
                     <span>Composure -1% / 8s</span>
@@ -629,7 +639,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                   <button
                     type="button"
                     onClick={handleEndAudience}
-                    className="px-4 py-1.5 rounded-lg bg-[#18261f] hover:bg-[#23382c] border border-[#2e4739] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer shadow-md hover:scale-[1.02] active:scale-95"
+                    className="px-4 py-1.5 rounded-none bg-[#18261f] hover:bg-[#23382c] text-xs font-mono text-[#a3c2b2] hover:text-white uppercase tracking-wider transition-all cursor-pointer active:scale-95"
                   >
                     Conclude Audience [Enter ↵]
                   </button>

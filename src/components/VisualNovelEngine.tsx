@@ -50,6 +50,8 @@ import {
   RotateCcw,
   Flame,
   Bell,
+  Heart,
+  Brain,
 } from 'lucide-react';
 
 export type ChapterPhase = 1 | 2 | 3;
@@ -90,6 +92,7 @@ import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
 import { ThoughtLine } from './common/ThoughtLine';
 import { RouteCard } from './common/RouteCard';
+import { getCharacterProfile } from '../characterData';
 export { ThoughtLine } from './common/ThoughtLine';
 export { RouteCard } from './common/RouteCard';
 
@@ -200,7 +203,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 7,
     phase: 2,
-    speaker: 'မိုးင်္သခ',
+    speaker: 'မိုးသိင်္ခ',
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'ဟေ့... ဖယောင်းတိုင်မီး အပြာရောင်ပြောင်းသွားပြီ! ဘယ်သူမှ လက်မခွာနဲ့နော်။',
@@ -737,6 +740,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     removeInventoryItem,
     resetProgress,
     resetChapterOneProgress,
+    selectedMC,
+    setSelectedMC,
+    hp,
+    maxHp,
+    setHp,
+    mind,
+    maxMind,
+    setMind,
+    healHp,
+    restoreMind,
+    applyDamage,
+    recentDamageEvent,
   } = useGameProgress();
 
   // Core Flow & Phase States
@@ -885,51 +900,132 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     sound.playDamage();
   };
 
-  // 10-Minute Countdown Clock Hook
-  // Ensure the timer only suspends when isPaused is true or outside gameplay:
-  useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
+  // Master Game Loop Refs (Persistent across renders to prevent timer resets on dialogue click)
+  const mpAccumulatorRef = useRef<number>(0);
+  const hpAccumulatorRef = useRef<number>(0);
+  const mindRef = useRef<number>(mind);
+  const maxMindRef = useRef<number>(maxMind);
+  const hpRef = useRef<number>(hp);
+  const maxHpRef = useRef<number>(maxHp);
 
-    const timerInterval = setInterval(() => {
+  // Keep vitals refs in sync with state
+  useEffect(() => {
+    mindRef.current = mind;
+    maxMindRef.current = maxMind;
+    hpRef.current = hp;
+    maxHpRef.current = maxHp;
+  }, [mind, maxMind, hp, maxHp]);
+
+  // Master 1-Second Gameplay Tick Loop
+  // Controls: 10-Minute countdown clock, Ambient MP Attrition, and Psychosomatic HP Decay
+  useEffect(() => {
+    if (
+      isPaused ||
+      currentScreen !== 'gameplay' ||
+      isChapterTransitionOpen ||
+      isChapter3TransitionOpen ||
+      isChapterFinished
+    ) {
+      return;
+    }
+
+    const gameTickInterval = setInterval(() => {
+      // 1. Countdown timer decrement
       setTimerSeconds((prev) => {
         if (prev <= 1) {
-          clearInterval(timerInterval);
+          clearInterval(gameTickInterval);
           handleTimeoutGameOver();
           return 0;
         }
         return prev - 1;
       });
+
+      // Passive vitals decay is active during gameplay (Room Escape, Phase 3, Chapters 2 & 3)
+      // Only suppressed during prologue intro, shattering, and character select
+      const isGameplayActive =
+        mode !== 'phase1_2' &&
+        mode !== 'shattering' &&
+        mode !== 'character_select';
+
+      if (!isGameplayActive) return;
+
+      const charProfile = getCharacterProfile(selectedCharacter.id);
+      const mentalDef = charProfile?.mentalDefense ?? selectedCharacter.mentalDefense ?? 1.0;
+      const physDef = charProfile?.physicalDefense ?? selectedCharacter.physicalDefense ?? 1.0;
+
+      // 2. Ambient MP (Mind) Dread Decay
+      // Base: 1 MP per 3.5s (accelerated to 2.0s during Nat dialogue / high tension)
+      // Scaled by character mentalDefense:
+      // - Moe Stheinkha (0.70): ~2.5s per MP
+      // - Thura Aung (1.25): ~4.4s per MP
+      // - Yin Min Htike (0.85): ~3.0s per MP (+10 MP relief surge on clue discovery)
+      if (mindRef.current > 0) {
+        mpAccumulatorRef.current += 1000;
+        const basePeriodMs = isNatDialogueActive ? 2000 : 3500;
+        const mpThresholdMs = Math.max(1000, Math.round(basePeriodMs * mentalDef));
+
+        if (mpAccumulatorRef.current >= mpThresholdMs) {
+          mpAccumulatorRef.current = 0;
+          setMind((prev) => Math.max(0, prev - 1));
+        }
+      }
+
+      // 3. Psychosomatic Passive HP Decay (Governed by MP)
+      // Modulated by current MP ratio:
+      // - 100% MP: Slow trickle (1 HP per ~35s scaled by physicalDefense)
+      // - Accelerates as MP drops
+      // - Under Critical HP (HP <= 30%): extra trauma multiplier (1.5x)
+      // - At MP == 0: Desperate Struggle state (+60% faster decay)
+      if (hpRef.current > 0) {
+        hpAccumulatorRef.current += 1000;
+        const currentMind = mindRef.current;
+        const currentMaxMind = maxMindRef.current || 100;
+        const currentHp = hpRef.current;
+        const currentMaxHp = maxHpRef.current || 100;
+
+        const mindRatio = Math.max(0, currentMind / currentMaxMind);
+        const mentalFactor = 1.0 + (1.0 - mindRatio) * 1.8;
+        const emptyMindMult = currentMind <= 0 ? 1.6 : 1.0;
+        const criticalHpMult = currentHp <= currentMaxHp * 0.3 ? 1.5 : 1.0;
+        const totalSpeedMult = mentalFactor * emptyMindMult * criticalHpMult;
+
+        const hpThresholdMs = Math.max(
+          1500,
+          Math.round((35000 * physDef) / totalSpeedMult)
+        );
+
+        if (hpAccumulatorRef.current >= hpThresholdMs) {
+          hpAccumulatorRef.current = 0;
+          setHp((prev) => Math.max(0, prev - 1));
+        }
+      }
     }, 1000);
 
-    return () => clearInterval(timerInterval);
-  }, [isPaused, currentScreen, timerSeconds, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
+    return () => clearInterval(gameTickInterval);
+  }, [
+    isPaused,
+    currentScreen,
+    isChapterTransitionOpen,
+    isChapter3TransitionOpen,
+    isChapterFinished,
+    mode,
+    isNatDialogueActive,
+    selectedCharacter.id,
+    selectedCharacter.mentalDefense,
+    selectedCharacter.physicalDefense,
+    setMind,
+    setHp,
+  ]);
 
-  // Ambient Composure Attrition Hook
-  // Base rate: 1% per 18s (accelerated to 8s during Nat dialogue), scaled by active investigator tensionMultiplier
-  // Continues ticking while player checks case notes or inventory; halts when system is paused (isPaused)
+  // 3. Monitor physical collapse (HP <= 0) Game Over condition
   useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || composure <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
-
-    const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
-    const tension = selectedCharacter.tensionMultiplier || 1.0;
-    const decayIntervalMs = Math.max(500, Math.round(basePeriodMs / tension));
-
-    const composureInterval = setInterval(() => {
-      setComposure((prev) => Math.max(0, prev - 1));
-    }, decayIntervalMs);
-
-    return () => clearInterval(composureInterval);
-  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
-
-  // Monitor composure zero game over condition
-  useEffect(() => {
-    if (composure <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
+    if (hp <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
       setIsGameOver(true);
       setCurrentScreen('game_over');
       sound.stopAllAmbience();
       sound.playDamage();
     }
-  }, [composure, isGameOver, isChapterFinished, mode]);
+  }, [hp, isGameOver, isChapterFinished, mode]);
 
   // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
@@ -1321,7 +1417,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       }
       if (!washroomStallChecked) {
         sound.playWaterDrop();
-        setComposure((c) => Math.max(5, c - 5));
+        applyDamage(5, 'mental', 'washroom_stall_shock');
         setWashroomStallChecked(true);
         setIsCompassVibrating(true);
         setTimeout(() => setIsCompassVibrating(false), 3000);
@@ -1596,10 +1692,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         // Add discovered clue to notebook!
         addDiscoveredClue(loc.clueId);
 
-        // Deduct time / composure penalties for wrong routes
+        // Deduct time / mental damage penalties for wrong routes
         if (!loc.isCorrectRoute) {
           setTimeLeft((t) => Math.max(10, t - loc.timePenaltySeconds));
-          setComposure((c) => Math.max(10, c - loc.composureDrain));
+          applyDamage(loc.composureDrain, 'mental', 'wrong_route_dread');
           sound.playDamage();
         }
 
@@ -1683,10 +1779,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
     if (method === 'bobby_pin') {
       sound.playChime(true);
-      setRoomBanner({
-        text: `${selectedCharacter.name} က ကွေးနေသော သံမဏိဆံညှပ်ကို သော့ပေါက်အတွင်း ညင်သာစွာ ထည့်သွင်းလိုက်သည်။ သော့ပင်များ တိတ်ဆိတ်စွာ ညှိမိသွားသည်... ကလစ်သံ။ သော့သည် အသံမထွက်ဘဲ ပွင့်သွားသည်.`,
-        type: 'success',
-      });
+      setActiveMonologue(
+        `${selectedCharacter.name} က ကွေးနေသော သံမဏိဆံညှပ်ကို သော့ပေါက်အတွင်း ညင်သာစွာ ထည့်သွင်းလိုက်သည်။ သော့ပင်များ တိတ်ဆိတ်စွာ ညှိမိသွားသည်... ကလစ်သံ။ သော့သည် အသံမထွက်ဘဲ ပွင့်သွားသည်။`
+      );
       setTimeout(() => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
@@ -1702,12 +1797,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       sound.playDamage();
       setIsScreenShaking(true);
       setTimeout(() => setIsScreenShaking(false), 700);
-      setComposure((c) => Math.max(0, c - 15));
+      applyDamage(15, 'physical', 'door_smash');
       setDoorSmashed(true);
-      setRoomBanner({
-        text: 'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...',
-        type: 'warn',
-      });
+      setActiveMonologue(
+        'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...'
+      );
       setTimeout(() => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
@@ -1779,6 +1873,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleCharacterSelected = (characterId: MCId) => {
     const chosen = CHARACTERS.find((c) => c.id === characterId) || CHARACTERS[0];
     setSelectedCharacter(chosen);
+    setSelectedMC?.(chosen.id);
+    mpAccumulatorRef.current = 0;
+    hpAccumulatorRef.current = 0;
     setCurrentLineIndex(0);
     setActiveInspectSubScene('main');
     setIsZoomed(false);
@@ -2489,10 +2586,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   const getComposureColor = (c: number) => {
-    if (c >= 75) return 'text-emerald-400 border-emerald-700 bg-emerald-950/70';
-    if (c >= 50) return 'text-amber-400 border-amber-700 bg-amber-950/70';
-    if (c >= 25) return 'text-orange-400 border-orange-700 bg-orange-950/70';
-    return 'text-rose-500 border-rose-700 bg-rose-950/80 animate-pulse';
+    if (c >= 75) return 'text-emerald-400 bg-emerald-950/70';
+    if (c >= 50) return 'text-amber-400 bg-amber-950/70';
+    if (c >= 25) return 'text-orange-400 bg-orange-950/70';
+    return 'text-rose-500 bg-rose-950/80 animate-pulse';
   };
 
   return (
@@ -2514,7 +2611,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           }`}
         />
         {phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30 pointer-events-none" />
         )}
 
       {/* 2. Supernatural Glitch Flicker Effect */}
@@ -2565,8 +2662,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       <div className="fixed top-0 inset-x-0 p-3 sm:p-5 flex flex-wrap items-center justify-between gap-2 z-50 pointer-events-none bg-gradient-to-b from-stone-950/90 via-stone-950/60 to-transparent">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 pointer-events-none">
           {/* Phase Badge */}
-          <div className="px-3 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold tracking-wider text-[#82a996] shadow-xl flex items-center gap-2 pointer-events-none">
-            <span className="w-2 h-2 rounded-full bg-[#6ee7b7] animate-ping" />
+          <div className="px-3 py-1.5 bg-[#020504]/60 backdrop-blur-sm rounded-none text-xs font-mono font-bold tracking-wider text-[#b1d4c2] flex items-center gap-2 pointer-events-none">
+            <span className="w-1.5 h-1.5 rounded-none bg-[#6ee7b7] animate-pulse" />
             <span className="uppercase">
               {getGlobalHudLocationLabel()}
             </span>
@@ -2575,19 +2672,81 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           {/* 10-Minute Timer Badge */}
           {mode !== 'phase1_2' && mode !== 'shattering' && mode !== 'character_select' && (
             <div className="flex items-center gap-2 pointer-events-none">
-              <div className="px-2.5 py-1 bg-[#121815]/95 border border-[#2c3d34] rounded-lg text-xs font-mono font-bold text-[#c2d6cc] flex items-center gap-1.5 shadow-md pointer-events-none">
-                <Clock className="w-3.5 h-3.5 text-[#82a996] animate-pulse" />
+              <div className="px-2.5 py-1.5 bg-[#020504]/60 backdrop-blur-sm rounded-none text-xs font-mono tabular-nums font-bold text-[#c2d6cc] flex items-center gap-1.5 pointer-events-none">
+                <Clock className="w-3.5 h-3.5 text-[#82a996]" />
                 <span>{timeFormatted}</span>
               </div>
 
-              {/* Composure Badge */}
-              <div
-                className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md pointer-events-none ${getComposureColor(
-                  composure
-                )}`}
-              >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span>စိတ်တည်ငြိမ်မှု: {composure}%</span>
+              {/* Dual Vitals Virtual Gauges (Phase 1) */}
+              <div className="relative flex items-center gap-2 pointer-events-none">
+                {/* Physical Vitality (HP) Virtual Gauge Bar */}
+                <div
+                  title={`သွေးသားကြံ့ခိုင်မှု: ${hp}/${maxHp} HP`}
+                  className={`px-2 py-1.5 rounded-none flex items-center gap-1.5 backdrop-blur-sm transition-all pointer-events-auto cursor-help ${
+                    hp <= maxHp * 0.3
+                      ? 'bg-[#330808]/90 animate-pulse'
+                      : 'bg-[#020504]/70'
+                  }`}
+                >
+                  <Heart
+                    className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                      hp <= maxHp * 0.3 ? 'text-[#e53e3e]' : 'text-[#6ea889]'
+                    }`}
+                  />
+                  {/* Virtual HP Fill Bar */}
+                  <div className="w-14 sm:w-18 h-2 bg-[#101713] rounded-none overflow-hidden relative">
+                    <div
+                      className={`h-full transition-all duration-500 rounded-none ${
+                        hp <= maxHp * 0.3
+                          ? 'bg-gradient-to-r from-[#ba2929] to-[#e53e3e]'
+                          : 'bg-gradient-to-r from-[#29543e] to-[#4d8268]'
+                      }`}
+                      style={{ width: `${Math.max(0, Math.min(100, (hp / maxHp) * 100))}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Psychological Composure (MP) Virtual Gauge Bar */}
+                <div
+                  title={`စိတ်တည်ငြိမ်မှု: ${mind}/${maxMind} MP`}
+                  className={`px-2 py-1.5 rounded-none flex items-center gap-1.5 backdrop-blur-sm transition-all pointer-events-auto cursor-help ${
+                    mind <= maxMind * 0.25
+                      ? 'bg-[#0369a1]/50 animate-pulse'
+                      : 'bg-[#020504]/70'
+                  }`}
+                >
+                  <Brain
+                    className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                      mind <= maxMind * 0.25 ? 'text-[#7dd3fc]' : 'text-[#38bdf8]'
+                    }`}
+                  />
+                  {/* Virtual MP Fill Bar */}
+                  <div className="w-14 sm:w-18 h-2 bg-[#101713] rounded-none overflow-hidden relative">
+                    <div
+                      className={`h-full transition-all duration-500 rounded-none ${
+                        mind <= maxMind * 0.25
+                          ? 'bg-gradient-to-r from-[#0284c7] to-[#7dd3fc]'
+                          : 'bg-gradient-to-r from-[#0369a1] to-[#38bdf8]'
+                      }`}
+                      style={{ width: `${Math.max(0, Math.min(100, (mind / maxMind) * 100))}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Floating Damage Indicator */}
+                {recentDamageEvent && (
+                  <motion.div
+                    key={recentDamageEvent.timestamp}
+                    initial={{ opacity: 1, y: 0, scale: 1 }}
+                    animate={{ opacity: 0, y: -20, scale: 1.15 }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className={`absolute -bottom-5 left-1/2 -translate-x-1/2 font-mono font-bold text-xs pointer-events-none whitespace-nowrap ${
+                      recentDamageEvent.type === 'physical' ? 'text-[#ba2929]' : 'text-[#38bdf8]'
+                    }`}
+                  >
+                    -{recentDamageEvent.actualAmount} {recentDamageEvent.type === 'physical' ? 'HP' : 'MP'}
+                  </motion.div>
+                )}
               </div>
             </div>
           )}
@@ -2618,22 +2777,22 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setIsCompassModalOpen(true);
               }}
               onMouseEnter={() => sound.playMenuHover()}
-              className={`relative group p-1 sm:p-1.5 rounded-xl bg-[#121815]/95 border border-[#2c3d34] hover:border-[#4d6e5e] text-[#82a996] shadow-[0_0_15px_rgba(46,66,56,0.4)] flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105 ${
-                isCompassVibrating ? 'ring-2 ring-rose-500 animate-bounce' : ''
+              className={`relative group p-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm hover:bg-[#060b08]/90 text-[#82a996] flex items-center gap-1.5 cursor-pointer transition-colors ${
+                isCompassVibrating ? 'animate-bounce' : ''
               }`}
               title="သဘာဝလွန် သံလိုက်အိမ်မြှောင် (ချဲ့ကြည့်ရန် နှိပ်ပါ)"
             >
-              <div className="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#0b0f0d] border border-[#2c3d34] flex items-center justify-center overflow-hidden">
+              <div className="relative w-6 h-6 sm:w-7 sm:h-7 rounded-none bg-[#060b08]/80 flex items-center justify-center overflow-hidden">
                 <span className="absolute top-0.5 text-[6px] font-mono font-bold text-[#82a996]">N</span>
                 <div
-                  className={`w-0.5 h-4 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-full origin-center ${
+                  className={`w-0.5 h-4 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-none origin-center ${
                     isCompassVibrating || activeInspectSubScene === 'door' || currentStep.isGlitch
                       ? 'animate-compass-jitter'
                       : 'animate-compass-twitch'
                   }`}
                 />
               </div>
-              <span className="text-[10px] font-mono font-bold text-[#82a996] uppercase tracking-wider hidden lg:inline">
+              <span className="text-[10px] font-burmese font-bold text-[#82a996] hidden lg:inline leading-[1.75]">
                 မြှောင်
               </span>
             </button>
@@ -2646,12 +2805,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 sound.playPaperRustle();
                 setIsNotesOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#18221d] border border-[#2c3d34] text-[#c2d6cc] hover:border-[#4d6e5e] hover:bg-[#1f2d26] text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all"
+              className="px-3 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#c2d6cc] hover:bg-[#060b08]/90 text-xs font-burmese font-bold flex items-center gap-1.5 cursor-pointer transition-colors leading-[1.75]"
               title="အမှုမှတ်တမ်းဖွင့်ရန် [N]"
             >
               <BookOpen className="w-3.5 h-3.5 text-[#82a996]" />
               <span className="hidden sm:inline">အမှုမှတ်စု</span>
-              <span className="bg-[#2c3d34] text-[#c2d6cc] px-1 rounded text-[10px]">
+              <span className="bg-[#112319] text-[#c2d6cc] px-1.5 py-0.5 rounded-none text-[10px] font-mono tabular-nums">
                 {discoveredClues.length}
               </span>
             </button>
@@ -2659,7 +2818,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
           <button
             onClick={toggleMute}
-            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto"
+            className="p-2 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#82a996] hover:text-[#c2d6cc] hover:bg-[#060b08]/90 transition-colors cursor-pointer pointer-events-auto"
             title={isMuted ? 'အသံဖွင့်ရန်' : 'အသံပိတ်ရန်'}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -2670,7 +2829,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
               setIsPauseOpen(true);
               sound.playPaperRustle();
             }}
-            className="p-2 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] hover:border-[#4d6e5e] transition-all cursor-pointer shadow-md pointer-events-auto z-50"
+            className="p-2 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#82a996] hover:text-[#c2d6cc] hover:bg-[#060b08]/90 transition-colors cursor-pointer pointer-events-auto z-50"
             title="ခေတ္တရပ်နားခန်း [ESC]"
           >
             <Pause className="w-4 h-4" />
@@ -2684,24 +2843,21 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       {mode === 'location_select' && (
         <div className="relative flex-1 flex flex-col justify-center items-center px-4 py-2 z-20">
           <div className="text-center mb-3 sm:mb-6">
-            <span className="text-[11px] font-mono tracking-widest text-amber-500 uppercase font-semibold">
+            <span className="text-[11px] font-burmese tracking-wide text-amber-500 font-semibold leading-[1.75]">
               ကဏ္ဍ 0{currentTier} • ရှေ့ဆက်လမ်း ရွေးချယ်ပါ
             </span>
-            <h2
-              className="text-3xl sm:text-5xl font-black text-stone-100 tracking-wider uppercase drop-shadow-lg"
-              style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-            >
+            <h2 className="text-3xl sm:text-5xl font-burmese font-bold text-stone-100 drop-shadow-lg leading-[1.75]">
               {currentTier === 1
                 ? 'စင်္ကြံတောင်ပံ ရွေးချယ်ပါ'
                 : currentTier === 2
                 ? 'မြေညီ လမ်းကြမ်း ရွေးချယ်ပါ'
                 : 'ဝင်း ပတ်ပတ်လည် • နောက်ဆုံးလမ်း'}
             </h2>
-            <p className="text-xs font-mono text-stone-400 mt-1 tracking-wider">
-              [←/→] ရွေးရန် • [ENTER] စုံစမ်းရန် • ထွက်ပေါက်လမ်း ရှာဖွေရန် လေစီးကြောင်းများကို စောင့်ကြည့်ပါ
+            <p className="text-xs font-burmese text-stone-400 mt-1 leading-[1.75]">
+              <span className="font-mono">[←/→]</span> ရွေးရန် • <span className="font-mono">[ENTER]</span> စုံစမ်းရန် • ထွက်ပေါက်လမ်း ရှာဖွေရန် လေစီးကြောင်းများကို စောင့်ကြည့်ပါ
             </p>
             {doorSmashed && currentTier === 1 && (
-              <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/85 border border-rose-600 text-rose-300 text-xs font-mono shadow-lg animate-pulse">
+              <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-rose-950/90 text-rose-300 text-xs font-mono animate-pulse">
                 <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
                 <span className="font-burmese">နားပင်းလောက်သော ခေါက်ချုန်းသံ ပဲ့တင်ထပ်: တံခါးကို ရိုက်ခွဲခြင်းသည် အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် သရဲများကို နှိုးဆော်လိုက်သည်။ စင်္ကြံ အန္တရာယ်အဆင့် မြင့်တက်သွားပြီ!</span>
               </div>
@@ -2717,10 +2873,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setSelectedLocationIdx((prev) => Math.max(0, prev - 1));
               }}
               disabled={selectedLocationIdx === 0}
-              className={`flex absolute left-0 sm:-left-3 lg:-left-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-stone-950/85 border border-stone-800 transition-all ${
+              className={`flex absolute left-0 sm:-left-3 lg:-left-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-none bg-stone-950/80 transition-colors ${
                 selectedLocationIdx === 0
                   ? 'opacity-20 cursor-not-allowed text-stone-600'
-                  : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
+                  : 'hover:bg-stone-900 text-stone-300 hover:text-white cursor-pointer'
               }`}
               aria-label="ယခင် နေရာ"
             >
@@ -2745,10 +2901,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       }
                     }}
                     whileHover={{ y: -4 }}
-                    className={`relative flex-1 max-w-[280px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[310px] min-h-[420px] rounded-2xl p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden border ${
+                    className={`relative flex-1 max-w-[280px] sm:max-w-[250px] md:max-w-[280px] lg:max-w-[310px] min-h-[420px] rounded-none p-4 sm:p-6 flex flex-col justify-between transition-all duration-300 cursor-pointer overflow-hidden ${
                       isSelected
-                        ? 'flex bg-gradient-to-b from-stone-900/95 via-stone-950/95 to-black/95 border-amber-500 shadow-[0_0_35px_rgba(245,158,11,0.35)] scale-105 z-20 ring-1 ring-amber-500/50'
-                        : 'hidden sm:flex bg-stone-950/85 border-stone-800/80 opacity-75 hover:opacity-95 hover:border-stone-700 scale-95'
+                        ? 'flex bg-gradient-to-b from-[#101c15] via-[#0b140f] to-[#020504] scale-105 z-20'
+                        : 'hidden sm:flex bg-[#060b08]/80 opacity-75 hover:opacity-95 scale-95'
                     }`}
                   >
                     {/* Background Roman Watermark */}
@@ -2761,17 +2917,17 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
                     {/* Top Status & Area Code */}
                     <div className="flex items-center justify-between w-full z-10">
-                      <span className="text-xs font-mono font-bold tracking-widest text-amber-500 uppercase">
+                      <span className="text-xs font-mono font-bold tracking-widest text-[#6ea889] uppercase">
                         {loc.areaCode}
                       </span>
 
                       {isInvestigated ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-950/80 border border-emerald-700 text-emerald-300">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-burmese font-bold bg-[#112319] text-[#6ee7b7] leading-[1.75]">
                           <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                           စစ်ဆေးပြီး
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-950/80 border border-amber-600 text-amber-300">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-burmese font-bold bg-[#1a1408] text-[#c7a458] leading-[1.75]">
                           <Eye className="w-3 h-3 text-amber-400" />
                           မစစ်ဆေးရသေး
                         </span>
@@ -2785,32 +2941,31 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                           {loc.subtitle}
                         </div>
                         <h3
-                          className={`text-2xl sm:text-3xl font-black tracking-wider uppercase transition-colors ${
-                            isSelected ? 'text-amber-200' : 'text-stone-200'
+                          className={`text-2xl sm:text-3xl font-burmese font-bold tracking-wide transition-colors leading-[1.75] ${
+                            isSelected ? 'text-[#e0f0e7]' : 'text-stone-200'
                           }`}
-                          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                         >
                           {loc.title}
                         </h3>
                       </div>
 
-                      <p className="text-xs text-stone-400 font-mono leading-relaxed line-clamp-2">
+                      <p className="text-xs text-stone-400 font-burmese leading-[1.75] line-clamp-2">
                         {loc.desc}
                       </p>
 
                       {/* Subtle Environmental Observations */}
-                      <div className="pt-2 border-t border-stone-800/80 text-left space-y-1.5 text-[11px] font-mono">
+                      <div className="pt-2 text-left space-y-1.5 text-[11px] font-burmese leading-[1.75]">
                         <div className="flex items-start gap-1.5 text-stone-300">
                           <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-amber-400">လေစီးကြောင်း:</strong> {loc.subtleClues.airflow}
+                            <strong className="text-amber-400 font-burmese">လေစီးကြောင်း:</strong> {loc.subtleClues.airflow}
                           </span>
                         </div>
 
                         <div className="flex items-start gap-1.5 text-stone-400">
                           <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-stone-300">ဆက်စပ်မှု:</strong>{' '}
+                            <strong className="text-stone-300 font-burmese">ဆက်စပ်မှု:</strong>{' '}
                             <span
                               className={
                                 loc.subtleClues.affinity.includes('High') ||
@@ -2827,16 +2982,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     </div>
 
                     {/* Bottom Action Area */}
-                    <div className="z-10 w-full pt-3 border-t border-stone-800/80 text-center">
+                    <div className="z-10 w-full pt-3 text-center">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEnterLocation(idx);
                         }}
-                        className={`w-full py-2.5 rounded-xl font-bold tracking-widest uppercase flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        className={`w-full py-2.5 rounded-none font-bold tracking-widest uppercase flex items-center justify-center gap-2 transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-amber-600 hover:bg-amber-500 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
-                            : 'bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700'
+                            ? 'bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7]'
+                            : 'bg-[#060b08] hover:bg-[#0b140f] text-[#6ea889]'
                         }`}
                         style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                       >
@@ -2856,10 +3011,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 setSelectedLocationIdx((prev) => Math.min(activeTierLocations.length - 1, prev + 1));
               }}
               disabled={selectedLocationIdx === activeTierLocations.length - 1}
-              className={`flex absolute right-0 sm:-right-3 lg:-right-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-full bg-stone-950/85 border border-stone-800 transition-all ${
+              className={`flex absolute right-0 sm:-right-3 lg:-right-5 z-30 w-10 h-10 sm:w-11 sm:h-11 items-center justify-center rounded-none bg-stone-950/80 transition-colors ${
                 selectedLocationIdx === activeTierLocations.length - 1
                   ? 'opacity-20 cursor-not-allowed text-stone-600'
-                  : 'hover:bg-amber-950/60 hover:border-amber-600/80 text-stone-300 hover:text-amber-300 shadow-xl cursor-pointer'
+                  : 'hover:bg-stone-900 text-stone-300 hover:text-white cursor-pointer'
               }`}
               aria-label="နောက်ထပ် နေရာ"
             >
@@ -2885,17 +3040,17 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   setDoorRawTextShown(false);
                   setIsDoorInspectOpen(false);
                 }}
-                className="px-3.5 py-1.5 rounded-xl bg-[#121815]/95 border border-[#2c3d34] hover:bg-[#18221d] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-mono font-bold flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 transition-all"
+                className="px-3.5 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm hover:bg-[#060b08]/90 text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-burmese font-bold flex items-center gap-2 cursor-pointer transition-colors leading-[1.75]"
               >
                 <ArrowLeft className="w-4 h-4 text-[#82a996]" />
-                <span>နောက်ဆုတ်ရန် / ခန်းသို့ ပြန်သွားရန်</span>
+                <span className="leading-[1.75]">နောက်ဆုတ်ရန် / ခန်းသို့ ပြန်သွားရန်</span>
               </button>
             ) : (
               <div />
             )}
 
             {activeInspectSubScene !== 'desk' && (
-              <div className="px-3.5 py-1 rounded-lg bg-[#121815]/95 border border-[#2c3d34] text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest shadow-md">
+              <div className="px-3.5 py-1 rounded-none bg-[#020504]/60 backdrop-blur-sm text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                 {mode === 'awakening' || activeInspectSubScene === 'main'
                   ? 'အခန်း ၄B • အိပ်ဆောင်ခန်း'
                   : activeInspectSubScene === 'stool'
@@ -2909,38 +3064,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             )}
           </div>
 
-          {/* Observation Feedback Toast */}
-          <AnimatePresence>
-            {roomBanner && (
-              <motion.div
-                initial={{ opacity: 0, y: -15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                className="absolute top-24 sm:top-28 left-1/2 -translate-x-1/2 z-40 max-w-xl w-full px-4 pointer-events-auto"
-              >
-                <div
-                  className={`p-3.5 rounded-xl border shadow-2xl flex items-start justify-between gap-3 text-xs font-mono ${
-                    roomBanner.type === 'warn'
-                      ? 'bg-rose-950/95 border-rose-600 text-rose-200'
-                      : roomBanner.type === 'success'
-                      ? 'bg-emerald-950/95 border-emerald-600 text-emerald-200'
-                      : 'bg-[#121815]/95 border-[#2c3d34] text-[#c2d6cc]'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-[#6ee7b7] shrink-0 mt-0.5" />
-                    <span className="leading-relaxed">{roomBanner.text}</span>
-                  </div>
-                  <button
-                    onClick={() => setRoomBanner(null)}
-                    className="text-stone-400 hover:text-white cursor-pointer"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           {/* Hotspot & Sub-scene Interaction Layer (Active only during room_escape) */}
           {mode === 'room_escape' && (
@@ -2989,10 +3113,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       addInventoryItem('magnetic_compass');
                       sound.playChime(true);
                       sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
-                        type: 'success',
-                      });
+                      setActiveMonologue(
+                        '— သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်ကို ရရှိခဲ့သည်။ —'
+                      );
                       setIsCompassModalOpen(true);
                     } else {
                       sound.playPaperRustle();
@@ -3080,10 +3203,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       addInventoryItem('magnetic_compass');
                       sound.playChime(true);
                       sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
-                        type: 'success',
-                      });
+                      setActiveMonologue(
+                        '— သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်ကို ရရှိခဲ့သည်။ —'
+                      );
                       setIsCompassModalOpen(true);
                     } else {
                       sound.playPaperRustle();
@@ -3183,18 +3305,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="w-full max-w-xl bg-[#121815]/95 backdrop-blur-xl border border-[#2c3d34] rounded-2xl p-5 sm:p-6 shadow-2xl text-center space-y-4 relative"
+                    className="w-full max-w-xl bg-[#060b08]/96 backdrop-blur-xl rounded-none p-5 sm:p-6 text-center space-y-4 relative"
                   >
-                    <div className="flex items-center justify-between pb-2 border-b border-[#2c3d34]">
+                    <div className="flex items-center justify-between pb-2">
                       <div className="flex items-center gap-2 text-[#82a996]">
                         <Lock className="w-4 h-4 text-[#82a996]" />
-                        <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#82a996]">
+                        <span className="text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                           အခန်း ၄B ကျွန်းသစ် ထွက်ပေါက်တံခါးကြီး
                         </span>
                       </div>
                       <button
                         onClick={() => setIsDoorInspectOpen(false)}
-                        className="p-1 rounded bg-stone-900 hover:bg-stone-800 text-stone-400 hover:text-white cursor-pointer transition-colors"
+                        className="p-1 rounded-none bg-transparent hover:bg-[#112319]/60 text-stone-400 hover:text-white cursor-pointer transition-colors"
                         title="တံခါးစစ်ဆေးခြင်းကို ပိတ်ရန်"
                       >
                         <X className="w-4 h-4" />
@@ -3203,8 +3325,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
                     {doorUnlocked ? (
                       <div className="space-y-3">
-                        <div className="py-4 px-4 rounded-xl bg-[#151f1a]/80 border border-[#223229]">
-                          <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                        <div className="py-4 px-4 rounded-none bg-[#0b140f]/90">
+                          <p className="text-[#b4c9bf] font-burmese text-sm sm:text-base leading-[1.75]">
                             သော့တံ ဖြုတ်ထားသည်။ တံခါး ၄B သည် အဆောင်လမ်းသွယ် ၃၂၆ သို့ အပြည့်အဝ ပွင့်နေသည်။
                           </p>
                         </div>
@@ -3219,7 +3341,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                             setPhase3Message(null);
                             setMode('phase3');
                           }}
-                          className="w-full py-3 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full py-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-burmese text-xs tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer leading-[1.75]"
                         >
                           <span>အဆောင်လမ်းသွယ် ၃၂၆ သို့ ဖြတ်သွားရန်</span>
                           <span className="text-xs">→</span>
@@ -3229,8 +3351,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       <>
                         {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
                         {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
-                          <div className="py-4 px-4 rounded-xl bg-stone-900/90 border border-stone-800">
-                            <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                          <div className="py-4 px-4 rounded-none bg-[#0b140f]/90">
+                            <p className="text-stone-200 font-burmese text-sm sm:text-base leading-[1.75]">
                               သော့တံကို အခြားဘက်မှ ခတ်ထားသည်။ သော့ခတ်ထားသည်။
                             </p>
                           </div>
@@ -3239,7 +3361,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {/* Dynamic Unlocking Options */}
                         {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
                           <div className="space-y-3">
-                            <p className="text-xs font-mono text-stone-400">
+                            <p className="text-xs font-burmese text-stone-400 leading-[1.75]">
                               သော့တံကို ဖောက်ထွင်းရန် လုပ်ဆောင်ချက် ရွေးပါ:
                             </p>
 
@@ -3249,16 +3371,16 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                 <button
                                   disabled={isDoorTransitioning}
                                   onClick={() => executeUnlockDoor('bobby_pin')}
-                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-emerald-600/80 hover:border-emerald-400 hover:bg-emerald-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                  className="p-3.5 rounded-none bg-[#0b140f] hover:bg-[#112319] text-left transition-colors cursor-pointer group"
                                 >
                                   <div className="flex items-center gap-2 mb-1">
                                     <Unlock className="w-4 h-4 text-emerald-400" />
-                                    <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                                    <span className="text-xs font-burmese font-bold text-emerald-300 leading-[1.75]">
                                       ဆံညှပ်ဖြင့် သော့ဖောက်ပါ
                                     </span>
                                   </div>
-                                  <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးင်္သခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
+                                  <p className="text-[11px] font-burmese text-stone-400 group-hover:text-stone-300 leading-[1.75]">
+                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးသိင်္ခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
                                   </p>
                                 </button>
                               )}
@@ -3268,11 +3390,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                 <button
                                   disabled={isDoorTransitioning}
                                   onClick={() => executeUnlockDoor('wooden_bat')}
-                                  className="p-3.5 rounded-xl bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-rose-700/80 hover:border-rose-500 hover:bg-rose-950/40 text-left transition-all cursor-pointer shadow-lg group"
+                                  className="p-3.5 rounded-none bg-[#1a0a0a] hover:bg-[#2a1010] text-left transition-colors cursor-pointer group"
                                 >
                                   <div className="flex items-center gap-2 mb-1">
                                     <AlertTriangle className="w-4 h-4 text-rose-400" />
-                                    <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+                                    <span className="text-xs font-burmese font-bold text-rose-300 leading-[1.75]">
                                       ကျွန်းပျဉ်တုံးဖြင့် သော့ကို ရိုက်ခွဲဖွင့်ပါ
                                     </span>
                                   </div>
@@ -3280,8 +3402,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                     <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                                     <span>သတိပေးချက်: တံခါးကို ရိုက်ခွဲလျှင် နားပင်းလောက်သော အသံကျယ်ကြီး ထွက်ပေါ်လာမည်။</span>
                                   </div>
-                                  <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    -၁၅% စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။
+                                  <p className="text-[10px] font-burmese text-rose-300/80 group-hover:text-rose-200">
+                                    -၁၅ သွေးသားကြံ့ခိုင်မှု (HP) ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။
                                   </p>
                                 </button>
                               )}
@@ -3435,7 +3557,7 @@ onTuned={() => {
                       setPhase3Message(null);
                       setPhase3Location('west_split_landing');
                     }}
-                    className="group relative w-72 sm:w-80 h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                    className="group relative w-72 sm:w-80 h-96 rounded-none overflow-hidden bg-[#060b08]/90 cursor-pointer hover:bg-[#112319]/50 transition-all duration-300 flex flex-col justify-end p-5"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardPathwayLeft}
@@ -3444,12 +3566,11 @@ onTuned={() => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[11px] font-burmese font-bold text-[#82a996] leading-[1.75]">
                         အနောက်တောင်ပံ
                       </span>
                       <h3
-                        className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                        className="text-2xl sm:text-3xl font-burmese font-bold text-[#c2d6cc] group-hover:text-[#6ee7b7] transition-colors leading-[1.75]"
                       >
                         လှေကားခင်းနှင့် ရေချိုးခန်း
                       </h3>
@@ -3465,7 +3586,7 @@ onTuned={() => {
                       setPhase3Message(null);
                       setPhase3Location('east_fork');
                     }}
-                    className="group relative w-72 sm:w-80 h-96 rounded-2xl overflow-hidden border border-[#2e4238] hover:border-[#4d6e5e] bg-[#121815]/95 cursor-pointer shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)] hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-5"
+                    className="group relative w-72 sm:w-80 h-96 rounded-none overflow-hidden bg-[#060b08]/90 cursor-pointer hover:bg-[#112319]/50 transition-all duration-300 flex flex-col justify-end p-5"
                   >
                     <img
                       src={PHASE_3_ASSETS.cardPathwayRight}
@@ -3474,12 +3595,11 @@ onTuned={() => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[11px] font-burmese font-bold text-[#82a996] leading-[1.75]">
                         အရှေ့တောင်ပံ
                       </span>
                       <h3
-                        className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                        className="text-2xl sm:text-3xl font-burmese font-bold text-[#c2d6cc] group-hover:text-[#6ee7b7] transition-colors leading-[1.75]"
                       >
                         လော့ကာများနှင့် နတ်ကွန်း
                       </h3>
@@ -3913,6 +4033,7 @@ onTuned={() => {
                 locker14Unlocked={locker14Unlocked}
                 setPhase3Location={setPhase3Location}
                 setActiveMonologue={setActiveMonologue}
+                applyDamage={applyDamage}
                 setComposure={setComposure}
                 setIsScreenShaking={setIsScreenShaking}
               />
@@ -3994,6 +4115,7 @@ onTuned={() => {
                 isOpen={true}
                 composure={composure}
                 setComposure={setComposure}
+                applyDamage={applyDamage}
                 setIsScreenShaking={setIsScreenShaking}
                 failedAttempts={caretakerLockFailCount}
                 setFailedAttempts={setCaretakerLockFailCount}
@@ -4058,6 +4180,7 @@ onTuned={() => {
               <PrayerAltarView
                 composure={composure}
                 setComposure={setComposure}
+                applyDamage={applyDamage}
                 inventory={inventory}
                 setInventory={setInventory}
                 onNatDialogueActiveChange={setIsNatDialogueActive}
@@ -4229,43 +4352,42 @@ onTuned={() => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-lg rounded-2xl bg-[#121815]/95 border border-[#2c3d34] p-6 sm:p-8 shadow-[0_0_50px_rgba(46,66,56,0.3)] text-center text-[#c2d6cc]"
+              className="relative w-full max-w-lg rounded-none bg-[#060b08]/96 p-6 sm:p-8 text-center text-[#c2d6cc]"
             >
-              <div className="w-16 h-16 rounded-full bg-[#18221d] border border-[#2c3d34] mx-auto flex items-center justify-center mb-4 text-[#82a996] shadow-xl">
+              <div className="w-16 h-16 rounded-none bg-[#0b140f] mx-auto flex items-center justify-center mb-4 text-[#82a996]">
                 <Key className="w-8 h-8" />
               </div>
 
-              <span className="text-xs font-mono font-bold tracking-widest text-[#82a996] uppercase">
+              <span className="text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                 စုံစမ်းစစ်ဆေးမှု မှတ်တိုင်
               </span>
               <h3
-                className="text-3xl sm:text-4xl font-black text-[#c2d6cc] tracking-wider uppercase mt-1 mb-1"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-[#c2d6cc] mt-1 mb-1 leading-[1.75]"
               >
-အခန်း ၁ ပြီးပြည့်စုံပြီ
+                အခန်း ၁ ပြီးပြည့်စုံပြီ
               </h3>
-              <p className="text-[#82a996] font-mono text-xs mb-2 font-bold">
-                စုံစမ်းစစ်ဆေးသူ: {selectedCharacter.name.toUpperCase()} ({selectedCharacter.archetype.toUpperCase()})
+              <p className="text-[#82a996] font-burmese text-xs mb-2 font-bold leading-[1.75]">
+                စုံစမ်းစစ်ဆေးသူ: {selectedCharacter.name} <span className="font-mono">({selectedCharacter.archetype.toUpperCase()})</span>
               </p>
 
-              <div className="grid grid-cols-2 gap-2 my-4 text-xs font-mono text-[#c2d6cc]">
-                <div className="p-2.5 rounded-lg bg-[#18221d] border border-[#2c3d34]">
-                  <div className="text-[10px] text-[#82a996]/70">စတင် စိတ်တည်ငြိမ်မှု</div>
-                  <div className="text-[#c2d6cc] font-bold text-sm">{composure}%</div>
+              <div className="grid grid-cols-2 gap-2 my-4 text-xs font-burmese text-[#c2d6cc] leading-[1.75]">
+                <div className="p-2.5 rounded-none bg-[#0b140f]">
+                  <div className="text-[10px] text-[#82a996]/70 font-burmese">စတင် စိတ်တည်ငြိမ်မှု</div>
+                  <div className="text-[#c2d6cc] font-bold text-sm font-mono tabular-nums">{composure}%</div>
                 </div>
-                <div className="p-2.5 rounded-lg bg-[#18221d] border border-[#2c3d34]">
-                  <div className="text-[10px] text-[#82a996]/70">အချိန် ကုန်ဆုံးသွားသည်</div>
-                  <div className="text-[#c2d6cc] font-bold text-sm">
+                <div className="p-2.5 rounded-none bg-[#0b140f]">
+                  <div className="text-[10px] text-[#82a996]/70 font-burmese">အချိန် ကုန်ဆုံးသွားသည်</div>
+                  <div className="text-[#c2d6cc] font-bold text-sm font-mono tabular-nums">
                     {Math.floor((600 - timeLeft) / 60)}m {(600 - timeLeft) % 60}s
                   </div>
                 </div>
               </div>
 
-              <p className="text-[#c2d6cc]/90 text-xs sm:text-sm font-mono mb-6 leading-relaxed">
+              <p className="text-[#c2d6cc]/90 text-xs sm:text-sm font-burmese mb-6 leading-[1.75]">
                 သင်သည် အစုအပုံလိုက် အဆင့်များရှိသည့် ၁၉၉၈ အဆောင်စင်္ကြံများကို ဖြတ်သန်းခဲ့ပြီး၊ အလုပ်သမား၏ လာဘ်ငွေမှတ်တမ်းကို ပြန်လည်ရယူကာ၊ သံကြိုးချည်ထားသော ရေခန်းခြောက်အင်းတွင် မမမေ၏ အလောင်းကို တွေ့ကြုံခဲ့ပြီး ဝင်းရှိ ရေတွင်းဟောင်း ကြေးသော့ကို ရယူခဲ့သည်။ သင့်စိတ်တည်ငြိမ်မှုသည် အခန်း ၂ တွင် သင့်စိတ်ဆန္ဒခွန်အားကို ဆုံးဖြတ်ပေးလိမ့်မည်!
               </p>
 
-              <div className="p-3.5 rounded-xl bg-[#18221d]/70 border border-[#2c3d34] flex items-center justify-center gap-3 text-[#c2d6cc] text-sm font-mono mb-6">
+              <div className="p-3.5 rounded-none bg-[#0b140f]/70 flex items-center justify-center gap-3 text-[#c2d6cc] text-sm font-burmese mb-6 leading-[1.75]">
                 <Sparkles className="w-5 h-5 text-[#6ee7b7] animate-spin" />
                 <span className="font-bold">အခန်း ၂: နားလည်မှု ယခု ဖွင့်လှစ်ပြီ!</span>
               </div>
@@ -4276,7 +4398,7 @@ onTuned={() => {
                     sound.playMenuSelect();
                     navigate('/chapters/2');
                   }}
-                  className="flex-1 py-3 px-4 rounded-xl bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="flex-1 py-3 px-4 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                 >
                   <Play className="w-4 h-4 fill-current" />
@@ -4288,7 +4410,7 @@ onTuned={() => {
                     sound.playMenuSelect();
                     navigate('/chapters');
                   }}
-                  className="py-3 px-5 rounded-xl bg-[#121815] hover:bg-[#18221d] text-[#82a996] hover:text-[#c2d6cc] border border-[#2c3d34] hover:border-[#4d6e5e] font-bold uppercase tracking-wider transition-all cursor-pointer"
+                  className="py-3 px-5 rounded-none bg-[#060b08] hover:bg-[#0b140f] text-[#82a996] hover:text-[#c2d6cc] font-bold uppercase tracking-wider transition-colors cursor-pointer"
                   style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontSize: '1.15rem' }}
                 >
 အခန်း ရွေးချယ်မှု
@@ -4321,7 +4443,7 @@ onTuned={() => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-lg bg-[#121815]/95 border border-[#2c3d34] rounded-2xl shadow-[0_0_35px_rgba(46,66,56,0.3)] overflow-hidden flex flex-col text-[#c2d6cc] backdrop-blur-md"
+              className="relative w-full max-w-lg bg-[#060b08]/96 rounded-none overflow-hidden flex flex-col text-[#c2d6cc] backdrop-blur-md"
             >
               <div className="relative w-full h-56 bg-[#0b0f0d] overflow-hidden">
                 <img
@@ -4329,22 +4451,22 @@ onTuned={() => {
                   alt="သံလိုက်အိမ်မြှောင်"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#121815] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060b08] via-transparent to-transparent" />
                 <div className="absolute top-3 right-3 z-10">
                   <button
                     onClick={() => {
                       sound.playPaperRustle();
                       setIsCompassModalOpen(false);
                     }}
-                    className="p-1.5 rounded-lg bg-[#121815]/80 border border-[#2c3d34] text-[#82a996] hover:text-[#c2d6cc] cursor-pointer shadow-md transition-colors"
+                    className="p-1.5 rounded-none bg-transparent hover:bg-[#112319]/70 text-[#82a996] hover:text-[#c2d6cc] cursor-pointer transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
                 {/* Center needle indicator overlay */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="relative w-28 h-28 rounded-full border border-[#82a996]/40 flex items-center justify-center shadow-[0_0_20px_rgba(130,169,150,0.2)]">
-                    <div className="w-1 h-20 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-full animate-compass-jitter shadow-[0_0_12px_rgba(244,63,94,0.9)]" />
+                  <div className="relative w-28 h-28 rounded-none flex items-center justify-center">
+                    <div className="w-1 h-20 bg-gradient-to-t from-transparent via-rose-500 to-rose-400 rounded-none animate-compass-jitter" />
                   </div>
                 </div>
               </div>
@@ -4360,12 +4482,12 @@ onTuned={() => {
                   </h3>
                 </div>
 
-                <p className="text-xs sm:text-sm font-mono text-[#c2d6cc]/90 leading-relaxed">
-                  N, E, S, W အမှတ်အသားများပါသော ရှေးဟောင်း ကြေးဝါ လမ်းညွှန်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများဆီသို့ တုန်ခါညွှန်ပြနေသည်။
+                <p className="text-xs sm:text-sm font-burmese text-[#c2d6cc]/90 leading-[1.75]">
+                  <span className="font-mono">N, E, S, W</span> အမှတ်အသားများပါသော ရှေးဟောင်း ကြေးဝါ လမ်းညွှန်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများဆီသို့ တုန်ခါညွှန်ပြနေသည်။
                 </p>
 
-                <div className="p-3.5 rounded-xl bg-[#18221d]/60 border border-[#2c3d34] text-xs font-mono text-[#c2d6cc] leading-relaxed space-y-1">
-                  <div className="font-bold text-[#82a996] uppercase flex items-center gap-1.5">
+                <div className="p-3.5 rounded-none bg-[#0b140f]/70 text-xs font-burmese text-[#c2d6cc] leading-[1.75] space-y-1">
+                  <div className="font-bold text-[#82a996] flex items-center gap-1.5">
                     <Radio className="w-3.5 h-3.5 text-[#6ee7b7] animate-pulse" />
                     <span>သဘာဝလွန် ဆွဲဆောင်မှု ဖော်ထုတ်တွေ့ရှိပြီ:</span>
                   </div>
@@ -4380,7 +4502,7 @@ onTuned={() => {
                       sound.playPaperRustle();
                       setIsCompassModalOpen(false);
                     }}
-                    className="px-6 py-2 rounded-xl bg-[#18221d] hover:bg-[#283930] border border-[#2c3d34] hover:border-[#4d6e5e] text-[#c2d6cc] hover:text-[#6ee7b7] font-bold font-mono text-xs uppercase tracking-wider cursor-pointer shadow-md transition-all"
+                    className="px-6 py-2 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-bold font-burmese text-xs tracking-wider cursor-pointer transition-colors leading-[1.75]"
                   >
                     အိမ်မြှောင်မြင်ကွင်းကို ပိတ်ရန်
                   </button>
@@ -4397,7 +4519,10 @@ onTuned={() => {
         onClose={() => setIsNotesOpen(false)}
         investigatorName={selectedCharacter.name}
         investigatorArchetype={selectedCharacter.archetype}
-        composure={composure}
+        hp={hp}
+        maxHp={maxHp}
+        mind={mind}
+        maxMind={maxMind}
         timeLeftSeconds={timeLeft}
         discoveredClueIds={discoveredClues}
       />
@@ -4419,23 +4544,22 @@ onTuned={() => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-md bg-[#140d0d] border-2 border-red-900/80 rounded-2xl shadow-[0_0_50px_rgba(185,28,28,0.4)] p-6 sm:p-8 text-center text-[#e8d5d5] flex flex-col items-center"
+              className="relative w-full max-w-md bg-[#140808]/96 rounded-none p-6 sm:p-8 text-center text-[#e8d5d5] flex flex-col items-center"
             >
-              <div className="w-16 h-16 rounded-full bg-red-950/90 border border-red-800 mx-auto flex items-center justify-center mb-4 text-red-400 shadow-xl">
+              <div className="w-16 h-16 rounded-none bg-[#200a0a] mx-auto flex items-center justify-center mb-4 text-red-400">
                 <AlertTriangle className="w-8 h-8 animate-pulse" />
               </div>
 
-              <span className="text-xs font-mono font-bold tracking-widest text-red-400 uppercase">
+              <span className="text-xs font-burmese font-bold text-red-400 leading-[1.75]">
                 အချိန်ကာလ ရွှေ့ပြောင်းမှု ပြိုကျခဲ့သည်
               </span>
               <h3
-                className="text-3xl sm:text-4xl font-black text-red-200 tracking-wider uppercase mt-1 mb-2"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-red-200 mt-1 mb-2 leading-[1.75]"
               >
                 စုံစမ်းစစ်ဆေးမှု မအောင်မြင်ခဲ့ပါ
               </h3>
 
-              <p className="text-[#c2a6a6] font-mono text-xs sm:text-sm mb-6 leading-relaxed">
+              <p className="text-[#c2a6a6] font-burmese text-xs sm:text-sm mb-6 leading-[1.75]">
                 {timeLeft <= 0
                   ? '၁၀ မိနစ် အချိန်ကာလ ထပ်တူပြုခြင်း ကာလ ကုန်ဆုံးသွားသည်။ ၁၉၉၈ ဩဂုတ်လသို့ သင့်ကို ဆုံချည်ထားသော ကျောက်ဆူးသည် လေဟာနယ်ထဲတွင် ပျော်ဝင်သွားသည်။'
                   : 'သင်၏ စိတ်တည်ငြိမ်မှုသည် သဘာဝလွန် ကြောက်မက်ဖွယ်ရာများနှင့် အဆောင်၏ မွန်းကြပ်သော လေထုအောက်တွင် ပြိုကွဲသွားသည်။'}
@@ -4444,7 +4568,7 @@ onTuned={() => {
               <div className="w-full flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleRestartChapterOne}
-                  className="flex-1 py-3 px-4 rounded-xl bg-red-900/80 hover:bg-red-800 text-red-100 border border-red-700 hover:border-red-500 font-mono font-bold tracking-wider text-xs uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  className="flex-1 py-3 px-4 rounded-none bg-red-900/90 hover:bg-red-800 text-red-100 font-burmese font-bold tracking-wider text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer leading-[1.75]"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>အခန်း ပြန်စရန်</span>
@@ -4452,7 +4576,7 @@ onTuned={() => {
 
                 <button
                   onClick={() => navigate('/chapters')}
-                  className="py-3 px-5 rounded-xl bg-[#161212] hover:bg-[#221a1a] text-stone-400 hover:text-stone-200 border border-stone-800 font-mono text-xs uppercase tracking-wider transition-all cursor-pointer"
+                  className="py-3 px-5 rounded-none bg-[#161010] hover:bg-[#251818] text-stone-400 hover:text-stone-200 font-burmese text-xs tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   ခေါင်းစဉ်သို့ ပြန်သွားရန်
                 </button>
@@ -4475,7 +4599,7 @@ onTuned={() => {
             />
             {/* Large distressing horror typography */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-40">
-              <span className="font-serif tracking-widest text-red-600 font-extrabold text-xl md:text-3xl uppercase drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse">
+              <span className="font-burmese font-bold text-xl md:text-3xl text-red-600 drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse leading-[1.75]">
                 တစ်ခုခု ငါ့နောက်က ရုတ်တရက် ဖြတ်ပြေးသွားတယ်...
               </span>
             </div>
@@ -4491,32 +4615,31 @@ onTuned={() => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4 }}
-              className="relative w-full max-w-xl bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-md p-6 sm:p-8 text-center text-[#c2d6cc]"
+              className="relative w-full max-w-xl bg-[#060b08]/96 rounded-none backdrop-blur-md p-6 sm:p-8 text-center text-[#c2d6cc]"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16241d] border border-[#2b4235] text-[#86af99] text-[11px] font-mono tracking-widest uppercase mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-[#0b140f] text-[#86af99] text-[11px] font-burmese mb-4 leading-[1.75]">
                 <Sparkles className="w-3.5 h-3.5 text-[#4d6e5e]" />
                 အခန်း ၀၁ ပြီးပြည့်စုံပြီ
               </div>
 
               <h2
-                className="text-3xl sm:text-4xl font-black text-[#d1e3da] tracking-wider uppercase mb-2"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-[#d1e3da] tracking-wide mb-2 leading-[1.75]"
               >
                 မျက်စိမှိတ် အစမှတ် • ပြီးပြည့်စုံပြီ
               </h2>
 
-              <p className="text-sm font-mono text-[#8fa89b] max-w-md mx-auto mb-6 leading-relaxed">
+              <p className="text-sm font-burmese text-[#8fa89b] max-w-md mx-auto mb-6 leading-[1.75]">
                 "— မီးလျှံများ အေးစက်စက် အပြာရောင်ထွက်နေသည်... ကြေးခေါင်းလောင်းသံ ငါ့စိတ်ထဲ မြည်နေသည်။ အစောင့်နတ် နိုးထလာပြီ။ —"
               </p>
 
-              <div className="p-4 rounded-xl bg-[#151f1a]/80 border border-[#223229] text-left text-xs font-mono text-[#b4c9bf] mb-6 space-y-2">
+              <div className="p-4 rounded-none bg-[#0b140f]/80 text-left text-xs font-burmese text-[#b4c9bf] mb-6 space-y-2 leading-[1.75]">
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">အခြေအနေ:</span>
                   <span className="text-[#86af99] font-bold">အစောင့်နတ် နိုးထခဲ့သည်</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">စိတ်တည်ငြိမ်မှု ထိန်းသိမ်းနိုင်ခဲ့သည်:</span>
-                  <span className="text-[#86af99] font-bold">{composure}%</span>
+                  <span className="text-[#86af99] font-bold font-mono tabular-nums">{composure}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">လမ်းကြောင်း ဖွင့်လှစ်ပြီ:</span>
@@ -4530,7 +4653,7 @@ onTuned={() => {
                     sound.playMenuSelect();
                     navigate('/chapters');
                   }}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] text-xs font-mono font-bold tracking-wider uppercase transition-all shadow-lg hover:scale-105 cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] text-xs font-burmese font-bold tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   အခန်း ရွေးချယ်မှု →
                 </button>
@@ -4540,7 +4663,7 @@ onTuned={() => {
                     setChapter1VictoryActive(false);
                     handleRestartChapterOne();
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#151e19] hover:bg-[#1b2721] border border-[#283830] text-[#a1b8ac] text-xs font-mono tracking-wider uppercase transition-all cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#a1b8ac] hover:text-[#e0f0e7] text-xs font-burmese tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   အခန်း ၁ ပြန်ကစားရန်
                 </button>

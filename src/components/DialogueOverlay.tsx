@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCcw, ArrowRight } from 'lucide-react';
 import { ANIMATIONS } from '../styles/designSystem';
@@ -30,14 +30,45 @@ export const ThoughtMonologueOverlay: React.FC<{
   // Strip leading/trailing dashes to prevent double-dash display
   const cleanText = text.replace(/^[—–-]\s*|\s*[—–-]$/g, '').trim();
 
-  // 3-Second Auto-Fade Timer
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // 3-Second Auto-Fade Timer: decoupled from onDismiss function identity
   useEffect(() => {
     if (!text) return;
     const timer = setTimeout(() => {
-      onDismiss?.();
+      onDismissRef.current?.();
     }, durationMs);
     return () => clearTimeout(timer);
-  }, [text, durationMs, onDismiss]);
+  }, [text, durationMs]);
+
+  // Click anywhere / clicked elsewhere listener to dismiss immediately
+  useEffect(() => {
+    if (!cleanText) return;
+
+    const handleDismissElsewhere = () => {
+      onDismissRef.current?.();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') {
+        onDismissRef.current?.();
+      }
+    };
+
+    const registerTimer = setTimeout(() => {
+      window.addEventListener('pointerdown', handleDismissElsewhere);
+      window.addEventListener('keydown', handleKeyDown);
+    }, 50);
+
+    return () => {
+      clearTimeout(registerTimer);
+      window.removeEventListener('pointerdown', handleDismissElsewhere);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [cleanText]);
 
   return (
     <AnimatePresence mode="wait">
@@ -64,7 +95,7 @@ export const ThoughtMonologueOverlay: React.FC<{
             role="status"
             aria-live="polite"
           >
-            <div className="relative thought-feather-wash py-3 px-6 rounded-2xl flex items-center justify-center">
+            <div className="relative thought-feather-wash py-3 px-6 rounded-none flex items-center justify-center">
               <p className="font-burmese text-sm sm:text-base text-[#d8eae2] text-center thought-subtitle-shadow leading-[1.75] tracking-wide">
                 {cleanText}
               </p>
@@ -101,11 +132,11 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
   }
 
   return (
-    <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 max-w-4xl mx-auto px-4 z-20">
-      {/* Character Name Tab (attached to top edge, follows speaker position) */}
+    <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 max-w-4xl mx-auto px-4 z-20 pointer-events-none">
+      {/* Character Name Tab (attached to top edge, follows speaker position with soft dissolve) */}
       {speakerName && (
         <div
-          className="absolute top-0 z-30 px-4 py-1.5 rounded-t-md rounded-b-sm border border-b-0 border-[#193828] bg-[#060b08]/95 shadow-md pointer-events-none select-none"
+          className="absolute top-0 z-30 px-5 py-2 speaker-feather-wash pointer-events-none select-none"
           style={{
             transform: 'translateY(-100%)',
             ...(speakerAlign === 'left' && { left: '2rem' }),
@@ -113,22 +144,22 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
             ...(speakerAlign === 'right' && { right: '2rem' }),
           }}
         >
-          <span className="font-burmese text-xs sm:text-sm font-bold tracking-wider text-[#b1d4c2] whitespace-nowrap">
+          <span className="font-burmese text-xs sm:text-sm font-bold tracking-wider text-[#b1d4c2] whitespace-nowrap leading-[1.75] thought-subtitle-shadow">
             {speakerName}
           </span>
         </div>
       )}
 
-      {/* Main Dialogue Box: Duo-Tone Stagnant Obsidian & Sickly Verdigris */}
+      {/* Main Dialogue Box: Organic Feathered Elliptical Wash (100% Borderless, Dissolves on all sides) */}
       <div
         onClick={onAdvance}
-        className="w-full relative rounded-xl bg-[#060b08]/95 backdrop-blur-md border border-[#193828] p-4 sm:p-6 shadow-[0_0_30px_rgba(2,5,4,0.9)] transition-all duration-200 cursor-pointer hover:border-[#29543e] group ring-1 ring-black/80"
+        className="w-full relative dialogue-feather-wash backdrop-blur-sm px-6 py-5 sm:px-10 sm:py-7 transition-colors duration-150 cursor-pointer pointer-events-auto group select-none"
       >
         {/* Location Tag & Rewind Bar */}
-        <div className="flex items-center justify-between mb-2 sm:mb-3 border-b border-[#112319] pb-2">
+        <div className="flex items-center justify-between mb-2 sm:mb-3 pb-1">
           <div className="flex items-center gap-2">
             {locationTag && (
-              <span className="text-[10px] font-mono tracking-widest text-[#447d60] uppercase hidden sm:inline">
+              <span className="text-[10px] font-mono tracking-widest text-[#6ea889] uppercase hidden sm:inline thought-subtitle-shadow">
                 {locationTag}
               </span>
             )}
@@ -141,7 +172,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
                   e.stopPropagation();
                   onRewind();
                 }}
-                className="px-2.5 py-1 rounded bg-[#0b140f] hover:bg-[#101c15] border border-[#193828] text-[#b1d4c2] hover:text-[#e0f0e7] text-xs font-mono flex items-center gap-1 cursor-pointer transition-all shadow"
+                className="px-2.5 py-1 bg-black/40 hover:bg-black/70 text-[#b1d4c2] hover:text-[#e0f0e7] text-xs font-burmese flex items-center gap-1 cursor-pointer transition-colors leading-[1.75]"
                 title="ယခင်စာကြောင်းသို့ ပြန်သွားမည် [↑] သို့မဟုတ် [Backspace]"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -149,26 +180,26 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
               </button>
             )}
 
-            <span className="text-[11px] font-mono text-[#447d60]">
+            <span className="text-[11px] font-burmese text-[#447d60] thought-subtitle-shadow leading-[1.75]">
               {isTyping ? 'စာရိုက်နေသည်...' : 'အသင့်ရှိ'}
             </span>
           </div>
         </div>
 
         {/* Dialogue Text Body */}
-        <p className="text-[#d8eae2] font-burmese text-sm sm:text-base md:text-lg leading-[1.75] min-h-[56px] sm:min-h-[64px] tracking-wide select-text">
+        <p className="text-[#d8eae2] font-burmese text-sm sm:text-base md:text-lg leading-[1.75] min-h-[56px] sm:min-h-[64px] tracking-wide select-text thought-subtitle-shadow">
           {text}
           {isTyping && <span className="inline-block w-2 h-4 bg-[#6ea889] ml-1 animate-pulse" />}
         </p>
 
         {/* Advance Hint / Actions */}
-        <div className="mt-4 flex items-center justify-between text-xs font-mono text-[#447d60] border-t border-[#112319] pt-2">
-          <span className="text-[11px] text-[#447d60]">
-            ဆက်သွားရန် <span className="text-[#b1d4c2] font-bold">[ENTER]</span> • နောက်ပြန်ဆုတ်ရန်{' '}
-            <span className="text-[#b1d4c2] font-bold">[↑]</span>
+        <div className="mt-4 flex items-center justify-between text-xs font-burmese text-[#447d60] pt-1 leading-[1.75]">
+          <span className="text-[11px] text-[#6ea889] thought-subtitle-shadow">
+            ဆက်သွားရန် <span className="text-[#e0f0e7] font-bold font-mono">[ENTER]</span> • နောက်ပြန်ဆုတ်ရန်{' '}
+            <span className="text-[#e0f0e7] font-bold font-mono">[↑]</span>
           </span>
 
-          <div className="flex items-center gap-1 text-[#6ea889] group-hover:text-[#e0f0e7] group-hover:translate-x-1 transition-all">
+          <div className="flex items-center gap-1 text-[#6ea889] group-hover:text-[#e0f0e7] group-hover:translate-x-1 transition-all thought-subtitle-shadow">
             <span className="font-semibold">{advanceActionText}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </div>

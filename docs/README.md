@@ -10,7 +10,7 @@ Every team member contributing to any branch **must strictly follow these 4 non-
 
 1. **Authoritative Burmese Typography (`Aka08`)**:
    - Never use Noto Sans Myanmar.
-   - Always use `font-burmese` (`'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif`).
+   - Always use `font-burmese` (`'Aka08', 'Myanmar Text', sans-serif`).
    - Burmese text must have at least `line-height: 1.75` (e.g. `leading-[1.75]`) to prevent stacking consonant and tone mark clipping.
    - Never choke Burmese strings inside Latin `font-mono`, `font-serif`, or `font-bebas`.
 

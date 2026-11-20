@@ -248,12 +248,6 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
 
     // 6. Log clue to Case Notes
     addDiscoveredClue?.('clue_key_14');
-
-    // 7. Notification banner
-    setRoomBanner?.({
-      text: "ဝရန်တာကြမ်းပြင်မှ သော့ (၁၄) ကို ကောက်ယူရရှိခဲ့သည်။ ဘီရိုအမှတ် ၁၄ အတွက် ဖြစ်သည်။",
-      type: 'success',
-    });
   };
 
   return (
@@ -330,9 +324,9 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleHandoverLetter}
-                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-emerald-950/95 hover:bg-emerald-900 border border-emerald-400/80 hover:border-emerald-300 text-emerald-100 hover:text-white text-xs sm:text-sm font-mono font-bold tracking-wider uppercase shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:shadow-[0_0_40px_rgba(16,185,129,0.7)] cursor-pointer transition-all active:scale-95"
+                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-none bg-emerald-950/95 hover:bg-emerald-900 text-emerald-100 hover:text-white text-xs sm:text-sm font-burmese font-bold tracking-wider leading-[1.75] cursor-pointer transition-all active:scale-95"
                   >
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="w-2 h-2 rounded-none bg-emerald-400 animate-ping" />
                     <span>[ ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ပေးအပ်မည် ]</span>
                   </button>
                   <button
@@ -340,7 +334,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                       e.stopPropagation();
                       setShowHandoverPrompt(false);
                     }}
-                    className="p-2 rounded-xl bg-black/85 border border-[#2d4436] text-stone-400 hover:text-white text-xs font-mono cursor-pointer"
+                    className="p-2 rounded-none bg-black/85 text-stone-400 hover:text-white text-xs font-burmese leading-[1.75] cursor-pointer"
                     title="ပယ်ဖျက်"
                   >
                     <X className="w-3.5 h-3.5" />

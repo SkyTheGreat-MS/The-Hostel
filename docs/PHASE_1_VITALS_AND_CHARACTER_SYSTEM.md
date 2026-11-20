@@ -24,7 +24,7 @@ All character descriptions, perks, and archetypes **must use `Aka08` typography*
 
 | Investigator ID | Name (Burmese) | Archetype | Max HP | Max Mind | Physical Def | Mental Def | Unique Passive Perk | Perk Effect |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- | :--- |
-| `moe_stheinkha` | မိုးင်္သခ | သံသယရှိသူ (The Skeptic) | 90 | 110 | 1.0x | 0.70x (-30%) | **သံသယစိတ်ဖြင့် ခံယူခြင်း** (Rational Skepticism) | Takes 30% less Mind damage from ghost sightings; documents reveal rational hidden notes. |
+| `moe_stheinkha` | မိုးသိင်္ခ | သံသယရှိသူ (The Skeptic) | 90 | 110 | 1.0x | 0.70x (-30%) | **သံသယစိတ်ဖြင့် ခံယူခြင်း** (Rational Skepticism) | Takes 30% less Mind damage from ghost sightings; documents reveal rational hidden notes. |
 | `ye_yint_hein` | ရဲရင့်ဟိန်း | ရဲရင့်သူ (The Athlete) | 125 | 80 | 0.75x (-25%) | 1.25x (+25%) | **သွေးကြွ ရဲရင့်မှု** (Iron Constitution) | Takes 25% less HP damage from door bashing and traps; valve mini-game momentum drains 40% slower; vulnerable to apparitions (+25% Mind loss). |
 | `may_jewel` | မေရတနာ | အတွေ့အကြုံရှိသူ (The Detective) | 100 | 100 | 0.90x | 0.85x | **မှုခင်းစုံထောက် အာရုံ** (Investigative Insight) | Lock & cipher failure penalties reduced by 50%; key clue hotspots highlight from a larger distance. |
 | `yin_min_htike` | ယဉ်မင်းထိုက် | မှတ်တမ်းပြ (The Archivist) | 85 | 115 | 1.15x (+15%) | 0.75x (-25%) | **မှတ်တမ်း အထောက်အထား လေ့လာသူ** (Historical Clarity) | Consuming letters and records restores +5 Mind; immune to confusion debuffs from Nat riddles. |

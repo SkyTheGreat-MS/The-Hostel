@@ -66,77 +66,77 @@ export const ChapterPreviewModal: React.FC<ChapterPreviewModalProps> = ({
   const formattedChapterNum = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`;
 
   const cardContent = (
-    <div className="relative w-full max-w-2xl bg-[#111714]/95 border border-[#26382f] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-md p-8 select-none">
+    <div className="relative w-full max-w-2xl bg-[#060b08]/96 rounded-none backdrop-blur-md p-8 select-none">
       {/* Header & Status Badges */}
-      <div className="flex items-center justify-between gap-4 border-b border-[#223229] pb-4 mb-6">
+      <div className="flex items-center justify-between gap-4 pb-4 mb-6">
         {/* Route Access Badge (Top Left) */}
-        <div className="flex items-center gap-2 text-[11px] font-mono tracking-widest text-[#7fa391] uppercase">
-          <span className="w-2 h-2 rounded-full bg-[#4d6e5e]" />
-          ROUTE ACCESS GRANTED • CHAPTER {formattedChapterNum}
+        <div className="flex items-center gap-2 text-xs font-burmese tracking-wide text-[#7fa391]">
+          <span className="w-1.5 h-1.5 rounded-none bg-[#4d6e5e]" />
+          <span>လမ်းကြောင်း ဖွင့်လှစ်ပြီး</span> &bull; <span>အခန်း</span> <span className="font-mono tabular-nums">{formattedChapterNum}</span>
         </div>
 
         {/* Gate Pass Verified Badge (Top Right) */}
-        <span className="px-2.5 py-1 rounded bg-[#16241d] border border-[#2b4235] text-[#86af99] text-[10px] font-mono tracking-wider">
-          GATE PASS VERIFIED
+        <span className="px-2.5 py-1 rounded-none bg-[#101c15] text-[#86af99] text-xs font-burmese">
+          တံခါးဖြတ်သန်းခွင့် အတည်ပြုပြီး
         </span>
       </div>
 
       {/* Chapter Titles & In Development Tag */}
       <div className="space-y-2 mb-6">
-        <div className="text-xs font-mono text-[#7fa391] tracking-widest uppercase">
+        <div className="text-xs font-burmese text-[#7fa391] tracking-wide">
           {tagline}
         </div>
         <h2
-          className="text-2xl sm:text-3xl font-bold text-[#b1d4c2] tracking-wider uppercase font-cinzel"
+          className="text-2xl sm:text-3xl font-bold text-[#b1d4c2] tracking-wide font-burmese leading-tight"
         >
           {subtitle}
         </h2>
         <div>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#17201b] border border-[#283930] text-[#8fa89b] text-[10px] font-mono tracking-wider">
-            CHAPTER {chapterNumber} • IN DEVELOPMENT
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-none bg-[#0b140f] text-[#8fa89b] text-xs font-burmese">
+            <span>အခန်း {chapterNumber}</span> &bull; <span>ဆက်လက်ဖန်တီးနေဆဲ</span>
           </span>
         </div>
       </div>
 
       {/* Inner Card & Bullet Point Sections */}
-      <div className="bg-[#151f1a]/80 border border-[#223229] rounded-xl p-4 mb-6 space-y-2">
-        <p className="text-[#b4c9bf] font-sans leading-relaxed text-sm">
+      <div className="bg-[#0b140f]/80 rounded-none p-4 mb-6 space-y-2">
+        <p className="text-[#b4c9bf] font-burmese leading-[1.75] text-xs sm:text-sm">
           {scopeSummary}
         </p>
-        <p className="text-[#6e8a7d] italic text-xs">
-          (Note: Chapter 1 is fully playable in this pass. Chapters 2 &amp; 3 route skeletons prove client-side route guarding and gate unlocking).
+        <p className="text-[#6e8a7d] italic text-xs font-burmese leading-[1.75]">
+          (မှတ်ချက် - အခန်း ၁ ကို ယခုအခါ အပြည့်အစုံ ကစားနိုင်ပါသည်။ အခန်း ၂ နှင့် ၃ လမ်းကြောင်းများသည် ကစားပွဲ လမ်းကြောင်းစစ်ဆေးမှုနှင့် တံခါးဖွင့်လှစ်မှု စနစ်ကို ပြသထားခြင်း ဖြစ်ပါသည်)။
         </p>
       </div>
 
       {/* Planned Investigation Beats List */}
       <div className="space-y-2.5 mb-8">
-        <div className="text-[11px] font-mono tracking-widest text-[#7fa391] uppercase mb-3">
-          Planned Investigation Beats in Full Release:
+        <div className="text-xs font-burmese tracking-wide text-[#7fa391] mb-3">
+          အပြည့်အစုံထွက်ရှိချိန်တွင် ပါဝင်မည့် စုံစမ်းစစ်ဆေးမှု အစီအစဉ်များ -
         </div>
         <ul className="space-y-1.5">
           {plannedFeatures.map((feat, idx) => (
             <li key={idx} className="flex items-start gap-2">
               <span className="text-[#4d6e5e] font-mono">›</span>
-              <span className="text-[#9db3a8] text-xs font-mono">{feat}</span>
+              <span className="text-[#9db3a8] text-xs font-burmese leading-[1.75]">{feat}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Footer Action Buttons */}
-      <div className="flex items-center justify-between pt-4 border-t border-[#223229]">
+      <div className="flex items-center justify-between pt-4">
         <button
           onClick={handleReturn}
-          className="px-5 py-2.5 rounded-lg bg-[#151e19] hover:bg-[#1b2721] border border-[#283830] text-[#a1b8ac] font-mono text-xs tracking-wider transition-all duration-200"
+          className="px-5 py-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#a1b8ac] font-burmese text-xs tracking-wider transition-colors"
         >
-          RETURN TO CHAPTER SELECT
+          အခန်းရွေးချယ်မှုသို့ ပြန်သွားရန်
         </button>
 
         <button
           onClick={handleReplay}
-          className="px-6 py-2.5 rounded-lg bg-[#22352b] hover:bg-[#2d4639] border border-[#3f5c4c] text-[#d1e3da] font-mono text-xs tracking-wider transition-all duration-200 shadow-md"
+          className="px-6 py-2.5 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#d1e3da] font-burmese text-xs tracking-wider transition-colors shadow-none"
         >
-          REPLAY CHAPTER 1
+          အခန်း ၁ ပြန်လည်ကစားရန်
         </button>
       </div>
     </div>

@@ -10,6 +10,7 @@ export interface LockersOverviewViewProps {
   setPhase3Location: (loc: Phase3Location) => void;
   setActiveMonologue: (msg: string | null) => void;
   applyComposureDamage?: (amount: number, reason?: string) => void;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
   setIsScreenShaking?: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -22,6 +23,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
   setPhase3Location,
   setActiveMonologue,
   applyComposureDamage,
+  applyDamage,
   setComposure,
   setIsScreenShaking,
 }) => {
@@ -46,13 +48,15 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
       setIsScreenShaking(true);
       setTimeout(() => setIsScreenShaking(false), 250);
     }
-    if (applyComposureDamage) {
+    if (applyDamage) {
+      applyDamage(8, 'physical', 'spider_bite');
+    } else if (applyComposureDamage) {
       applyComposureDamage(2, 'supernatural_direct');
     } else if (setComposure) {
       setComposure((prev) => Math.max(0, prev - 2));
     }
     setPhase3Location('locker_spider');
-    setActiveMonologue("— အား! သံချေးတက်နေသော လေဝင်ပေါက်တန်းများနောက်မှ မြေအောက်ပင့်ကူများ အပြေးအလွှား ထွက်လာသည်! (စိတ်တည်ငြိမ်မှု -၂%) —");
+    setActiveMonologue("— အား! သံချေးတက်နေသော လေဝင်ပေါက်တန်းများနောက်မှ မြေအောက်ပင့်ကူများ အပြေးအလွှား ထွက်လာသည်! (သွေးသား -၈ HP) —");
   };
 
   return (
@@ -184,7 +188,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
       {/* Dynamic Cursor Hover Tooltip Badge */}
       {hoveredLocker && (
         <span
-          className={`absolute px-2.5 py-1 rounded bg-[#0b140f]/95 border border-[#193828] text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none shadow-lg -translate-y-full mb-2 z-40 transition-all duration-150 ${
+          className={`absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-xs font-burmese text-[#b1d4c2] whitespace-nowrap pointer-events-none -translate-y-full mb-2 z-40 transition-all duration-150 leading-[1.75] ${
             hoveredLocker.align === 'right' ? '-translate-x-[85%]' : '-translate-x-1/2'
           }`}
           style={{

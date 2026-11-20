@@ -34,10 +34,10 @@ export const ChapterStub: React.FC<ChapterStubProps> = ({
 
   return (
     <AtmosphericLayout
-      headerTitle="THE SPIRIT'S LABYRINTH"
-      headerSubtitle={`CHAPTER ${chapterNumber} • STUB INTERFACE`}
+      headerTitle="ဝိညာဉ်၏ ဝင်္ကပါ"
+      headerSubtitle={`အခန်း ${chapterNumber} • ဇာတ်လမ်း အကြမ်းပုံစံ`}
       backTo="/chapters"
-      backLabel="Chapter Select"
+      backLabel="အခန်းများသို့ ပြန်သွားရန်"
       backgroundImage={`/assets/chapter_${chapterNumber}.jpg`}
       chapterNumber={chapterNumber}
       colorGrade={chapterNumber === 3 ? 'guttering_wax' : 'monsoon_green'}

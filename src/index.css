@@ -3,20 +3,36 @@
 @font-face {
   font-family: 'Aka08';
   src: url('/fonts/Aka08-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aka08';
+  src: url('/fonts/Aka08-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Aka08';
+  src: url('/fonts/Aka08-Regular.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: 'Aka08', 'Pyidaungsu', 'Myanmar Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-bebas: 'Bebas Neue', 'Impact', sans-serif;
-  --font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;
-  --font-cinzel: 'Cinzel', serif;
-  --font-typewriter: 'Special Elite', cursive;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-horror: 'Cinzel', 'Bebas Neue', serif;
-  --font-serif: 'Cinzel', serif;
+  --font-sans: 'Aka08', 'Myanmar Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-bebas: 'Bebas Neue', 'Impact', 'Aka08', 'Myanmar Text', sans-serif;
+  --font-burmese: 'Aka08', 'Myanmar Text', sans-serif;
+  --font-cinzel: 'Cinzel', 'Aka08', 'Myanmar Text', serif;
+  --font-typewriter: 'Special Elite', 'Aka08', 'Myanmar Text', cursive;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Aka08', 'Myanmar Text', monospace;
+  --font-horror: 'Cinzel', 'Bebas Neue', 'Aka08', 'Myanmar Text', serif;
+  --font-serif: 'Cinzel', 'Aka08', 'Myanmar Text', serif;
 
   /* Duo-Tone Baseline: Tone 1 - Stagnant Obsidian Void */
   --color-obsidian-950: #020504;
@@ -59,7 +75,7 @@
 }
 
 :root {
-  --font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;
+  --font-burmese: 'Aka08', 'Myanmar Text', sans-serif;
   font-family: var(--font-burmese);
 }
 
@@ -72,7 +88,7 @@ html, body {
 
 @layer utilities {
   .font-bebas {
-    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-family: var(--font-bebas);
   }
 
   .font-burmese {
@@ -91,6 +107,18 @@ html, body {
     letter-spacing: 0.02em;
   }
 
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-horror {
+    font-family: var(--font-horror);
+  }
+
   /* Cinematic borderless thought typography drop-shadow */
   .thought-subtitle-shadow {
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98), 0 0 25px rgba(2, 5, 4, 0.9);
@@ -99,6 +127,16 @@ html, body {
   /* Organic feathered ambient backdrop wash (100% borderless) */
   .thought-feather-wash {
     background: radial-gradient(ellipse at center, rgba(6, 11, 8, 0.88) 0%, rgba(6, 11, 8, 0.5) 55%, transparent 80%);
+  }
+
+  /* Dialogue box feathered ambient backdrop wash (100% borderless, dissolves outward on all sides) */
+  .dialogue-feather-wash {
+    background: radial-gradient(ellipse 95% 85% at 50% 50%, rgba(2, 5, 4, 0.82) 0%, rgba(2, 5, 4, 0.55) 50%, rgba(2, 5, 4, 0.18) 75%, transparent 100%);
+  }
+
+  /* Speaker tab feathered ambient wash (dissolves outward on all sides) */
+  .speaker-feather-wash {
+    background: radial-gradient(ellipse 90% 80% at 50% 50%, rgba(2, 5, 4, 0.85) 0%, rgba(2, 5, 4, 0.45) 55%, transparent 95%);
   }
 
   @keyframes screenShake {

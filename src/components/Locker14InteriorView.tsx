@@ -147,10 +147,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     addDiscoveredClue?.('clue_locker_14_found');
 
     setActiveMonologue(MONOLOGUE_LINES.LOCKER_14_UNLATCH_SUCCESS);
-    setRoomBanner?.({
-      text: "ဘီရို ၁၄ ကို ဖွင့်ရန် သော့ ၁၄ ကို အသုံးပြုခဲ့သည်။ လေးလံသော သံမဏိတံခါး ပွင့်သွားသည်။",
-      type: 'success',
-    });
 
     setPhase3Location?.('locker_14_interior');
   };
@@ -187,10 +183,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     setActiveMonologue(
       "ရရှိပစ္စည်း - [အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂)]။ အခန်း ၁၀၁ ဖြစ်ရပ် မတိုင်မီ ရက်စွဲတပ်ထားသည်။"
     );
-    setRoomBanner?.({
-      text: "အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂) ကို ရရှိခဲ့သည်။",
-      type: 'success',
-    });
   };
 
   const handleTakeKey = async () => {
@@ -226,10 +218,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     setActiveMonologue(
       "ရရှိပစ္စည်း - [လှေကားထွက်ပေါက်တံခါးသော့]။ မြေညီထပ် လုံခြုံရေးတံခါးအတွက် 'STAIRWAY EXTR' ဟု ရိုက်နှိပ်ထားသော လေးလံသည့် သံသော့တစ်ချောင်း။"
     );
-    setRoomBanner?.({
-      text: "'STAIRWAY EXTR' တံဆိပ်ရိုက်ထားသော လှေကားထွက်ပေါက်တံခါးသော့ကို ရရှိခဲ့သည်။",
-      type: 'success',
-    });
   };
 
   return (
@@ -273,9 +261,9 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
                 >
                   <button
                     onClick={handleUnlockPadlock}
-                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#060b08]/95 hover:bg-[#101c15] border border-[#c7a458] text-[#c7a458] hover:text-[#f3e5ab] text-xs sm:text-sm font-burmese font-bold tracking-wider shadow-[0_0_25px_rgba(199,164,88,0.35)] cursor-pointer transition-all active:scale-95"
+                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-none bg-[#060b08]/95 hover:bg-[#101c15] text-[#c7a458] hover:text-[#f3e5ab] text-xs sm:text-sm font-burmese font-bold tracking-wider leading-[1.75] cursor-pointer transition-all active:scale-95"
                   >
-                    <span className="w-2 h-2 rounded-full bg-[#c7a458] animate-ping" />
+                    <span className="w-2 h-2 rounded-none bg-[#c7a458] animate-ping" />
                     <span>[ သော့ ၁၄ ဖြင့် ဘီရို ၁၄ ကို ဖွင့်မည် ]</span>
                   </button>
                 </motion.div>

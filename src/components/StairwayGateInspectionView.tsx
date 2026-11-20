@@ -372,7 +372,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
 
         {/* Hover label / tooltip anchored above padlock & chains */}
         <span
-          className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-30"
+          className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-burmese text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-30 leading-[1.75]"
           style={{ left: '52.5%', top: '52%' }}
         >
           {hasGateKey ? '[ လှေကားထွက်ပေါက်တံခါးကို သော့ဖြင့် ဖွင့်မည် ]' : '[ လေးလံသော သော့ခလောက်နှင့် သံကြိုးများကို စစ်ဆေးမည် ]'}
@@ -394,7 +394,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
                 e.stopPropagation();
                 handleUnlockSequence();
               }}
-              className="px-5 py-2.5 bg-[#0b1712]/95 hover:bg-[#12281e] text-emerald-300 hover:text-emerald-100 border border-emerald-500/60 hover:border-emerald-400 rounded-full font-mono text-xs sm:text-sm tracking-wider uppercase shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.55)] transition-all flex items-center gap-2 cursor-pointer ring-1 ring-emerald-500/30 active:scale-95"
+              className="px-5 py-2.5 bg-[#0b1712]/95 hover:bg-[#12281e] text-emerald-300 hover:text-emerald-100 rounded-none font-burmese text-xs sm:text-sm tracking-wider leading-[1.75] transition-all flex items-center gap-2 cursor-pointer active:scale-95"
             >
               <Key className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
               [ လှေကားသော့ဖြင့် တံခါးဖွင့်မည် ]

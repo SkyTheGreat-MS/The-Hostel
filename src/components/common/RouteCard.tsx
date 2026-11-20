@@ -30,9 +30,6 @@ export const RouteCard: React.FC<RouteCardProps> = ({
 }) => {
   if (!visible) return null;
 
-  const borderClass = isSpecial
-    ? 'border-emerald-500/60 hover:border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] ring-1 ring-emerald-500/40'
-    : 'border-[#2e4238] hover:border-[#4d6e5e] shadow-[0_0_15px_rgba(46,66,56,0.5)] hover:shadow-[0_0_25px_rgba(46,66,56,0.7)]';
   const sectorClass = isSpecial ? 'text-emerald-400' : 'text-[#82a996]';
   const titleHover = isSpecial ? 'group-hover:text-emerald-300' : 'group-hover:text-[#6ee7b7]';
 
@@ -41,10 +38,10 @@ export const RouteCard: React.FC<RouteCardProps> = ({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: animDelay }}
-      whileHover={{ scale: 1.03, y: -4 }}
+      whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`group relative w-full h-80 sm:h-88 md:h-92 rounded-2xl overflow-hidden border bg-[#121815]/95 cursor-pointer hover:bg-[#18221d]/50 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4 ${borderClass}`}
+      className="group relative w-full h-80 sm:h-88 md:h-92 rounded-none overflow-hidden bg-[#0b0f0d]/90 backdrop-blur-sm cursor-pointer hover:bg-[#121815]/80 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4"
     >
       <img
         src={imagePath}
@@ -56,32 +53,31 @@ export const RouteCard: React.FC<RouteCardProps> = ({
       <div className="relative z-10 space-y-1 text-left">
         <div className="flex items-center justify-between gap-2">
           <span className={`text-[9px] sm:text-[10px] font-mono font-bold tracking-widest uppercase flex items-center gap-1.5 ${sectorClass}`}>
-            {isSpecial && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />}
+            {isSpecial && <span className="w-1.5 h-1.5 rounded-none bg-emerald-400 animate-ping shrink-0" />}
             {sectorLabel}
           </span>
           {lockState === 'locked' && (
-            <span className="text-stone-400 flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-stone-400 flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Lock className="w-3 h-3" /> သော့ခတ်ထားသည်
             </span>
           )}
           {lockState === 'unlocked' && (
-            <span className="text-[#6ee7b7] flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-[#6ee7b7] flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Unlock className="w-3 h-3" /> သော့ဖွင့်ထားသည်
             </span>
           )}
           {lockState === 'abandoned' && (
-            <span className="text-[#8fa89b] flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-[#8fa89b] flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Lock className="w-3 h-3 text-[#5a7a69]" /> စွန့်ပစ်ထားသည်
             </span>
           )}
         </div>
         <h3
-          className={`text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase transition-colors ${titleHover}`}
-          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+          className={`text-lg sm:text-xl font-burmese font-bold text-[#c2d6cc] tracking-wide leading-[1.75] transition-colors ${titleHover}`}
         >
           {title}
         </h3>
-        <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
+        <p className="text-[10px] sm:text-[11px] font-burmese text-stone-400 line-clamp-2 leading-[1.75]">
           {description}
         </p>
       </div>

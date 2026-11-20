@@ -193,7 +193,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
         {/* Hover tooltip anchored above the hovered hotspot */}
         {hoveredHotspot && (
           <span
-            className="absolute px-2.5 py-1 rounded bg-[#121815]/95 border border-[#2c3d34] text-[10px] font-mono text-[#82a996] whitespace-nowrap pointer-events-none shadow-lg -translate-x-1/2 -translate-y-full mb-2 z-40"
+            className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-mono text-[#82a996] whitespace-nowrap pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-40"
             style={{ left: `${hoveredHotspot.x}%`, top: `${hoveredHotspot.y}%` }}
           >
             {hoveredHotspot.text}
@@ -208,7 +208,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             onClick={insertBatteries}
-            className="absolute bottom-10 left-1/2 z-40 -translate-x-1/2 rounded-full border border-[#587867] bg-[#0b120e]/95 px-5 py-3 font-mono text-xs font-bold tracking-wider text-[#c5ded0] shadow-2xl transition hover:border-[#9cc7aa] hover:text-white"
+            className="absolute bottom-10 left-1/2 z-40 -translate-x-1/2 rounded-none bg-[#0b120e]/95 px-5 py-3 font-burmese text-xs font-bold tracking-wider leading-[1.75] text-[#c5ded0] transition hover:text-white cursor-pointer"
           >
             [ D-Cell ဓာတ်ခဲ ၂ လုံး ထည့်မည် ]
           </motion.button>
@@ -221,21 +221,21 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.96 }}
-            className="absolute left-1/2 top-1/2 z-40 w-80 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-[#41594b] bg-[#08100c]/90 p-5 text-center shadow-2xl backdrop-blur-md"
+            className="absolute left-1/2 top-1/2 z-40 w-80 -translate-x-1/2 -translate-y-1/2 rounded-none bg-[#08100c]/95 p-5 text-center backdrop-blur-md"
           >
             {/* Frequency Readout */}
-            <div className={`mb-5 font-mono text-3xl tracking-wider transition-colors duration-300 ${isLocked ? 'text-emerald-400' : 'text-[#d9eadf]'}`}>
+            <div className={`mb-5 font-mono tabular-nums text-3xl tracking-wider transition-colors duration-300 ${isLocked ? 'text-emerald-400' : 'text-[#d9eadf]'}`}>
               {frequency.toFixed(1)} <span className="text-sm text-[#8fa89b]">AM kHz</span>
             </div>
 
             {/* Analog Slider Track */}
             <div className="relative mb-3 h-8">
               {/* Track background */}
-              <div className="absolute left-0 top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-[#1a2b22]" />
+              <div className="absolute left-0 top-1/2 h-1.5 w-full -translate-y-1/2 rounded-none bg-[#1a2b22]" />
 
               {/* Filled portion */}
               <div
-                className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full transition-all duration-75"
+                className="absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-none transition-all duration-75"
                 style={{
                   width: `${sliderPercent}%`,
                   background: isLocked
@@ -268,7 +268,7 @@ export const RadioBenchInspectionView: React.FC<RadioBenchInspectionViewProps> =
                 onMouseUp={handleSliderRelease}
                 onTouchEnd={handleSliderRelease}
                 disabled={isLocked}
-                className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#82a996] [&::-webkit-slider-thumb]:bg-[#0b120e] [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(130,169,150,0.4)] [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:border-emerald-400 [&::-webkit-slider-thumb]:hover:shadow-[0_0_12px_rgba(52,211,153,0.5)] [&::-webkit-slider-thumb]:disabled:cursor-default [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[#82a996] [&::-moz-range-thumb]:bg-[#0b120e]"
+                className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-none [&::-webkit-slider-thumb]:bg-emerald-400 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:rounded-none [&::-moz-range-thumb]:bg-emerald-400"
               />
             </div>
 

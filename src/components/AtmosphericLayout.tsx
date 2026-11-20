@@ -129,23 +129,20 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
       {/* 5. Top Bar Header */}
       {!fullBleed && (
-        <header className="relative z-20 w-full border-b border-[#193828] bg-[#060b08]/90 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
+        <header className="relative z-20 w-full bg-[#060b08]/90 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3.5">
             <Link
               to="/"
               className="group flex items-center gap-2.5 text-[#6ea889] hover:text-[#b1d4c2] transition-colors"
               title="ပင်မမီနူးသို့ ပြန်သွားရန်"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#0b140f] border border-[#193828] flex items-center justify-center group-hover:border-[#29543e] group-hover:bg-[#101c15] transition-all shadow-md">
+              <div className="w-8 h-8 rounded-none bg-[#060b08]/85 flex items-center justify-center group-hover:bg-[#0b140f] transition-colors">
                 <Ghost className="w-4 h-4 text-[#6ea889] group-hover:text-[#b1d4c2] transition-colors" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm sm:text-base font-bold tracking-wider font-cinzel text-[#b1d4c2] group-hover:text-[#e0f0e7] transition-colors">
                     {headerTitle}
-                  </span>
-                  <span className="text-[10px] uppercase font-burmese px-1.5 py-0.5 rounded bg-[#0b140f] border border-[#193828] text-[#6ea889]">
-                    ၁၉၉၈ ပြန်သံ
                   </span>
                 </div>
                 <span className="text-[11px] text-[#447d60] font-mono hidden sm:block">
@@ -160,7 +157,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
               <Link
                 to={backTo}
                 onClick={() => sound.playMenuSelect()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0b140f] border border-[#193828] text-xs font-burmese text-[#b1d4c2] hover:text-[#e0f0e7] hover:border-[#29543e] hover:bg-[#101c15] transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm text-xs font-burmese text-[#b1d4c2] hover:text-[#e0f0e7] hover:bg-[#060b08]/90 transition-colors leading-[1.75]"
               >
                 <Compass className="w-3.5 h-3.5 text-[#6ea889]" />
                 <span>{backLabel}</span>
@@ -170,13 +167,9 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
             <button
               onClick={toggleSound}
               aria-label={isMuted ? 'အသံဖွင့်ရန်' : 'အသံပိတ်ရန်'}
-              className={`p-2 rounded-lg border transition-all ${
-                isMuted
-                  ? 'bg-[#060b08] border-[#112319] text-[#447d60] hover:text-[#b1d4c2]'
-                  : 'bg-[#0b140f] border-[#193828] text-[#6ea889] hover:bg-[#101c15] hover:border-[#29543e]'
-              }`}
+              className="p-2 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#6ea889] hover:text-[#b1d4c2] hover:bg-[#060b08]/90 transition-colors cursor-pointer"
             >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {isMuted ? <VolumeX className="w-4 h-4 text-[#447d60]" /> : <Volume2 className="w-4 h-4" />}
             </button>
           </div>
         </header>
@@ -195,9 +188,9 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
       {/* 7. Footer Seal & Subtle Timestamp */}
       {!fullBleed && (
-        <footer className="relative z-20 w-full border-t border-[#193828] bg-[#020504]/90 backdrop-blur-sm px-6 py-2.5 flex items-center justify-between text-[11px] font-mono text-[#447d60]">
+        <footer className="relative z-20 w-full bg-[#020504]/90 backdrop-blur-sm px-6 py-2.5 flex items-center justify-between text-[11px] font-mono text-[#447d60]">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#6ea889]/80 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-none bg-[#6ea889]/80 animate-pulse" />
             <span>NAT REALM STRAND: ACTIVE</span>
           </div>
           <div>

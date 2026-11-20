@@ -44,15 +44,15 @@ export const InventoryDrawerModal: React.FC<InventoryDrawerProps> = ({
   return (
     <div
       onClick={handleClose}
-      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px] flex items-center justify-center p-4 select-none cursor-default"
+      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 select-none cursor-default"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-[#0b120e] border border-[#263d30] rounded-2xl p-5 shadow-2xl space-y-4"
+        className="w-full max-w-md bg-[#060b08]/96 rounded-none p-5 space-y-4"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-[#1b2b22]">
-          <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold">
+        <div className="flex items-center justify-between pb-2">
+          <span className="font-mono text-xs tracking-wider text-[#78b394] uppercase font-semibold tabular-nums">
             Carried Possessions ({inventory.length})
           </span>
           <button
@@ -74,9 +74,9 @@ export const InventoryDrawerModal: React.FC<InventoryDrawerProps> = ({
             return (
               <div
                 key={`${itemId}-${idx}`}
-                className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-[#121c16] border border-[#1e2f25] select-none"
+                className="flex items-center gap-2 px-2.5 py-2 rounded-none bg-[#0b140f] select-none"
               >
-                <div className="w-6 h-6 rounded-md bg-[#18261f] border border-[#2b4234] flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 rounded-none bg-[#020504] flex items-center justify-center shrink-0">
                   <ItemIcon className="w-3.5 h-3.5 text-[#8fa89b]" name={item.icon} />
                 </div>
                 <span className="font-mono text-xs text-[#cce0d5] truncate font-medium">

@@ -176,18 +176,18 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             <Ghost className="w-16 h-16 text-red-500 animate-bounce" />
           </div>
           <div className="space-y-2">
-            <div className="inline-block px-3 py-1 bg-red-950 border border-red-700 rounded-full text-xs font-mono text-amber-300 tracking-widest uppercase">
+            <div className="inline-block px-3 py-1 bg-red-950 border border-red-700 rounded-full text-xs font-burmese text-amber-300 tracking-wide leading-[1.75]">
               အချိန်ကွာဟမှု အက်ကွဲကြောင်း • ၁၉၉၈ ဩဂုတ်လ
             </div>
-            <h2 className="text-3xl md:text-5xl font-bebas font-black text-amber-100 tracking-wider">
+            <h2 className="text-3xl md:text-5xl font-burmese font-bold text-amber-100 tracking-wide leading-[1.75]">
               အရိပ် ဖြစ်ရပ် စတင်ပါပြီ
             </h2>
           </div>
-          <p className="text-neutral-300 text-sm md:text-base font-sans leading-relaxed italic">
+          <p className="text-neutral-300 text-sm md:text-base font-burmese leading-[1.75] italic">
             &ldquo;လေထုက ရေခဲမှတ်အောက်ထိ အေးခဲသွားသည်။ တဖျတ်ဖျတ်လင်းနေသော အရိပ်တစ်ခု...&rdquo;
           </p>
-          <div className="p-3 bg-red-950/80 border border-red-800 rounded-lg text-xs font-mono text-amber-300">
-            [သဲလွန်စ မှတ်တမ်းတင်ပြီးပြီ: တဖျတ်ဖျတ်လင်းနေသော သရဲအရိပ် (glitch_body_glimpse)]
+          <div className="p-3 bg-red-950/80 border border-red-800 rounded-lg text-xs font-burmese text-amber-300 leading-[1.75]">
+            [သဲလွန်စ မှတ်တမ်းတင်ပြီးပြီ: တဖျတ်ဖျတ်လင်းနေသော သရဲအရိပ် <span className="font-mono">(glitch_body_glimpse)</span>]
           </div>
         </div>
       </div>
@@ -204,16 +204,16 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           </div>
 
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/60 border border-red-800 rounded-full text-xs font-mono text-amber-300">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/60 border border-red-800 rounded-full text-xs font-burmese text-amber-300 leading-[1.75]">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>အခန်း ၁ : အမှောင်ထဲက အစ ပြီးမြောက်ပါပြီ</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bebas font-black text-amber-100 tracking-wider">
+            <h2 className="text-3xl md:text-4xl font-burmese font-bold text-amber-100 tracking-wide leading-[1.75]">
               အခန်း ၂ : နတ်စောင့်၏ ဝင်္ကပါ
             </h2>
           </div>
 
-          <p className="text-neutral-200 text-xs sm:text-sm font-sans leading-relaxed max-w-lg mx-auto">
+          <p className="text-neutral-200 text-xs sm:text-sm font-burmese leading-[1.75] max-w-lg mx-auto">
             သင်သည် ကနဦး အမှောင်ထဲ ဝင်ရောက်ခြင်းမှ ရှင်သန်နိုင်ခဲ့ပြီ...
           </p>
 
@@ -229,7 +229,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             <button
               id="showcase-btn"
               onClick={() => navigate('/chapters')}
-              className="px-6 py-3 bg-red-900/80 hover:bg-red-800 text-amber-100 font-bebas tracking-wider text-lg rounded-xl border border-red-700 shadow-xl flex items-center gap-2 cursor-pointer transition-all active:scale-[0.98]"
+              className="px-6 py-3 bg-red-900/80 hover:bg-red-800 text-amber-100 font-burmese font-bold tracking-wider text-base rounded-xl border border-red-700 shadow-xl flex items-center gap-2 cursor-pointer transition-all active:scale-[0.98] leading-[1.75]"
             >
               <span>အခန်း ရွေးချယ်ရန်</span>
             </button>
@@ -253,7 +253,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             )}
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-bebas font-bold text-amber-100 uppercase tracking-widest">
+          <h2 className="text-3xl sm:text-4xl font-burmese font-bold text-amber-100 leading-[1.75]">
             {isVictorious ? 'စစ်မှန်သော ငြိမ်းချမ်းမှု ရရှိပြီ' : 'အချိန်ဝင်္ကပါ ပြိုကျပျက်စီးသွားပြီ'}
           </h2>
 
@@ -267,7 +267,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             {isVictorious && (
               <button
                 onClick={() => navigate('/chapters')}
-                className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-neutral-950 font-bebas tracking-wider text-base rounded-lg border border-amber-300 shadow-lg flex items-center gap-2 cursor-pointer"
+                className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-neutral-950 font-burmese font-bold tracking-wider text-sm rounded-lg border border-amber-300 shadow-lg flex items-center gap-2 cursor-pointer leading-[1.75]"
               >
                 <Unlock className="w-4 h-4" />
                 <span>အခန်း ပြခန်းသို့ ပြန်သွားရန်</span>
@@ -275,7 +275,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             )}
             <button
               onClick={onRestart}
-              className="px-6 py-3 bg-red-800 hover:bg-red-700 text-amber-100 font-bebas tracking-wider text-base rounded-lg border border-amber-400/40 shadow-lg flex items-center gap-2 cursor-pointer"
+              className="px-6 py-3 bg-red-800 hover:bg-red-700 text-amber-100 font-burmese font-bold tracking-wider text-sm rounded-lg border border-amber-400/40 shadow-lg flex items-center gap-2 cursor-pointer leading-[1.75]"
             >
               <RotateCcw className="w-4 h-4" />
               <span>{isVictorious ? 'အခန်း ၁ ကို ပြန်ကစားရန်' : 'စုံစမ်းစစ်ဆေးမှုကို ပြန်လည်ကြိုးစားရန်'}</span>
@@ -296,23 +296,23 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             <InkPortrait characterId={activeChar.id} size="full" />
           </div>
           <div>
-            <div className="text-[10px] uppercase font-mono tracking-widest text-red-400">
-              စုံစမ်းစစ်ဆေးသူ ({activeChar.archetype})
+            <div className="text-[10px] font-burmese tracking-wide text-red-400 leading-[1.75]">
+              စုံစမ်းစစ်ဆေးသူ <span className="font-mono">({activeChar.archetype})</span>
             </div>
-            <div className="font-bebas font-bold text-lg text-amber-100 tracking-wider">
+            <div className="font-burmese font-bold text-lg text-amber-100 tracking-wide leading-[1.75]">
               {activeChar.name}
             </div>
           </div>
         </div>
 
         {/* Meters */}
-        <div className="flex items-center gap-4 md:gap-8 text-xs font-mono">
+        <div className="flex items-center gap-4 md:gap-8 text-xs font-burmese leading-[1.75]">
           {/* Turns / Time */}
           <div className="flex items-center gap-2 bg-neutral-900/60 px-3 py-1.5 rounded-lg border border-neutral-800">
             <Clock className="w-4 h-4 text-amber-400 animate-pulse" />
             <div>
               <span className="text-neutral-400 text-[10px] block">အချိန်ကျောက်ဆူး</span>
-              <span className="font-bold text-amber-200">{gameState.timeRemaining} အလှည့်</span>
+              <span className="font-bold text-amber-200"><span className="font-mono tabular-nums">{gameState.timeRemaining}</span> အလှည့်</span>
             </div>
           </div>
 
@@ -321,7 +321,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
             <Shield className="w-4 h-4 text-cyan-400" />
             <div>
               <span className="text-neutral-400 text-[10px] block">စိတ်တည်ငြိမ်မှု</span>
-              <span className="font-bold text-cyan-200">{gameState.playerComposure}% ({gameState.composureState})</span>
+              <span className="font-bold text-cyan-200"><span className="font-mono tabular-nums">{gameState.playerComposure}%</span> ({gameState.composureState})</span>
             </div>
           </div>
 
@@ -336,7 +336,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
               <span className="text-neutral-400 text-[10px] block">
                 {isChapter1 ? 'အခန်း ၁ လှည့်လည်ခြင်း' : 'နာမ်ဝိညာဉ်၏ ဝမ်းနည်းပူဆွေးမှု'}
               </span>
-              <span className="font-bold text-amber-300">
+              <span className="font-bold text-amber-300 font-mono tabular-nums">
                 {isChapter1
                   ? `Step ${gameState.explorationCount || 0} / 3`
                   : `${gameState.mamaMayGrief} / 100`}
@@ -362,14 +362,14 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
         <div className="relative z-10 w-full max-w-3xl bg-neutral-950/90 border border-red-900/90 rounded-2xl p-5 shadow-2xl backdrop-blur-md max-h-[360px] overflow-y-auto">
           {subView === 'overview' && (
             <div className="space-y-4 text-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/70 border border-red-900 rounded-full text-xs text-amber-300 uppercase tracking-widest font-mono">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/70 border border-red-900 rounded-full text-xs text-amber-300 font-burmese leading-[1.75]">
                 <span>
                   {isChapter1
                     ? 'အခန်း ၁: အမှောင်ထဲက အစ • ၁၉၉၈ ဩဂုတ်လ'
                     : 'အခန်း ၂: နတ်စောင့်၏ ဝင်္ကပါ • ၁၉၉၈ ဩဂုတ်လ'}
                 </span>
               </div>
-              <h3 className="text-2xl font-bebas font-bold text-amber-100 tracking-wider">
+              <h3 className="text-2xl font-burmese font-bold text-amber-100 tracking-wide leading-[1.75]">
                 {isChapter1
                   ? `၁၉၉၈ ခုနှစ် အဆောင်ကို စူးစမ်းလေ့လာပါ၊ ${activeChar.name}`
                   : `What is your next move, ${activeChar.name}?`}
@@ -379,14 +379,14 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   ? `You have awakened in the sealed 1998 dormitory. Wander through the quiet rooms to survey the environment (${gameState.explorationCount || 0}/3 wander actions completed). Something lurks in the peripheral mist.`
                   : 'Mama May’s spirit wanders the corridors of Hostel Pathway 326. Search the rooms, cross-reference documents, commune with the Guardian Nat, and decipher the locked ciphers before the temporal anchor dissolves.'}
               </p>
-              <div className="pt-2 text-xs text-neutral-400 font-mono">
+              <div className="pt-2 text-xs text-neutral-400 font-burmese leading-[1.75]">
                 {isChapter1 ? (
                   <span>
-                    အခန်းများသို့ လှည့်လည်ရန် <span className="text-amber-400">[1]</span> ကိုနှိပ်ပါ သို့မဟုတ် မှတ်စုများအတွက် <span className="text-amber-400">[2]</span> ကိုနှိပ်ပါ။
+                    အခန်းများသို့ လှည့်လည်ရန် <span className="text-amber-400 font-mono">[1]</span> ကိုနှိပ်ပါ သို့မဟုတ် မှတ်စုများအတွက် <span className="text-amber-400 font-mono">[2]</span> ကိုနှိပ်ပါ။
                   </span>
                 ) : (
                   <span>
-                    <span className="text-amber-400">[1 - 5]</span> ဂဏန်းများကို နှိပ်ပါ...
+                    <span className="text-amber-400 font-mono">[1 - 5]</span> ဂဏန်းများကို နှိပ်ပါ...
                   </span>
                 )}
               </div>
@@ -397,7 +397,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           {subView === 'search_locations' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-red-900/60 pb-2">
-                <h4 className="font-bebas font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wider">
+                <h4 className="font-burmese font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wide leading-[1.75]">
                   <Compass className="w-4 h-4 text-amber-400" />
                   <span>
                     {isChapter1
@@ -407,9 +407,9 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                 </h4>
                 <button
                   onClick={() => setSubView('overview')}
-                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-mono"
+                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-burmese leading-[1.75]"
                 >
-                  နောက်သို့ [ESC]
+                  နောက်သို့ <span className="font-mono">[ESC]</span>
                 </button>
               </div>
 
@@ -426,14 +426,14 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                     >
                       <div>
                         <div className="flex items-center justify-between text-xs font-bold text-amber-100">
-                          <span className="font-bebas tracking-wide text-sm">{loc.name}</span>
-                          <span className="text-[10px] text-amber-400 font-mono">
+                          <span className="font-burmese font-bold tracking-wide text-sm leading-[1.75]">{loc.name}</span>
+                          <span className="text-[10px] text-amber-400 font-burmese leading-[1.75]">
                             {isChapter1 ? '-၁ လှည့်' : `-${loc.turnCost} လှည့်`}
                           </span>
                         </div>
-                        <p className="text-[11px] text-neutral-400 mt-1 font-sans">{loc.description}</p>
+                        <p className="text-[11px] text-neutral-400 mt-1 font-burmese leading-[1.75]">{loc.description}</p>
                       </div>
-                      <div className="mt-2 text-[10px] font-mono text-right">
+                      <div className="mt-2 text-[10px] font-burmese text-right leading-[1.75]">
                         {isChapter1 ? (
                           <span className="text-amber-400 flex items-center justify-end gap-1">
                             <Footprints className="w-3 h-3" /> အခန်းတွင်း လှည့်လည်ပါ
@@ -457,7 +457,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           {subView === 'examine_clues' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-red-900/60 pb-2">
-                <h4 className="font-bebas font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wider">
+                <h4 className="font-burmese font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wide leading-[1.75]">
                   <Scroll className="w-4 h-4 text-amber-400" />
                   <span>
                     {isChapter1
@@ -467,9 +467,9 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                 </h4>
                 <button
                   onClick={() => setSubView('overview')}
-                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-mono"
+                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-burmese leading-[1.75]"
                 >
-                  နောက်သို့ [ESC]
+                  နောက်သို့ <span className="font-mono">[ESC]</span>
                 </button>
               </div>
 
@@ -481,8 +481,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                       : 'No clues discovered yet. Search the dormitory rooms and courtyard to uncover evidence.'}
                   </p>
                   {gameState.historyLog.length > 0 && (
-                    <div className="text-left bg-neutral-900/80 border border-neutral-800 rounded p-3 text-[11px] font-mono text-neutral-300 space-y-1">
-                      <div className="text-amber-400 font-bold mb-1 font-mono">လေ့လာစောင့်ကြည့်မှု မှတ်တမ်း:</div>
+                    <div className="text-left bg-neutral-900/80 border border-neutral-800 rounded p-3 text-[11px] font-burmese text-neutral-300 space-y-1 leading-[1.75]">
+                      <div className="text-amber-400 font-bold mb-1 font-burmese">လေ့လာစောင့်ကြည့်မှု မှတ်တမ်း:</div>
                       {gameState.historyLog.slice(-3).map((log, idx) => (
                         <div key={idx} className="text-neutral-400">• {log}</div>
                       ))}
@@ -494,14 +494,14 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   {CLUES.filter((c) => gameState.discoveredClues.includes(c.id)).map((clue) => (
                     <div key={clue.id} className="p-3 bg-neutral-900/80 border border-red-950 rounded-lg">
                       <div className="flex items-center justify-between text-xs font-bold text-amber-200">
-                        <span className="font-bebas tracking-wide text-sm">{clue.title}</span>
+                        <span className="font-burmese tracking-wide text-sm leading-[1.75]">{clue.title}</span>
                         {clue.isCipher && (
-                          <span className="px-2 py-0.5 bg-amber-950 border border-amber-800 text-[10px] text-amber-300 rounded font-mono">
-                            ဆီဇာ လျှို့ဝှက်ကုဒ် (Caesar Cipher)
+                          <span className="px-2 py-0.5 bg-amber-950 border border-amber-800 text-[10px] text-amber-300 rounded font-burmese leading-[1.75]">
+                            ဆီဇာ လျှို့ဝှက်ကုဒ် <span className="font-mono">(Caesar Cipher)</span>
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-neutral-300 mt-1 font-sans">{clue.details}</p>
+                      <p className="text-xs text-neutral-300 mt-1 font-burmese leading-[1.75]">{clue.details}</p>
                     </div>
                   ))}
                 </div>
@@ -513,44 +513,44 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           {!isChapter1 && subView === 'guardian_nat' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-red-900/60 pb-2">
-                <h4 className="font-bebas font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wider">
+                <h4 className="font-burmese font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wider leading-[1.75]">
                   <Flame className="w-4 h-4 text-amber-400" />
                   <span>နတ်စောင့်: အစုံလိုက် တီးတိုးသံများ</span>
                 </h4>
                 <button
                   onClick={() => setSubView('overview')}
-                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-mono"
+                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-burmese leading-[1.75]"
                 >
-                  နောက်သို့ [ESC]
+                  နောက်သို့ <span className="font-mono">[ESC]</span>
                 </button>
               </div>
 
               {GUARDIAN_PAIRS.map((pair) => (
                 <div key={pair.id} className="p-3 bg-neutral-900/80 border border-neutral-800 rounded-lg space-y-2">
-                  <div className="text-xs font-bold text-amber-300 font-mono">
+                  <div className="text-xs font-bold text-amber-300 font-burmese leading-[1.75]">
                     ဆက်သွယ်မှု #{pair.id}: လိမ်ညာမှုမှ အမှန်တရားကို ခွဲခြားသိမြင်ပါ
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <button
                       onClick={() => handleGuardianChoice(pair.id, 1)}
-                      className={`p-2 rounded text-left text-xs font-sans border transition-all cursor-pointer ${
+                      className={`p-2 rounded text-left text-xs font-burmese leading-[1.75] border transition-all cursor-pointer ${
                         gameState.deducedChoices[pair.id] === 1
                           ? 'bg-red-950 border-amber-400 text-amber-100'
                           : 'bg-neutral-950/80 border-neutral-800 hover:border-red-800 text-neutral-300'
                       }`}
                     >
-                      <span className="font-bold text-amber-400 block mb-1 font-mono">ထွက်ဆိုချက် က:</span>
+                      <span className="font-bold text-amber-400 block mb-1 font-burmese leading-[1.75]">ထွက်ဆိုချက် က:</span>
                       {pair.statementA}
                     </button>
                     <button
                       onClick={() => handleGuardianChoice(pair.id, 2)}
-                      className={`p-2 rounded text-left text-xs font-sans border transition-all cursor-pointer ${
+                      className={`p-2 rounded text-left text-xs font-burmese leading-[1.75] border transition-all cursor-pointer ${
                         gameState.deducedChoices[pair.id] === 2
                           ? 'bg-red-950 border-amber-400 text-amber-100'
                           : 'bg-neutral-950/80 border-neutral-800 hover:border-red-800 text-neutral-300'
                       }`}
                     >
-                      <span className="font-bold text-amber-400 block mb-1 font-mono">ထွက်ဆိုချက် ခ:</span>
+                      <span className="font-bold text-amber-400 block mb-1 font-burmese leading-[1.75]">ထွက်ဆိုချက် ခ:</span>
                       {pair.statementB}
                     </button>
                   </div>
@@ -562,28 +562,28 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           {!isChapter1 && subView === 'symbolic_riddles' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-red-900/60 pb-2">
-                <h4 className="font-bebas font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wider">
+                <h4 className="font-burmese font-bold text-amber-200 flex items-center gap-2 text-lg tracking-wide leading-[1.75]">
                   <HelpCircle className="w-4 h-4 text-amber-400" />
                   <span>မေမေ့ (Mama May) ၏ သင်္ကေတပဟေဠိများ</span>
                 </h4>
                 <button
                   onClick={() => setSubView('overview')}
-                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-mono"
+                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-burmese leading-[1.75]"
                 >
-                  နောက်သို့ [ESC]
+                  နောက်သို့ <span className="font-mono">[ESC]</span>
                 </button>
               </div>
 
               {VICTIM_RIDDLES.map((riddle) => (
                 <div key={riddle.topic} className="p-3 bg-neutral-900/80 border border-neutral-800 rounded-lg space-y-2">
-                  <div className="text-xs font-bold text-amber-300 font-mono">{riddle.title}</div>
-                  <p className="text-xs italic text-red-300 font-sans">&ldquo;{riddle.symbolicText}&rdquo;</p>
+                  <div className="text-xs font-bold text-amber-300 font-burmese leading-[1.75]">{riddle.title}</div>
+                  <p className="text-xs italic text-red-300 font-burmese leading-[1.75]">&ldquo;{riddle.symbolicText}&rdquo;</p>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {riddle.options.map((opt) => (
                       <button
                         key={opt.meaningKey}
                         onClick={() => handleRiddleChoice(riddle.topic, opt.meaningKey)}
-                        className={`px-3 py-1.5 rounded text-xs font-sans border transition-all cursor-pointer ${
+                        className={`px-3 py-1.5 rounded text-xs font-burmese leading-[1.75] border transition-all cursor-pointer ${
                           gameState.decodeChoices[riddle.topic] === opt.meaningKey
                             ? 'bg-red-950 border-amber-400 text-amber-100'
                             : 'bg-neutral-950 border-neutral-800 hover:border-red-800 text-neutral-300'
@@ -601,26 +601,26 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
           {!isChapter1 && subView === 'accusation_rite' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b border-red-900/60 pb-2">
-                <h4 className="font-bebas font-bold text-red-300 flex items-center gap-2 text-lg tracking-wider">
+                <h4 className="font-burmese font-bold text-red-300 flex items-center gap-2 text-lg tracking-wide leading-[1.75]">
                   <Skull className="w-4 h-4 text-red-500" />
                   <span>နောက်ဆုံး စွပ်စွဲချက်နှင့် နတ်ပူဇော် ပသခြင်း ဓလေ့</span>
                 </h4>
                 <button
                   onClick={() => setSubView('overview')}
-                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-mono"
+                  className="text-xs text-neutral-400 hover:text-amber-200 px-2 py-1 bg-neutral-900 rounded font-burmese leading-[1.75]"
                 >
-                  နောက်သို့ [ESC]
+                  နောက်သို့ <span className="font-mono">[ESC]</span>
                 </button>
               </div>
 
-              <div className="space-y-3 font-sans text-xs">
+              <div className="space-y-3 font-burmese text-xs leading-[1.75]">
                 {/* Killer */}
                 <div>
-                  <label className="block text-amber-300 font-bold mb-1 font-mono">လူသတ်သမားကို စွပ်စွဲပါ:</label>
+                  <label className="block text-amber-300 font-bold mb-1 font-burmese leading-[1.75]">လူသတ်သမားကို စွပ်စွဲပါ:</label>
                   <select
                     value={accusedKiller}
                     onChange={(e) => setAccusedKiller(e.target.value)}
-                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-sans"
+                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-burmese leading-[1.75]"
                   >
                     <option value="sandar">စန္ဒာ (အခန်းဖော်နှင့် ယုံကြည်ရသူ)</option>
                     <option value="ko_zaw">ကိုဇော် (ချစ်သူရည်းစား)</option>
@@ -630,11 +630,11 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
 
                 {/* Cause of Death */}
                 <div>
-                  <label className="block text-amber-300 font-bold mb-1 font-mono">သေဆုံးရသည့် အကြောင်းရင်း:</label>
+                  <label className="block text-amber-300 font-bold mb-1 font-burmese leading-[1.75]">သေဆုံးရသည့် အကြောင်းရင်း:</label>
                   <select
                     value={accusedCause}
                     onChange={(e) => setAccusedCause(e.target.value)}
-                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-sans"
+                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-burmese leading-[1.75]"
                   >
                     <option value="strangled">လက်ဖြင့် လည်ပင်းညှစ်သတ်ခြင်း</option>
                     <option value="poisoned">ပန်းပေါင်းလက်ဖက်ရည် ပန်းဒိုင်ယာ (Datura) အဆိပ်ခတ်ခြင်း</option>
@@ -644,11 +644,11 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
 
                 {/* Body Location */}
                 <div>
-                  <label className="block text-amber-300 font-bold mb-1 font-mono">အလောင်းဖျောက်ဖျက်ထားသည့် နေရာ:</label>
+                  <label className="block text-amber-300 font-bold mb-1 font-burmese leading-[1.75]">အလောင်းဖျောက်ဖျက်ထားသည့် နေရာ:</label>
                   <select
                     value={accusedLocation}
                     onChange={(e) => setAccusedLocation(e.target.value)}
-                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-sans"
+                    className="w-full p-2 bg-neutral-900 border border-neutral-800 rounded text-neutral-200 font-burmese leading-[1.75]"
                   >
                     <option value="dried_well">ခြံဝင်းအတွင်းရှိ ရေတွင်းဟောင်း</option>
                     <option value="mango_tree">ခြံဝင်းအတွင်းရှိ ရှေးဟောင်း သရက်ပင်၏ အမြစ်များ</option>
@@ -665,7 +665,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                     onChange={(e) => setPerformRite(e.target.checked)}
                     className="w-4 h-4 accent-red-600 rounded"
                   />
-                  <label htmlFor="riteCheck" className="text-amber-200 font-sans">
+                  <label htmlFor="riteCheck" className="text-amber-200 font-burmese leading-[1.75]">
                     စစ်မှန်သော နတ်ပူဇော်ပသမှုနှင့် ဆုတောင်းရွတ်ဖတ်ခြင်းကို ပြုလုပ်ပါ (မေမေ့၏ ဝိညာဉ်ကို လွတ်မြောက်စေသည်)
                   </label>
                 </div>
@@ -673,7 +673,7 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                 {/* Submit Button */}
                 <button
                   onClick={handleFinalAccusation}
-                  className="w-full py-3 bg-red-800 hover:bg-red-700 border border-red-600 rounded-lg text-amber-100 font-bold font-bebas text-lg tracking-wider cursor-pointer shadow-lg mt-3"
+                  className="w-full py-3 bg-red-800 hover:bg-red-700 border border-red-600 rounded-lg text-amber-100 font-bold font-burmese text-base tracking-wider cursor-pointer shadow-lg mt-3 leading-[1.75]"
                 >
                   စွပ်စွဲချက်ကို အတည်ပြုပြီး နာမ်ဝိညာဉ်ကို ရင်ဆိုင်ပါ
                 </button>
@@ -701,8 +701,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[1] အဆောင်တွင်း လှည့်လည်ရန်</div>
-              <div className="text-base font-bebas font-bold tracking-wider">၁၉၉၈ စင်္ကြံများကို ရှာဖွေရန်</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[1]</span> အဆောင်တွင်း လှည့်လည်ရန်</div>
+              <div className="text-base font-burmese font-bold tracking-wider leading-[1.75]">၁၉၉၈ စင်္ကြံများကို ရှာဖွေရန်</div>
             </button>
 
             {/* Choice 2: Notes */}
@@ -718,8 +718,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[2] ဂျာနယ်နှင့် မှတ်စုများ</div>
-              <div className="text-base font-bebas font-bold tracking-wider">စုံစမ်းစစ်ဆေးမှု သမိုင်းကြောင်း</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[2]</span> ဂျာနယ်နှင့် မှတ်စုများ</div>
+              <div className="text-base font-burmese font-bold tracking-wider leading-[1.75]">စုံစမ်းစစ်ဆေးမှု သမိုင်းကြောင်း</div>
             </button>
           </div>
         ) : (
@@ -737,8 +737,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[1] ရှာဖွေရန်</div>
-              <div className="text-sm font-bebas font-bold tracking-wider truncate">အဆောင် နေရာများ</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[1]</span> ရှာဖွေရန်</div>
+              <div className="text-sm font-burmese font-bold tracking-wider truncate leading-[1.75]">အဆောင် နေရာများ</div>
             </button>
 
             {/* Choice 2 */}
@@ -753,8 +753,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[2] သဲလွန်စများ</div>
-              <div className="text-sm font-bebas font-bold tracking-wider truncate">လျှို့ဝှက်ကုဒ်များနှင့် မှတ်စုများ</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[2]</span> သဲလွန်စများ</div>
+              <div className="text-sm font-burmese font-bold tracking-wider truncate leading-[1.75]">လျှို့ဝှက်ကုဒ်များနှင့် မှတ်စုများ</div>
             </button>
 
             {/* Choice 3 */}
@@ -769,8 +769,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[3] နတ်စောင့်</div>
-              <div className="text-sm font-bebas font-bold tracking-wider truncate">အစုံလိုက် တီးတိုးသံများ</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[3]</span> နတ်စောင့်</div>
+              <div className="text-sm font-burmese font-bold tracking-wider truncate leading-[1.75]">အစုံလိုက် တီးတိုးသံများ</div>
             </button>
 
             {/* Choice 4 */}
@@ -785,8 +785,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-neutral-950/80 border-red-900/60 hover:bg-red-950 hover:border-amber-500/60 text-neutral-300'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-amber-400">[4] ပဟေဠိများ</div>
-              <div className="text-sm font-bebas font-bold tracking-wider truncate">ဝိညာဉ်၏ တင်စားချက်များ</div>
+              <div className="text-[10px] font-burmese font-bold text-amber-400 leading-[1.75]"><span className="font-mono">[4]</span> ပဟေဠိများ</div>
+              <div className="text-sm font-burmese font-bold tracking-wider truncate leading-[1.75]">ဝိညာဉ်၏ တင်စားချက်များ</div>
             </button>
 
             {/* Choice 5 */}
@@ -801,8 +801,8 @@ export const ExplorationMenu: React.FC<ExplorationMenuProps> = ({
                   : 'bg-red-950/60 border-red-800 hover:bg-red-900 hover:border-amber-400 text-amber-200'
               }`}
             >
-              <div className="text-[10px] font-mono font-bold text-red-400">[5] စွပ်စွဲရန်</div>
-              <div className="text-sm font-bebas font-bold tracking-wider truncate">ငြိမ်းချမ်းစေသော ဓလေ့</div>
+              <div className="text-[10px] font-burmese font-bold text-red-400 leading-[1.75]"><span className="font-mono">[5]</span> စွပ်စွဲရန်</div>
+              <div className="text-sm font-burmese font-bold tracking-wider truncate leading-[1.75]">ငြိမ်းချမ်းစေသော ဓလေ့</div>
             </button>
           </div>
         )}

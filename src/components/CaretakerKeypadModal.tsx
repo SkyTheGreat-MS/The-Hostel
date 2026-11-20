@@ -9,6 +9,7 @@ export interface LockModalProps {
   onCombinationAttemptFailed?: (attemptCount?: number, penalty?: number) => void;
   composure?: number;
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   setIsScreenShaking?: React.Dispatch<React.SetStateAction<boolean>>;
   failedAttempts?: number;
   setFailedAttempts?: React.Dispatch<React.SetStateAction<number>>;
@@ -21,6 +22,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
   onCombinationAttemptFailed,
   composure,
   setComposure,
+  applyDamage,
   setIsScreenShaking,
   failedAttempts,
   setFailedAttempts,
@@ -78,7 +80,9 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         setTimeout(() => setIsScreenShaking(false), 300);
       }
 
-      if (setComposure) {
+      if (applyDamage) {
+        applyDamage(penalty, 'mental', 'keypad_failure');
+      } else if (setComposure) {
         setComposure((prev) => Math.max(0, prev - penalty));
       }
 
@@ -108,10 +112,10 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
 
       {/* Heavy Weathered Iron / Brass Padlock Body */}
       <div
-        className={`relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#241f18] via-[#1a1712] to-[#12100d] border-4 ${
+        className={`relative w-full max-w-sm rounded-none bg-gradient-to-b from-[#241f18] via-[#1a1712] to-[#12100d] ${
           isJolting
-            ? 'border-red-600 shadow-[0_0_40px_rgba(220,38,38,0.6)] animate-lock-jolt'
-            : 'border-[#3f3526] shadow-[0_20px_50px_rgba(0,0,0,0.9)]'
+            ? 'bg-red-950/40 animate-lock-jolt'
+            : ''
         } p-6 flex flex-col items-center transition-colors duration-200`}
       >
         
@@ -119,13 +123,13 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         <div className="w-36 h-28 -mt-20 border-[16px] border-[#383b38] rounded-t-full shadow-inner pointer-events-none" />
 
         {/* Lock Faceplate Plate */}
-        <div className="w-full pb-3 border-b border-[#352c1e] flex items-center justify-between">
-          <span className="font-burmese text-[11px] tracking-wide text-[#a37f37]">
+        <div className="w-full pb-3 flex items-center justify-between">
+          <span className="font-burmese text-[11px] tracking-wide text-[#a37f37] leading-[1.75]">
             မူပိုင်ခွင့် ၁၉၇၄ • အကြမ်းခံကြေးဝါဂျက်ခလောက်
           </span>
           {typeof composure === 'number' && (
             <span
-              className={`font-burmese text-xs font-bold tracking-wide transition-colors ${
+              className={`font-burmese text-xs font-bold tracking-wide transition-colors leading-[1.75] tabular-nums ${
                 composure <= 20
                   ? 'text-red-400 animate-pulse'
                   : composure <= 45
@@ -139,7 +143,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         </div>
 
         {/* 6 Rotary Number Tumblers */}
-        <div className="flex gap-2 my-5 py-2 px-3 rounded-xl bg-[#0d0c0a] border border-[#2b251a] shadow-inner">
+        <div className="flex gap-2 my-5 py-2 px-3 rounded-none bg-[#0d0c0a] shadow-inner">
           {digits.map((digit, idx) => (
             <div key={idx} className="flex flex-col items-center space-y-1">
               <button
@@ -150,8 +154,8 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
               >
                 ▲
               </button>
-              <div className="w-9 h-12 rounded bg-gradient-to-b from-[#1c1813] via-[#332b1f] to-[#1c1813] border border-[#52442e] flex items-center justify-center shadow-md">
-                <span className="font-mono text-xl font-bold text-[#e6cca0] select-none">
+              <div className="w-9 h-12 rounded-none bg-gradient-to-b from-[#1c1813] via-[#332b1f] to-[#1c1813] flex items-center justify-center">
+                <span className="font-mono text-xl font-bold text-[#e6cca0] select-none tabular-nums">
                   {digit}
                 </span>
               </div>
@@ -169,22 +173,22 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
 
         {/* Failed Attempt Warning & Composure Loss Banner */}
         {lastPenalty !== null && (
-          <div className="w-full mb-4 px-3 py-2 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center justify-between text-xs animate-pulse">
+          <div className="w-full mb-4 px-3 py-2 rounded-none bg-red-950/70 flex items-center justify-between text-xs animate-pulse">
             <div className="flex flex-col">
-              <span className="font-burmese text-red-300 font-bold text-[11px] flex items-center gap-1.5">
+              <span className="font-burmese text-red-300 font-bold text-[11px] flex items-center gap-1.5 leading-[1.75]">
                 <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
                 <span>သော့ဂျက် တင်းကျပ်နေသည်</span>
                 <span className="text-[10px] text-red-400/80 font-normal">
                   (ကုဒ်အမှား အကြိမ် #{recentAttemptNumber})
                 </span>
               </span>
-              <span className="text-[10px] font-burmese text-red-400/70">
+              <span className="text-[10px] font-burmese text-red-400/70 leading-[1.75]">
                 သော့ကွင်းက တကျီကျီမြည်ကာ မပွင့်ပါ...
               </span>
             </div>
-            <div className="font-mono font-bold text-red-400 text-right tracking-wider">
+            <div className="font-mono font-bold text-red-400 text-right tracking-wider tabular-nums">
               -{lastPenalty}%
-              <div className="text-[9px] font-burmese text-red-500/80 uppercase">စိတ်တည်ငြိမ်မှု</div>
+              <div className="text-[9px] font-burmese text-red-500/80 uppercase leading-[1.75]">စိတ်တည်ငြိမ်မှု</div>
             </div>
           </div>
         )}
@@ -194,14 +198,14 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg border border-[#382f21] text-xs font-burmese text-[#a37f37] hover:text-[#c7a458] cursor-pointer"
+            className="px-3 py-1.5 rounded-none bg-transparent text-xs font-burmese text-[#a37f37] hover:text-[#c7a458] cursor-pointer leading-[1.75] transition-colors"
           >
             ပြန်ထွက်မည်
           </button>
           <button
             type="button"
             onClick={handleAttemptUnlock}
-            className="px-5 py-1.5 rounded-lg bg-[#3d311d] hover:bg-[#524227] border border-[#695431] text-xs font-burmese tracking-wide text-[#fae1b4] font-bold uppercase shadow-lg transition-all active:scale-95 cursor-pointer"
+            className="px-5 py-1.5 rounded-none bg-[#3d311d] hover:bg-[#524227] text-xs font-burmese tracking-wide text-[#fae1b4] font-bold uppercase transition-colors active:scale-95 cursor-pointer leading-[1.75]"
           >
             သော့ဂျက်ဆွဲဖွင့်မည်
           </button>

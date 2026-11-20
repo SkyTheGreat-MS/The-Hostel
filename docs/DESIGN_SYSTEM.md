@@ -8,10 +8,11 @@
 
 The aesthetic of *The Hostel* is rooted in the oppressive, decaying atmosphere of an abandoned 1998 university dormitory trapped in a supernatural temporal echo.
 
-The interface adheres to three core design rules:
+The interface adheres to four core design rules:
 1. **Duo-Tone Baseline**: Normal gameplay interfaces are strictly duo-tone (Obsidian Void and Sickly Spectral Verdigris).
 2. **Eye-Breaking Event Accents**: High-contrast tertiary colors breach the shroud only during high-stakes narrative triggers (trauma, altar sanctum, temporal static).
-3. **Period Authenticity & No AI Slop**: Zero consumer emoji glyphs, no generic rounded card boxes, no artificial neon border frames, and authentic period typography.
+3. **Period Authenticity & No AI Slop**: Zero consumer emoji glyphs, zero bubbly rounded cards or pill buttons, and authentic period typography.
+4. **Brutalist 1998 Geometry & Borderless Atmospheric Blending**: Razor-sharp corners (`rounded-none`), zero boxy borderlines or card outlines (Rules 8 & 13). Elements dissolve organically into the background scene via translucent obsidian washes (`bg-[#020504]/60`) rather than floating as toy-like bordered cards.
 
 ---
 
@@ -69,14 +70,14 @@ Triggered when the 2026 university seance group sends radio signals or temporal 
 
 | Script / Usage | Family | Source | Fallbacks |
 |---|---|---|---|
-| **Burmese Script (All)** | `Aka08` | Local (`/fonts/Aka08-Regular.ttf`) | `Pyidaungsu`, `Myanmar Text`, `sans-serif` |
+| **Burmese Script (All)** | `Aka08` | Local (`/fonts/Aka08-Regular.ttf`) | `Myanmar Text`, `sans-serif` |
 | **Occult Latin Display** | `Cinzel` | Google Fonts | `serif` |
 | **1998 Vintage Documents** | `Special Elite` | Google Fonts | `cursive` |
 | **Timers & Numerics** | `Bebas Neue` | Google Fonts | `Impact`, `sans-serif` |
 | **Technical Telemetry / HUD**| `JetBrains Mono` | Google Fonts | `ui-monospace`, `monospace` |
 
 ### 3.2 Burmese Typography Rules
-- **Font Stack**: Always apply `--font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;`.
+- **Font Stack**: Always apply `--font-burmese: 'Aka08', 'Myanmar Text', sans-serif;`.
 - **Line-Height Enforcement**: Burmese text requires a strict minimum line-height ratio of `1.7` to `1.75` (`leading-[1.75]`). This prevents stacked consonants (`င်္သ`, `န္တာ`), subscripts (`ျ`, `ြ`, `ွ`, `ှ`), and tone marks (`့`, `း`, `်`) from clipping.
 - **No Faux Styles**: Never apply synthetic CSS italics or condensed sans-serif fonts (e.g. `Bebas Neue`) to Burmese text.
 - **Word Break**: Apply `word-break: break-word` and `hyphens: none` for natural Burmese syllable wrapping.
@@ -128,10 +129,22 @@ Consumer emoji glyphs are strictly prohibited across all game interfaces:
 - `z-60`: Screen trauma glitches, taboo shock overlays
 
 ### 6.2 Modal Dialog Standards
-- Surface: Matte obsidian `#060b08/96` with backdrop blur (`backdrop-blur-md`).
-- Border: 1px fine verdigris `#193828`.
-- Header: Minimalist title in `Cinzel`, subtitle in `JetBrains Mono`, and monochrome vector `X` close icon.
+- Surface: Matte obsidian `#060b08/96` with backdrop blur (`backdrop-blur-md`), zero outline borders.
+- Header: Minimalist title in `Cinzel`, subtitle in `JetBrains Mono`, and monochrome vector `X` close icon (borderless hover).
 - Navigation: Standardized keyboard dismiss via `Escape`.
+
+### 6.3 Anti-AI Slop Geometry & Borderless Atmospheric Standards
+- **Zero Bubbly/Pill Corners**: Standard web template rounding (`rounded-lg`, `rounded-xl`, `rounded-2xl`, `rounded-3xl`, and pill buttons) is strictly banned for HUD badges, navigation controls, vitals bars, inventory slots, and modal frames.
+- **Brutalist 1998 Sharp Edges**: All interactive buttons, status badges, and panels use razor-sharp corners (`rounded-none`), matching the cold institutional atmosphere of 1998 hostel metal, stamped badges, and weathered dorm equipment.
+- **Elimination of Artificial Borderlines**:
+  - In accordance with UI/UX rules (Rule 8: Group with spacing; Rule 13: Remove embellishments), UI elements must NEVER be boxed inside heavy outline borderlines (`border border-...`).
+  - Related items are grouped strictly with spacing and proximity (Law of Proximity), not border outlines.
+  - Interactive states trigger subtle background luminance transitions (`hover:bg-[#060b08]/90`, `hover:text-[#e0f0e7]`), never popping up bright neon outline borders.
+- **Atmospheric Background Dissolution**:
+  - UI containers must never float as disconnected bright plastic cards.
+  - Surfaces use translucent obsidian washes (`bg-[#020504]/60`) with subtle backdrop blur (`backdrop-blur-sm`), allowing the environmental textures (decaying plaster, monsoon moisture, darkness) to bleed through naturally.
+  - Dynamic numbers (HP, Mind, clock timer, counters) must use `tabular-nums font-mono` to prevent jitter (Rule 18).
+  - Filler badges and decorative pills are strictly eliminated (Rule 1).
 
 ---
 

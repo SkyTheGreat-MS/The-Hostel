@@ -15,11 +15,11 @@ export const ChapterTwo: React.FC = () => {
 
   return (
     <AtmosphericLayout
-      headerTitle="THE SPIRIT'S LABYRINTH"
+      headerTitle="ဝိညာဉ်၏ ဝင်္ကပါ"
       headerSubtitle={
         isCh3
-          ? 'CHAPTER 3 : ESCAPE / THE OUTSIDE GROUNDS (1998)'
-          : 'CHAPTER 2 : UNDERSTANDING (1998)'
+          ? 'အခန်း ၃ • ထွက်ပေါက် / အဆောင်ပြင်ပ ခြံဝင်း (၁၉၉၈)'
+          : 'အခန်း ၂ • နားလည်သဘောပေါက်ခြင်း (၁၉၉၈)'
       }
       backgroundImage={
         isCh3
@@ -29,7 +29,7 @@ export const ChapterTwo: React.FC = () => {
       hideBackground
       chapterNumber={currentChapter}
       backTo="/chapters"
-      backLabel="Chapters"
+      backLabel="အခန်း ရွေးချယ်မှု"
       fullBleed={true}
     >
       <div className="w-full h-full flex-1 flex flex-col">

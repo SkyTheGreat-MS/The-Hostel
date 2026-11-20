@@ -275,7 +275,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         stage: 5,
         title: 'အဆင့် ၅ - ရေအားလုံး ခန်းခြောက်သွားပြီ',
         desc: 'အဆို့ရှင်ကို အပြည့်ဖွင့်ပြီး သော့ခတ်လိုက်ပြီ။ နောက်ကျိနေသော ရေဆိုးများ အကုန်စီးထွက်သွားပြီ။',
-        color: 'text-emerald-400 border-emerald-500/80 bg-emerald-950/40',
+        color: 'text-emerald-400 bg-emerald-950/40',
         waterHeightPct: 0,
         swirlOpacity: 0,
       };
@@ -285,7 +285,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         stage: 4,
         title: 'အဆင့် ၄ - ရေကျလုနီးပါးဖြစ်နေပြီ (၇၅–၉၉%)',
         desc: 'မြေအောက်ကြမ်းပြင် ကြွေပြားများနှင့် ကိရိယာလှောင်အိမ် နုန်းများကြားမှ ပေါ်ထွက်လာသည်။',
-        color: 'text-cyan-300 border-cyan-500/70 bg-cyan-950/30',
+        color: 'text-cyan-300 bg-cyan-950/30',
         waterHeightPct: 10,
         swirlOpacity: 0.4,
       };
@@ -295,7 +295,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         stage: 3,
         title: 'အဆင့် ၃ - ရေအရှိန်အဟုန်ဖြင့် စီးဆင်းနေသည် (၅၀–၇၅%)',
         desc: 'ကြမ်းခင်းသံဆန်ခါပေါက်များပေါ်တွင် ရေဝဲကြီးတစ်ခု ဖြစ်ပေါ်နေသည်။ ရေမျက်နှာပြင် လျင်မြန်စွာ ကျဆင်းနေသည်။',
-        color: 'text-amber-300 border-amber-500/70 bg-amber-950/30',
+        color: 'text-amber-300 bg-amber-950/30',
         waterHeightPct: 22,
         swirlOpacity: 0.75,
       };
@@ -305,7 +305,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         stage: 2,
         title: 'အဆင့် ၂ - ရေစတင် စီးထွက်နေသည် (၂၅–၅၀%)',
         desc: 'အတွင်းဘက် ရေနုတ်ပေါက်သည် သံသံမြည်လျက် ပွင့်သွားသည်။ ရေမျက်နှာပြင် စတင်ကျဆင်းလာသည်။',
-        color: 'text-amber-400/80 border-amber-600/50 bg-amber-950/20',
+        color: 'text-amber-400/80 bg-amber-950/20',
         waterHeightPct: 32,
         swirlOpacity: 0.35,
       };
@@ -314,7 +314,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
       stage: 1,
       title: 'အဆင့် ၁ - ရေလျှံနေဆဲဖြစ်သည် (၀–၂၅%)',
       desc: 'မှောင်မည်းနေသော ရေပုပ်များအောက် နစ်မြုပ်နေသည်။ ရေဖိအားကြောင့် အဆို့ရှင်လှည့်ရ လေးလံနေသည်။',
-      color: 'text-stone-400 border-stone-700 bg-stone-900/40',
+      color: 'text-stone-400 bg-stone-900/40',
       waterHeightPct: 40,
       swirlOpacity: 0,
     };
@@ -387,39 +387,36 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         <button
           onClick={onClose}
           disabled={isCompleted}
-          className="absolute top-4 right-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0b1410]/90 hover:bg-[#15271e] text-stone-400 hover:text-stone-200 border border-stone-800 hover:border-emerald-800 font-mono text-xs tracking-wider transition-all cursor-pointer shadow-xl disabled:opacity-30 disabled:pointer-events-none"
+          className="absolute top-4 right-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-[#0b1410]/90 hover:bg-[#15271e] text-stone-400 hover:text-stone-200 font-burmese text-xs tracking-wider leading-[1.75] transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
         >
           <X className="w-3.5 h-3.5" />
-          <span>[ ESC / ပြန်ထွက်မည် ]</span>
+          <span>[ <span className="font-mono">ESC</span> / ပြန်ထွက်မည် ]</span>
         </button>
 
         {/* Main Focused Mini-Game Container */}
         <div
-          className="relative z-20 w-full max-w-xl mx-4 flex flex-col items-center justify-center p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#131a16]/95 via-[#0c120f]/95 to-[#080d0a]/95 border-2 transition-all duration-300"
+          className="relative z-20 w-full max-w-xl mx-4 flex flex-col items-center justify-center p-6 sm:p-8 rounded-none bg-[#080d0a]/98 transition-all duration-300"
           style={{
-            borderColor: fatigueFlash ? '#ba2929' : '#223329',
-            boxShadow: fatigueFlash
-              ? '0 0 0 2px #ba2929, 0 0 45px rgba(186,41,41,0.65)'
-              : '0 20px 70px rgba(0,0,0,0.9)',
+            outline: fatigueFlash ? '2px solid #ba2929' : 'none',
+            boxShadow: fatigueFlash ? '0 0 45px rgba(186,41,41,0.65)' : 'none',
           }}
         >
           
           {/* Header Bar: Industrial Apparatus Plate */}
-          <div className="w-full text-center pb-4 border-b border-[#1c2b22] space-y-1">
-            <div className="flex items-center justify-center gap-2 text-[#6ea889] font-burmese text-xs uppercase">
+          <div className="w-full text-center pb-4 space-y-1">
+            <div className="flex items-center justify-center gap-2 text-[#6ea889] font-burmese text-xs uppercase leading-[1.75]">
               <Droplets className="w-3.5 h-3.5 text-[#6ea889] animate-pulse" />
               <span>မြေအောက် ရေလွှဲစနစ် • မြေအောက် ရေနုတ်အဆို့ရှင်</span>
             </div>
-            <h2 className="font-burmese font-bold text-lg sm:text-2xl text-[#e0f0e7]">
+            <h2 className="font-burmese font-bold text-lg sm:text-2xl text-[#e0f0e7] leading-[1.75]">
               လေးလံသော ရေနုတ်အဆို့ရှင်ဘီး (ရေမြောင်း ပိုက်ချောက်ခေါင်း)
             </h2>
           </div>
 
           {/* Stage & Status Readout Card */}
-          <div className="w-full my-4 px-4 py-2.5 rounded-xl border flex items-center justify-between text-xs font-mono transition-colors duration-300 backdrop-blur-sm shadow-inner"
+          <div className="w-full my-4 px-4 py-2.5 rounded-none flex items-center justify-between text-xs font-mono transition-colors duration-300 backdrop-blur-sm"
             style={{
-              borderColor: isDecaying ? 'rgba(239, 68, 68, 0.6)' : isCompleted ? 'rgba(16, 185, 129, 0.7)' : 'rgba(52, 211, 153, 0.3)',
-              backgroundColor: isDecaying ? 'rgba(69, 10, 10, 0.35)' : 'rgba(10, 20, 15, 0.6)',
+              backgroundColor: isDecaying ? 'rgba(69, 10, 10, 0.45)' : 'rgba(10, 20, 15, 0.7)',
             }}
           >
             <div className="flex items-center gap-2">
@@ -434,7 +431,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
                 {stageInfo.title}
               </span>
             </div>
-            <span className="font-bold text-sm sm:text-base font-mono text-emerald-300 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
+            <span className="font-bold text-sm sm:text-base font-mono tabular-nums text-emerald-300">
               {Math.round(progress)}%
             </span>
           </div>
@@ -446,12 +443,12 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           >
             {/* Pressure / Momentum Ripple on Keypress */}
             {isPressedVisual && (
-              <div className="absolute inset-0 rounded-full border-2 border-emerald-400/80 animate-ping pointer-events-none" />
+              <div className="absolute inset-0 rounded-none animate-ping pointer-events-none bg-emerald-400/20" />
             )}
 
             {/* Inactive Decay Pulse Ring */}
             {isDecaying && (
-              <div className="absolute inset-0 rounded-full border border-red-500/40 animate-pulse pointer-events-none" />
+              <div className="absolute inset-0 rounded-none animate-pulse pointer-events-none bg-red-500/10" />
             )}
 
             {/* SVG Industrial Valve Wheel */}
@@ -547,10 +544,10 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
             {/* Center Status Glow / Percentage Readout Overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="px-3 py-1.5 rounded-full bg-black/85 border border-[#2b3d33] backdrop-blur-md flex items-center gap-1.5 shadow-2xl">
+              <div className="px-3 py-1.5 rounded-none bg-black/85 backdrop-blur-md flex items-center gap-1.5">
                 <RotateCw className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-400' : 'text-[#87a897] animate-spin'}`} style={{ animationDuration: '3s' }} />
-                <span className="font-mono text-xs font-bold text-[#d4e4db]">
-                  {isCompleted ? 'ပွင့်ပြီ' : `${Math.round(progress)}%`}
+                <span className="font-burmese tabular-nums text-xs font-bold text-[#d4e4db] leading-[1.75]">
+                  {isCompleted ? 'ပွင့်ပြီ' : <span className="font-mono">{`${Math.round(progress)}%`}</span>}
                 </span>
               </div>
             </div>
@@ -558,18 +555,18 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
           {/* Progress / Cycle Meter Bar with Ticks at 25%, 50%, 75%, 100% */}
           <div className="w-full mt-4 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#7e9c8c]">
+            <div className="flex items-center justify-between text-[11px] font-burmese text-[#7e9c8c] leading-[1.75]">
               <span className="flex items-center gap-1">
                 <Droplets className="w-3.5 h-3.5 text-emerald-400" />
                 <span>ရေနုတ်အဆို့ရှင် လှည့်ပတ်မှုအဆင့်</span>
               </span>
-              <span className="font-bold text-emerald-400">
+              <span className="font-bold tabular-nums text-emerald-400">
                 {progress >= 100 ? '၁၀၀% ပြီးစီးပြီ' : `${Math.round(progress)}% / ၁၀၀%`}
               </span>
             </div>
 
             {/* Meter Bar Slot */}
-            <div className="relative w-full h-4 rounded-full bg-[#09100d] border border-[#1e2d24] p-0.5 overflow-hidden shadow-inner">
+            <div className="relative w-full h-4 rounded-none bg-[#09100d] p-0.5 overflow-hidden">
               {/* Milestone Tick Marks (25%, 50%, 75%) */}
               <div className="absolute inset-y-0 left-[25%] w-px bg-[#263b2f] z-10" />
               <div className="absolute inset-y-0 left-[50%] w-px bg-[#263b2f] z-10" />
@@ -577,7 +574,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
               {/* Progress Fill Bar with Dynamic Gradient */}
               <motion.div
-                className="h-full rounded-full transition-all duration-75"
+                className="h-full rounded-none transition-all duration-75"
                 style={{
                   width: `${progress}%`,
                   background: isCompleted
@@ -593,7 +590,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
             </div>
 
             {/* Tick Mark Labels */}
-            <div className="flex justify-between text-[9px] font-mono text-stone-500 px-1">
+            <div className="flex justify-between text-[9px] font-burmese text-stone-500 px-1 leading-[1.75]">
               <span>၀% (ပိတ်ထားသည်)</span>
               <span>၂၅%</span>
               <span>၅၀%</span>
@@ -638,25 +635,25 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           )}
 
           {/* Large Tactile Spacebar Action Button Prompt */}
-          <div className="w-full mt-5 pt-4 border-t border-[#193828] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="w-full mt-5 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               onClick={handleTurnValve}
               disabled={isCompleted}
-              className={`w-full sm:flex-1 py-3 px-5 rounded-2xl border flex items-center justify-center gap-2 font-burmese text-xs sm:text-sm font-bold tracking-wider transition-all shadow-xl cursor-pointer ${
+              className={`w-full sm:flex-1 py-3 px-5 rounded-none flex items-center justify-center gap-2 font-burmese text-xs sm:text-sm font-bold tracking-wider leading-[1.75] transition-all cursor-pointer ${
                 isCompleted
-                  ? 'bg-[#101c15] border-[#193828] text-[#6ea889] pointer-events-none'
+                  ? 'bg-[#101c15] text-[#6ea889] pointer-events-none'
                   : isPressedVisual
-                  ? 'bg-[#193828] text-[#e0f0e7] border-[#6ea889] scale-[0.98]'
-                  : 'bg-[#101c15] hover:bg-[#193828] border-[#193828] hover:border-[#6ea889] text-[#e0f0e7] hover:scale-[1.01] active:scale-95'
+                  ? 'bg-[#193828] text-[#e0f0e7] scale-[0.98]'
+                  : 'bg-[#101c15] hover:bg-[#193828] text-[#e0f0e7] active:scale-95'
               }`}
             >
-              <kbd className="px-2.5 py-1 rounded bg-[#060b08] border border-[#193828] text-[#6ea889] text-xs font-mono shadow-inner">
+              <kbd className="px-2.5 py-1 rounded-none bg-[#060b08] text-[#6ea889] text-xs font-mono">
                 SPACE
               </kbd>
               <span>{isCompleted ? 'အဆို့ရှင် အပြည့်ပွင့်သွားပြီ' : 'SPACEBAR ကို အဆက်မပြတ် နှိပ်ပါ'}</span>
             </button>
 
-            <span className="text-xs font-burmese text-stone-400 text-center sm:text-right">
+            <span className="text-xs font-burmese text-stone-400 text-center sm:text-right leading-[1.75]">
               {isCompleted ? 'ရေဖောက်ထုတ်မှု ပြီးဆုံးပြီ' : 'သို့မဟုတ် လှည့်ရန် အဆို့ရှင်ကို ကလစ်နှိပ်ပါ'}
             </span>
           </div>

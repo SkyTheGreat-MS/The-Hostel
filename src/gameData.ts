@@ -171,7 +171,7 @@ export const ITEM_DATABASE = ITEMS;
 export const CHARACTERS: MCCharacter[] = [
   {
     id: 'moe_stheinkha',
-    name: 'မိုးင်္သခ',
+    name: 'မိုးသိင်္ခ',
     archetype: 'သံသယရှိသူ',
     description: 'ခွဲခြမ်းစိတ်ဖြာတတ်ပြီး ယုတ္တိကျသော စိတ်ပိုင်းဆိုင်ရာ ရှိသည်။ ကိုယ်ထိလက်ရောက် ခြိမ်းခြောက်မှုကို ခုခံနိုင်သော်လည်း ပုဂ္ဂိုလ်ထူးဆန်းမှုများအပေါ် အလွန်နားညံ့သည်။',
     tensionMultiplier: 1.2,
@@ -250,7 +250,7 @@ export const CHARACTERS: MCCharacter[] = [
   // Legacy aliases for backward compatibility with existing tests and Prolog mirrors
   {
     id: 'thazin',
-    name: 'သဇင် (မိုးင်္သခ)',
+    name: 'သဇင် (မိုးသိင်္ခ)',
     archetype: 'သံသယရှိသူ',
     description: 'ဖြစ်နိုင်ခြေကို တွက်ချက်သည်။ တိုက်ရိုက် သဘာဝလွန် ဖြစ်ရပ်များနှင့် ရင်ဆိုင်ရသောအခါ အခက်အခဲဖြစ်သည်။',
     tensionMultiplier: 1.2,
