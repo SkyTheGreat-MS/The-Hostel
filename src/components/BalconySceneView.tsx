@@ -334,7 +334,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                       e.stopPropagation();
                       setShowHandoverPrompt(false);
                     }}
-                    className="p-2 rounded-none bg-black/85 text-stone-400 hover:text-white text-xs font-mono cursor-pointer"
+                    className="p-2 rounded-none bg-black/85 text-stone-400 hover:text-white text-xs font-burmese leading-[1.75] cursor-pointer"
                     title="ပယ်ဖျက်"
                   >
                     <X className="w-3.5 h-3.5" />

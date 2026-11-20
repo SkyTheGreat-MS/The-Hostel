@@ -284,10 +284,10 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         <button
           onClick={onClose}
           disabled={isCompleted}
-          className="absolute top-4 right-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-[#0b1410]/90 hover:bg-[#15271e] text-stone-400 hover:text-stone-200 font-mono text-xs tracking-wider transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+          className="absolute top-4 right-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-none bg-[#0b1410]/90 hover:bg-[#15271e] text-stone-400 hover:text-stone-200 font-burmese text-xs tracking-wider leading-[1.75] transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
         >
           <X className="w-3.5 h-3.5" />
-          <span>[ ESC / ပြန်ထွက်မည် ]</span>
+          <span>[ <span className="font-mono">ESC</span> / ပြန်ထွက်မည် ]</span>
         </button>
 
         {/* Main Focused Mini-Game Container */}
@@ -437,8 +437,8 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="px-3 py-1.5 rounded-none bg-black/85 backdrop-blur-md flex items-center gap-1.5">
                 <RotateCw className={`w-3.5 h-3.5 ${isCompleted ? 'text-emerald-400' : 'text-[#87a897] animate-spin'}`} style={{ animationDuration: '3s' }} />
-                <span className="font-mono tabular-nums text-xs font-bold text-[#d4e4db]">
-                  {isCompleted ? 'ပွင့်ပြီ' : `${Math.round(progress)}%`}
+                <span className="font-burmese tabular-nums text-xs font-bold text-[#d4e4db] leading-[1.75]">
+                  {isCompleted ? 'ပွင့်ပြီ' : <span className="font-mono">{`${Math.round(progress)}%`}</span>}
                 </span>
               </div>
             </div>
@@ -446,7 +446,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
           {/* Progress / Cycle Meter Bar with Ticks at 25%, 50%, 75%, 100% */}
           <div className="w-full mt-4 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#7e9c8c]">
+            <div className="flex items-center justify-between text-[11px] font-burmese text-[#7e9c8c] leading-[1.75]">
               <span className="flex items-center gap-1">
                 <Droplets className="w-3.5 h-3.5 text-emerald-400" />
                 <span>ရေနုတ်အဆို့ရှင် လှည့်ပတ်မှုအဆင့်</span>
@@ -481,7 +481,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
             </div>
 
             {/* Tick Mark Labels */}
-            <div className="flex justify-between text-[9px] font-mono text-stone-500 px-1">
+            <div className="flex justify-between text-[9px] font-burmese text-stone-500 px-1 leading-[1.75]">
               <span>၀% (ပိတ်ထားသည်)</span>
               <span>၂၅%</span>
               <span>၅၀%</span>

@@ -70,10 +70,10 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
 
       {/* Narrative Climax Box */}
       <div className="relative z-30 max-w-xl mx-6 p-6 rounded-none bg-black/90 backdrop-blur-md text-center">
-        <h2 className="text-2xl font-mono font-bold text-red-400 tracking-widest uppercase mb-3">
+        <h2 className="text-2xl font-burmese font-bold text-red-400 mb-3 leading-[1.75]">
           [ ရေမြောင်းပေါက်သို့ ရောက်ရှိ — အခန်း ၁၀၁ ]
         </h2>
-        <p className="text-stone-300 font-mono text-sm leading-relaxed mb-6">
+        <p className="text-stone-300 font-burmese text-sm leading-[1.75] mb-6">
           {step === 0 && "မြေအောက်ရေမြောင်းသည် အခန်း ၁၀၁ ၏ ပိတ်ထားသော ကြမ်းပြင်အောက်သို့ တိုက်ရိုက်ရောက်ရှိနေသည်။ သံစက်ဝိုင်း ပြီးပြည့်စုံသွားပြီ။"}
           {step === 1 && "မေ၏ အမှတ်တရများသည် အမှောင်လွှာကို ထိုးဖောက်လိုက်သည်! ၁၉၉၈ မိုးရာသီနှင့် ယနေ့ကာလတို့ ပြင်းထန်စွာ ရိုက်ခတ်ဆုံစည်းသွားသည်..."}
           {step >= 2 && "စုံစမ်းစစ်ဆေးမှုသည် အထွတ်အထိပ်သို့ ရောက်ရှိသွားပြီ။ အဆောင်၏ ဝိညာဉ်များသည် သင်ရောက်ရှိနေခြင်းကို အသိအမှတ်ပြုလိုက်ကြပြီ။"}
@@ -82,7 +82,7 @@ export const Room101SeanceClimaxView: React.FC<Room101SeanceClimaxViewProps> = (
         {step >= 2 && onComplete && (
           <button
             onClick={onComplete}
-            className="px-6 py-2.5 rounded-none bg-red-950/80 hover:bg-red-900 text-red-200 font-mono text-xs tracking-wider uppercase transition-colors cursor-pointer"
+            className="px-6 py-2.5 rounded-none bg-red-950/80 hover:bg-red-900 text-red-200 font-burmese text-xs tracking-wider transition-colors cursor-pointer leading-[1.75]"
           >
             [ စုံစမ်းစစ်ဆေးမှု နိဂုံးသို့ ဆက်သွားမည် ]
           </button>

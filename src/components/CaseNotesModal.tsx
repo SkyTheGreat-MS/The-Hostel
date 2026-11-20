@@ -292,7 +292,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 </div>
               </div>
               <div>
-                <span className="text-[9px] font-mono tracking-[0.2em] text-[#6ea889]/50 uppercase font-semibold block">
+                <span className="text-[9px] font-burmese text-[#6ea889]/50 block leading-[1.75]">
                   အမှုတွဲမှတ်တမ်း &bull; သြဂုတ် ၁၉၉၈ ဖြစ်ရပ် (အမှုမှတ်တမ်း)
                 </span>
                 <h2
@@ -334,7 +334,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     <User className="w-7 h-7 text-[#6ea889]/30" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">စုံစမ်းစစ်ဆေးသူ (Investigator)</div>
+                    <div className="text-[9px] font-burmese text-[#6ea889]/40 leading-[1.75]">စုံစမ်းစစ်ဆေးသူ <span className="font-mono text-[8px] uppercase tracking-wider">(Investigator)</span></div>
                     <div className="text-sm font-burmese font-bold text-[#b1d4c2] truncate leading-[1.75]">
                       {investigatorName}
                     </div>
@@ -344,7 +344,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                   </div>
                 </div>
                 <div className="h-px bg-gradient-to-r from-transparent via-[#6ea889]/15 to-transparent" />
-                <div className="mt-2 text-[9px] font-mono text-[#6ea889]/30 text-center uppercase tracking-widest">
+                <div className="mt-2 text-[9px] font-burmese text-[#6ea889]/30 text-center leading-[1.75]">
                   စစ်ဆေးအတည်ပြုပြီး &bull; လက်ရှိအမှုတွဲ
                 </div>
               </div>
@@ -352,8 +352,8 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               {/* Composure Gauge — Circular Radial Ring */}
               <div className="rounded-none p-4 flex flex-col items-center gap-3"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">
-                  စိတ်တည်ငြိမ်မှု (Composure)
+                <div className="text-[9px] font-burmese text-[#6ea889]/40 text-center leading-[1.75]">
+                  စိတ်တည်ငြိမ်မှု <span className="font-mono text-[8px] uppercase tracking-wider">(Composure)</span>
                 </div>
                 <div className="relative w-24 h-24">
                   {/* Background ring */}
@@ -384,8 +384,8 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               {/* Timer Module */}
               <div className="rounded-none p-4"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase text-center mb-2">
-                  ကျန်ရှိသော အချိန် (Remaining Time)
+                <div className="text-[9px] font-burmese text-[#6ea889]/40 text-center mb-2 leading-[1.75]">
+                  ကျန်ရှိသော အချိန် <span className="font-mono text-[8px] uppercase tracking-wider">(Remaining Time)</span>
                 </div>
                 <div className="text-center">
                   <span className="text-3xl font-black text-[#6ea889] tracking-widest tabular-nums" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
@@ -425,12 +425,12 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Search className="w-3.5 h-3.5 text-[#6ea889]/50" />
-                    <span className="text-[10px] font-mono tracking-[0.15em] text-[#6ea889]/50 uppercase font-semibold">
-                      ရရှိထားသော သဲလွန်စများ (Clues)
+                    <span className="text-[10px] font-burmese text-[#6ea889]/50 font-semibold leading-[1.75]">
+                      ရရှိထားသော သဲလွန်စများ <span className="font-mono text-[9px] font-normal">(Clues)</span>
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono tabular-nums text-[#6ea889]/40">
-                    {filledSlots} / {totalSlots} ကွက်လပ် ဖြည့်ပြီး
+                  <span className="text-[10px] font-burmese text-[#6ea889]/40 leading-[1.75]">
+                    <span className="font-mono tabular-nums">{filledSlots} / {totalSlots}</span> ကွက်လပ် ဖြည့်ပြီး
                   </span>
                 </div>
                 <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
@@ -450,7 +450,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                         {clue ? (
                           <>
                             <FileText className="w-4 h-4 text-[#6ea889]/60 mb-0.5" />
-                            <span className="text-[7px] font-mono text-[#6ea889]/40 text-center leading-tight px-0.5 line-clamp-2">
+                            <span className="text-[7px] font-burmese text-[#6ea889]/40 text-center leading-[1.75] px-0.5 line-clamp-2">
                               {clue.title.length > 16 ? clue.title.slice(0, 14) + '...' : clue.title}
                             </span>
                           </>
@@ -461,7 +461,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     );
                   })}
                 </div>
-                <div className="mt-2 text-center text-[9px] font-mono text-[#6ea889]/25 tracking-wider">
+                <div className="mt-2 text-center text-[9px] font-burmese text-[#6ea889]/35 tracking-wider leading-[1.75]">
                   အခန်း ၂ သို့ ကူးပြောင်းရန် အရေးကြီးသော သက်သေများကို ရှာဖွေပါ
                 </div>
               </div>
@@ -473,7 +473,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     <div className="w-16 h-16 rounded-none bg-[#141e19] flex items-center justify-center mb-4">
                       <Search className="w-7 h-7 text-[#6ea889]/15" />
                     </div>
-                    <p className="text-sm font-mono text-[#d4ede3]/30 max-w-xs leading-relaxed">
+                    <p className="text-sm font-burmese text-[#d4ede3]/40 max-w-xs leading-[1.75]">
                       သဲလွန်စများ မတွေ့ရှိသေးပါ။ အဆောင်စင်္ကြံများနှင့် မှတ်တမ်းဟောင်းခန်းများတွင် အထောက်အထားများ ရှာဖွေပါ။
                     </p>
                   </div>
@@ -527,15 +527,15 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           {/* ═══════════ FOOTER ═══════════ */}
           <div className="px-5 py-3.5 flex items-center justify-between"
             style={{ background: 'linear-gradient(90deg, #121916 0%, #162018 50%, #121916 100%)' }}>
-            <div className="text-[9px] font-mono text-[#6ea889]/20 tracking-widest uppercase">
-              အမှုတွဲမှတ်စု &bull; လုံခြုံရေးချန်နယ် (Case Notebook)
+            <div className="text-[9px] font-burmese text-[#6ea889]/30 leading-[1.75]">
+              အမှုတွဲမှတ်စု &bull; လုံခြုံရေးချန်နယ် <span className="font-mono text-[8px] uppercase tracking-wider">(Case Notebook)</span>
             </div>
             <button
               onClick={() => {
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="px-6 py-2.5 rounded-none font-bold font-mono text-xs uppercase tracking-wider cursor-pointer transition-colors relative overflow-hidden group hover:bg-[#29543e] text-[#d4ede3]"
+              className="px-6 py-2.5 rounded-none font-bold font-burmese text-xs tracking-wider cursor-pointer transition-colors relative overflow-hidden group hover:bg-[#29543e] text-[#d4ede3] leading-[1.75]"
               style={{
                 background: 'linear-gradient(135deg, #1a2a22 0%, #223830 100%)',
               }}

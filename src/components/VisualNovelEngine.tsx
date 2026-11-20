@@ -2673,7 +2673,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   }`}
                 />
               </div>
-              <span className="text-[10px] font-mono font-bold text-[#82a996] uppercase tracking-wider hidden lg:inline">
+              <span className="text-[10px] font-burmese font-bold text-[#82a996] hidden lg:inline leading-[1.75]">
                 မြှောင်
               </span>
             </button>
@@ -2686,7 +2686,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 sound.playPaperRustle();
                 setIsNotesOpen(true);
               }}
-              className="px-3 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#c2d6cc] hover:bg-[#060b08]/90 text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="px-3 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm text-[#c2d6cc] hover:bg-[#060b08]/90 text-xs font-burmese font-bold flex items-center gap-1.5 cursor-pointer transition-colors leading-[1.75]"
               title="အမှုမှတ်တမ်းဖွင့်ရန် [N]"
             >
               <BookOpen className="w-3.5 h-3.5 text-[#82a996]" />
@@ -2724,21 +2724,18 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       {mode === 'location_select' && (
         <div className="relative flex-1 flex flex-col justify-center items-center px-4 py-2 z-20">
           <div className="text-center mb-3 sm:mb-6">
-            <span className="text-[11px] font-mono tracking-widest text-amber-500 uppercase font-semibold">
+            <span className="text-[11px] font-burmese tracking-wide text-amber-500 font-semibold leading-[1.75]">
               ကဏ္ဍ 0{currentTier} • ရှေ့ဆက်လမ်း ရွေးချယ်ပါ
             </span>
-            <h2
-              className="text-3xl sm:text-5xl font-black text-stone-100 tracking-wider uppercase drop-shadow-lg"
-              style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-            >
+            <h2 className="text-3xl sm:text-5xl font-burmese font-bold text-stone-100 drop-shadow-lg leading-[1.75]">
               {currentTier === 1
                 ? 'စင်္ကြံတောင်ပံ ရွေးချယ်ပါ'
                 : currentTier === 2
                 ? 'မြေညီ လမ်းကြမ်း ရွေးချယ်ပါ'
                 : 'ဝင်း ပတ်ပတ်လည် • နောက်ဆုံးလမ်း'}
             </h2>
-            <p className="text-xs font-mono text-stone-400 mt-1 tracking-wider">
-              [←/→] ရွေးရန် • [ENTER] စုံစမ်းရန် • ထွက်ပေါက်လမ်း ရှာဖွေရန် လေစီးကြောင်းများကို စောင့်ကြည့်ပါ
+            <p className="text-xs font-burmese text-stone-400 mt-1 leading-[1.75]">
+              <span className="font-mono">[←/→]</span> ရွေးရန် • <span className="font-mono">[ENTER]</span> စုံစမ်းရန် • ထွက်ပေါက်လမ်း ရှာဖွေရန် လေစီးကြောင်းများကို စောင့်ကြည့်ပါ
             </p>
             {doorSmashed && currentTier === 1 && (
               <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-rose-950/90 text-rose-300 text-xs font-mono animate-pulse">
@@ -2806,12 +2803,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       </span>
 
                       {isInvestigated ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-mono font-bold bg-[#112319] text-[#6ee7b7]">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-burmese font-bold bg-[#112319] text-[#6ee7b7] leading-[1.75]">
                           <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                           စစ်ဆေးပြီး
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-mono font-bold bg-[#1a1408] text-[#c7a458]">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[11px] font-burmese font-bold bg-[#1a1408] text-[#c7a458] leading-[1.75]">
                           <Eye className="w-3 h-3 text-amber-400" />
                           မစစ်ဆေးရသေး
                         </span>
@@ -2825,32 +2822,31 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                           {loc.subtitle}
                         </div>
                         <h3
-                          className={`text-2xl sm:text-3xl font-black tracking-wider uppercase transition-colors ${
+                          className={`text-2xl sm:text-3xl font-burmese font-bold tracking-wide transition-colors leading-[1.75] ${
                             isSelected ? 'text-[#e0f0e7]' : 'text-stone-200'
                           }`}
-                          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                         >
                           {loc.title}
                         </h3>
                       </div>
 
-                      <p className="text-xs text-stone-400 font-mono leading-relaxed line-clamp-2">
+                      <p className="text-xs text-stone-400 font-burmese leading-[1.75] line-clamp-2">
                         {loc.desc}
                       </p>
 
                       {/* Subtle Environmental Observations */}
-                      <div className="pt-2 text-left space-y-1.5 text-[11px] font-mono">
+                      <div className="pt-2 text-left space-y-1.5 text-[11px] font-burmese leading-[1.75]">
                         <div className="flex items-start gap-1.5 text-stone-300">
                           <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-amber-400">လေစီးကြောင်း:</strong> {loc.subtleClues.airflow}
+                            <strong className="text-amber-400 font-burmese">လေစီးကြောင်း:</strong> {loc.subtleClues.airflow}
                           </span>
                         </div>
 
                         <div className="flex items-start gap-1.5 text-stone-400">
                           <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                           <span className="text-[10px] leading-tight">
-                            <strong className="text-stone-300">ဆက်စပ်မှု:</strong>{' '}
+                            <strong className="text-stone-300 font-burmese">ဆက်စပ်မှု:</strong>{' '}
                             <span
                               className={
                                 loc.subtleClues.affinity.includes('High') ||
@@ -2925,7 +2921,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   setDoorRawTextShown(false);
                   setIsDoorInspectOpen(false);
                 }}
-                className="px-3.5 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm hover:bg-[#060b08]/90 text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-mono font-bold flex items-center gap-2 cursor-pointer transition-colors"
+                className="px-3.5 py-1.5 rounded-none bg-[#020504]/60 backdrop-blur-sm hover:bg-[#060b08]/90 text-[#c2d6cc] hover:text-[#6ee7b7] text-xs font-burmese font-bold flex items-center gap-2 cursor-pointer transition-colors leading-[1.75]"
               >
                 <ArrowLeft className="w-4 h-4 text-[#82a996]" />
                 <span className="leading-[1.75]">နောက်ဆုတ်ရန် / ခန်းသို့ ပြန်သွားရန်</span>
@@ -2935,7 +2931,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             )}
 
             {activeInspectSubScene !== 'desk' && (
-              <div className="px-3.5 py-1 rounded-none bg-[#020504]/60 backdrop-blur-sm text-xs font-mono font-bold text-[#82a996] uppercase tracking-widest leading-[1.75]">
+              <div className="px-3.5 py-1 rounded-none bg-[#020504]/60 backdrop-blur-sm text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                 {mode === 'awakening' || activeInspectSubScene === 'main'
                   ? 'အခန်း ၄B • အိပ်ဆောင်ခန်း'
                   : activeInspectSubScene === 'stool'
@@ -3195,7 +3191,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     <div className="flex items-center justify-between pb-2">
                       <div className="flex items-center gap-2 text-[#82a996]">
                         <Lock className="w-4 h-4 text-[#82a996]" />
-                        <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#82a996]">
+                        <span className="text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                           အခန်း ၄B ကျွန်းသစ် ထွက်ပေါက်တံခါးကြီး
                         </span>
                       </div>
@@ -3211,7 +3207,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                     {doorUnlocked ? (
                       <div className="space-y-3">
                         <div className="py-4 px-4 rounded-none bg-[#0b140f]/90">
-                          <p className="text-[#b4c9bf] font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                          <p className="text-[#b4c9bf] font-burmese text-sm sm:text-base leading-[1.75]">
                             သော့တံ ဖြုတ်ထားသည်။ တံခါး ၄B သည် အဆောင်လမ်းသွယ် ၃၂၆ သို့ အပြည့်အဝ ပွင့်နေသည်။
                           </p>
                         </div>
@@ -3226,7 +3222,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                             setPhase3Message(null);
                             setMode('phase3');
                           }}
-                          className="w-full py-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-mono text-xs tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                          className="w-full py-3 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-burmese text-xs tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer leading-[1.75]"
                         >
                           <span>အဆောင်လမ်းသွယ် ၃၂၆ သို့ ဖြတ်သွားရန်</span>
                           <span className="text-xs">→</span>
@@ -3237,7 +3233,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {/* Empty-Handed Display: strictly raw text, NO hint or guidance */}
                         {!hasInventoryItem('bobby_pin') && !hasInventoryItem('wooden_bat') && (
                           <div className="py-4 px-4 rounded-none bg-[#0b140f]/90">
-                            <p className="text-stone-200 font-mono text-sm sm:text-base tracking-wide leading-relaxed">
+                            <p className="text-stone-200 font-burmese text-sm sm:text-base leading-[1.75]">
                               သော့တံကို အခြားဘက်မှ ခတ်ထားသည်။ သော့ခတ်ထားသည်။
                             </p>
                           </div>
@@ -3246,7 +3242,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                         {/* Dynamic Unlocking Options */}
                         {(hasInventoryItem('bobby_pin') || hasInventoryItem('wooden_bat')) && (
                           <div className="space-y-3">
-                            <p className="text-xs font-mono text-stone-400">
+                            <p className="text-xs font-burmese text-stone-400 leading-[1.75]">
                               သော့တံကို ဖောက်ထွင်းရန် လုပ်ဆောင်ချက် ရွေးပါ:
                             </p>
 
@@ -3260,11 +3256,11 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                 >
                                   <div className="flex items-center gap-2 mb-1">
                                     <Unlock className="w-4 h-4 text-emerald-400" />
-                                    <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wider">
+                                    <span className="text-xs font-burmese font-bold text-emerald-300 leading-[1.75]">
                                       ဆံညှပ်ဖြင့် သော့ဖောက်ပါ
                                     </span>
                                   </div>
-                                  <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
+                                  <p className="text-[11px] font-burmese text-stone-400 group-hover:text-stone-300 leading-[1.75]">
                                     တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးသိင်္ခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
                                   </p>
                                 </button>
@@ -3279,7 +3275,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                 >
                                   <div className="flex items-center gap-2 mb-1">
                                     <AlertTriangle className="w-4 h-4 text-rose-400" />
-                                    <span className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+                                    <span className="text-xs font-burmese font-bold text-rose-300 leading-[1.75]">
                                       ကျွန်းပျဉ်တုံးဖြင့် သော့ကို ရိုက်ခွဲဖွင့်ပါ
                                     </span>
                                   </div>
@@ -3451,12 +3447,11 @@ onTuned={() => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[11px] font-burmese font-bold text-[#82a996] leading-[1.75]">
                         အနောက်တောင်ပံ
                       </span>
                       <h3
-                        className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                        className="text-2xl sm:text-3xl font-burmese font-bold text-[#c2d6cc] group-hover:text-[#6ee7b7] transition-colors leading-[1.75]"
                       >
                         လှေကားခင်းနှင့် ရေချိုးခန်း
                       </h3>
@@ -3481,12 +3476,11 @@ onTuned={() => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f0d] via-[#121815]/50 to-transparent" />
                     <div className="relative z-10 space-y-1 text-left">
-                      <span className="text-[11px] font-mono font-bold tracking-widest text-[#82a996] uppercase">
+                      <span className="text-[11px] font-burmese font-bold text-[#82a996] leading-[1.75]">
                         အရှေ့တောင်ပံ
                       </span>
                       <h3
-                        className="text-2xl sm:text-3xl font-black text-[#c2d6cc] tracking-wider uppercase group-hover:text-[#6ee7b7] transition-colors"
-                        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                        className="text-2xl sm:text-3xl font-burmese font-bold text-[#c2d6cc] group-hover:text-[#6ee7b7] transition-colors leading-[1.75]"
                       >
                         လော့ကာများနှင့် နတ်ကွန်း
                       </h3>
@@ -4244,37 +4238,36 @@ onTuned={() => {
                 <Key className="w-8 h-8" />
               </div>
 
-              <span className="text-xs font-mono font-bold tracking-widest text-[#82a996] uppercase">
+              <span className="text-xs font-burmese font-bold text-[#82a996] leading-[1.75]">
                 စုံစမ်းစစ်ဆေးမှု မှတ်တိုင်
               </span>
               <h3
-                className="text-3xl sm:text-4xl font-black text-[#c2d6cc] tracking-wider uppercase mt-1 mb-1"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-[#c2d6cc] mt-1 mb-1 leading-[1.75]"
               >
-အခန်း ၁ ပြီးပြည့်စုံပြီ
+                အခန်း ၁ ပြီးပြည့်စုံပြီ
               </h3>
-              <p className="text-[#82a996] font-mono text-xs mb-2 font-bold">
-                စုံစမ်းစစ်ဆေးသူ: {selectedCharacter.name.toUpperCase()} ({selectedCharacter.archetype.toUpperCase()})
+              <p className="text-[#82a996] font-burmese text-xs mb-2 font-bold leading-[1.75]">
+                စုံစမ်းစစ်ဆေးသူ: {selectedCharacter.name} <span className="font-mono">({selectedCharacter.archetype.toUpperCase()})</span>
               </p>
 
-              <div className="grid grid-cols-2 gap-2 my-4 text-xs font-mono text-[#c2d6cc]">
+              <div className="grid grid-cols-2 gap-2 my-4 text-xs font-burmese text-[#c2d6cc] leading-[1.75]">
                 <div className="p-2.5 rounded-none bg-[#0b140f]">
-                  <div className="text-[10px] text-[#82a996]/70">စတင် စိတ်တည်ငြိမ်မှု</div>
-                  <div className="text-[#c2d6cc] font-bold text-sm tabular-nums">{composure}%</div>
+                  <div className="text-[10px] text-[#82a996]/70 font-burmese">စတင် စိတ်တည်ငြိမ်မှု</div>
+                  <div className="text-[#c2d6cc] font-bold text-sm font-mono tabular-nums">{composure}%</div>
                 </div>
                 <div className="p-2.5 rounded-none bg-[#0b140f]">
-                  <div className="text-[10px] text-[#82a996]/70">အချိန် ကုန်ဆုံးသွားသည်</div>
-                  <div className="text-[#c2d6cc] font-bold text-sm tabular-nums">
+                  <div className="text-[10px] text-[#82a996]/70 font-burmese">အချိန် ကုန်ဆုံးသွားသည်</div>
+                  <div className="text-[#c2d6cc] font-bold text-sm font-mono tabular-nums">
                     {Math.floor((600 - timeLeft) / 60)}m {(600 - timeLeft) % 60}s
                   </div>
                 </div>
               </div>
 
-              <p className="text-[#c2d6cc]/90 text-xs sm:text-sm font-mono mb-6 leading-relaxed">
+              <p className="text-[#c2d6cc]/90 text-xs sm:text-sm font-burmese mb-6 leading-[1.75]">
                 သင်သည် အစုအပုံလိုက် အဆင့်များရှိသည့် ၁၉၉၈ အဆောင်စင်္ကြံများကို ဖြတ်သန်းခဲ့ပြီး၊ အလုပ်သမား၏ လာဘ်ငွေမှတ်တမ်းကို ပြန်လည်ရယူကာ၊ သံကြိုးချည်ထားသော ရေခန်းခြောက်အင်းတွင် မမမေ၏ အလောင်းကို တွေ့ကြုံခဲ့ပြီး ဝင်းရှိ ရေတွင်းဟောင်း ကြေးသော့ကို ရယူခဲ့သည်။ သင့်စိတ်တည်ငြိမ်မှုသည် အခန်း ၂ တွင် သင့်စိတ်ဆန္ဒခွန်အားကို ဆုံးဖြတ်ပေးလိမ့်မည်!
               </p>
 
-              <div className="p-3.5 rounded-none bg-[#0b140f]/70 flex items-center justify-center gap-3 text-[#c2d6cc] text-sm font-mono mb-6">
+              <div className="p-3.5 rounded-none bg-[#0b140f]/70 flex items-center justify-center gap-3 text-[#c2d6cc] text-sm font-burmese mb-6 leading-[1.75]">
                 <Sparkles className="w-5 h-5 text-[#6ee7b7] animate-spin" />
                 <span className="font-bold">အခန်း ၂: နားလည်မှု ယခု ဖွင့်လှစ်ပြီ!</span>
               </div>
@@ -4369,12 +4362,12 @@ onTuned={() => {
                   </h3>
                 </div>
 
-                <p className="text-xs sm:text-sm font-mono text-[#c2d6cc]/90 leading-relaxed">
-                  N, E, S, W အမှတ်အသားများပါသော ရှေးဟောင်း ကြေးဝါ လမ်းညွှန်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများဆီသို့ တုန်ခါညွှန်ပြနေသည်။
+                <p className="text-xs sm:text-sm font-burmese text-[#c2d6cc]/90 leading-[1.75]">
+                  <span className="font-mono">N, E, S, W</span> အမှတ်အသားများပါသော ရှေးဟောင်း ကြေးဝါ လမ်းညွှန်အိမ်မြှောင်။ ၎င်း၏ သံလိုက်အပ်သည် သဘာဝလွန် ထူးဆန်းမှုများဆီသို့ တုန်ခါညွှန်ပြနေသည်။
                 </p>
 
-                <div className="p-3.5 rounded-none bg-[#0b140f]/70 text-xs font-mono text-[#c2d6cc] leading-relaxed space-y-1">
-                  <div className="font-bold text-[#82a996] uppercase flex items-center gap-1.5">
+                <div className="p-3.5 rounded-none bg-[#0b140f]/70 text-xs font-burmese text-[#c2d6cc] leading-[1.75] space-y-1">
+                  <div className="font-bold text-[#82a996] flex items-center gap-1.5">
                     <Radio className="w-3.5 h-3.5 text-[#6ee7b7] animate-pulse" />
                     <span>သဘာဝလွန် ဆွဲဆောင်မှု ဖော်ထုတ်တွေ့ရှိပြီ:</span>
                   </div>
@@ -4389,7 +4382,7 @@ onTuned={() => {
                       sound.playPaperRustle();
                       setIsCompassModalOpen(false);
                     }}
-                    className="px-6 py-2 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-bold font-mono text-xs uppercase tracking-wider cursor-pointer transition-colors"
+                    className="px-6 py-2 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] font-bold font-burmese text-xs tracking-wider cursor-pointer transition-colors leading-[1.75]"
                   >
                     အိမ်မြှောင်မြင်ကွင်းကို ပိတ်ရန်
                   </button>
@@ -4434,17 +4427,16 @@ onTuned={() => {
                 <AlertTriangle className="w-8 h-8 animate-pulse" />
               </div>
 
-              <span className="text-xs font-mono font-bold tracking-widest text-red-400 uppercase">
+              <span className="text-xs font-burmese font-bold text-red-400 leading-[1.75]">
                 အချိန်ကာလ ရွှေ့ပြောင်းမှု ပြိုကျခဲ့သည်
               </span>
               <h3
-                className="text-3xl sm:text-4xl font-black text-red-200 tracking-wider uppercase mt-1 mb-2"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-red-200 mt-1 mb-2 leading-[1.75]"
               >
                 စုံစမ်းစစ်ဆေးမှု မအောင်မြင်ခဲ့ပါ
               </h3>
 
-              <p className="text-[#c2a6a6] font-mono text-xs sm:text-sm mb-6 leading-relaxed">
+              <p className="text-[#c2a6a6] font-burmese text-xs sm:text-sm mb-6 leading-[1.75]">
                 {timeLeft <= 0
                   ? '၁၀ မိနစ် အချိန်ကာလ ထပ်တူပြုခြင်း ကာလ ကုန်ဆုံးသွားသည်။ ၁၉၉၈ ဩဂုတ်လသို့ သင့်ကို ဆုံချည်ထားသော ကျောက်ဆူးသည် လေဟာနယ်ထဲတွင် ပျော်ဝင်သွားသည်။'
                   : 'သင်၏ စိတ်တည်ငြိမ်မှုသည် သဘာဝလွန် ကြောက်မက်ဖွယ်ရာများနှင့် အဆောင်၏ မွန်းကြပ်သော လေထုအောက်တွင် ပြိုကွဲသွားသည်။'}
@@ -4453,7 +4445,7 @@ onTuned={() => {
               <div className="w-full flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleRestartChapterOne}
-                  className="flex-1 py-3 px-4 rounded-none bg-red-900/90 hover:bg-red-800 text-red-100 font-mono font-bold tracking-wider text-xs uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3 px-4 rounded-none bg-red-900/90 hover:bg-red-800 text-red-100 font-burmese font-bold tracking-wider text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer leading-[1.75]"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>အခန်း ပြန်စရန်</span>
@@ -4461,7 +4453,7 @@ onTuned={() => {
 
                 <button
                   onClick={() => navigate('/chapters')}
-                  className="py-3 px-5 rounded-none bg-[#161010] hover:bg-[#251818] text-stone-400 hover:text-stone-200 font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                  className="py-3 px-5 rounded-none bg-[#161010] hover:bg-[#251818] text-stone-400 hover:text-stone-200 font-burmese text-xs tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   ခေါင်းစဉ်သို့ ပြန်သွားရန်
                 </button>
@@ -4484,7 +4476,7 @@ onTuned={() => {
             />
             {/* Large distressing horror typography */}
             <div className="absolute inset-0 flex items-center justify-center text-center px-6 pointer-events-none z-40">
-              <span className="font-serif tracking-widest text-red-600 font-extrabold text-xl md:text-3xl uppercase drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse">
+              <span className="font-burmese font-bold text-xl md:text-3xl text-red-600 drop-shadow-[0_0_15px_rgba(255,0,0,0.8)] animate-pulse leading-[1.75]">
                 တစ်ခုခု ငါ့နောက်က ရုတ်တရက် ဖြတ်ပြေးသွားတယ်...
               </span>
             </div>
@@ -4502,30 +4494,29 @@ onTuned={() => {
               transition={{ duration: 0.4 }}
               className="relative w-full max-w-xl bg-[#060b08]/96 rounded-none backdrop-blur-md p-6 sm:p-8 text-center text-[#c2d6cc]"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-[#0b140f] text-[#86af99] text-[11px] font-mono tracking-widest uppercase mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-none bg-[#0b140f] text-[#86af99] text-[11px] font-burmese mb-4 leading-[1.75]">
                 <Sparkles className="w-3.5 h-3.5 text-[#4d6e5e]" />
                 အခန်း ၀၁ ပြီးပြည့်စုံပြီ
               </div>
 
               <h2
-                className="text-3xl sm:text-4xl font-black text-[#d1e3da] tracking-wider uppercase mb-2"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-3xl sm:text-4xl font-burmese font-bold text-[#d1e3da] tracking-wide mb-2 leading-[1.75]"
               >
                 မျက်စိမှိတ် အစမှတ် • ပြီးပြည့်စုံပြီ
               </h2>
 
-              <p className="text-sm font-mono text-[#8fa89b] max-w-md mx-auto mb-6 leading-relaxed">
+              <p className="text-sm font-burmese text-[#8fa89b] max-w-md mx-auto mb-6 leading-[1.75]">
                 "— မီးလျှံများ အေးစက်စက် အပြာရောင်ထွက်နေသည်... ကြေးခေါင်းလောင်းသံ ငါ့စိတ်ထဲ မြည်နေသည်။ အစောင့်နတ် နိုးထလာပြီ။ —"
               </p>
 
-              <div className="p-4 rounded-none bg-[#0b140f]/80 text-left text-xs font-mono text-[#b4c9bf] mb-6 space-y-2">
+              <div className="p-4 rounded-none bg-[#0b140f]/80 text-left text-xs font-burmese text-[#b4c9bf] mb-6 space-y-2 leading-[1.75]">
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">အခြေအနေ:</span>
                   <span className="text-[#86af99] font-bold">အစောင့်နတ် နိုးထခဲ့သည်</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">စိတ်တည်ငြိမ်မှု ထိန်းသိမ်းနိုင်ခဲ့သည်:</span>
-                  <span className="text-[#86af99] font-bold tabular-nums">{composure}%</span>
+                  <span className="text-[#86af99] font-bold font-mono tabular-nums">{composure}%</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-stone-400">လမ်းကြောင်း ဖွင့်လှစ်ပြီ:</span>
@@ -4539,7 +4530,7 @@ onTuned={() => {
                     sound.playMenuSelect();
                     navigate('/chapters');
                   }}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] text-xs font-mono font-bold tracking-wider uppercase transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-none bg-[#193828] hover:bg-[#29543e] text-[#e0f0e7] text-xs font-burmese font-bold tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   အခန်း ရွေးချယ်မှု →
                 </button>
@@ -4549,7 +4540,7 @@ onTuned={() => {
                     setChapter1VictoryActive(false);
                     handleRestartChapterOne();
                   }}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#a1b8ac] hover:text-[#e0f0e7] text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#a1b8ac] hover:text-[#e0f0e7] text-xs font-burmese tracking-wider transition-colors cursor-pointer leading-[1.75]"
                 >
                   အခန်း ၁ ပြန်ကစားရန်
                 </button>

@@ -307,7 +307,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               <p className="text-xs sm:text-sm font-mono tracking-widest text-stone-400 font-medium uppercase">
                 {subtitle}
               </p>
-              <span className="text-xs text-amber-500/70 font-sans hidden md:inline">
+              <span className="text-xs text-amber-500/70 font-burmese leading-[1.75] hidden md:inline">
                 (ဝိညာဉ်ဝင်္ကပါ)
               </span>
             </div>
@@ -546,7 +546,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   <div className="p-3 bg-[#0b140f] rounded-none">
                     <h4 className="font-bold text-[#b1d4c2] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Brain className="w-3.5 h-3.5 text-[#6ea889]" />
-                      Composure (တည်ငြိမ်မှု)
+                      Composure <span className="font-burmese font-normal normal-case leading-[1.75] text-[#8fa89b]">(တည်ငြိမ်မှု)</span>
                     </h4>
                     <p className="text-[#447d60] text-[11px] font-burmese leading-[1.75]">၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>
@@ -554,7 +554,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                   <div className="p-3 bg-[#0b140f] rounded-none">
                     <h4 className="font-bold text-[#fca5a5] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
                       <Skull className="w-3.5 h-3.5 text-[#ba2929]" />
-                      Grief (ပူဆွေးမှု)
+                      Grief <span className="font-burmese font-normal normal-case leading-[1.75] text-[#fca5a5]/80">(ပူဆွေးမှု)</span>
                     </h4>
                     <p className="text-[#ba2929] text-[11px] font-burmese leading-[1.75]">၁၀၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>

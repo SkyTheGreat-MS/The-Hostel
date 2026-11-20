@@ -57,28 +57,27 @@ export const RouteCard: React.FC<RouteCardProps> = ({
             {sectorLabel}
           </span>
           {lockState === 'locked' && (
-            <span className="text-stone-400 flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-stone-400 flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Lock className="w-3 h-3" /> သော့ခတ်ထားသည်
             </span>
           )}
           {lockState === 'unlocked' && (
-            <span className="text-[#6ee7b7] flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-[#6ee7b7] flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Unlock className="w-3 h-3" /> သော့ဖွင့်ထားသည်
             </span>
           )}
           {lockState === 'abandoned' && (
-            <span className="text-[#8fa89b] flex items-center gap-1 text-[9px] font-mono shrink-0">
+            <span className="text-[#8fa89b] flex items-center gap-1 text-[9px] font-burmese leading-[1.75] shrink-0">
               <Lock className="w-3 h-3 text-[#5a7a69]" /> စွန့်ပစ်ထားသည်
             </span>
           )}
         </div>
         <h3
-          className={`text-lg sm:text-xl font-black text-[#c2d6cc] tracking-wider uppercase transition-colors ${titleHover}`}
-          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+          className={`text-lg sm:text-xl font-burmese font-bold text-[#c2d6cc] tracking-wide leading-[1.75] transition-colors ${titleHover}`}
         >
           {title}
         </h3>
-        <p className="text-[10px] sm:text-[11px] font-mono text-stone-400 line-clamp-2 leading-tight">
+        <p className="text-[10px] sm:text-[11px] font-burmese text-stone-400 line-clamp-2 leading-[1.75]">
           {description}
         </p>
       </div>

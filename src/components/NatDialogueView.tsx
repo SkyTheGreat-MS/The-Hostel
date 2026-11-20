@@ -409,7 +409,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
         <div className="fixed inset-0 z-50 pointer-events-none bg-rose-950/40 mix-blend-screen animate-pulse flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-500/20 via-black/60 to-transparent" />
           <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.25)_3px,transparent_4px)]" />
-          <div className="font-mono text-rose-300 font-black tracking-widest text-sm uppercase px-4 py-2 bg-black/80 rounded-none">
+          <div className="font-burmese text-rose-300 font-bold text-sm px-4 py-2 bg-black/80 rounded-none leading-[1.75]">
             [ပကတိတရား ချိုးဖောက်မှု • တားမြစ်ထားသော စကားလုံးကို ရေရွတ်ခြင်း]
           </div>
         </div>

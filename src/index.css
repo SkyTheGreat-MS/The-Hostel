@@ -3,20 +3,36 @@
 @font-face {
   font-family: 'Aka08';
   src: url('/fonts/Aka08-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aka08';
+  src: url('/fonts/Aka08-Regular.ttf') format('truetype');
   font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aka08';
+  src: url('/fonts/Aka08-Regular.ttf') format('truetype');
+  font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 
 @theme {
   --font-sans: 'Aka08', 'Myanmar Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-bebas: 'Bebas Neue', 'Impact', sans-serif;
+  --font-bebas: 'Bebas Neue', 'Impact', 'Aka08', 'Myanmar Text', sans-serif;
   --font-burmese: 'Aka08', 'Myanmar Text', sans-serif;
-  --font-cinzel: 'Cinzel', serif;
-  --font-typewriter: 'Special Elite', cursive;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-horror: 'Cinzel', 'Bebas Neue', serif;
-  --font-serif: 'Cinzel', serif;
+  --font-cinzel: 'Cinzel', 'Aka08', 'Myanmar Text', serif;
+  --font-typewriter: 'Special Elite', 'Aka08', 'Myanmar Text', cursive;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Aka08', 'Myanmar Text', monospace;
+  --font-horror: 'Cinzel', 'Bebas Neue', 'Aka08', 'Myanmar Text', serif;
+  --font-serif: 'Cinzel', 'Aka08', 'Myanmar Text', serif;
 
   /* Duo-Tone Baseline: Tone 1 - Stagnant Obsidian Void */
   --color-obsidian-950: #020504;
@@ -72,7 +88,7 @@ html, body {
 
 @layer utilities {
   .font-bebas {
-    font-family: 'Bebas Neue', 'Impact', sans-serif;
+    font-family: var(--font-bebas);
   }
 
   .font-burmese {
@@ -89,6 +105,18 @@ html, body {
   .font-typewriter {
     font-family: var(--font-typewriter);
     letter-spacing: 0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-horror {
+    font-family: var(--font-horror);
   }
 
   /* Cinematic borderless thought typography drop-shadow */

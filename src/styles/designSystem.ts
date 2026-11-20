@@ -61,10 +61,10 @@ export const EVENT_ACCENTS = {
 
 export const FONTS = {
   burmese: "'Aka08', 'Myanmar Text', sans-serif",
-  cinzel: "'Cinzel', serif",
-  typewriter: "'Special Elite', cursive",
-  bebas: "'Bebas Neue', 'Impact', sans-serif",
-  mono: "'JetBrains Mono', ui-monospace, monospace",
+  cinzel: "'Cinzel', 'Aka08', 'Myanmar Text', serif",
+  typewriter: "'Special Elite', 'Aka08', 'Myanmar Text', cursive",
+  bebas: "'Bebas Neue', 'Impact', 'Aka08', 'Myanmar Text', sans-serif",
+  mono: "'JetBrains Mono', ui-monospace, 'Aka08', 'Myanmar Text', monospace",
 } as const;
 
 export const Z_INDEX = {

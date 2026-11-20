@@ -372,7 +372,7 @@ export const StairwayGateInspectionView: React.FC<StairwayGateInspectionViewProp
 
         {/* Hover label / tooltip anchored above padlock & chains */}
         <span
-          className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-mono text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-30"
+          className="absolute px-2.5 py-1 rounded-none bg-[#020504]/90 text-[10px] font-burmese text-[#82a996] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none -translate-x-1/2 -translate-y-full mb-2 z-30 leading-[1.75]"
           style={{ left: '52.5%', top: '52%' }}
         >
           {hasGateKey ? '[ လှေကားထွက်ပေါက်တံခါးကို သော့ဖြင့် ဖွင့်မည် ]' : '[ လေးလံသော သော့ခလောက်နှင့် သံကြိုးများကို စစ်ဆေးမည် ]'}

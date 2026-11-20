@@ -75,19 +75,19 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
     <div className="relative w-full h-full min-h-[620px] flex flex-col justify-between p-4 sm:p-6 md:p-8 bg-[#0a0f0d]/95 backdrop-blur-xl text-[#c2d6cc] overflow-y-auto select-none">
       {/* Top Header Banner */}
       <div className="text-center space-y-2 mb-4 sm:mb-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#060b08]/85 rounded-none text-xs text-[#82a996] uppercase tracking-widest font-mono">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-[#060b08]/85 rounded-none text-xs text-[#82a996] font-burmese leading-[1.75]">
           <span className="w-1.5 h-1.5 rounded-none bg-[#6ee7b7] animate-pulse" />
           <span>အချိန်ကာလ ရွှေ့ပြောင်းမှု • ၁၉၉၈ ဩဂုတ်</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-mono font-black text-[#b2c7bd] tracking-widest uppercase drop-shadow-md">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-burmese font-bold text-[#b2c7bd] drop-shadow-md leading-[1.75]">
           ကျောက်ဆူးသတိ
         </h1>
-        <p className="text-xs sm:text-sm text-[#7d998b] max-w-2xl mx-auto font-mono">
+        <p className="text-xs sm:text-sm text-[#7d998b] max-w-2xl mx-auto font-burmese leading-[1.75]">
           စုံစမ်းမှုကို ကျောက်ဆူးချမည့် ကျောင်းသား၏ ရှုထောင့်ကို ရွေးချယ်ပါ။ မြှားခလုတ်များ{' '}
-          <span className="text-[#a7c4b5] font-bold">[← / → / ↑ / ↓]</span>၊ နံပါတ်ခလုတ်{' '}
-          <span className="text-[#a7c4b5] font-bold">[၁-၆]</span> သို့မဟုတ် ကတ်ကိုနှိပ်ပါ။ နိုးထရန်{' '}
-          <span className="text-[#a7c4b5] font-bold">[Enter]</span> သို့မဟုတ်{' '}
-          <span className="text-[#a7c4b5] font-bold">[Space]</span> ကိုနှိပ်ပါ။
+          <span className="text-[#a7c4b5] font-bold font-mono">[← / → / ↑ / ↓]</span>၊ နံပါတ်ခလုတ်{' '}
+          <span className="text-[#a7c4b5] font-bold font-burmese">[၁-၆]</span> သို့မဟုတ် ကတ်ကိုနှိပ်ပါ။ နိုးထရန်{' '}
+          <span className="text-[#a7c4b5] font-bold font-mono">[Enter]</span> သို့မဟုတ်{' '}
+          <span className="text-[#a7c4b5] font-bold font-mono">[Space]</span> ကိုနှိပ်ပါ။
         </p>
       </div>
 
@@ -190,14 +190,14 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                 </div>
 
                 {/* Vitals & Defenses Readout */}
-                <div className="flex flex-wrap items-center gap-2 font-mono tabular-nums text-xs">
-                  <span className="flex items-center gap-1 text-[#6ea889] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none">
+                <div className="flex flex-wrap items-center gap-2 font-burmese text-xs">
+                  <span className="flex items-center gap-1 text-[#6ea889] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none leading-[1.75]">
                     <Heart className="w-3.5 h-3.5 text-[#6ea889]" />
-                    <span>သွေးသား {activeProfile.maxHp} HP</span>
+                    <span>သွေးသား <span className="font-mono tabular-nums">{activeProfile.maxHp} HP</span></span>
                   </span>
-                  <span className="flex items-center gap-1 text-[#38bdf8] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none">
+                  <span className="flex items-center gap-1 text-[#38bdf8] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none leading-[1.75]">
                     <Brain className="w-3.5 h-3.5 text-[#38bdf8]" />
-                    <span>စိတ်တည်ငြိမ်မှု {activeProfile.maxMind} MIND</span>
+                    <span>စိတ်တည်ငြိမ်မှု <span className="font-mono tabular-nums">{activeProfile.maxMind} MIND</span></span>
                   </span>
                   {activeProfile.physicalDefense !== 1.0 && (
                     <span className="text-[11px] font-burmese px-2 py-0.5 rounded-none bg-[#0b140f] text-[#b1d4c2] leading-[1.75]">

@@ -721,8 +721,8 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
                       <Flame className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                       ယဇ်ပူဇော်ရာ မီးညှိခြင်း
                     </span>
-                    <span className="text-[#6ea889] font-semibold font-mono tabular-nums">
-                      မီးခြစ်ဆံ {matchesRemaining} ချောင်း ကျန်သည်
+                    <span className="text-[#6ea889] font-semibold font-burmese leading-[1.75]">
+                      မီးခြစ်ဆံ <span className="font-mono tabular-nums">{matchesRemaining}</span> ချောင်း ကျန်သည်
                     </span>
                   </div>
 

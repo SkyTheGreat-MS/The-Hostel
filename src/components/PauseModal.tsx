@@ -75,7 +75,7 @@ export const PauseModal: React.FC<PauseModalProps> = ({
             className="w-full py-2.5 px-4 rounded-none bg-[#0b140f] hover:bg-[#101c15] text-[#b1d4c2] hover:text-[#e0f0e7] font-burmese text-sm tracking-wide transition-colors flex items-center justify-between cursor-pointer leading-[1.75]"
           >
             <span>အသံနှင့် မျက်နှာပြင် ဆက်တင်များ</span>
-            <div className="flex items-center gap-1.5 text-xs font-mono">
+            <div className="flex items-center gap-1.5 text-xs font-burmese leading-[1.75]">
               {isMuted ? (
                 <span className="text-[#ba2929]">[အသံပိတ်ထားသည်]</span>
               ) : (
@@ -133,8 +133,8 @@ export const PauseModal: React.FC<PauseModalProps> = ({
           </button>
         </div>
 
-        <p className="text-[10px] font-mono text-[#447d60] mt-5 uppercase tracking-widest">
-          ပြန်စတင်ရန် [ESC] ကို နှိပ်ပါ
+        <p className="text-[10px] font-burmese text-[#447d60] mt-5 leading-[1.75]">
+          ပြန်စတင်ရန် <span className="font-mono">[ESC]</span> ကို နှိပ်ပါ
         </p>
       </div>
     </div>

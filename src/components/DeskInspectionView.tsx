@@ -208,7 +208,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
 
               {/* Letter Parchment Reader Content */}
               <div className="relative rounded-none bg-[#060b08]/95 p-5 sm:p-6 mb-5 font-burmese text-xs sm:text-sm leading-[1.75] text-[#b1d4c2] space-y-3">
-                <div className="text-[11px] text-[#6ea889] tracking-wider pb-1.5 font-mono">
+                <div className="text-[11px] text-[#6ea889] tracking-wider pb-1.5 font-burmese leading-[1.75]">
                   [ တွန့်ကြေနေသော လိုင်းသားစာအုပ်စာမျက်နှာ — အလျင်စလို ရေးထားသော လက်ရေး ]
                 </div>
                 <p className="text-[#e0f0e7] tracking-wide pt-1 leading-[1.75]">
