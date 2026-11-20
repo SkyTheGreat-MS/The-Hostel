@@ -2520,7 +2520,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
           }`}
         />
         {phase3Location !== 'caretaker_office_main' && phase3Location !== 'caretaker_office' && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/50 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/30 pointer-events-none" />
         )}
 
       {/* 2. Supernatural Glitch Flicker Effect */}

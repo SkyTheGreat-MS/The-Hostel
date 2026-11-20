@@ -105,7 +105,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
       {/* Character Name Tab (attached to top edge, follows speaker position) */}
       {speakerName && (
         <div
-          className="absolute top-0 z-30 px-4 py-1.5 rounded-none bg-[#020504]/95 pointer-events-none select-none"
+          className="absolute top-0 z-30 px-4 py-1.5 rounded-none bg-[#020504]/55 backdrop-blur-md pointer-events-none select-none"
           style={{
             transform: 'translateY(-100%)',
             ...(speakerAlign === 'left' && { left: '2rem' }),
@@ -122,7 +122,7 @@ export const DialogueOverlay: React.FC<DialogueOverlayProps> = ({
       {/* Main Dialogue Box: Duo-Tone Stagnant Obsidian & Sickly Verdigris */}
       <div
         onClick={onAdvance}
-        className="w-full relative rounded-none bg-[#020504]/96 backdrop-blur-md p-4 sm:p-6 transition-colors duration-150 cursor-pointer group"
+        className="w-full relative rounded-none bg-[#020504]/55 backdrop-blur-md p-4 sm:p-6 transition-colors duration-150 cursor-pointer group"
       >
         {/* Location Tag & Rewind Bar */}
         <div className="flex items-center justify-between mb-2 sm:mb-3 pb-2">
