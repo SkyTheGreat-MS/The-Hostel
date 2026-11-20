@@ -273,9 +273,9 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
                 >
                   <button
                     onClick={handleUnlockPadlock}
-                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-amber-950/95 hover:bg-amber-900 border border-amber-400/80 hover:border-amber-300 text-amber-100 hover:text-white text-xs sm:text-sm font-mono font-bold tracking-wider uppercase shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:shadow-[0_0_40px_rgba(245,158,11,0.7)] cursor-pointer transition-all active:scale-95"
+                    className="group flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#060b08]/95 hover:bg-[#101c15] border border-[#c7a458] text-[#c7a458] hover:text-[#f3e5ab] text-xs sm:text-sm font-burmese font-bold tracking-wider shadow-[0_0_25px_rgba(199,164,88,0.35)] cursor-pointer transition-all active:scale-95"
                   >
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                    <span className="w-2 h-2 rounded-full bg-[#c7a458] animate-ping" />
                     <span>[ သော့ ၁၄ ဖြင့် ဘီရို ၁၄ ကို ဖွင့်မည် ]</span>
                   </button>
                 </motion.div>

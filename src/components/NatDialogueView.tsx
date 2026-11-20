@@ -13,7 +13,7 @@ import {
 } from '../types';
 import { ITEM_DATABASE } from '../gameData';
 import { MASTER_CLUES } from './CaseNotesModal';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ChevronRight } from 'lucide-react';
 
 export {
   type NatKnowledgeTier,
@@ -492,7 +492,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
             {/* Spoken Response Container */}
             <div className="py-2 px-1 my-auto">
-              <p className="font-serif italic font-extralight text-base md:text-lg text-[#dceddf] tracking-wide leading-relaxed select-none">
+              <p className="font-burmese text-base md:text-lg text-[#e0f0e7] tracking-wide leading-[1.75] select-none">
                 "{currentOpening.text}"
               </p>
             </div>
@@ -582,12 +582,13 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
                         key={entry.id}
                         type="button"
                         onClick={() => handlePresentTarget(entry.id, activeTab)}
-                        className="w-full text-left p-2.5 rounded-lg bg-[#121c16] hover:bg-[#1c2d23] border border-[#23382b] hover:border-[#3d5e48] text-xs font-mono text-[#d1e6dc] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99]"
+                        className="w-full text-left p-2.5 rounded-lg bg-[#0b140f] hover:bg-[#101c15] border border-[#193828] hover:border-[#29543e] text-xs font-burmese text-[#b1d4c2] flex items-center justify-between transition-all cursor-pointer group active:scale-[0.99]"
                       >
-                        <span className="group-hover:text-white transition-colors">
-                          ❯ {activeTab === 'inventory' ? `Ask about item: ${entry.shortLabel}` : `Ask about note: ${entry.title}`}
+                        <span className="group-hover:text-[#e0f0e7] transition-colors flex items-center">
+                          <ChevronRight className="w-3.5 h-3.5 mr-1 text-[#6ea889] shrink-0" />
+                          <span>{activeTab === 'inventory' ? `ပစ္စည်းမေးမည်: ${entry.shortLabel}` : `မှတ်စုမေးမည်: ${entry.title}`}</span>
                         </span>
-                        <span className="text-[10px] font-mono text-red-400/60 group-hover:text-red-300 transition-colors">
+                        <span className="text-[10px] font-mono text-[#ba2929] group-hover:text-[#fca5a5] transition-colors">
                           -0.8%
                         </span>
                       </button>
@@ -613,7 +614,7 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
                   {/* Spoken Response Container */}
                   <div className="py-2 px-1">
-                    <p className="font-serif italic font-extralight text-base md:text-lg text-[#dceddf] tracking-wide leading-relaxed select-none min-h-[64px]">
+                    <p className="font-burmese text-base md:text-lg text-[#e0f0e7] tracking-wide leading-[1.75] select-none min-h-[64px]">
                       "{activeResponseText}"
                     </p>
                   </div>

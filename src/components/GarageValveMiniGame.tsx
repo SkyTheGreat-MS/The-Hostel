@@ -295,11 +295,11 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           
           {/* Header Bar: Industrial Apparatus Plate */}
           <div className="w-full text-center pb-4 border-b border-[#1c2b22] space-y-1">
-            <div className="flex items-center justify-center gap-2 text-[#799988] font-mono text-[11px] tracking-[0.25em] uppercase">
-              <Droplets className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            <div className="flex items-center justify-center gap-2 text-[#6ea889] font-burmese text-xs uppercase">
+              <Droplets className="w-3.5 h-3.5 text-[#6ea889] animate-pulse" />
               <span>မြေအောက် ရေလွှဲစနစ် • မြေအောက် ရေနုတ်အဆို့ရှင်</span>
             </div>
-            <h2 className="font-serif italic text-lg sm:text-2xl text-[#d4e4db] tracking-wide">
+            <h2 className="font-burmese font-bold text-lg sm:text-2xl text-[#e0f0e7]">
               လေးလံသော ရေနုတ်အဆို့ရှင်ဘီး (ရေမြောင်း ပိုက်ချောက်ခေါင်း)
             </h2>
           </div>
@@ -494,46 +494,46 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
           {/* Dynamic Momentum Guidance Message */}
           <div className="w-full mt-3 text-center min-h-[22px]">
             {isCompleted ? (
-              <span className="font-mono text-xs font-bold text-emerald-300 tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span className="font-burmese text-xs font-bold text-[#6ea889] tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
+                <CheckCircle2 className="w-4 h-4 text-[#6ea889]" />
                 အဆို့ရှင် အပြည့်ပွင့်သွားပြီ • ရေများ အကုန်စီးထွက်သွားခဲ့ပြီ!
               </span>
             ) : isDecaying ? (
-              <span className="font-mono text-xs font-bold text-amber-400 tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
+              <span className="font-burmese text-xs font-bold text-amber-400 tracking-wider flex items-center justify-center gap-1.5 animate-pulse">
                 <AlertTriangle className="w-3.5 h-3.5" />
                 အဆို့ရှင် ပြန်လည်လျောကျနေသည်! အရှိန်မပျက်စေရန် ဆက်တိုက်နှိပ်ပေးပါ!
               </span>
             ) : progress > 0 ? (
-              <span className="font-mono text-xs text-[#a2c9b4] tracking-wider">
+              <span className="font-burmese text-xs text-[#b1d4c2] tracking-wider">
                 အဆို့ရှင်ကို လှည့်နေသည်... အရှိန်မပျက်စေရန် ဆက်တိုက်နှိပ်ပါ!
               </span>
             ) : (
-              <span className="font-mono text-xs text-stone-400 tracking-wider">
+              <span className="font-burmese text-xs text-stone-400 tracking-wider">
                 သံချေးတက်နေသည် — လှည့်နိုင်ရန် လျင်မြန်ပြီး စဉ်ဆက်မပြတ် ဖိအားပေးရန် လိုအပ်သည်
               </span>
             )}
           </div>
 
           {/* Large Tactile Spacebar Action Button Prompt */}
-          <div className="w-full mt-5 pt-4 border-t border-[#1c2b22] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="w-full mt-5 pt-4 border-t border-[#193828] flex flex-col sm:flex-row items-center justify-between gap-3">
             <button
               onClick={handleTurnValve}
               disabled={isCompleted}
-              className={`w-full sm:flex-1 py-3 px-5 rounded-2xl border flex items-center justify-center gap-2 font-mono text-xs sm:text-sm font-bold tracking-wider uppercase transition-all shadow-xl cursor-pointer ${
+              className={`w-full sm:flex-1 py-3 px-5 rounded-2xl border flex items-center justify-center gap-2 font-burmese text-xs sm:text-sm font-bold tracking-wider transition-all shadow-xl cursor-pointer ${
                 isCompleted
-                  ? 'bg-emerald-950/60 border-emerald-500 text-emerald-300 pointer-events-none'
+                  ? 'bg-[#101c15] border-[#193828] text-[#6ea889] pointer-events-none'
                   : isPressedVisual
-                  ? 'bg-emerald-600 text-stone-950 border-emerald-400 scale-[0.98]'
-                  : 'bg-[#15231c] hover:bg-[#1f3329] border-[#314a3b] hover:border-emerald-500 text-[#d4e4db] hover:text-emerald-200 hover:scale-[1.01] active:scale-95'
+                  ? 'bg-[#193828] text-[#e0f0e7] border-[#6ea889] scale-[0.98]'
+                  : 'bg-[#101c15] hover:bg-[#193828] border-[#193828] hover:border-[#6ea889] text-[#e0f0e7] hover:scale-[1.01] active:scale-95'
               }`}
             >
-              <kbd className="px-2.5 py-1 rounded bg-[#090e0b] border border-[#263b2f] text-emerald-400 text-xs font-mono shadow-inner">
+              <kbd className="px-2.5 py-1 rounded bg-[#060b08] border border-[#193828] text-[#6ea889] text-xs font-mono shadow-inner">
                 SPACE
               </kbd>
               <span>{isCompleted ? 'အဆို့ရှင် အပြည့်ပွင့်သွားပြီ' : 'SPACEBAR ကို အဆက်မပြတ် နှိပ်ပါ'}</span>
             </button>
 
-            <span className="text-[10px] font-mono text-stone-500 text-center sm:text-right">
+            <span className="text-xs font-burmese text-stone-400 text-center sm:text-right">
               {isCompleted ? 'ရေဖောက်ထုတ်မှု ပြီးဆုံးပြီ' : 'သို့မဟုတ် လှည့်ရန် အဆို့ရှင်ကို ကလစ်နှိပ်ပါ'}
             </span>
           </div>

@@ -439,103 +439,103 @@ export const MainMenu: React.FC<MainMenuProps> = ({
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 10 }}
-              className="bg-stone-900 border border-stone-700 rounded-xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl text-stone-200 relative overflow-hidden"
+              className="bg-[#060b08]/96 border border-[#193828] rounded-xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl text-[#b1d4c2] relative overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-stone-800 pb-4 mb-5">
+              <div className="flex items-center justify-between border-b border-[#112319] pb-4 mb-5">
                 <div className="flex items-center gap-2.5">
-                  <FileText className="w-5 h-5 text-amber-400" />
+                  <FileText className="w-5 h-5 text-[#6ea889]" />
                   <div>
-                    <h2 className="text-2xl font-bold font-bebas tracking-wide text-amber-200 uppercase">
+                    <h2 className="text-xl sm:text-2xl font-bold font-cinzel tracking-wider text-[#b1d4c2] uppercase">
                       Investigative Field Guide &amp; Spirit Rules
                     </h2>
-                    <p className="text-xs text-stone-400 font-mono">
+                    <p className="text-xs text-[#447d60] font-mono">
                       Hostel 1998 • Nat-Calling Séance Manual
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="p-1.5 rounded-lg hover:bg-stone-800 text-stone-400 hover:text-white transition-colors"
+                  className="p-1.5 rounded-lg border border-[#112319] bg-[#0b140f] hover:bg-[#101c15] text-[#6ea889] hover:text-[#e0f0e7] transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Guide Contents */}
-              <div className="space-y-4 text-xs leading-relaxed max-h-[60vh] overflow-y-auto pr-2 text-stone-300">
+              <div className="space-y-4 text-xs leading-relaxed max-h-[60vh] overflow-y-auto pr-2 text-[#b1d4c2]">
                 {/* How to Play & Your Mission */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-stone-950/80 rounded-lg border border-amber-900/40">
-                    <h3 className="font-bold text-amber-300 text-sm mb-1 flex items-center gap-1.5 uppercase">
-                      <Flame className="w-4 h-4 text-amber-400" />
+                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                    <h3 className="font-bold text-[#b1d4c2] text-sm mb-1 flex items-center gap-1.5 uppercase font-cinzel">
+                      <Flame className="w-4 h-4 text-[#6ea889]" />
                       How to Play
                     </h3>
-                    <p className="text-stone-400 text-[11px]">
-                      Uncover the past. Escape 1998.
+                    <p className="text-[#6ea889] text-[11px] font-burmese">
+                      အတိတ်ကို ဖော်ထုတ်ပြီး ၁၉၉၈ မှ လွတ်မြောက်အောင် ရှာဖွေပါ။
                     </p>
                   </div>
 
-                  <div className="p-3 bg-stone-950/80 rounded-lg border border-amber-900/40">
-                    <h3 className="font-bold text-amber-300 text-sm mb-1 flex items-center gap-1.5 uppercase">
-                      <Target className="w-4 h-4 text-amber-400" />
+                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                    <h3 className="font-bold text-[#b1d4c2] text-sm mb-1 flex items-center gap-1.5 uppercase font-cinzel">
+                      <Target className="w-4 h-4 text-[#6ea889]" />
                       Your Mission
                     </h3>
-                    <p className="text-stone-400 text-[11px]">
-                      Find out what happened to &quot;Mama May&quot; and complete the ritual before time runs out.
+                    <p className="text-[#6ea889] text-[11px] font-burmese">
+                      &quot;မေ&quot; ဘာဖြစ်ခဲ့သည်ကို ဖော်ထုတ်ပြီး အချိန်မကုန်မီ နတ်ပူဇော်မှု အခမ်းအနားကို ပြီးမြောက်စေပါ။
                     </p>
                   </div>
                 </div>
 
                 {/* Game Flow */}
-                <div className="p-3 bg-stone-950/80 rounded-lg border border-stone-700">
-                  <h3 className="font-bold text-amber-300 text-sm mb-2 uppercase">
-                    Game Flow
+                <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                  <h3 className="font-bold text-[#b1d4c2] text-sm mb-2 uppercase font-cinzel">
+                    Investigation Flow
                   </h3>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">①</span> CHOOSE
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[01]</span> CHOOSE
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Character selection</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">စုံစမ်းသူ ရွေးချယ်မှု</p>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">②</span> EXPLORE
+                      <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[02]</span> EXPLORE
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Search the hostel</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">အဆောင်ကို ရှာဖွေရန်</p>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">③</span> FIND CLUES
+                      <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[03]</span> FIND CLUES
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Examine objects</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">ပစ္စည်းများ စစ်ဆေးရန်</p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">④</span> INVESTIGATE
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[04]</span> DEDUCE
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Connect the clues</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">သဲလွန်စများ ချိတ်ဆက်ရန်</p>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">⑤</span> RITUAL
+                      <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[05]</span> RITUAL
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Use the right items</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">နတ်ပူဇော် တင်ဆက်ရန်</p>
                       </div>
-                      <ArrowRight className="w-4 h-4 text-stone-500 shrink-0" />
-                      <div className="flex-1 min-w-0 p-2.5 bg-stone-950/60 rounded-lg border border-stone-700 text-center">
-                        <p className="font-bold text-stone-200 text-[11px] leading-tight">
-                          <span className="text-amber-400">⑥</span> ESCAPE
+                      <ArrowRight className="w-4 h-4 text-[#447d60] shrink-0" />
+                      <div className="flex-1 min-w-0 p-2.5 bg-[#060b08] rounded-lg border border-[#193828] text-center">
+                        <p className="font-bold text-[#b1d4c2] text-[11px] leading-tight font-mono">
+                          <span className="text-[#6ea889]">[06]</span> ESCAPE
                         </p>
-                        <p className="text-stone-500 text-[10px] leading-tight mt-0.5">Solve mystery</p>
+                        <p className="text-[#447d60] text-[10px] leading-tight mt-0.5 font-burmese">ပဟေဠိ ဖြေရှင်းရန်</p>
                       </div>
                     </div>
                   </div>
@@ -543,33 +543,33 @@ export const MainMenu: React.FC<MainMenuProps> = ({
 
                 {/* Composure & Grief */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3 bg-stone-950/80 rounded-lg border border-sky-900/40">
-                    <h4 className="font-bold text-sky-300 mb-1 flex items-center gap-1.5 uppercase">
-                      <Brain className="w-3.5 h-3.5 text-sky-400" />
-                      Composure
+                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#193828]">
+                    <h4 className="font-bold text-[#b1d4c2] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
+                      <Brain className="w-3.5 h-3.5 text-[#6ea889]" />
+                      Composure (တည်ငြိမ်မှု)
                     </h4>
-                    <p className="text-stone-400 text-[11px]">Don&apos;t reach 0</p>
+                    <p className="text-[#447d60] text-[11px] font-burmese">၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>
 
-                  <div className="p-3 bg-stone-950/80 rounded-lg border border-rose-900/40">
-                    <h4 className="font-bold text-rose-300 mb-1 flex items-center gap-1.5 uppercase">
-                      <Skull className="w-3.5 h-3.5 text-rose-400" />
-                      Grief
+                  <div className="p-3 bg-[#0b140f] rounded-lg border border-[#591010]">
+                    <h4 className="font-bold text-[#fca5a5] mb-1 flex items-center gap-1.5 uppercase font-cinzel">
+                      <Skull className="w-3.5 h-3.5 text-[#ba2929]" />
+                      Grief (ပူဆွေးမှု)
                     </h4>
-                    <p className="text-stone-400 text-[11px]">Don&apos;t reach 100%</p>
+                    <p className="text-[#ba2929] text-[11px] font-burmese">၁၀၀% မရောက်အောင် ထိန်းသိမ်းပါ</p>
                   </div>
                 </div>
               </div>
 
               {/* Tip Box & Close Button */}
-              <div className="mt-6 pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="flex items-start gap-2 p-3 bg-stone-950/80 rounded-lg border border-stone-700 text-[11px] text-stone-400 sm:flex-1">
-                  <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                  <p>Search everywhere. Read carefully. Trust the evidence, not assumptions.</p>
+              <div className="mt-6 pt-4 border-t border-[#112319] flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex items-start gap-2 p-3 bg-[#0b140f] rounded-lg border border-[#193828] text-[11px] text-[#6ea889] sm:flex-1">
+                  <Lightbulb className="w-4 h-4 text-[#c7a458] shrink-0 mt-0.5" />
+                  <p className="font-burmese">နေရာအနှံ့ ရှာဖွေပါ။ သေချာဖတ်ရှုပါ။ ထင်မြင်ချက်များထက် လက်ဆုပ်လက်ကိုင် အထောက်အထားများကိုသာ ယုံကြည်ပါ။</p>
                 </div>
                 <button
                   onClick={() => setActiveModal('none')}
-                  className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-lg text-xs transition-colors shrink-0"
+                  className="px-5 py-2 bg-[#0b140f] hover:bg-[#101c15] border border-[#193828] hover:border-[#29543e] text-[#b1d4c2] hover:text-[#e0f0e7] font-bold rounded-lg text-xs transition-colors shrink-0 cursor-pointer"
                 >
                   Return to Menu
                 </button>

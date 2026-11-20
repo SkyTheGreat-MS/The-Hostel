@@ -2703,7 +2703,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             {doorSmashed && currentTier === 1 && (
               <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/85 border border-rose-600 text-rose-300 text-xs font-mono shadow-lg animate-pulse">
                 <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
-                <span>⚠️ နားပင်းလောက်သော ခေါက်ချုန်းသံ ပဲ့တင်ထပ်: တံခါးကို ရိုက်ခွဲခြင်းသည် အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် သရဲများကို နှိုးဆော်လိုက်သည်။ စင်္ကြံ အန္တရာယ်အဆင့် မြင့်တက်သွားပြီ!</span>
+                <span className="font-burmese">နားပင်းလောက်သော ခေါက်ချုန်းသံ ပဲ့တင်ထပ်: တံခါးကို ရိုက်ခွဲခြင်းသည် အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် သရဲများကို နှိုးဆော်လိုက်သည်။ စင်္ကြံ အန္တရာယ်အဆင့် မြင့်တက်သွားပြီ!</span>
               </div>
             )}
           </div>
@@ -3276,8 +3276,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                       ကျွန်းပျဉ်တုံးဖြင့် သော့ကို ရိုက်ခွဲဖွင့်ပါ
                                     </span>
                                   </div>
-                                  <div className="text-[11px] font-mono text-rose-300/90 font-semibold mb-1">
-                                    ⚠️ သတိပေးချက်: တံခါးကို ရိုက်ခွဲလျှင် နားပင်းလောက်သော အသံကျယ်ကြီး ထွက်ပေါ်လာမည်။
+                                  <div className="text-[11px] font-burmese text-rose-300/90 font-semibold mb-1 flex items-center gap-1.5">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                                    <span>သတိပေးချက်: တံခါးကို ရိုက်ခွဲလျှင် နားပင်းလောက်သော အသံကျယ်ကြီး ထွက်ပေါ်လာမည်။</span>
                                   </div>
                                   <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
                                     -၁၅% စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။

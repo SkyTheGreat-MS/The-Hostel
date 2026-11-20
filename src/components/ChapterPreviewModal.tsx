@@ -87,8 +87,7 @@ export const ChapterPreviewModal: React.FC<ChapterPreviewModalProps> = ({
           {tagline}
         </div>
         <h2
-          className="text-3xl sm:text-4xl font-bold text-[#d1e3da] tracking-wider uppercase"
-          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+          className="text-2xl sm:text-3xl font-bold text-[#b1d4c2] tracking-wider uppercase font-cinzel"
         >
           {subtitle}
         </h2>

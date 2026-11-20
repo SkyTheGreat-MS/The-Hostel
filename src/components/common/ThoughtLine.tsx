@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { ANIMATIONS } from '../../styles/designSystem';
 
 export interface ThoughtLineProps {
   /** The active monologue text. null = hidden. */
@@ -8,58 +9,63 @@ export interface ThoughtLineProps {
   onDismiss?: () => void;
   /** Position variant. Default: 'bottom'. */
   position?: 'bottom' | 'center-bottom';
+  /** Linger duration before auto-fading in milliseconds. Default: 3000ms. */
+  durationMs?: number;
   /** Additional className overrides for the outer wrapper. */
   className?: string;
 }
 
 /**
- * ThoughtLine - Unified monologue/inner-thought renderer.
+ * ThoughtLine - 1998 Folk-Horror Cinematic Thought Engine
  *
- * Mount once per scene at the scene level. Bind message to the scene's
- * activeMonologue state. Never nest multiple ThoughtLines simultaneously
- * as this causes text collision bugs.
- *
- * @example
- * ```tsx
- * <ThoughtLine message={activeMonologue} onDismiss={() => setActiveMonologue(null)} />
- * ```
+ * Renders protagonist inner thoughts as floating subtitles.
+ * - 100% Borderless: No AI-slop boxes, decorative bars, or dismiss prompts.
+ * - Auto-fades after exactly 3.0 seconds with smooth deceleration.
+ * - Click anywhere to dismiss immediately; seamlessly resets when new thoughts appear.
  */
 export const ThoughtLine: React.FC<ThoughtLineProps> = ({
   message,
   onDismiss,
   position = 'bottom',
+  durationMs = ANIMATIONS.thoughtLingerMs,
   className = '',
 }) => {
+  // 3-Second Auto-Fade Timer
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => {
+      onDismiss?.();
+    }, durationMs);
+    return () => clearTimeout(timer);
+  }, [message, durationMs, onDismiss]);
+
   const positionClass =
     position === 'center-bottom'
-      ? 'bottom-[18%] left-1/2 -translate-x-1/2 w-[72%] max-w-2xl'
-      : 'bottom-6 left-1/2 -translate-x-1/2 w-[88%] max-w-3xl';
+      ? 'bottom-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl px-6'
+      : 'bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6';
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {message && (
         <motion.div
           key={message}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 8 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          className={`absolute z-50 pointer-events-auto ${positionClass} ${className}`}
+          initial={{ opacity: 0, y: 8, filter: 'blur(2px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, y: -4, filter: 'blur(2px)' }}
+          transition={{
+            duration: 0.45,
+            ease: ANIMATIONS.easeCinematic,
+          }}
+          className={`absolute z-40 pointer-events-auto cursor-pointer select-none ${positionClass} ${className}`}
           onClick={onDismiss}
           role="status"
           aria-live="polite"
         >
-          <div className="relative bg-[#09130f]/92 border border-[#2d4436] rounded-xl px-5 py-3.5 shadow-2xl backdrop-blur-sm cursor-pointer group">
-            {/* Decorative left accent bar */}
-            <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full bg-emerald-500/50" />
-            <p className="pl-3 font-mono text-[12px] sm:text-[13px] leading-relaxed text-[#c8ddd5] tracking-wide">
+          {/* Borderless Organic Feathered Ambient Wash */}
+          <div className="relative thought-feather-wash py-3 px-6 rounded-2xl flex items-center justify-center">
+            <p className="font-burmese text-sm sm:text-base text-[#d8eae2] text-center thought-subtitle-shadow leading-[1.75] tracking-wide">
               {message}
             </p>
-            {onDismiss && (
-              <p className="pl-3 mt-1.5 font-mono text-[10px] text-[#5a7a69] tracking-widest uppercase group-hover:text-[#82a996] transition-colors">
-                [ CLICK TO DISMISS ]
-              </p>
-            )}
           </div>
         </motion.div>
       )}

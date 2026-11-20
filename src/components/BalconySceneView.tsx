@@ -5,7 +5,7 @@ import { Phase3Location } from '../types';
 import { SceneNavBar } from './SceneNavBar';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { MONOLOGUE_LINES } from '../data/dialogues';
-import { Key } from 'lucide-react';
+import { Key, X } from 'lucide-react';
 import { PrologBridge } from '../services/PrologBridge';
 
 declare global {
@@ -343,7 +343,7 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
                     className="p-2 rounded-xl bg-black/85 border border-[#2d4436] text-stone-400 hover:text-white text-xs font-mono cursor-pointer"
                     title="ပယ်ဖျက်"
                   >
-                    ✕
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </motion.div>

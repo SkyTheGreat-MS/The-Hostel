@@ -190,26 +190,23 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
               className="relative w-full max-w-lg rounded-2xl bg-[#0e1612]/98 border border-[#2d4436] p-6 sm:p-7 shadow-[0_0_50px_rgba(16,185,129,0.2)] text-[#c2d6cc]"
             >
               {/* Top Accent & Close */}
-              <div className="flex items-center justify-between border-b border-[#22352b] pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#18261f] border border-[#2d4436] flex items-center justify-center text-emerald-400">
+              <div className="flex items-center justify-between border-b border-[#193828] pb-3 mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#101c15] border border-[#193828] flex items-center justify-center text-[#6ea889]">
                     <FileText className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3
-                      className="font-mono text-sm sm:text-base font-bold tracking-widest text-[#d8eae1] uppercase"
-                      style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
-                    >
+                    <h3 className="font-burmese text-sm sm:text-base font-bold text-[#e0f0e7]">
                       ကိုဇော်၏ ခေါက်ထားသော စာလွှာ
                     </h3>
-                    <p className="text-[10px] font-mono text-[#6c8f7d] uppercase tracking-wider">
+                    <p className="text-[10px] font-burmese text-[#6ea889] tracking-wider">
                       အခန်း ၄B • ဩဂုတ် ၁၉၉၈
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsLetterModalOpen(false)}
-                  className="p-1.5 rounded-lg bg-[#14201a] border border-[#22352b] text-[#6c8f7d] hover:text-[#c2d6cc] hover:border-[#3d5e48] transition-all cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#101c15] border border-[#193828] text-[#6ea889] hover:text-[#e0f0e7] hover:border-[#29543e] transition-all cursor-pointer"
                   title="စာရွက် ပိတ်ရန်"
                 >
                   <X className="w-4 h-4" />
@@ -217,11 +214,11 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
               </div>
 
               {/* Letter Parchment Reader Content */}
-              <div className="relative rounded-xl bg-[#080d0a]/90 border border-[#1e2f25] p-5 sm:p-6 mb-5 font-mono text-xs sm:text-sm leading-relaxed text-[#bad3c7] shadow-inner space-y-3">
-                <div className="text-[11px] text-[#5e8270] tracking-wider uppercase border-b border-[#18261e] pb-1">
+              <div className="relative rounded-xl bg-[#060b08]/95 border border-[#193828] p-5 sm:p-6 mb-5 font-burmese text-xs sm:text-sm leading-[1.8] text-[#b1d4c2] shadow-inner space-y-3">
+                <div className="text-[11px] text-[#6ea889] tracking-wider border-b border-[#101c15] pb-1.5 font-mono">
                   [ တွန့်ကြေနေသော လိုင်းသားစာအုပ်စာမျက်နှာ — အလျင်စလို ရေးထားသော လက်ရေး ]
                 </div>
-                <p className="italic text-[#d8eae1] tracking-wide pt-1">
+                <p className="text-[#e0f0e7] tracking-wide pt-1">
                   “မေ — ငါတို့ ပြောထားတဲ့အတိုင်း လေဝင်ပေါက်နောက် (၃၂၆) မှာ တိပ်ခွေကို ထားခဲ့တယ်။ မင်းရဲ့ ဘီရိုထဲက အခန်းသော့ကို Sandar ယူမသွားစေနဲ့။ ညမထွက်ရအမိန့် ခေါင်းလောင်းထိုးတဲ့အချိန် ဝရန်တာမှာ ငါ့ကို လာတွေ့ပါ။ — ကိုဇော်”
                 </p>
               </div>
@@ -230,13 +227,13 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setIsLetterModalOpen(false)}
-                  className="px-4 py-2 rounded-lg bg-[#121c17] hover:bg-[#1a2821] border border-[#22352b] text-stone-400 hover:text-stone-200 text-xs font-mono tracking-wider uppercase transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-[#101c15] hover:bg-[#193828] border border-[#193828] text-[#8fa89b] hover:text-[#e0f0e7] text-xs font-burmese tracking-wider transition-all cursor-pointer"
                 >
                   [ ပြန်ထားမည် ]
                 </button>
                 <button
                   onClick={handleTakeLetter}
-                  className="group flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-950/80 hover:bg-emerald-900/90 border border-emerald-500/60 hover:border-emerald-400 text-emerald-200 hover:text-white text-xs font-mono font-bold tracking-wider uppercase shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all cursor-pointer active:scale-95"
+                  className="group flex items-center gap-2 px-5 py-2 rounded-lg bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] text-xs font-burmese font-bold tracking-wider shadow-lg transition-all cursor-pointer active:scale-95"
                 >
                   <span>[ စာလွှာကို ယူမည် ]</span>
                 </button>

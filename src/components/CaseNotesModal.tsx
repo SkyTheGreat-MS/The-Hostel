@@ -284,20 +284,19 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
             <div className="flex items-center gap-3">
               {/* Bookmark ribbon */}
               <div className="flex flex-col items-center">
-                <div className="w-0.5 h-3 bg-[#00ffb4]/30 rounded-full" />
-                <div className="w-8 h-10 bg-[#00ffb4]/10 border border-[#00ffb4]/25 rounded-sm flex items-center justify-center relative">
-                  <Bookmark className="w-4 h-4 text-[#00ffb4]/70" />
+                <div className="w-0.5 h-3 bg-[#6ea889]/30 rounded-full" />
+                <div className="w-8 h-10 bg-[#6ea889]/10 border border-[#6ea889]/25 rounded-sm flex items-center justify-center relative">
+                  <Bookmark className="w-4 h-4 text-[#6ea889]/70" />
                   {/* Ribbon point */}
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#00ffb4]/25" />
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#6ea889]/25" />
                 </div>
               </div>
               <div>
-                <span className="text-[9px] font-mono tracking-[0.2em] text-[#00ffb4]/50 uppercase font-semibold block">
+                <span className="text-[9px] font-mono tracking-[0.2em] text-[#6ea889]/50 uppercase font-semibold block">
                   အမှုတွဲမှတ်တမ်း &bull; သြဂုတ် ၁၉၉၈ ဖြစ်ရပ် (အမှုမှတ်တမ်း)
                 </span>
                 <h2
-                  className="text-2xl sm:text-3xl font-black text-[#d4ede3] tracking-[0.15em] uppercase leading-none"
-                  style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                  className="text-2xl sm:text-3xl font-burmese font-bold text-[#b1d4c2] tracking-wide uppercase leading-none"
                 >
                   စုံစမ်းစစ်ဆေးမှု မှတ်စုစာအုပ်
                 </h2>
@@ -310,7 +309,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 sound.playPaperRustle();
                 onClose();
               }}
-              className="w-9 h-9 rounded-lg bg-[#0e1511] border border-[#2a3a30] text-[#00ffb4]/50 hover:text-[#00ffb4] hover:border-[#00ffb4]/40 hover:bg-[#1a221e] transition-all cursor-pointer flex items-center justify-center"
+              className="w-9 h-9 rounded-lg bg-[#0e1511] border border-[#2a3a30] text-[#6ea889]/50 hover:text-[#6ea889] hover:border-[#6ea889]/40 hover:bg-[#1a221e] transition-all cursor-pointer flex items-center justify-center"
               title="မှတ်စုစာအုပ် ပိတ်ရန် [ESC]"
             >
               <X className="w-4 h-4" />
@@ -328,27 +327,27 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               <div className="rounded-xl border border-[#2a3a30]/80 p-4 relative overflow-hidden"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
                 {/* Corner accents */}
-                <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#00ffb4]/20 rounded-tl-xl" />
-                <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#00ffb4]/20 rounded-br-xl" />
+                <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#6ea889]/20 rounded-tl-xl" />
+                <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#6ea889]/20 rounded-br-xl" />
 
                 <div className="flex items-center gap-3 mb-3">
                   {/* Avatar silhouette */}
-                  <div className="w-14 h-14 rounded-full bg-[#0e1511] border-2 border-[#00ffb4]/20 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#00ffb4]/5 to-transparent" />
-                    <User className="w-7 h-7 text-[#00ffb4]/30" />
+                  <div className="w-14 h-14 rounded-full bg-[#0e1511] border-2 border-[#6ea889]/20 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#6ea889]/5 to-transparent" />
+                    <User className="w-7 h-7 text-[#6ea889]/30" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase">စုံစမ်းစစ်ဆေးသူ (Investigator)</div>
-                    <div className="text-sm font-bold text-[#d4ede3] truncate" style={{ fontFamily: "'Cinzel', serif" }}>
+                    <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">စုံစမ်းစစ်ဆေးသူ (Investigator)</div>
+                    <div className="text-sm font-burmese font-bold text-[#b1d4c2] truncate">
                       {investigatorName}
                     </div>
-                    <div className="text-[10px] font-mono text-[#00ffb4]/60 uppercase tracking-wider">
+                    <div className="text-[10px] font-mono text-[#6ea889]/60 uppercase tracking-wider">
                       ({investigatorArchetype})
                     </div>
                   </div>
                 </div>
-                <div className="h-px bg-gradient-to-r from-transparent via-[#00ffb4]/15 to-transparent" />
-                <div className="mt-2 text-[9px] font-mono text-[#00ffb4]/30 text-center uppercase tracking-widest">
+                <div className="h-px bg-gradient-to-r from-transparent via-[#6ea889]/15 to-transparent" />
+                <div className="mt-2 text-[9px] font-mono text-[#6ea889]/30 text-center uppercase tracking-widest">
                   စစ်ဆေးအတည်ပြုပြီး &bull; လက်ရှိအမှုတွဲ
                 </div>
               </div>
@@ -356,7 +355,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               {/* Composure Gauge — Circular Radial Ring */}
               <div className="rounded-xl border border-[#2a3a30]/80 p-4 flex flex-col items-center gap-3"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase">
+                <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase">
                   စိတ်တည်ငြိမ်မှု (Composure)
                 </div>
                 <div className="relative w-24 h-24">
@@ -388,14 +387,14 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               {/* Timer Module */}
               <div className="rounded-xl border border-[#2a3a30]/80 p-4"
                 style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                <div className="text-[9px] font-mono tracking-[0.15em] text-[#00ffb4]/40 uppercase text-center mb-2">
+                <div className="text-[9px] font-mono tracking-[0.15em] text-[#6ea889]/40 uppercase text-center mb-2">
                   ကျန်ရှိသော အချိန် (Remaining Time)
                 </div>
                 <div className="text-center">
-                  <span className="text-3xl font-black text-[#00ffb4] tracking-widest" style={{ fontFamily: "'Bebas Neue', sans-serif", textShadow: '0 0 20px rgba(0,255,180,0.3)' }}>
+                  <span className="text-3xl font-black text-[#6ea889] tracking-widest" style={{ fontFamily: "'Bebas Neue', sans-serif", textShadow: '0 0 20px rgba(0,255,180,0.3)' }}>
                     {timeFormatted}
                   </span>
-                  <span className="text-xs font-mono text-[#00ffb4]/30 block">/ 10:00</span>
+                  <span className="text-xs font-mono text-[#6ea889]/30 block">/ 10:00</span>
                 </div>
                 {/* Segmented progress bar */}
                 <div className="flex gap-1 mt-3">
@@ -411,9 +410,9 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                               ? '#ef4444'
                               : timeLeftSeconds < 300
                               ? '#f59e0b'
-                              : '#00ffb4'
+                              : '#6ea889'
                             : '#1a2520',
-                          boxShadow: filled ? `0 0 4px ${timeLeftSeconds < 120 ? '#ef4444' : timeLeftSeconds < 300 ? '#f59e0b' : '#00ffb4'}40` : 'none',
+                          boxShadow: filled ? `0 0 4px ${timeLeftSeconds < 120 ? '#ef4444' : timeLeftSeconds < 300 ? '#f59e0b' : '#6ea889'}40` : 'none',
                         }}
                       />
                     );
@@ -429,12 +428,12 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
               <div className="px-5 py-4 border-b border-[#2a3a30]/60">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Search className="w-3.5 h-3.5 text-[#00ffb4]/50" />
-                    <span className="text-[10px] font-mono tracking-[0.15em] text-[#00ffb4]/50 uppercase font-semibold">
+                    <Search className="w-3.5 h-3.5 text-[#6ea889]/50" />
+                    <span className="text-[10px] font-mono tracking-[0.15em] text-[#6ea889]/50 uppercase font-semibold">
                       ရရှိထားသော သဲလွန်စများ (Clues)
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#00ffb4]/30">
+                  <span className="text-[10px] font-mono text-[#6ea889]/30">
                     {filledSlots} / {totalSlots} ကွက်လပ် ဖြည့်ပြီး
                   </span>
                 </div>
@@ -447,21 +446,21 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                         key={i}
                         className={`aspect-square rounded-lg border flex flex-col items-center justify-center relative transition-all duration-300 ${
                           clue
-                            ? 'border-[#00ffb4]/30 bg-[#00ffb4]/5'
+                            ? 'border-[#6ea889]/30 bg-[#6ea889]/5'
                             : 'border-[#2a3a30]/60 bg-[#0e1511]/60'
                         }`}
                         title={clue ? `${clue.title}\n${clue.location}` : 'Empty slot'}
                       >
                         {/* Corner brackets */}
-                        <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 border-t border-l border-[#00ffb4]/20" />
-                        <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 border-t border-r border-[#00ffb4]/20" />
-                        <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l border-[#00ffb4]/20" />
-                        <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r border-[#00ffb4]/20" />
+                        <div className="absolute top-0.5 left-0.5 w-1.5 h-1.5 border-t border-l border-[#6ea889]/20" />
+                        <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 border-t border-r border-[#6ea889]/20" />
+                        <div className="absolute bottom-0.5 left-0.5 w-1.5 h-1.5 border-b border-l border-[#6ea889]/20" />
+                        <div className="absolute bottom-0.5 right-0.5 w-1.5 h-1.5 border-b border-r border-[#6ea889]/20" />
 
                         {clue ? (
                           <>
-                            <FileText className="w-4 h-4 text-[#00ffb4]/60 mb-0.5" />
-                            <span className="text-[7px] font-mono text-[#00ffb4]/40 text-center leading-tight px-0.5 line-clamp-2">
+                            <FileText className="w-4 h-4 text-[#6ea889]/60 mb-0.5" />
+                            <span className="text-[7px] font-mono text-[#6ea889]/40 text-center leading-tight px-0.5 line-clamp-2">
                               {clue.title.length > 16 ? clue.title.slice(0, 14) + '...' : clue.title}
                             </span>
                           </>
@@ -472,7 +471,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     );
                   })}
                 </div>
-                <div className="mt-2 text-center text-[9px] font-mono text-[#00ffb4]/25 tracking-wider">
+                <div className="mt-2 text-center text-[9px] font-mono text-[#6ea889]/25 tracking-wider">
                   အခန်း ၂ သို့ ကူးပြောင်းရန် အရေးကြီးသော သက်သေများကို ရှာဖွေပါ
                 </div>
               </div>
@@ -482,7 +481,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 {discoveredClueIds.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
                     <div className="w-16 h-16 rounded-full border border-[#2a3a30] flex items-center justify-center mb-4">
-                      <Search className="w-7 h-7 text-[#00ffb4]/15" />
+                      <Search className="w-7 h-7 text-[#6ea889]/15" />
                     </div>
                     <p className="text-sm font-mono text-[#d4ede3]/30 max-w-xs leading-relaxed">
                       သဲလွန်စများ မတွေ့ရှိသေးပါ။ အဆောင်စင်္ကြံများနှင့် မှတ်တမ်းဟောင်းခန်းများတွင် အထောက်အထားများ ရှာဖွေပါ။
@@ -495,23 +494,23 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                     return (
                       <div
                         key={id}
-                        className="rounded-xl border border-[#2a3a30]/60 hover:border-[#00ffb4]/20 transition-all p-4 relative overflow-hidden group"
+                        className="rounded-xl border border-[#2a3a30]/60 hover:border-[#6ea889]/20 transition-all p-4 relative overflow-hidden group"
                         style={{ background: 'linear-gradient(135deg, #141e19 0%, #18221d 100%)' }}
                       >
                         {/* Left accent line */}
                         <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-full ${
                           clue.category === 'primary' ? 'bg-rose-500/60' :
-                          clue.category === 'item' ? 'bg-[#00ffb4]/50' :
+                          clue.category === 'item' ? 'bg-[#6ea889]/50' :
                           'bg-[#2a3a30]'
                         }`} />
 
                         <div className="flex items-start justify-between gap-2 mb-1.5 pl-2">
-                          <span className="text-[9px] font-mono font-semibold text-[#00ffb4]/40 uppercase tracking-wider">
+                          <span className="text-[9px] font-mono font-semibold text-[#6ea889]/40 uppercase tracking-wider">
                             {clue.location}
                           </span>
                           <span className={`text-[8px] font-mono uppercase px-2 py-0.5 rounded-md border shrink-0 ${
                             clue.category === 'item'
-                              ? 'bg-[#00ffb4]/10 text-[#00ffb4]/80 border-[#00ffb4]/20'
+                              ? 'bg-[#6ea889]/10 text-[#6ea889]/80 border-[#6ea889]/20'
                               : clue.category === 'primary'
                               ? 'bg-rose-950/60 text-rose-300/80 border-rose-800/40'
                               : 'bg-[#1a2520]/80 text-[#d4ede3]/50 border-[#2a3a30]'
@@ -519,10 +518,10 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                             {clue.category}
                           </span>
                         </div>
-                        <h4 className="text-sm font-bold text-[#d4ede3] pl-2 mb-1" style={{ fontFamily: "'Cinzel', serif" }}>
+                        <h4 className="text-sm font-burmese font-bold text-[#b1d4c2] pl-2 mb-1">
                           {clue.title}
                         </h4>
-                        <p className="text-[11px] text-[#d4ede3]/60 font-mono leading-relaxed pl-2">
+                        <p className="text-xs text-[#b1d4c2]/80 font-burmese leading-[1.75] pl-2">
                           {clue.description}
                         </p>
                       </div>
@@ -538,7 +537,7 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
           {/* ═══════════ FOOTER ═══════════ */}
           <div className="px-5 py-3.5 border-t border-[#2a3a30]/60 flex items-center justify-between"
             style={{ background: 'linear-gradient(90deg, #121916 0%, #162018 50%, #121916 100%)' }}>
-            <div className="text-[9px] font-mono text-[#00ffb4]/20 tracking-widest uppercase">
+            <div className="text-[9px] font-mono text-[#6ea889]/20 tracking-widest uppercase">
               အမှုတွဲမှတ်စု &bull; လုံခြုံရေးချန်နယ် (Case Notebook)
             </div>
             <button

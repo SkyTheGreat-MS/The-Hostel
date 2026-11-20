@@ -70,10 +70,10 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
           transition={{ duration: 1.2, ease: 'easeOut' }}
           className="text-center space-y-2"
         >
-          <span className="text-xs font-mono tracking-[0.3em] text-[#6b8577] uppercase block">
+          <span className="text-xs font-burmese text-[#6ea889] block">
             {overTitle}
           </span>
-          <h1 className="text-3xl md:text-5xl font-mono font-bold tracking-wider text-[#d1e3da] drop-shadow-lg uppercase">
+          <h1 className="text-3xl md:text-5xl font-burmese font-bold text-[#e0f0e7] drop-shadow-[0_0_25px_rgba(110,168,137,0.25)]">
             {completedChapterTitle}
           </h1>
         </motion.div>
@@ -87,17 +87,17 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
             className="mt-8 text-center space-y-1 animate-fade-in"
           >
             {nextPhaseTag && (
-              <span className="text-[11px] font-mono tracking-[0.4em] text-red-400/80 uppercase block">
+              <span className="text-[11px] font-burmese text-[#ba2929] block">
                 {nextPhaseTag}
               </span>
             )}
-            <h2 className="text-2xl md:text-4xl font-serif italic tracking-wide text-[#a3c2b2] drop-shadow-[0_0_20px_rgba(163,194,178,0.35)] uppercase">
+            <h2 className="text-2xl md:text-4xl font-burmese font-semibold text-[#b1d4c2] drop-shadow-[0_0_20px_rgba(110,168,137,0.35)]">
               {effectiveNextChapterTitle}
             </h2>
           </motion.div>
         )}
 
-        {/* Option Choices Styled in Moss & Oxidized Iron */}
+        {/* Option Choices Styled in Duo-Tone Verdigris & Obsidian */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,7 +108,7 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
           {!isFinalChapter && (
             <button
               onClick={handleContinue}
-              className="w-full sm:w-1/2 py-3 px-4 rounded-lg bg-[#22352b] hover:bg-[#2e473a] border border-[#40614f] text-[#d8eae0] font-mono text-xs tracking-wider uppercase transition-all shadow-lg cursor-pointer"
+              className="w-full sm:w-1/2 py-3 px-4 rounded-lg bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] font-burmese text-xs font-bold transition-all shadow-lg cursor-pointer active:scale-95 hover:scale-[1.01]"
             >
               {continueButtonText}
             </button>
@@ -126,9 +126,9 @@ export const ChapterTransitionModal: React.FC<ChapterTransitionModalProps> = ({
             }}
             className={`${
               isFinalChapter
-                ? 'w-full py-3.5 px-6 bg-[#22352b] hover:bg-[#2e473a] border border-[#40614f] text-[#d8eae0] text-sm shadow-xl'
-                : 'w-full sm:w-1/2 py-3 px-4 bg-[#141b17] hover:bg-[#1a241f] border border-[#273830] text-[#8fa89b] hover:text-[#c2d6cc] text-xs'
-            } rounded-lg font-mono tracking-wider uppercase transition-all cursor-pointer`}
+                ? 'w-full py-3.5 px-6 bg-[#193828] hover:bg-[#29543e] border border-[#6ea889] text-[#e0f0e7] text-sm shadow-xl'
+                : 'w-full sm:w-1/2 py-3 px-4 bg-[#101c15] hover:bg-[#193828] border border-[#193828] text-[#8fa89b] hover:text-[#e0f0e7] text-xs'
+            } rounded-lg font-burmese transition-all cursor-pointer active:scale-95 hover:scale-[1.01]`}
           >
             {isFinalChapter ? (saveButtonText || 'ပြီးဆုံး / ထွက်ရန်') : saveButtonText}
           </button>

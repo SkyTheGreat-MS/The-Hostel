@@ -1,0 +1,78 @@
+import React from 'react';
+import { sound } from '../../audioEngine';
+
+export interface HorrorButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'verdigris' | 'obsidian' | 'event-danger' | 'event-sanctum';
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}
+
+export const HorrorButton: React.FC<HorrorButtonProps> = ({
+  variant = 'verdigris',
+  icon,
+  children,
+  className = '',
+  disabled = false,
+  onClick,
+  onMouseEnter,
+  ...props
+}) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled) {
+      try {
+        sound.playMenuHover?.();
+      } catch {}
+    }
+    onMouseEnter?.(e);
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled) {
+      try {
+        sound.playMenuSelect?.();
+      } catch {}
+    }
+    onClick?.(e);
+  };
+
+  // Base styling: duo-tone baseline vs event-driven accents
+  let variantClasses = '';
+  switch (variant) {
+    case 'event-danger':
+      // Eye-breaking Arterial Crimson
+      variantClasses =
+        'bg-[#1a0404]/90 border border-[#8a1a1a] text-[#fca5a5] hover:bg-[#330808] hover:border-[#ba2929] hover:shadow-[0_0_15px_rgba(186,41,41,0.35)]';
+      break;
+    case 'event-sanctum':
+      // Eye-breaking Cursed Grave Brass
+      variantClasses =
+        'bg-[#241b0b]/90 border border-[#755926] text-[#f7eed8] hover:bg-[#382a12] hover:border-[#a37f37] hover:shadow-[0_0_15px_rgba(163,127,55,0.35)]';
+      break;
+    case 'obsidian':
+      // Subtle Obsidian minimal
+      variantClasses =
+        'bg-[#060b08]/85 border border-[#112319] text-[#6ea889] hover:bg-[#0b140f] hover:border-[#193828] hover:text-[#b1d4c2]';
+      break;
+    case 'verdigris':
+    default:
+      // Duo-tone standard: Stagnant Obsidian surface with Sickly Verdigris border & pale phosphor text
+      variantClasses =
+        'bg-[#0b140f]/90 border border-[#193828] text-[#b1d4c2] hover:bg-[#101c15] hover:border-[#29543e] hover:text-[#e0f0e7] hover:shadow-[0_0_15px_rgba(41,84,62,0.3)]';
+      break;
+  }
+
+  return (
+    <button
+      {...props}
+      disabled={disabled}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-mono tracking-wider transition-all duration-200 cursor-pointer select-none active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none ${variantClasses} ${className}`}
+    >
+      {icon && <span className="shrink-0">{icon}</span>}
+      <span>{children}</span>
+    </button>
+  );
+};
+
+export default HorrorButton;

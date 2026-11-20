@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import { sound } from '../audioEngine';
 
 export interface LockModalProps {
@@ -119,17 +120,17 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
 
         {/* Lock Faceplate Plate */}
         <div className="w-full pb-3 border-b border-[#352c1e] flex items-center justify-between">
-          <span className="font-mono text-[10px] tracking-widest text-[#8a7a5e] uppercase">
+          <span className="font-burmese text-[11px] tracking-wide text-[#a37f37]">
             မူပိုင်ခွင့် ၁၉၇၄ • အကြမ်းခံကြေးဝါဂျက်ခလောက်
           </span>
           {typeof composure === 'number' && (
             <span
-              className={`font-mono text-[10px] tracking-wider font-bold transition-colors ${
+              className={`font-burmese text-xs font-bold tracking-wide transition-colors ${
                 composure <= 20
                   ? 'text-red-400 animate-pulse'
                   : composure <= 45
                   ? 'text-amber-400'
-                  : 'text-emerald-400/80'
+                  : 'text-[#6ea889]'
               }`}
             >
               စိတ်တည်ငြိမ်မှု - {composure}%
@@ -150,7 +151,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
                 ▲
               </button>
               <div className="w-9 h-12 rounded bg-gradient-to-b from-[#1c1813] via-[#332b1f] to-[#1c1813] border border-[#52442e] flex items-center justify-center shadow-md">
-                <span className="font-serif text-xl font-bold text-[#e6cca0] select-none">
+                <span className="font-mono text-xl font-bold text-[#e6cca0] select-none">
                   {digit}
                 </span>
               </div>
@@ -170,19 +171,20 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         {lastPenalty !== null && (
           <div className="w-full mb-4 px-3 py-2 rounded-xl bg-red-950/70 border border-red-800/80 flex items-center justify-between text-xs animate-pulse">
             <div className="flex flex-col">
-              <span className="font-mono text-red-300 font-bold text-[11px] flex items-center gap-1.5">
-                <span>⚠️ သော့ဂျက် တင်းကျပ်နေသည်</span>
+              <span className="font-burmese text-red-300 font-bold text-[11px] flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                <span>သော့ဂျက် တင်းကျပ်နေသည်</span>
                 <span className="text-[10px] text-red-400/80 font-normal">
                   (ကုဒ်အမှား အကြိမ် #{recentAttemptNumber})
                 </span>
               </span>
-              <span className="text-[10px] font-mono text-red-400/70">
+              <span className="text-[10px] font-burmese text-red-400/70">
                 သော့ကွင်းက တကျီကျီမြည်ကာ မပွင့်ပါ...
               </span>
             </div>
             <div className="font-mono font-bold text-red-400 text-right tracking-wider">
               -{lastPenalty}%
-              <div className="text-[9px] text-red-500/80 uppercase">စိတ်တည်ငြိမ်မှု</div>
+              <div className="text-[9px] font-burmese text-red-500/80 uppercase">စိတ်တည်ငြိမ်မှု</div>
             </div>
           </div>
         )}
@@ -192,14 +194,14 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg border border-[#382f21] text-xs font-mono text-[#736348] hover:text-[#ab9776] cursor-pointer"
+            className="px-3 py-1.5 rounded-lg border border-[#382f21] text-xs font-burmese text-[#a37f37] hover:text-[#c7a458] cursor-pointer"
           >
             ပြန်ထွက်မည်
           </button>
           <button
             type="button"
             onClick={handleAttemptUnlock}
-            className="px-5 py-1.5 rounded-lg bg-[#3d311d] hover:bg-[#524227] border border-[#695431] text-xs font-serif tracking-wider text-[#fae1b4] font-semibold uppercase shadow-lg transition-all active:scale-95 cursor-pointer"
+            className="px-5 py-1.5 rounded-lg bg-[#3d311d] hover:bg-[#524227] border border-[#695431] text-xs font-burmese tracking-wide text-[#fae1b4] font-bold uppercase shadow-lg transition-all active:scale-95 cursor-pointer"
           >
             သော့ဂျက်ဆွဲဖွင့်မည်
           </button>

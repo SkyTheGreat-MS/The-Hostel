@@ -56,8 +56,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
     >
       {/* Subtle Background Watermark Roman Numeral */}
       <div
-        className="absolute right-4 -bottom-6 text-9xl font-black text-stone-800/15 select-none pointer-events-none"
-        style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+        className="absolute right-4 -bottom-6 text-9xl font-black text-stone-800/15 select-none pointer-events-none font-cinzel"
       >
         {chapterNumber === 1 ? 'I' : chapterNumber === 2 ? 'II' : 'III'}
       </div>
@@ -97,16 +96,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           Chapter {chapterNumber}
         </div>
         <h3
-          className={`text-3xl sm:text-4xl font-black tracking-wider uppercase transition-colors ${
+          className={`text-2xl sm:text-3xl font-bold tracking-wider uppercase transition-colors font-cinzel ${
             isLocked
-              ? 'text-stone-600'
+              ? 'text-[#29543e]/40'
               : isCompleted
-              ? 'text-stone-500'
+              ? 'text-[#447d60]'
               : isSelected
-              ? 'text-[#d1e3da]'
-              : 'text-stone-300'
+              ? 'text-[#b1d4c2]'
+              : 'text-[#6ea889]'
           }`}
-          style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
         >
           {title}
         </h3>

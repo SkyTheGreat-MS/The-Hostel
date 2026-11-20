@@ -138,10 +138,9 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                   {char.archetype}
                 </div>
                 <div
-                  className={`font-black text-base sm:text-lg tracking-wider truncate ${
-                    isSelected ? 'text-[#d1e3da]' : 'text-stone-300'
+                  className={`font-burmese font-bold text-base sm:text-lg tracking-wide truncate ${
+                    isSelected ? 'text-[#e0f0e7]' : 'text-[#6ea889]'
                   }`}
-                  style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
                 >
                   {char.name}
                 </div>
@@ -191,8 +190,7 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                 </span>
               </div>
               <h2
-                className="text-2xl sm:text-3xl font-black text-[#d1e3da] tracking-wider truncate"
-                style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
+                className="text-2xl sm:text-3xl font-burmese font-bold text-[#e0f0e7] tracking-wide truncate"
               >
                 {activeChar.name}
               </h2>

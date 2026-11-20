@@ -73,7 +73,7 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
     <div
       className={`relative w-full ${
         fullBleed ? 'h-screen overflow-hidden' : 'min-h-screen overflow-x-hidden'
-      } bg-[#050b09] text-[#c2d6cc] font-sans selection:bg-[#18221d] selection:text-[#c2d6cc] flex flex-col`}
+      } bg-[#020504] text-[#b1d4c2] font-burmese selection:bg-[#193828] selection:text-[#e0f0e7] flex flex-col`}
     >
       {/* 1. Background Atmosphere Image from Assets */}
       {!hideBackground && (
@@ -129,26 +129,26 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
       {/* 5. Top Bar Header */}
       {!fullBleed && (
-        <header className="relative z-20 w-full border-b border-[#2c3d34] bg-[#0c120f]/80 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
+        <header className="relative z-20 w-full border-b border-[#193828] bg-[#060b08]/90 backdrop-blur-md px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
           <div className="flex items-center gap-3.5">
             <Link
               to="/"
-              className="group flex items-center gap-2.5 text-stone-400 hover:text-[#82a996] transition-colors"
+              className="group flex items-center gap-2.5 text-[#6ea889] hover:text-[#b1d4c2] transition-colors"
               title="ပင်မမီနူးသို့ ပြန်သွားရန်"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#18221d] border border-[#2c3d34] flex items-center justify-center group-hover:border-[#4d6e5e] group-hover:bg-[#22352b] transition-all shadow-md">
-                <Ghost className="w-4 h-4 text-[#82a996] group-hover:text-[#a7c4b5] transition-colors" />
+              <div className="w-8 h-8 rounded-lg bg-[#0b140f] border border-[#193828] flex items-center justify-center group-hover:border-[#29543e] group-hover:bg-[#101c15] transition-all shadow-md">
+                <Ghost className="w-4 h-4 text-[#6ea889] group-hover:text-[#b1d4c2] transition-colors" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm sm:text-base font-bold tracking-widest font-bebas text-[#c2d6cc] group-hover:text-[#d1e3da] transition-colors">
+                  <span className="text-sm sm:text-base font-bold tracking-wider font-cinzel text-[#b1d4c2] group-hover:text-[#e0f0e7] transition-colors">
                     {headerTitle}
                   </span>
-                  <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#18221d] border border-[#2c3d34] text-[#82a996]">
+                  <span className="text-[10px] uppercase font-burmese px-1.5 py-0.5 rounded bg-[#0b140f] border border-[#193828] text-[#6ea889]">
                     ၁၉၉၈ ပြန်သံ
                   </span>
                 </div>
-                <span className="text-[11px] text-[#7d998b] font-mono hidden sm:block">
+                <span className="text-[11px] text-[#447d60] font-mono hidden sm:block">
                   {headerSubtitle}
                 </span>
               </div>
@@ -160,9 +160,9 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
               <Link
                 to={backTo}
                 onClick={() => sound.playMenuSelect()}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#18221d] border border-[#2c3d34] text-xs font-mono text-[#c2d6cc] hover:text-[#d1e3da] hover:border-[#4d6e5e] hover:bg-[#22352b] transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#0b140f] border border-[#193828] text-xs font-burmese text-[#b1d4c2] hover:text-[#e0f0e7] hover:border-[#29543e] hover:bg-[#101c15] transition-all shadow-sm"
               >
-                <Compass className="w-3.5 h-3.5 text-[#82a996]" />
+                <Compass className="w-3.5 h-3.5 text-[#6ea889]" />
                 <span>{backLabel}</span>
               </Link>
             )}
@@ -172,8 +172,8 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
               aria-label={isMuted ? 'အသံဖွင့်ရန်' : 'အသံပိတ်ရန်'}
               className={`p-2 rounded-lg border transition-all ${
                 isMuted
-                  ? 'bg-[#111714] border-[#223028] text-stone-500 hover:text-stone-300'
-                  : 'bg-[#18221d] border-[#2c3d34] text-[#82a996] hover:bg-[#22352b] hover:border-[#4d6e5e]'
+                  ? 'bg-[#060b08] border-[#112319] text-[#447d60] hover:text-[#b1d4c2]'
+                  : 'bg-[#0b140f] border-[#193828] text-[#6ea889] hover:bg-[#101c15] hover:border-[#29543e]'
               }`}
             >
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -195,9 +195,9 @@ export const AtmosphericLayout: React.FC<AtmosphericLayoutProps> = ({
 
       {/* 7. Footer Seal & Subtle Timestamp */}
       {!fullBleed && (
-        <footer className="relative z-20 w-full border-t border-stone-900/80 bg-black/60 backdrop-blur-sm px-6 py-2.5 flex items-center justify-between text-[11px] font-mono text-stone-400">
+        <footer className="relative z-20 w-full border-t border-[#193828] bg-[#020504]/90 backdrop-blur-sm px-6 py-2.5 flex items-center justify-between text-[11px] font-mono text-[#447d60]">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6ea889]/80 animate-pulse" />
             <span>NAT REALM STRAND: ACTIVE</span>
           </div>
           <div>

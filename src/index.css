@@ -1,14 +1,104 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Aka08';
+  src: url('/fonts/Aka08-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
+  --font-sans: 'Aka08', 'Pyidaungsu', 'Myanmar Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-bebas: 'Bebas Neue', 'Impact', sans-serif;
-  --font-horror: 'Bebas Neue', 'Impact', sans-serif;
-  --font-serif: 'Bebas Neue', 'Impact', sans-serif;
+  --font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;
+  --font-cinzel: 'Cinzel', serif;
+  --font-typewriter: 'Special Elite', cursive;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-horror: 'Cinzel', 'Bebas Neue', serif;
+  --font-serif: 'Cinzel', serif;
+
+  /* Duo-Tone Baseline: Tone 1 - Stagnant Obsidian Void */
+  --color-obsidian-950: #020504;
+  --color-obsidian-900: #060b08;
+  --color-obsidian-850: #0b140f;
+  --color-obsidian-800: #101c15;
+
+  /* Duo-Tone Baseline: Tone 2 - Sickly Spectral Verdigris Rot */
+  --color-verdigris-950: #0a1710;
+  --color-verdigris-900: #112319;
+  --color-verdigris-800: #193828;
+  --color-verdigris-700: #224a35;
+  --color-verdigris-600: #29543e;
+  --color-verdigris-500: #366b50;
+  --color-verdigris-400: #447d60;
+  --color-verdigris-300: #6ea889;
+  --color-verdigris-200: #b1d4c2;
+  --color-verdigris-100: #e0f0e7;
+
+  /* Eye-breaking Accent A: Violent Arterial Crimson (Trauma / Shock / Taboo) */
+  --color-shock-blood-900: #330808;
+  --color-shock-blood-700: #591010;
+  --color-shock-blood-500: #8a1a1a;
+  --color-shock-blood-400: #ba2929;
+  --color-shock-blood-200: #fca5a5;
+
+  /* Eye-breaking Accent B: Cursed Grave Brass (Altar / Relic Revelation) */
+  --color-relic-brass-900: #241b0b;
+  --color-relic-brass-700: #4a3818;
+  --color-relic-brass-500: #755926;
+  --color-relic-brass-400: #a37f37;
+  --color-relic-brass-300: #c7a458;
+  --color-relic-brass-100: #f7eed8;
+
+  /* Eye-breaking Accent C: Static Glitch Cyan (Temporal Echo / 2026 Radio) */
+  --color-glitch-cyan-700: #0369a1;
+  --color-glitch-cyan-500: #0284c7;
+  --color-glitch-cyan-400: #38bdf8;
+  --color-glitch-cyan-200: #bae6fd;
+}
+
+:root {
+  --font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;
+  font-family: var(--font-burmese);
+}
+
+html, body {
+  font-family: var(--font-burmese);
+  background-color: #020504;
+  color: #b1d4c2;
+  line-height: 1.75;
 }
 
 @layer utilities {
   .font-bebas {
     font-family: 'Bebas Neue', 'Impact', sans-serif;
+  }
+
+  .font-burmese {
+    font-family: var(--font-burmese);
+    line-height: 1.75;
+    word-break: break-word;
+  }
+
+  .font-cinzel {
+    font-family: var(--font-cinzel);
+    letter-spacing: 0.08em;
+  }
+
+  .font-typewriter {
+    font-family: var(--font-typewriter);
+    letter-spacing: 0.02em;
+  }
+
+  /* Cinematic borderless thought typography drop-shadow */
+  .thought-subtitle-shadow {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98), 0 0 25px rgba(2, 5, 4, 0.9);
+  }
+
+  /* Organic feathered ambient backdrop wash (100% borderless) */
+  .thought-feather-wash {
+    background: radial-gradient(ellipse at center, rgba(6, 11, 8, 0.88) 0%, rgba(6, 11, 8, 0.5) 55%, transparent 80%);
   }
 
   @keyframes screenShake {
@@ -86,4 +176,3 @@
     animation: natHover 4s ease-in-out infinite alternate;
   }
 }
-
