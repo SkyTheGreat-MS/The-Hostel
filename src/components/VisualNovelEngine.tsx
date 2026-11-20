@@ -740,6 +740,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     removeInventoryItem,
     resetProgress,
     resetChapterOneProgress,
+    selectedMC,
+    setSelectedMC,
     hp,
     maxHp,
     setHp,
@@ -898,115 +900,120 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     sound.playDamage();
   };
 
-  // 10-Minute Countdown Clock Hook
-  // Ensure the timer only suspends when isPaused is true or outside gameplay:
-  useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || timerSeconds <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
+  // Master Game Loop Refs (Persistent across renders to prevent timer resets on dialogue click)
+  const mpAccumulatorRef = useRef<number>(0);
+  const hpAccumulatorRef = useRef<number>(0);
+  const mindRef = useRef<number>(mind);
+  const maxMindRef = useRef<number>(maxMind);
+  const hpRef = useRef<number>(hp);
+  const maxHpRef = useRef<number>(maxHp);
 
-    const timerInterval = setInterval(() => {
+  // Keep vitals refs in sync with state
+  useEffect(() => {
+    mindRef.current = mind;
+    maxMindRef.current = maxMind;
+    hpRef.current = hp;
+    maxHpRef.current = maxHp;
+  }, [mind, maxMind, hp, maxHp]);
+
+  // Master 1-Second Gameplay Tick Loop
+  // Controls: 10-Minute countdown clock, Ambient MP Attrition, and Psychosomatic HP Decay
+  useEffect(() => {
+    if (
+      isPaused ||
+      currentScreen !== 'gameplay' ||
+      isChapterTransitionOpen ||
+      isChapter3TransitionOpen ||
+      isChapterFinished
+    ) {
+      return;
+    }
+
+    const gameTickInterval = setInterval(() => {
+      // 1. Countdown timer decrement
       setTimerSeconds((prev) => {
         if (prev <= 1) {
-          clearInterval(timerInterval);
+          clearInterval(gameTickInterval);
           handleTimeoutGameOver();
           return 0;
         }
         return prev - 1;
       });
+
+      // Passive vitals decay is active during gameplay (Room Escape, Phase 3, Chapters 2 & 3)
+      // Only suppressed during prologue intro, shattering, and character select
+      const isGameplayActive =
+        mode !== 'phase1_2' &&
+        mode !== 'shattering' &&
+        mode !== 'character_select';
+
+      if (!isGameplayActive) return;
+
+      const charProfile = getCharacterProfile(selectedCharacter.id);
+      const mentalDef = charProfile?.mentalDefense ?? selectedCharacter.mentalDefense ?? 1.0;
+      const physDef = charProfile?.physicalDefense ?? selectedCharacter.physicalDefense ?? 1.0;
+
+      // 2. Ambient MP (Mind) Dread Decay
+      // Base: 1 MP per 3.5s (accelerated to 2.0s during Nat dialogue / high tension)
+      // Scaled by character mentalDefense:
+      // - Moe Stheinkha (0.70): ~2.5s per MP
+      // - Thura Aung (1.25): ~4.4s per MP
+      // - Yin Min Htike (0.85): ~3.0s per MP (+10 MP relief surge on clue discovery)
+      if (mindRef.current > 0) {
+        mpAccumulatorRef.current += 1000;
+        const basePeriodMs = isNatDialogueActive ? 2000 : 3500;
+        const mpThresholdMs = Math.max(1000, Math.round(basePeriodMs * mentalDef));
+
+        if (mpAccumulatorRef.current >= mpThresholdMs) {
+          mpAccumulatorRef.current = 0;
+          setMind((prev) => Math.max(0, prev - 1));
+        }
+      }
+
+      // 3. Psychosomatic Passive HP Decay (Governed by MP)
+      // Modulated by current MP ratio:
+      // - 100% MP: Slow trickle (1 HP per ~35s scaled by physicalDefense)
+      // - Accelerates as MP drops
+      // - Under Critical HP (HP <= 30%): extra trauma multiplier (1.5x)
+      // - At MP == 0: Desperate Struggle state (+60% faster decay)
+      if (hpRef.current > 0) {
+        hpAccumulatorRef.current += 1000;
+        const currentMind = mindRef.current;
+        const currentMaxMind = maxMindRef.current || 100;
+        const currentHp = hpRef.current;
+        const currentMaxHp = maxHpRef.current || 100;
+
+        const mindRatio = Math.max(0, currentMind / currentMaxMind);
+        const mentalFactor = 1.0 + (1.0 - mindRatio) * 1.8;
+        const emptyMindMult = currentMind <= 0 ? 1.6 : 1.0;
+        const criticalHpMult = currentHp <= currentMaxHp * 0.3 ? 1.5 : 1.0;
+        const totalSpeedMult = mentalFactor * emptyMindMult * criticalHpMult;
+
+        const hpThresholdMs = Math.max(
+          1500,
+          Math.round((35000 * physDef) / totalSpeedMult)
+        );
+
+        if (hpAccumulatorRef.current >= hpThresholdMs) {
+          hpAccumulatorRef.current = 0;
+          setHp((prev) => Math.max(0, prev - 1));
+        }
+      }
     }, 1000);
 
-    return () => clearInterval(timerInterval);
-  }, [isPaused, currentScreen, timerSeconds, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
-
-  // 1. Ambient Mind Dread Decay Hook
-  // Base rate: 1 Mind per 18s (accelerated to 8s during Nat dialogue / high tension)
-  // Scaled by investigator's mentalDefense multiplier
-  useEffect(() => {
-    if (
-      isPaused ||
-      currentScreen !== 'gameplay' ||
-      mind <= 0 ||
-      isChapterTransitionOpen ||
-      isChapter3TransitionOpen ||
-      isChapterFinished ||
-      mode === 'phase1_2' ||
-      mode === 'shattering' ||
-      mode === 'character_select'
-    ) return;
-
-    const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
-    const charProfile = getCharacterProfile(selectedCharacter.id);
-    const mentalDef = charProfile?.mentalDefense ?? selectedCharacter.mentalDefense ?? 1.0;
-    const decayIntervalMs = Math.max(1000, Math.round(basePeriodMs / mentalDef));
-
-    const mindInterval = setInterval(() => {
-      setMind((prev) => Math.max(0, prev - 1));
-    }, decayIntervalMs);
-
-    return () => clearInterval(mindInterval);
+    return () => clearInterval(gameTickInterval);
   }, [
     isPaused,
     currentScreen,
-    mind,
+    isChapterTransitionOpen,
+    isChapter3TransitionOpen,
+    isChapterFinished,
+    mode,
     isNatDialogueActive,
     selectedCharacter.id,
     selectedCharacter.mentalDefense,
-    isChapterTransitionOpen,
-    isChapter3TransitionOpen,
-    isChapterFinished,
-    mode,
-    setMind,
-  ]);
-
-  // 2. Psychosomatic Passive HP Decay Hook (Governed by Mind)
-  // HP decays passively at all times.
-  // At 100% Mind: slow trickle (1 HP per 60s scaled by physicalDefense).
-  // As Mind decreases: decay accelerates proportionally.
-  // Under Critical HP (HP <= 30%): extra trauma multiplier applies (1.5x).
-  // At Mind == 0: Desperate Struggle state applies (+60% faster decay).
-  useEffect(() => {
-    if (
-      isPaused ||
-      currentScreen !== 'gameplay' ||
-      hp <= 0 ||
-      isChapterTransitionOpen ||
-      isChapter3TransitionOpen ||
-      isChapterFinished ||
-      mode === 'phase1_2' ||
-      mode === 'shattering' ||
-      mode === 'character_select'
-    ) return;
-
-    const mindRatio = Math.max(0, mind / maxMind);
-    const mentalFactor = 1.0 + (1.0 - mindRatio) * 1.5;
-    const emptyMindMult = mind <= 0 ? 1.6 : 1.0;
-    const criticalHpMult = hp <= maxHp * 0.3 ? 1.5 : 1.0;
-    const totalSpeedMult = mentalFactor * emptyMindMult * criticalHpMult;
-
-    const charProfile = getCharacterProfile(selectedCharacter.id);
-    const physDef = charProfile?.physicalDefense ?? selectedCharacter.physicalDefense ?? 1.0;
-    const hpDecayIntervalMs = Math.max(
-      1500,
-      Math.min(90000, Math.round((60000 * physDef) / totalSpeedMult))
-    );
-
-    const hpInterval = setInterval(() => {
-      setHp((prev) => Math.max(0, prev - 1));
-    }, hpDecayIntervalMs);
-
-    return () => clearInterval(hpInterval);
-  }, [
-    isPaused,
-    currentScreen,
-    hp,
-    maxHp,
-    mind,
-    maxMind,
-    selectedCharacter.id,
     selectedCharacter.physicalDefense,
-    isChapterTransitionOpen,
-    isChapter3TransitionOpen,
-    isChapterFinished,
-    mode,
+    setMind,
     setHp,
   ]);
 
@@ -1866,6 +1873,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
   const handleCharacterSelected = (characterId: MCId) => {
     const chosen = CHARACTERS.find((c) => c.id === characterId) || CHARACTERS[0];
     setSelectedCharacter(chosen);
+    setSelectedMC?.(chosen.id);
+    mpAccumulatorRef.current = 0;
+    hpAccumulatorRef.current = 0;
     setCurrentLineIndex(0);
     setActiveInspectSubScene('main');
     setIsZoomed(false);
@@ -2696,9 +2706,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                   </div>
                 </div>
 
-                {/* Psychological Composure (Mind) Virtual Gauge Bar */}
+                {/* Psychological Composure (MP) Virtual Gauge Bar */}
                 <div
-                  title={`စိတ်တည်ငြိမ်မှု: ${mind}/${maxMind} MIND`}
+                  title={`စိတ်တည်ငြိမ်မှု: ${mind}/${maxMind} MP`}
                   className={`px-2 py-1.5 rounded-none flex items-center gap-1.5 backdrop-blur-sm transition-all pointer-events-auto cursor-help ${
                     mind <= maxMind * 0.25
                       ? 'bg-[#0369a1]/50 animate-pulse'
@@ -2710,7 +2720,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       mind <= maxMind * 0.25 ? 'text-[#7dd3fc]' : 'text-[#38bdf8]'
                     }`}
                   />
-                  {/* Virtual Mind Fill Bar */}
+                  {/* Virtual MP Fill Bar */}
                   <div className="w-14 sm:w-18 h-2 bg-[#101713] rounded-none overflow-hidden relative">
                     <div
                       className={`h-full transition-all duration-500 rounded-none ${
@@ -2734,7 +2744,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       recentDamageEvent.type === 'physical' ? 'text-[#ba2929]' : 'text-[#38bdf8]'
                     }`}
                   >
-                    -{recentDamageEvent.actualAmount} {recentDamageEvent.type === 'physical' ? 'HP' : 'MIND'}
+                    -{recentDamageEvent.actualAmount} {recentDamageEvent.type === 'physical' ? 'HP' : 'MP'}
                   </motion.div>
                 )}
               </div>
@@ -4508,7 +4518,10 @@ onTuned={() => {
         onClose={() => setIsNotesOpen(false)}
         investigatorName={selectedCharacter.name}
         investigatorArchetype={selectedCharacter.archetype}
-        composure={composure}
+        hp={hp}
+        maxHp={maxHp}
+        mind={mind}
+        maxMind={maxMind}
         timeLeftSeconds={timeLeft}
         discoveredClueIds={discoveredClues}
       />

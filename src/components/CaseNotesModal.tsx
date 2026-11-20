@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { FileText, X, Search, Bookmark, User } from 'lucide-react';
+import { FileText, X, Search, Bookmark, User, Heart, Brain } from 'lucide-react';
 import { sound } from '../audioEngine';
 
 interface CaseNotesModalProps {
@@ -8,7 +8,10 @@ interface CaseNotesModalProps {
   onClose: () => void;
   investigatorName: string;
   investigatorArchetype: string;
-  composure: number;
+  hp: number;
+  maxHp: number;
+  mind: number;
+  maxMind: number;
   timeLeftSeconds: number;
   discoveredClueIds: string[];
 }
@@ -246,7 +249,10 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
   onClose,
   investigatorName,
   investigatorArchetype,
-  composure,
+  hp,
+  maxHp,
+  mind,
+  maxMind,
   timeLeftSeconds,
   discoveredClueIds,
 }) => {
@@ -256,14 +262,24 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
   const seconds = timeLeftSeconds % 60;
   const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-  const getComposureStatus = (comp: number) => {
-    if (comp >= 75) return { text: 'တည်ငြိမ်သည် (STEELY)', color: 'text-emerald-400', ring: '#10b981', pct: comp };
-    if (comp >= 50) return { text: 'မငြိမ်မသက်ဖြစ် (UNSETTLED)', color: 'text-amber-400', ring: '#f59e0b', pct: comp };
-    if (comp >= 25) return { text: 'ထိတ်လန့်တုန်လှုပ် (PANICKED)', color: 'text-orange-400', ring: '#f97316', pct: comp };
-    return { text: 'ကြောက်ဒူးတုန် (TERRIFIED)', color: 'text-rose-500', ring: '#ef4444', pct: comp };
+  const hpPct = maxHp > 0 ? Math.max(0, Math.min(100, (hp / maxHp) * 100)) : 0;
+  const mindPct = maxMind > 0 ? Math.max(0, Math.min(100, (mind / maxMind) * 100)) : 0;
+
+  const getHpStatus = (pct: number) => {
+    if (pct > 60) return { text: 'ကျန်းမာကြံ့ခိုင် (STABLE)', color: 'text-emerald-400', ring: '#10b981' };
+    if (pct > 30) return { text: 'ထိခိုက်ဒဏ်ရာရ (WOUNDED)', color: 'text-amber-400', ring: '#f59e0b' };
+    return { text: 'အရေးပေါ် (CRITICAL)', color: 'text-rose-500', ring: '#ef4444' };
   };
 
-  const compStatus = getComposureStatus(composure);
+  const getMindStatus = (pct: number) => {
+    if (pct >= 75) return { text: 'တည်ငြိမ်သည် (COMPOSED)', color: 'text-cyan-400', ring: '#38bdf8' };
+    if (pct >= 50) return { text: 'မငြိမ်မသက်ဖြစ် (SHAKEN)', color: 'text-sky-400', ring: '#0284c7' };
+    if (pct >= 25) return { text: 'ထိတ်လန့်တုန်လှုပ် (PANICKED)', color: 'text-amber-400', ring: '#f59e0b' };
+    return { text: 'စိတ်ဖောက်ပြန် (HYSTERIA)', color: 'text-rose-500', ring: '#ef4444' };
+  };
+
+  const hpStatus = getHpStatus(hpPct);
+  const mindStatus = getMindStatus(mindPct);
   const totalSlots = 8;
   const filledSlots = discoveredClueIds.length;
 
@@ -349,35 +365,135 @@ export const CaseNotesModal: React.FC<CaseNotesModalProps> = ({
                 </div>
               </div>
 
-              {/* Composure Gauge — Circular Radial Ring */}
-              <div className="rounded-none p-4 flex flex-col items-center gap-3"
-                style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}>
-                <div className="text-[9px] font-burmese text-[#6ea889]/40 text-center leading-[1.75]">
-                  စိတ်တည်ငြိမ်မှု <span className="font-mono text-[8px] uppercase tracking-wider">(Composure)</span>
+              {/* Dual Vitals Gauges — Physical Vitality (HP) & Mental Composure (MP) */}
+              <div
+                className="rounded-none p-4 flex flex-col gap-3"
+                style={{ background: 'linear-gradient(135deg, #162018 0%, #1a2520 100%)' }}
+              >
+                <div className="text-[9px] font-burmese text-[#6ea889]/50 text-center leading-[1.75]">
+                  ကျန်းမာရေးနှင့် စိတ်ပိုင်းဆိုင်ရာ အခြေအနေ{' '}
+                  <span className="font-mono text-[8px] uppercase tracking-wider">(Vitals Status)</span>
                 </div>
-                <div className="relative w-24 h-24">
-                  {/* Background ring */}
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="#1a2520" strokeWidth="6" />
-                    <circle
-                      cx="50" cy="50" r="42" fill="none"
-                      stroke={compStatus.ring}
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 42}`}
-                      strokeDashoffset={`${2 * Math.PI * 42 * (1 - compStatus.pct / 100)}`}
-                      style={{ transition: 'stroke-dashoffset 0.8s ease, stroke 0.5s ease', filter: `drop-shadow(0 0 6px ${compStatus.ring}40)` }}
-                    />
-                  </svg>
-                  {/* Center value */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className={`text-xl font-black ${compStatus.color} tabular-nums`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {composure}%
-                    </span>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {/* Physical Vitality (HP) Gauge */}
+                  <div className="flex flex-col items-center gap-1.5 p-2 bg-[#0e1511]/80 rounded-none border-t border-[#6ea889]/10">
+                    <div className="flex items-center gap-1.5">
+                      <Heart
+                        className={`w-3 h-3 shrink-0 ${
+                          hpPct <= 30 ? 'text-[#e53e3e] animate-pulse' : 'text-[#6ea889]'
+                        }`}
+                      />
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#b1d4c2]">
+                        HP
+                      </span>
+                    </div>
+
+                    {/* Circular Radial Ring */}
+                    <div className="relative w-16 h-16">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#141d18" strokeWidth="8" />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          fill="none"
+                          stroke={hpStatus.ring}
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${2 * Math.PI * 40}`}
+                          strokeDashoffset={`${2 * Math.PI * 40 * (1 - hpPct / 100)}`}
+                          style={{
+                            transition: 'stroke-dashoffset 0.8s ease, stroke 0.5s ease',
+                          }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span
+                          className={`text-base font-black ${hpStatus.color} tabular-nums leading-none`}
+                          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                        >
+                          {Math.round(hp)}
+                        </span>
+                        <span className="text-[8px] font-mono text-[#6ea889]/40 tabular-nums">
+                          /{maxHp}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[9px] font-burmese text-[#6ea889]/70 text-center leading-[1.75]">
+                      သွေးသားကြံ့ခိုင်မှု (HP)
+                    </div>
+                    <div
+                      className={`text-[8px] font-mono font-bold uppercase tracking-wider text-center ${hpStatus.color}`}
+                    >
+                      {hpStatus.text}
+                    </div>
+                  </div>
+
+                  {/* Mental Composure (MP) Gauge */}
+                  <div className="flex flex-col items-center gap-1.5 p-2 bg-[#0e1511]/80 rounded-none border-t border-[#6ea889]/10">
+                    <div className="flex items-center gap-1.5">
+                      <Brain
+                        className={`w-3 h-3 shrink-0 ${
+                          mindPct <= 25 ? 'text-[#7dd3fc] animate-pulse' : 'text-[#38bdf8]'
+                        }`}
+                      />
+                      <span className="text-[10px] font-mono font-bold tracking-wider text-[#7dd3fc]">
+                        MP
+                      </span>
+                    </div>
+
+                    {/* Circular Radial Ring */}
+                    <div className="relative w-16 h-16">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#141d18" strokeWidth="8" />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          fill="none"
+                          stroke={mindStatus.ring}
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray={`${2 * Math.PI * 40}`}
+                          strokeDashoffset={`${2 * Math.PI * 40 * (1 - mindPct / 100)}`}
+                          style={{
+                            transition: 'stroke-dashoffset 0.8s ease, stroke 0.5s ease',
+                          }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span
+                          className={`text-base font-black ${mindStatus.color} tabular-nums leading-none`}
+                          style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+                        >
+                          {Math.round(mind)}
+                        </span>
+                        <span className="text-[8px] font-mono text-[#38bdf8]/40 tabular-nums">
+                          /{maxMind}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[9px] font-burmese text-[#6ea889]/70 text-center leading-[1.75]">
+                      စိတ်တည်ငြိမ်မှု (MP)
+                    </div>
+                    <div
+                      className={`text-[8px] font-mono font-bold uppercase tracking-wider text-center ${mindStatus.color}`}
+                    >
+                      {mindStatus.text}
+                    </div>
                   </div>
                 </div>
-                <div className={`text-[10px] font-mono font-bold uppercase tracking-wider ${compStatus.color}`}>
-                  {compStatus.text}
+
+                {/* Psychosomatic coupling telemetry footnote */}
+                <div className="text-[8px] font-burmese text-[#6ea889]/40 text-center leading-[1.75] pt-1 border-t border-[#6ea889]/10">
+                  {mind <= 0
+                    ? 'သတိပြုရန် • စိတ်ဖောက်ပြန်မှု (MP=0) ကြောင့် သွေးသားကျဆင်းနှုန်း ၆၀% အဆမတန် မြန်ဆန်နေသည်'
+                    : hp <= maxHp * 0.3
+                    ? 'သတိပြုရန် • သွေးအလွန်အမင်းဆုံးရှုံးနေပြီး ဒဏ်ရာပြင်းထန်နေသည်'
+                    : 'စိတ်တည်ငြိမ်မှု (MP) ကျဆင်းပါက သွေးသားကြံ့ခိုင်မှု ကုန်ဆုံးနှုန်း ပိုမိုမြန်ဆန်လာမည်'}
                 </div>
               </div>
 

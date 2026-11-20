@@ -158,11 +158,11 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                   <span>{profile.maxHp} HP</span>
                 </div>
                 <div
-                  title="စိတ်တည်ငြိမ်မှု (စိတ်ပိုင်းဆိုင်ရာ ကြံ့ခိုင်မှု)"
+                  title="စိတ်တည်ငြိမ်မှု (MP)"
                   className="bg-[#0b140f] text-[#38bdf8] rounded-none px-1.5 py-1 flex items-center justify-center gap-1 font-bold"
                 >
                   <Brain className="w-3 h-3 text-[#38bdf8] shrink-0" />
-                  <span>{profile.maxMind} M</span>
+                  <span>{profile.maxMind} MP</span>
                 </div>
               </div>
             </div>
@@ -197,7 +197,7 @@ export const CharacterSelectModal: React.FC<CharacterSelectModalProps> = ({
                   </span>
                   <span className="flex items-center gap-1 text-[#38bdf8] font-bold bg-[#0b140f] px-2 py-0.5 rounded-none leading-[1.75]">
                     <Brain className="w-3.5 h-3.5 text-[#38bdf8]" />
-                    <span>စိတ်တည်ငြိမ်မှု <span className="font-mono tabular-nums">{activeProfile.maxMind} MIND</span></span>
+                    <span>စိတ်တည်ငြိမ်မှု <span className="font-mono tabular-nums">{activeProfile.maxMind} MP</span></span>
                   </span>
                   {activeProfile.physicalDefense !== 1.0 && (
                     <span className="text-[11px] font-burmese px-2 py-0.5 rounded-none bg-[#0b140f] text-[#b1d4c2] leading-[1.75]">
