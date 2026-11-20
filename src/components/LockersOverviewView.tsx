@@ -10,6 +10,7 @@ export interface LockersOverviewViewProps {
   setPhase3Location: (loc: Phase3Location) => void;
   setActiveMonologue: (msg: string | null) => void;
   applyComposureDamage?: (amount: number, reason?: string) => void;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
   setIsScreenShaking?: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -22,6 +23,7 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
   setPhase3Location,
   setActiveMonologue,
   applyComposureDamage,
+  applyDamage,
   setComposure,
   setIsScreenShaking,
 }) => {
@@ -46,13 +48,15 @@ export const LockersOverviewView: React.FC<LockersOverviewViewProps> = ({
       setIsScreenShaking(true);
       setTimeout(() => setIsScreenShaking(false), 250);
     }
-    if (applyComposureDamage) {
+    if (applyDamage) {
+      applyDamage(8, 'physical', 'spider_bite');
+    } else if (applyComposureDamage) {
       applyComposureDamage(2, 'supernatural_direct');
     } else if (setComposure) {
       setComposure((prev) => Math.max(0, prev - 2));
     }
     setPhase3Location('locker_spider');
-    setActiveMonologue("— အား! သံချေးတက်နေသော လေဝင်ပေါက်တန်းများနောက်မှ မြေအောက်ပင့်ကူများ အပြေးအလွှား ထွက်လာသည်! (စိတ်တည်ငြိမ်မှု -၂%) —");
+    setActiveMonologue("— အား! သံချေးတက်နေသော လေဝင်ပေါက်တန်းများနောက်မှ မြေအောက်ပင့်ကူများ အပြေးအလွှား ထွက်လာသည်! (သွေးသား -၈ HP) —");
   };
 
   return (

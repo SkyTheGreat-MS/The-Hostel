@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { MCId, Room4BSubScene, Phase3Location } from '../types';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { MCId, Room4BSubScene, Phase3Location, DamageType, DamageEvent } from '../types';
 import { PrologBridge } from '../services/PrologBridge';
+import { getCharacterProfile } from '../characterData';
 
 export interface GameProgressContextType {
   highestChapterCompleted: number;
@@ -13,6 +14,18 @@ export interface GameProgressContextType {
   clearJustUnlocked: () => void;
   composure: number;
   setComposure: (val: number | ((prev: number) => number)) => void;
+  // Dual Vitals System (Phase 1)
+  hp: number;
+  maxHp: number;
+  mind: number;
+  maxMind: number;
+  setHp: (val: number | ((prev: number) => number)) => void;
+  setMind: (val: number | ((prev: number) => number)) => void;
+  applyDamage: (amount: number, type: DamageType, source?: string) => void;
+  healHp: (amount: number) => void;
+  restoreMind: (amount: number) => void;
+  recentDamageEvent: DamageEvent | null;
+  clearRecentDamageEvent: () => void;
   chapter1TimeSeconds: number;
   setChapter1TimeSeconds: (val: number) => void;
   discoveredClues: string[];
@@ -127,7 +140,108 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return 0;
   });
 
-  const [selectedMC, setSelectedMC] = useState<MCId>('thazin');
+  const [selectedMC, setSelectedMCState] = useState<MCId>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.selectedMC) return parsed.selectedMC;
+      }
+    } catch {}
+    return 'moe_stheinkha';
+  });
+
+  const initialProfile = getCharacterProfile(selectedMC || 'moe_stheinkha');
+  const [maxHp, setMaxHp] = useState<number>(() => initialProfile.maxHp || 100);
+  const [maxMind, setMaxMind] = useState<number>(() => initialProfile.maxMind || 100);
+  const [hp, setHp] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.hp === 'number') return parsed.hp;
+      }
+    } catch {}
+    return initialProfile.maxHp || 100;
+  });
+  const [mind, setMind] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.mind === 'number') return parsed.mind;
+      }
+    } catch {}
+    return initialProfile.maxMind || 100;
+  });
+  const [recentDamageEvent, setRecentDamageEvent] = useState<DamageEvent | null>(null);
+
+  const setSelectedMC = useCallback((mc: MCId) => {
+    setSelectedMCState(mc);
+    const prof = getCharacterProfile(mc);
+    const newMaxHp = prof.maxHp || 100;
+    const newMaxMind = prof.maxMind || 100;
+    setMaxHp(newMaxHp);
+    setMaxMind(newMaxMind);
+    setHp(newMaxHp);
+    setMind(newMaxMind);
+    setComposure(100);
+  }, []);
+
+  const applyDamage = useCallback((amount: number, type: DamageType, source?: string) => {
+    const prof = getCharacterProfile(selectedMC);
+    if (type === 'physical') {
+      const def = prof.physicalDefense ?? 1.0;
+      const actualAmount = Math.max(1, Math.round(amount * def));
+      setHp((prev) => {
+        const next = Math.max(0, prev - actualAmount);
+        setRecentDamageEvent({
+          amount,
+          type: 'physical',
+          source,
+          actualAmount,
+          remainingHp: next,
+          remainingMind: mind,
+          timestamp: Date.now(),
+        });
+        return next;
+      });
+    } else {
+      const def = prof.mentalDefense ?? 1.0;
+      const actualAmount = Math.max(1, Math.round(amount * def));
+      setMind((prev) => {
+        const next = Math.max(0, prev - actualAmount);
+        setRecentDamageEvent({
+          amount,
+          type: 'mental',
+          source,
+          actualAmount,
+          remainingHp: hp,
+          remainingMind: next,
+          timestamp: Date.now(),
+        });
+        setComposure(Math.round((next / (prof.maxMind || 100)) * 100));
+        return next;
+      });
+    }
+  }, [selectedMC, hp, mind]);
+
+  const healHp = useCallback((amount: number) => {
+    setHp((prev) => Math.min(maxHp, prev + amount));
+  }, [maxHp]);
+
+  const restoreMind = useCallback((amount: number) => {
+    setMind((prev) => {
+      const next = Math.min(maxMind, prev + amount);
+      setComposure(Math.round((next / maxMind) * 100));
+      return next;
+    });
+  }, [maxMind]);
+
+  const clearRecentDamageEvent = useCallback(() => {
+    setRecentDamageEvent(null);
+  }, []);
+
   const [justUnlockedChapter, setJustUnlockedChapter] = useState<number | null>(null);
   const [composure, setComposure] = useState<number>(() => {
     try {
@@ -750,6 +864,10 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           highestChapterCompleted,
           selectedMC,
           composure,
+          hp,
+          maxHp,
+          mind,
+          maxMind,
           discoveredClues,
           inventory,
           deskMugMoved,
@@ -847,6 +965,14 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setChapter2Completed(false);
     setChapter3Completed(false);
     setJustUnlockedChapter(null);
+    const prof = getCharacterProfile(selectedMC);
+    const newMaxHp = prof.maxHp || 100;
+    const newMaxMind = prof.maxMind || 100;
+    setMaxHp(newMaxHp);
+    setMaxMind(newMaxMind);
+    setHp(newMaxHp);
+    setMind(newMaxMind);
+    setRecentDamageEvent(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
     setDiscoveredClues([]);
@@ -898,6 +1024,14 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setChapter2Completed(false);
     setChapter3Completed(false);
     setJustUnlockedChapter(null);
+    const prof = getCharacterProfile(selectedMC);
+    const newMaxHp = prof.maxHp || 100;
+    const newMaxMind = prof.maxMind || 100;
+    setMaxHp(newMaxHp);
+    setMaxMind(newMaxMind);
+    setHp(newMaxHp);
+    setMind(newMaxMind);
+    setRecentDamageEvent(null);
     setComposure(100);
     setChapter1TimeSeconds(0);
     setDiscoveredClues([]);
@@ -1045,6 +1179,17 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
         clearJustUnlocked,
         composure,
         setComposure,
+        hp,
+        maxHp,
+        mind,
+        maxMind,
+        setHp,
+        setMind,
+        applyDamage,
+        healHp,
+        restoreMind,
+        recentDamageEvent,
+        clearRecentDamageEvent,
         chapter1TimeSeconds,
         setChapter1TimeSeconds,
         discoveredClues,
@@ -1212,6 +1357,17 @@ export function useGameStore() {
       addDiscoveredClue: (_clueId: string) => {},
       composure: 100,
       setComposure: (_val: number | ((prev: number) => number)) => {},
+      hp: 100,
+      maxHp: 100,
+      mind: 100,
+      maxMind: 100,
+      setHp: (_val: number | ((prev: number) => number)) => {},
+      setMind: (_val: number | ((prev: number) => number)) => {},
+      applyDamage: (_amount: number, _type: DamageType, _source?: string) => {},
+      healHp: (_amount: number) => {},
+      restoreMind: (_amount: number) => {},
+      recentDamageEvent: null,
+      clearRecentDamageEvent: () => {},
     };
   }
   return {

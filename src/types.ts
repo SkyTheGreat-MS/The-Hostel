@@ -25,10 +25,30 @@ export type EndingId =
   | 'deceived'
   | 'misunderstood';
 
+export type DamageType = 'physical' | 'mental';
+
+export interface DamageEvent {
+  amount: number;
+  type: DamageType;
+  source?: string;
+  actualAmount: number;
+  remainingHp: number;
+  remainingMind: number;
+  timestamp: number;
+}
+
 export interface CharacterProfile {
   id: string;
   name: string;
   archetype: string;
+  maxHp: number;
+  maxMind: number;
+  physicalDefense: number;  // Multiplier (e.g. 0.75 = 25% defense)
+  mentalDefense: number;    // Multiplier (e.g. 0.70 = 30% defense)
+  staminaRecoveryRate: number;
+  perkId: string;
+  perkTitleBurmese: string;
+  perkDescBurmese: string;
   tensionMultiplier: number; // Drain speed & blunder shock (0.8x - 1.4x)
   resolveMultiplier: number; // Relief surges & chapter recovery (0.8x - 1.5x)
   avatar: string;

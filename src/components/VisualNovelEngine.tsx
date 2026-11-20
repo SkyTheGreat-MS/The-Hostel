@@ -50,6 +50,8 @@ import {
   RotateCcw,
   Flame,
   Bell,
+  Heart,
+  Brain,
 } from 'lucide-react';
 
 export type ChapterPhase = 1 | 2 | 3;
@@ -737,6 +739,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     removeInventoryItem,
     resetProgress,
     resetChapterOneProgress,
+    hp,
+    maxHp,
+    mind,
+    maxMind,
+    applyDamage,
+    recentDamageEvent,
   } = useGameProgress();
 
   // Core Flow & Phase States
@@ -1702,7 +1710,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       sound.playDamage();
       setIsScreenShaking(true);
       setTimeout(() => setIsScreenShaking(false), 700);
-      setComposure((c) => Math.max(0, c - 15));
+      applyDamage(15, 'physical', 'door_smash');
       setDoorSmashed(true);
       setRoomBanner({
         text: 'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...',
@@ -2580,14 +2588,48 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <span>{timeFormatted}</span>
               </div>
 
-              {/* Composure Badge */}
-              <div
-                className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md pointer-events-none ${getComposureColor(
-                  composure
-                )}`}
-              >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span>စိတ်တည်ငြိမ်မှု: {composure}%</span>
+              {/* Dual Vitals Gauge (Phase 1) */}
+              <div className="relative flex items-center gap-1.5 pointer-events-none">
+                {/* Physical Vitality (HP) Badge */}
+                <div
+                  title={`သွေးသားကြံ့ခိုင်မှု: ${hp}/${maxHp} HP`}
+                  className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md transition-all ${
+                    hp <= maxHp * 0.3
+                      ? 'bg-[#ba2929]/20 border-[#ba2929] text-[#fca5a5] animate-pulse shadow-[0_0_12px_rgba(186,41,41,0.5)]'
+                      : 'bg-[#060b08]/90 border-[#193828] text-[#6ea889]'
+                  }`}
+                >
+                  <Heart className={`w-3.5 h-3.5 shrink-0 ${hp <= maxHp * 0.3 ? 'text-[#ba2929]' : 'text-[#6ea889]'}`} />
+                  <span>{hp}/{maxHp}</span>
+                </div>
+
+                {/* Psychological Composure (Mind) Badge */}
+                <div
+                  title={`စိတ်တည်ငြိမ်မှု: ${mind}/${maxMind} MIND`}
+                  className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold flex items-center gap-1.5 shadow-md transition-all ${
+                    mind <= maxMind * 0.25
+                      ? 'bg-[#38bdf8]/20 border-[#38bdf8] text-[#bae6fd] animate-pulse shadow-[0_0_12px_rgba(56,189,248,0.5)]'
+                      : 'bg-[#060b08]/90 border-[#193828] text-[#38bdf8]'
+                  }`}
+                >
+                  <Brain className="w-3.5 h-3.5 shrink-0 text-[#38bdf8]" />
+                  <span>{mind}/{maxMind}</span>
+                </div>
+
+                {/* Floating Damage Indicator */}
+                {recentDamageEvent && (
+                  <motion.div
+                    key={recentDamageEvent.timestamp}
+                    initial={{ opacity: 1, y: 0, scale: 1 }}
+                    animate={{ opacity: 0, y: -20, scale: 1.15 }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
+                    className={`absolute -bottom-5 left-1/2 -translate-x-1/2 font-mono font-bold text-xs pointer-events-none whitespace-nowrap ${
+                      recentDamageEvent.type === 'physical' ? 'text-[#ba2929]' : 'text-[#38bdf8]'
+                    }`}
+                  >
+                    -{recentDamageEvent.actualAmount} {recentDamageEvent.type === 'physical' ? 'HP' : 'MIND'}
+                  </motion.div>
+                )}
               </div>
             </div>
           )}
@@ -3280,8 +3322,8 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                     <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
                                     <span>သတိပေးချက်: တံခါးကို ရိုက်ခွဲလျှင် နားပင်းလောက်သော အသံကျယ်ကြီး ထွက်ပေါ်လာမည်။</span>
                                   </div>
-                                  <p className="text-[10px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    -၁၅% စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။
+                                  <p className="text-[10px] font-burmese text-rose-300/80 group-hover:text-rose-200">
+                                    -၁၅ သွေးသားကြံ့ခိုင်မှု (HP) ဆုံးရှုံးမှု • နောက်ဆက်တွဲ စင်္ကြံ အန္တရာယ် မြင့်တက်စေသည်။
                                   </p>
                                 </button>
                               )}
@@ -3912,6 +3954,7 @@ onTuned={() => {
                 locker14Unlocked={locker14Unlocked}
                 setPhase3Location={setPhase3Location}
                 setActiveMonologue={setActiveMonologue}
+                applyDamage={applyDamage}
                 setComposure={setComposure}
                 setIsScreenShaking={setIsScreenShaking}
               />
@@ -3993,6 +4036,7 @@ onTuned={() => {
                 isOpen={true}
                 composure={composure}
                 setComposure={setComposure}
+                applyDamage={applyDamage}
                 setIsScreenShaking={setIsScreenShaking}
                 failedAttempts={caretakerLockFailCount}
                 setFailedAttempts={setCaretakerLockFailCount}
@@ -4057,6 +4101,7 @@ onTuned={() => {
               <PrayerAltarView
                 composure={composure}
                 setComposure={setComposure}
+                applyDamage={applyDamage}
                 inventory={inventory}
                 setInventory={setInventory}
                 onNatDialogueActiveChange={setIsNatDialogueActive}

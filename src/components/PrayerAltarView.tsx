@@ -11,6 +11,7 @@ import { getCharacterFearBustSrc } from './InkPortrait';
 export interface PrayerAltarViewProps {
   composure: number;
   setComposure: React.Dispatch<React.SetStateAction<number>>;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   inventory: string[];
   setInventory: React.Dispatch<React.SetStateAction<string[]>>;
   hasBlackCandlesCount: number;
@@ -53,6 +54,7 @@ export interface PrayerAltarViewProps {
 export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
   composure,
   setComposure,
+  applyDamage,
   inventory,
   setInventory,
   onNatDialogueActiveChange,
@@ -285,7 +287,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
 
       // Incremental Composure loss per failed attempt
       const composureLoss = nextFails === 1 ? 4 : 8;
-      setComposure((c) => Math.max(5, c - composureLoss));
+      if (applyDamage) {
+        applyDamage(composureLoss, 'mental', 'altar_match_fumble');
+      } else {
+        setComposure((c) => Math.max(5, c - composureLoss));
+      }
 
       sound.playMatchSnap();
       setActiveMonologue(
@@ -297,7 +303,11 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
       // Successful strike (or forced catch on match 3)
       if (isFinalMatch && roll < failChance) {
         // Final desperate catch: high mental toll
-        setComposure((c) => Math.max(5, c - 14));
+        if (applyDamage) {
+          applyDamage(14, 'mental', 'altar_match_fumble');
+        } else {
+          setComposure((c) => Math.max(5, c - 14));
+        }
         setActiveMonologue("နောက်ဆုံးမီးခြစ်တစ်ချောင်းလည်း ပျက်တော့မလို… ဒါပေမဲ့ ဆာလဖာက မီးစွဲသွားပြီ!ဟာ… မီးက အေးစက်စက်နဲ့…");
       } else {
         setActiveMonologue("မီးစွဲပြီး ယဇ်ပလ္လင်ကို အပြာဖျော့ဖျော့ အလင်းပေးနေတယ်။");
@@ -827,6 +837,7 @@ export const PrayerAltarView: React.FC<PrayerAltarViewProps> = ({
           <NatDialogueView
             composure={composure}
             setComposure={setComposure}
+            applyDamage={applyDamage}
             inventory={inventory}
             characterName={getCharacterProfile(selectedCharacterId || 'moe_stheinkha').name}
             characterPortrait={getCharacterFearBustSrc(selectedCharacterId || 'moe_stheinkha')}

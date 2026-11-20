@@ -36,6 +36,7 @@ export interface CaseNoteItem {
 export interface NatDialogueViewProps {
   composure: number;
   setComposure: React.Dispatch<React.SetStateAction<number>>;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   onConcludeAudience: () => void;
   characterName?: string;
   characterPortrait?: string;
@@ -152,6 +153,7 @@ export const OPENING_SEQUENCE: OpeningSequenceItem[] = [
 export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
   composure,
   setComposure,
+  applyDamage,
   onConcludeAudience,
   characterName = 'Moe',
   characterPortrait = '/assets/characters/moe_fear_bust.png',
@@ -214,10 +216,14 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
 
   // Shock damage application helper
   const applyComposureShock = (damage: number) => {
-    if (propApplyComposureShock) {
-      propApplyComposureShock(damage);
+    if (applyDamage) {
+      applyDamage(damage, 'mental', 'nat_taboo_shock');
+    } else {
+      if (propApplyComposureShock) {
+        propApplyComposureShock(damage);
+      }
+      setComposure((prev) => Math.max(0, prev - damage));
     }
-    setComposure((prev) => Math.max(0, prev - damage));
   };
 
   useEffect(() => {
@@ -234,11 +240,15 @@ export const NatDialogueView: React.FC<NatDialogueViewProps> = ({
     if (!isOpeningComplete) return;
 
     const timer = setInterval(() => {
-      setComposure((prev) => Math.max(5, prev - 1));
+      if (applyDamage) {
+        applyDamage(1, 'mental', 'nat_presence_decay');
+      } else {
+        setComposure((prev) => Math.max(5, prev - 1));
+      }
     }, 8000);
 
     return () => clearInterval(timer);
-  }, [isOpeningComplete, setComposure]);
+  }, [isOpeningComplete, setComposure, applyDamage]);
 
   // Advance scripted opening sequence
   const handleAdvanceOpening = () => {

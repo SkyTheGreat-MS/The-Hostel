@@ -9,6 +9,7 @@ export interface LockModalProps {
   onCombinationAttemptFailed?: (attemptCount?: number, penalty?: number) => void;
   composure?: number;
   setComposure?: React.Dispatch<React.SetStateAction<number>>;
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
   setIsScreenShaking?: React.Dispatch<React.SetStateAction<boolean>>;
   failedAttempts?: number;
   setFailedAttempts?: React.Dispatch<React.SetStateAction<number>>;
@@ -21,6 +22,7 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
   onCombinationAttemptFailed,
   composure,
   setComposure,
+  applyDamage,
   setIsScreenShaking,
   failedAttempts,
   setFailedAttempts,
@@ -78,7 +80,9 @@ export const CaretakerLockModal: React.FC<LockModalProps> = ({
         setTimeout(() => setIsScreenShaking(false), 300);
       }
 
-      if (setComposure) {
+      if (applyDamage) {
+        applyDamage(penalty, 'mental', 'keypad_failure');
+      } else if (setComposure) {
         setComposure((prev) => Math.max(0, prev - penalty));
       }
 
