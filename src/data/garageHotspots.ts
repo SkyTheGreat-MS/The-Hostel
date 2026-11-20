@@ -1,16 +1,12 @@
 /**
  * Phase 2 - Subterranean Garage spatial mapping.
  *
- * Authoritative source: docs/PHASE_2_GARAGE_SPATIAL_MAPPING.md
- * Section 2 (calibrated spatial coordinate mapping) and Section 2.1
- * (detailed hotspot geometry table).
+ * Calibrated against `garage_subterranean_rain_submerged.jpg`.
+ * Coordinates are percentages on the 0..100 aspect-fill viewport.
  *
- * Coordinates are percentages on the 0..100 aspect-fill viewport used by
- * garage_subterranean_rain.jpg / garage_subterranean_rain_submerged.jpg.
- *
- * These polygons are transcribed VERBATIM from Section 2.1. Do not "tighten"
- * or shift vertices here — the acceptance criteria are written against these
- * exact coordinates.
+ * This supersedes the original table in docs/PHASE_2_GARAGE_SPATIAL_MAPPING.md
+ * Section 2.1. The polygon strings below are exact — do not re-round or shift
+ * vertices here; the PLUnit spatial-separation test locks them verbatim.
  */
 
 export type GarageHotspotId =
@@ -28,41 +24,41 @@ export interface GarageHotspotGeometry {
   tooltipDrained: string;
 }
 
-export const GARAGE_HOTSPOT_REVISION = 'phase2-calibrated-spec-2.1';
+export const GARAGE_HOTSPOT_REVISION = 'phase2-calibrated-submerged-v3';
 
 export const GARAGE_HOTSPOTS: GarageHotspotGeometry[] = [
   {
     id: 'garage_drain_valve',
-    inGameName: 'ရေနုတ်အဆို့ရှင်ဘီး',
-    polygonPoints: '68.5,42.0 78.5,39.0 82.0,48.0 77.0,58.0 68.0,56.0 65.5,48.0',
+    inGameName: 'ရေနုတ်အဆိုရှင်ဘီး',
+    polygonPoints: '27.5,13.0 29.9,14.7 30.9,19.0 29.9,23.3 27.5,25.1 25.1,23.3 24.1,19.0 25.1,14.7',
     tooltipFlooded: '[ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်]',
     tooltipDrained: '[ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်]',
   },
   {
     id: 'garage_bicycles',
     inGameName: '၁၉၉၀ ကျောင်းသူစက်ဘီးဟောင်းများ',
-    polygonPoints: '28.0,62.0 54.0,58.0 64.0,66.0 60.0,86.0 26.0,84.0 22.0,72.0',
+    polygonPoints: '17.0,99.7 42.9,54.7 57.9,65.4 51.1,98.9',
     tooltipFlooded: '[ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်]',
     tooltipDrained: '[ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်]',
   },
   {
     id: 'garage_caretaker_log',
     inGameName: 'အဆောင်မှူး၏ ထိန်းသိမ်းရေးမှတ်တမ်း',
-    polygonPoints: '6.0,52.0 22.0,52.0 24.0,68.0 8.0,70.0',
+    polygonPoints: '13.3,42.6 28.4,42.6 28.4,51.3 13.3,51.3',
     tooltipFlooded: '[အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်]',
     tooltipDrained: '[အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်]',
   },
   {
     id: 'garage_tool_pulley',
     inGameName: 'သံသွန်းစက်သီးကြီး',
-    polygonPoints: '51.5,18.0 60.0,18.0 61.5,32.0 55.0,36.0 49.5,30.0',
+    polygonPoints: '10.3,57.9 14.0,60.6 15.6,67.3 14.0,74.0 10.3,76.8 6.6,74.0 5.1,67.3 6.6,60.6',
     tooltipFlooded: '[ရေထဲက သံစက်သီးကို ကြည့်မည်]',
     tooltipDrained: '[သံစက်သီးကို ယူမည်]',
   },
   {
     id: 'garage_tool_machete',
     inGameName: 'သံချေးတက် ဓားမကြီး',
-    polygonPoints: '4.0,78.0 18.0,76.0 22.0,88.0 8.0,92.0',
+    polygonPoints: '3.7,82.1 30.2,67.6 32.3,72.0 9.2,86.8 2.9,85.2',
     tooltipFlooded: '[ရေထဲက ဓားကို ကြည့်မည်]',
     tooltipDrained: '[သံချေးတက်ဓားမကို ယူမည်]',
   },

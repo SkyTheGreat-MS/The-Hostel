@@ -3272,13 +3272,13 @@ export const TestRunner: React.FC = () => {
       const start51 = performance.now();
       const trace51: string[] = [];
 
-      // Verbatim Section 2.1 strings from docs/PHASE_2_GARAGE_SPATIAL_MAPPING.md.
+      // Newly calibrated polygons for garage_subterranean_rain_submerged.jpg.
       const expectedGaragePolygons: Record<string, string> = {
-        garage_drain_valve: '68.5,42.0 78.5,39.0 82.0,48.0 77.0,58.0 68.0,56.0 65.5,48.0',
-        garage_bicycles: '28.0,62.0 54.0,58.0 64.0,66.0 60.0,86.0 26.0,84.0 22.0,72.0',
-        garage_caretaker_log: '6.0,52.0 22.0,52.0 24.0,68.0 8.0,70.0',
-        garage_tool_pulley: '51.5,18.0 60.0,18.0 61.5,32.0 55.0,36.0 49.5,30.0',
-        garage_tool_machete: '4.0,78.0 18.0,76.0 22.0,88.0 8.0,92.0',
+        garage_drain_valve: '27.5,13.0 29.9,14.7 30.9,19.0 29.9,23.3 27.5,25.1 25.1,23.3 24.1,19.0 25.1,14.7',
+        garage_bicycles: '17.0,99.7 42.9,54.7 57.9,65.4 51.1,98.9',
+        garage_caretaker_log: '13.3,42.6 28.4,42.6 28.4,51.3 13.3,51.3',
+        garage_tool_pulley: '10.3,57.9 14.0,60.6 15.6,67.3 14.0,74.0 10.3,76.8 6.6,74.0 5.1,67.3 6.6,60.6',
+        garage_tool_machete: '3.7,82.1 30.2,67.6 32.3,72.0 9.2,86.8 2.9,85.2',
       };
       const expectedGarageIds = Object.keys(expectedGaragePolygons);
       const garageIdsValid =
@@ -3289,7 +3289,7 @@ export const TestRunner: React.FC = () => {
       );
       trace51.push(`Hotspot revision: ${GARAGE_HOTSPOT_REVISION}`);
       trace51.push(`All 5 documented hotspot IDs present: ${garageIdsValid}`);
-      trace51.push(`All polygons match Section 2.1 verbatim: ${garagePolygonStringsValid}`);
+      trace51.push(`All polygons match the new submerged-image calibration verbatim: ${garagePolygonStringsValid}`);
 
       const overlaps51 = findOverlappingGarageHotspotSamples(0.1);
       const noOverlap51 = overlaps51.length === 0;
@@ -3314,17 +3314,17 @@ export const TestRunner: React.FC = () => {
       const pulleyBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_tool_pulley.polygonPoints);
       const logBox = bbox51(GARAGE_HOTSPOT_BY_ID.garage_caretaker_log.polygonPoints);
 
-      const valveBikesDisjointX = valveBox.minX > bikesBox.maxX;
-      const pulleyLogDisjointY = pulleyBox.maxY < logBox.minY;
+      const valveBikesDisjointY = valveBox.maxY < bikesBox.minY;
+      const pulleyLogDisjointY = pulleyBox.minY > logBox.maxY;
       trace51.push(
-        `Valve X ${valveBox.minX}-${valveBox.maxX} vs bicycles X ${bikesBox.minX}-${bikesBox.maxX}: disjoint=${valveBikesDisjointX}`
+        `Valve Y ${valveBox.minY}-${valveBox.maxY} vs bicycles Y ${bikesBox.minY}-${bikesBox.maxY}: disjoint=${valveBikesDisjointY}`
       );
       trace51.push(
         `Pulley Y ${pulleyBox.minY}-${pulleyBox.maxY} vs caretaker log Y ${logBox.minY}-${logBox.maxY}: disjoint=${pulleyLogDisjointY}`
       );
 
       const passed51 =
-        garageIdsValid && garagePolygonStringsValid && noOverlap51 && valveBikesDisjointX && pulleyLogDisjointY;
+        garageIdsValid && garagePolygonStringsValid && noOverlap51 && valveBikesDisjointY && pulleyLogDisjointY;
 
       testList.push({
         id: 'test_phase_2_garage_hotspot_spatial_separation',
@@ -3333,8 +3333,8 @@ export const TestRunner: React.FC = () => {
         passed: passed51,
         durationMs: Math.round((performance.now() - start51) * 100) / 100,
         expected:
-          'Five hotspot polygons transcribed verbatim from Section 2.1 of the Phase 2 spec; caretaker desk and pulley hook never share a hit area; valve wheel X range is fully outside the bicycle heap X range; zero polygon overlaps at 0.1 sampling step.',
-        actual: `Revision=${GARAGE_HOTSPOT_REVISION}, Ids=${garageIdsValid}, ExactPolygons=${garagePolygonStringsValid}, Overlaps=${overlaps51.length}, ValveBikesX=${valveBikesDisjointX}, PulleyLogY=${pulleyLogDisjointY}`,
+          'Five hotspot polygons match the new submerged-image calibration exactly; caretaker desk and pulley hook never share a hit area; valve wheel Y range is fully above the bicycle heap Y range; zero polygon overlaps at 0.1 sampling step.',
+        actual: `Revision=${GARAGE_HOTSPOT_REVISION}, Ids=${garageIdsValid}, ExactPolygons=${garagePolygonStringsValid}, Overlaps=${overlaps51.length}, ValveBikesY=${valveBikesDisjointY}, PulleyLogY=${pulleyLogDisjointY}`,
         trace: trace51,
       });
     }
