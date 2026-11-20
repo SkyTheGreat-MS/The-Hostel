@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ANIMATIONS } from '../../styles/designSystem';
 
@@ -20,8 +20,8 @@ export interface ThoughtLineProps {
  *
  * Renders protagonist inner thoughts as floating subtitles.
  * - 100% Borderless: No AI-slop boxes, decorative bars, or dismiss prompts.
- * - Auto-fades after exactly 3.0 seconds with smooth deceleration.
- * - Click anywhere to dismiss immediately; seamlessly resets when new thoughts appear.
+ * - Auto-fades after exactly 3.0 seconds (durationMs).
+ * - Click anywhere (on the subtitle or elsewhere on the screen) to dismiss immediately.
  */
 export const ThoughtLine: React.FC<ThoughtLineProps> = ({
   message,
@@ -30,14 +30,49 @@ export const ThoughtLine: React.FC<ThoughtLineProps> = ({
   durationMs = ANIMATIONS.thoughtLingerMs,
   className = '',
 }) => {
-  // 3-Second Auto-Fade Timer
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // 1. 3-Second Auto-Fade Timer: decoupled from onDismiss function identity so
+  // parent component re-renders (e.g. 1-second game timer / vitals updates)
+  // do not cancel or reset the 3-second countdown.
   useEffect(() => {
     if (!message) return;
     const timer = setTimeout(() => {
-      onDismiss?.();
+      onDismissRef.current?.();
     }, durationMs);
     return () => clearTimeout(timer);
-  }, [message, durationMs, onDismiss]);
+  }, [message, durationMs]);
+
+  // 2. Click anywhere / clicked elsewhere listener to dismiss immediately
+  useEffect(() => {
+    if (!message) return;
+
+    const handleDismissElsewhere = () => {
+      onDismissRef.current?.();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') {
+        onDismissRef.current?.();
+      }
+    };
+
+    // Small delay (50ms) so the click event that triggered this thought
+    // does not immediately dismiss it in the same event loop tick.
+    const registerTimer = setTimeout(() => {
+      window.addEventListener('pointerdown', handleDismissElsewhere);
+      window.addEventListener('keydown', handleKeyDown);
+    }, 50);
+
+    return () => {
+      clearTimeout(registerTimer);
+      window.removeEventListener('pointerdown', handleDismissElsewhere);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [message]);
 
   const positionClass =
     position === 'center-bottom'
@@ -57,7 +92,10 @@ export const ThoughtLine: React.FC<ThoughtLineProps> = ({
             ease: ANIMATIONS.easeCinematic,
           }}
           className={`absolute z-40 pointer-events-auto cursor-pointer select-none ${positionClass} ${className}`}
-          onClick={onDismiss}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDismissRef.current?.();
+          }}
           role="status"
           aria-live="polite"
         >

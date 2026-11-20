@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCcw, ArrowRight } from 'lucide-react';
 import { ANIMATIONS } from '../styles/designSystem';
@@ -30,14 +30,45 @@ export const ThoughtMonologueOverlay: React.FC<{
   // Strip leading/trailing dashes to prevent double-dash display
   const cleanText = text.replace(/^[—–-]\s*|\s*[—–-]$/g, '').trim();
 
-  // 3-Second Auto-Fade Timer
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // 3-Second Auto-Fade Timer: decoupled from onDismiss function identity
   useEffect(() => {
     if (!text) return;
     const timer = setTimeout(() => {
-      onDismiss?.();
+      onDismissRef.current?.();
     }, durationMs);
     return () => clearTimeout(timer);
-  }, [text, durationMs, onDismiss]);
+  }, [text, durationMs]);
+
+  // Click anywhere / clicked elsewhere listener to dismiss immediately
+  useEffect(() => {
+    if (!cleanText) return;
+
+    const handleDismissElsewhere = () => {
+      onDismissRef.current?.();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') {
+        onDismissRef.current?.();
+      }
+    };
+
+    const registerTimer = setTimeout(() => {
+      window.addEventListener('pointerdown', handleDismissElsewhere);
+      window.addEventListener('keydown', handleKeyDown);
+    }, 50);
+
+    return () => {
+      clearTimeout(registerTimer);
+      window.removeEventListener('pointerdown', handleDismissElsewhere);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [cleanText]);
 
   return (
     <AnimatePresence mode="wait">
