@@ -202,7 +202,7 @@ const PHASE1_2_SCRIPT: InitialDialogueStep[] = [
   {
     id: 7,
     phase: 2,
-    speaker: 'မိုးင်္သခ',
+    speaker: 'မိုးသိင်္ခ',
     characterId: 'moe_stheinkha',
     pos: 'left',
     text: 'ဟေ့... ဖယောင်းတိုင်မီး အပြာရောင်ပြောင်းသွားပြီ! ဘယ်သူမှ လက်မခွာနဲ့နော်။',
@@ -3265,7 +3265,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                                     </span>
                                   </div>
                                   <p className="text-[11px] font-mono text-stone-400 group-hover:text-stone-300">
-                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးင်္သခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
+                                    တိတ်ဆိတ်သော ဖောက်ထွင်းမှု • စိတ်တည်ငြိမ်မှု ဆုံးရှုံးမှု သုည။ မိုးသိင်္ခ သန့်ရှင်းစွာ သော့ဖွင့်ပေးသည်။
                                   </p>
                                 </button>
                               )}

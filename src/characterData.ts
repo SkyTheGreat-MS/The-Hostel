@@ -5,7 +5,7 @@ export { type CharacterProfile };
 export const CHARACTER_ROSTER: Record<string, CharacterProfile> = {
   moe_stheinkha: {
     id: 'moe_stheinkha',
-    name: 'မိုးင်္သခ',
+    name: 'မိုးသိင်္ခ',
     archetype: 'သံသယရှိသူ',
     maxHp: 90,
     maxMind: 110,

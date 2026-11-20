@@ -60,7 +60,7 @@ export const EVENT_ACCENTS = {
 } as const;
 
 export const FONTS = {
-  burmese: "'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif",
+  burmese: "'Aka08', 'Myanmar Text', sans-serif",
   cinzel: "'Cinzel', serif",
   typewriter: "'Special Elite', cursive",
   bebas: "'Bebas Neue', 'Impact', sans-serif",

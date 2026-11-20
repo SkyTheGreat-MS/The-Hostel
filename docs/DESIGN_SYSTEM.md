@@ -70,14 +70,14 @@ Triggered when the 2026 university seance group sends radio signals or temporal 
 
 | Script / Usage | Family | Source | Fallbacks |
 |---|---|---|---|
-| **Burmese Script (All)** | `Aka08` | Local (`/fonts/Aka08-Regular.ttf`) | `Pyidaungsu`, `Myanmar Text`, `sans-serif` |
+| **Burmese Script (All)** | `Aka08` | Local (`/fonts/Aka08-Regular.ttf`) | `Myanmar Text`, `sans-serif` |
 | **Occult Latin Display** | `Cinzel` | Google Fonts | `serif` |
 | **1998 Vintage Documents** | `Special Elite` | Google Fonts | `cursive` |
 | **Timers & Numerics** | `Bebas Neue` | Google Fonts | `Impact`, `sans-serif` |
 | **Technical Telemetry / HUD**| `JetBrains Mono` | Google Fonts | `ui-monospace`, `monospace` |
 
 ### 3.2 Burmese Typography Rules
-- **Font Stack**: Always apply `--font-burmese: 'Aka08', 'Pyidaungsu', 'Myanmar Text', sans-serif;`.
+- **Font Stack**: Always apply `--font-burmese: 'Aka08', 'Myanmar Text', sans-serif;`.
 - **Line-Height Enforcement**: Burmese text requires a strict minimum line-height ratio of `1.7` to `1.75` (`leading-[1.75]`). This prevents stacked consonants (`င်္သ`, `န္တာ`), subscripts (`ျ`, `ြ`, `ွ`, `ှ`), and tone marks (`့`, `း`, `်`) from clipping.
 - **No Faux Styles**: Never apply synthetic CSS italics or condensed sans-serif fonts (e.g. `Bebas Neue`) to Burmese text.
 - **Word Break**: Apply `word-break: break-word` and `hyphens: none` for natural Burmese syllable wrapping.
