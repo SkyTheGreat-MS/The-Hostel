@@ -61,6 +61,8 @@ export interface MCCharacter {
   description: string;
   tensionMultiplier: number;
   resolveMultiplier: number;
+  physicalDefense?: number;
+  mentalDefense?: number;
   multipliers?: Record<TriggerType, number>;
 }
 

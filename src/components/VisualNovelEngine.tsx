@@ -92,6 +92,7 @@ import { InventoryDrawerModal } from './InventoryDrawerModal';
 import { CaretakerLockModal, CaretakerKeypadModal } from './CaretakerKeypadModal';
 import { ThoughtLine } from './common/ThoughtLine';
 import { RouteCard } from './common/RouteCard';
+import { getCharacterProfile } from '../characterData';
 export { ThoughtLine } from './common/ThoughtLine';
 export { RouteCard } from './common/RouteCard';
 
@@ -741,8 +742,12 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     resetChapterOneProgress,
     hp,
     maxHp,
+    setHp,
     mind,
     maxMind,
+    setMind,
+    healHp,
+    restoreMind,
     applyDamage,
     recentDamageEvent,
   } = useGameProgress();
@@ -912,32 +917,108 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
     return () => clearInterval(timerInterval);
   }, [isPaused, currentScreen, timerSeconds, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
 
-  // Ambient Composure Attrition Hook
-  // Base rate: 1% per 18s (accelerated to 8s during Nat dialogue), scaled by active investigator tensionMultiplier
-  // Continues ticking while player checks case notes or inventory; halts when system is paused (isPaused)
+  // 1. Ambient Mind Dread Decay Hook
+  // Base rate: 1 Mind per 18s (accelerated to 8s during Nat dialogue / high tension)
+  // Scaled by investigator's mentalDefense multiplier
   useEffect(() => {
-    if (isPaused || currentScreen !== 'gameplay' || composure <= 0 || isChapterTransitionOpen || isChapter3TransitionOpen || isChapterFinished) return;
+    if (
+      isPaused ||
+      currentScreen !== 'gameplay' ||
+      mind <= 0 ||
+      isChapterTransitionOpen ||
+      isChapter3TransitionOpen ||
+      isChapterFinished ||
+      mode === 'phase1_2' ||
+      mode === 'shattering' ||
+      mode === 'character_select'
+    ) return;
 
     const basePeriodMs = isNatDialogueActive ? 8000 : 18000;
-    const tension = selectedCharacter.tensionMultiplier || 1.0;
-    const decayIntervalMs = Math.max(500, Math.round(basePeriodMs / tension));
+    const charProfile = getCharacterProfile(selectedCharacter.id);
+    const mentalDef = charProfile?.mentalDefense ?? selectedCharacter.mentalDefense ?? 1.0;
+    const decayIntervalMs = Math.max(1000, Math.round(basePeriodMs / mentalDef));
 
-    const composureInterval = setInterval(() => {
-      setComposure((prev) => Math.max(0, prev - 1));
+    const mindInterval = setInterval(() => {
+      setMind((prev) => Math.max(0, prev - 1));
     }, decayIntervalMs);
 
-    return () => clearInterval(composureInterval);
-  }, [isPaused, currentScreen, composure, isNatDialogueActive, selectedCharacter.tensionMultiplier, isChapterTransitionOpen, isChapter3TransitionOpen, isChapterFinished]);
+    return () => clearInterval(mindInterval);
+  }, [
+    isPaused,
+    currentScreen,
+    mind,
+    isNatDialogueActive,
+    selectedCharacter.id,
+    selectedCharacter.mentalDefense,
+    isChapterTransitionOpen,
+    isChapter3TransitionOpen,
+    isChapterFinished,
+    mode,
+    setMind,
+  ]);
 
-  // Monitor composure zero game over condition
+  // 2. Psychosomatic Passive HP Decay Hook (Governed by Mind)
+  // HP decays passively at all times.
+  // At 100% Mind: slow trickle (1 HP per 60s scaled by physicalDefense).
+  // As Mind decreases: decay accelerates proportionally.
+  // Under Critical HP (HP <= 30%): extra trauma multiplier applies (1.5x).
+  // At Mind == 0: Desperate Struggle state applies (+60% faster decay).
   useEffect(() => {
-    if (composure <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
+    if (
+      isPaused ||
+      currentScreen !== 'gameplay' ||
+      hp <= 0 ||
+      isChapterTransitionOpen ||
+      isChapter3TransitionOpen ||
+      isChapterFinished ||
+      mode === 'phase1_2' ||
+      mode === 'shattering' ||
+      mode === 'character_select'
+    ) return;
+
+    const mindRatio = Math.max(0, mind / maxMind);
+    const mentalFactor = 1.0 + (1.0 - mindRatio) * 1.5;
+    const emptyMindMult = mind <= 0 ? 1.6 : 1.0;
+    const criticalHpMult = hp <= maxHp * 0.3 ? 1.5 : 1.0;
+    const totalSpeedMult = mentalFactor * emptyMindMult * criticalHpMult;
+
+    const charProfile = getCharacterProfile(selectedCharacter.id);
+    const physDef = charProfile?.physicalDefense ?? selectedCharacter.physicalDefense ?? 1.0;
+    const hpDecayIntervalMs = Math.max(
+      1500,
+      Math.min(90000, Math.round((60000 * physDef) / totalSpeedMult))
+    );
+
+    const hpInterval = setInterval(() => {
+      setHp((prev) => Math.max(0, prev - 1));
+    }, hpDecayIntervalMs);
+
+    return () => clearInterval(hpInterval);
+  }, [
+    isPaused,
+    currentScreen,
+    hp,
+    maxHp,
+    mind,
+    maxMind,
+    selectedCharacter.id,
+    selectedCharacter.physicalDefense,
+    isChapterTransitionOpen,
+    isChapter3TransitionOpen,
+    isChapterFinished,
+    mode,
+    setHp,
+  ]);
+
+  // 3. Monitor physical collapse (HP <= 0) Game Over condition
+  useEffect(() => {
+    if (hp <= 0 && !isGameOver && !isChapterFinished && mode !== 'phase1_2') {
       setIsGameOver(true);
       setCurrentScreen('game_over');
       sound.stopAllAmbience();
       sound.playDamage();
     }
-  }, [composure, isGameOver, isChapterFinished, mode]);
+  }, [hp, isGameOver, isChapterFinished, mode]);
 
   // Load saved Chapter checkpoint on mount if present
   useEffect(() => {
@@ -1329,7 +1410,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       }
       if (!washroomStallChecked) {
         sound.playWaterDrop();
-        setComposure((c) => Math.max(5, c - 5));
+        applyDamage(5, 'mental', 'washroom_stall_shock');
         setWashroomStallChecked(true);
         setIsCompassVibrating(true);
         setTimeout(() => setIsCompassVibrating(false), 3000);
@@ -1604,10 +1685,10 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
         // Add discovered clue to notebook!
         addDiscoveredClue(loc.clueId);
 
-        // Deduct time / composure penalties for wrong routes
+        // Deduct time / mental damage penalties for wrong routes
         if (!loc.isCorrectRoute) {
           setTimeLeft((t) => Math.max(10, t - loc.timePenaltySeconds));
-          setComposure((c) => Math.max(10, c - loc.composureDrain));
+          applyDamage(loc.composureDrain, 'mental', 'wrong_route_dread');
           sound.playDamage();
         }
 
@@ -2586,32 +2667,60 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                 <span>{timeFormatted}</span>
               </div>
 
-              {/* Dual Vitals Gauge (Phase 1) */}
-              <div className="relative flex items-center gap-1.5 pointer-events-none">
-                {/* Physical Vitality (HP) Badge */}
+              {/* Dual Vitals Virtual Gauges (Phase 1) */}
+              <div className="relative flex items-center gap-2 pointer-events-none">
+                {/* Physical Vitality (HP) Virtual Gauge Bar */}
                 <div
                   title={`သွေးသားကြံ့ခိုင်မှု: ${hp}/${maxHp} HP`}
-                  className={`px-2.5 py-1.5 rounded-none text-xs font-mono tabular-nums font-bold flex items-center gap-1.5 transition-colors backdrop-blur-sm ${
+                  className={`px-2 py-1.5 rounded-none flex items-center gap-1.5 backdrop-blur-sm transition-all pointer-events-auto cursor-help ${
                     hp <= maxHp * 0.3
-                      ? 'bg-[#330808]/90 text-[#fca5a5] animate-pulse'
-                      : 'bg-[#020504]/60 text-[#6ea889]'
+                      ? 'bg-[#330808]/90 animate-pulse'
+                      : 'bg-[#020504]/70'
                   }`}
                 >
-                  <Heart className={`w-3.5 h-3.5 shrink-0 ${hp <= maxHp * 0.3 ? 'text-[#ba2929]' : 'text-[#6ea889]'}`} />
-                  <span>{hp}/{maxHp}</span>
+                  <Heart
+                    className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                      hp <= maxHp * 0.3 ? 'text-[#e53e3e]' : 'text-[#6ea889]'
+                    }`}
+                  />
+                  {/* Virtual HP Fill Bar */}
+                  <div className="w-14 sm:w-18 h-2 bg-[#101713] rounded-none overflow-hidden relative">
+                    <div
+                      className={`h-full transition-all duration-500 rounded-none ${
+                        hp <= maxHp * 0.3
+                          ? 'bg-gradient-to-r from-[#ba2929] to-[#e53e3e]'
+                          : 'bg-gradient-to-r from-[#29543e] to-[#4d8268]'
+                      }`}
+                      style={{ width: `${Math.max(0, Math.min(100, (hp / maxHp) * 100))}%` }}
+                    />
+                  </div>
                 </div>
 
-                {/* Psychological Composure (Mind) Badge */}
+                {/* Psychological Composure (Mind) Virtual Gauge Bar */}
                 <div
                   title={`စိတ်တည်ငြိမ်မှု: ${mind}/${maxMind} MIND`}
-                  className={`px-2.5 py-1.5 rounded-none text-xs font-mono tabular-nums font-bold flex items-center gap-1.5 transition-colors backdrop-blur-sm ${
+                  className={`px-2 py-1.5 rounded-none flex items-center gap-1.5 backdrop-blur-sm transition-all pointer-events-auto cursor-help ${
                     mind <= maxMind * 0.25
-                      ? 'bg-[#0369a1]/50 text-[#bae6fd] animate-pulse'
-                      : 'bg-[#020504]/60 text-[#38bdf8]'
+                      ? 'bg-[#0369a1]/50 animate-pulse'
+                      : 'bg-[#020504]/70'
                   }`}
                 >
-                  <Brain className="w-3.5 h-3.5 shrink-0 text-[#38bdf8]" />
-                  <span>{mind}/{maxMind}</span>
+                  <Brain
+                    className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                      mind <= maxMind * 0.25 ? 'text-[#7dd3fc]' : 'text-[#38bdf8]'
+                    }`}
+                  />
+                  {/* Virtual Mind Fill Bar */}
+                  <div className="w-14 sm:w-18 h-2 bg-[#101713] rounded-none overflow-hidden relative">
+                    <div
+                      className={`h-full transition-all duration-500 rounded-none ${
+                        mind <= maxMind * 0.25
+                          ? 'bg-gradient-to-r from-[#0284c7] to-[#7dd3fc]'
+                          : 'bg-gradient-to-r from-[#0369a1] to-[#38bdf8]'
+                      }`}
+                      style={{ width: `${Math.max(0, Math.min(100, (mind / maxMind) * 100))}%` }}
+                    />
+                  </div>
                 </div>
 
                 {/* Floating Damage Indicator */}

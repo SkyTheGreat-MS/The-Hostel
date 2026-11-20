@@ -154,7 +154,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const initialProfile = getCharacterProfile(selectedMC || 'moe_stheinkha');
   const [maxHp, setMaxHp] = useState<number>(() => initialProfile.maxHp || 100);
   const [maxMind, setMaxMind] = useState<number>(() => initialProfile.maxMind || 100);
-  const [hp, setHp] = useState<number>(() => {
+  const [hp, setHpState] = useState<number>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -164,7 +164,7 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     } catch {}
     return initialProfile.maxHp || 100;
   });
-  const [mind, setMind] = useState<number>(() => {
+  const [mind, setMindState] = useState<number>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -176,6 +176,46 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   });
   const [recentDamageEvent, setRecentDamageEvent] = useState<DamageEvent | null>(null);
 
+  const [composure, setComposureState] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.composure === 'number') {
+          return parsed.composure;
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return 100;
+  });
+
+  const setHp = useCallback((val: number | ((prev: number) => number)) => {
+    setHpState((prev) => {
+      const next = typeof val === 'function' ? val(prev) : val;
+      return Math.max(0, Math.min(maxHp, next));
+    });
+  }, [maxHp]);
+
+  const setMind = useCallback((val: number | ((prev: number) => number)) => {
+    setMindState((prev) => {
+      const next = typeof val === 'function' ? val(prev) : val;
+      const clamped = Math.max(0, Math.min(maxMind, next));
+      setComposureState(Math.round((clamped / maxMind) * 100));
+      return clamped;
+    });
+  }, [maxMind]);
+
+  const setComposure = useCallback((val: number | ((prev: number) => number)) => {
+    setComposureState((prev) => {
+      const next = typeof val === 'function' ? val(prev) : val;
+      const clamped = Math.max(0, Math.min(100, next));
+      setMindState(Math.round((clamped / 100) * maxMind));
+      return clamped;
+    });
+  }, [maxMind]);
+
   const setSelectedMC = useCallback((mc: MCId) => {
     setSelectedMCState(mc);
     const prof = getCharacterProfile(mc);
@@ -183,9 +223,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const newMaxMind = prof.maxMind || 100;
     setMaxHp(newMaxHp);
     setMaxMind(newMaxMind);
-    setHp(newMaxHp);
-    setMind(newMaxMind);
-    setComposure(100);
+    setHpState(newMaxHp);
+    setMindState(newMaxMind);
+    setComposureState(100);
   }, []);
 
   const applyDamage = useCallback((amount: number, type: DamageType, source?: string) => {
@@ -220,43 +260,24 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
           remainingMind: next,
           timestamp: Date.now(),
         });
-        setComposure(Math.round((next / (prof.maxMind || 100)) * 100));
         return next;
       });
     }
-  }, [selectedMC, hp, mind]);
+  }, [selectedMC, hp, mind, setHp, setMind]);
 
   const healHp = useCallback((amount: number) => {
     setHp((prev) => Math.min(maxHp, prev + amount));
-  }, [maxHp]);
+  }, [maxHp, setHp]);
 
   const restoreMind = useCallback((amount: number) => {
-    setMind((prev) => {
-      const next = Math.min(maxMind, prev + amount);
-      setComposure(Math.round((next / maxMind) * 100));
-      return next;
-    });
-  }, [maxMind]);
+    setMind((prev) => Math.min(maxMind, prev + amount));
+  }, [maxMind, setMind]);
 
   const clearRecentDamageEvent = useCallback(() => {
     setRecentDamageEvent(null);
   }, []);
 
   const [justUnlockedChapter, setJustUnlockedChapter] = useState<number | null>(null);
-  const [composure, setComposure] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (typeof parsed.composure === 'number') {
-          return parsed.composure;
-        }
-      }
-    } catch {
-      // ignore
-    }
-    return 100;
-  });
   const [chapter1TimeSeconds, setChapter1TimeSeconds] = useState<number>(0);
   const [discoveredClues, setDiscoveredClues] = useState<string[]>(() => {
     try {
@@ -1114,6 +1135,9 @@ export const GameProgressProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const addDiscoveredClue = (clueId: string) => {
     setDiscoveredClues((prev) => {
       if (!prev.includes(clueId)) {
+        // Clue Discovery Relief: Mind only (+5 Mind, or +10 for Yin Min Htike). No HP, no time.
+        const mindRelief = selectedMC === 'yin_min_htike' ? 10 : 5;
+        restoreMind(mindRelief);
         return [...prev, clueId];
       }
       return prev;
