@@ -84,13 +84,7 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
     // 6. Set thought monologue line
     setActiveMonologue(MONOLOGUE_LINES.DESK_LETTER_LOOTED);
 
-    // 7. Optional success notification banner
-    setRoomBanner?.({
-      text: "ကိုဇော်၏ ခေါက်ထားသော စာလွှာကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။",
-      type: 'success',
-    });
-
-    // 8. Synchronize Prolog state
+    // 7. Synchronize Prolog state
     try {
       PrologBridge.queryOnce('take_desk_letter.');
     } catch {}
@@ -156,10 +150,9 @@ export const DeskInspectionView: React.FC<DeskInspectionViewProps> = ({
           onClick={() => {
             addInventoryItem('bobby_pin');
             sound.playPaperRustle();
-            setRoomBanner?.({
-              text: 'ကြွေလင်ပန်းထဲရှိ ခြောက်သွေ့နေသော မင်တံသွားများကြား ရှာဖွေရာမှ ခိုင်မာပြီး ကွေးနေသော သံဆံထိုးညှပ်တစ်ခုကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။',
-              type: 'success',
-            });
+            setActiveMonologue(
+              '— ကြွေလင်ပန်းထဲရှိ ခြောက်သွေ့နေသော မင်တံသွားများကြား ရှာဖွေရာမှ ခိုင်မာပြီး ကွေးနေသော သံမဏိဆံညှပ်တစ်ခုကို ရရှိခဲ့သည်။ ပစ္စည်းအိတ်ထဲ ထည့်လိုက်သည်။ —'
+            );
           }}
         />
       )}

@@ -248,12 +248,6 @@ export const BalconySceneView: React.FC<BalconySceneViewProps> = ({
 
     // 6. Log clue to Case Notes
     addDiscoveredClue?.('clue_key_14');
-
-    // 7. Notification banner
-    setRoomBanner?.({
-      text: "ဝရန်တာကြမ်းပြင်မှ သော့ (၁၄) ကို ကောက်ယူရရှိခဲ့သည်။ ဘီရိုအမှတ် ၁၄ အတွက် ဖြစ်သည်။",
-      type: 'success',
-    });
   };
 
   return (

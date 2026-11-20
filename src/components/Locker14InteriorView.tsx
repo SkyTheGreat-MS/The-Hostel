@@ -147,10 +147,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     addDiscoveredClue?.('clue_locker_14_found');
 
     setActiveMonologue(MONOLOGUE_LINES.LOCKER_14_UNLATCH_SUCCESS);
-    setRoomBanner?.({
-      text: "ဘီရို ၁၄ ကို ဖွင့်ရန် သော့ ၁၄ ကို အသုံးပြုခဲ့သည်။ လေးလံသော သံမဏိတံခါး ပွင့်သွားသည်။",
-      type: 'success',
-    });
 
     setPhase3Location?.('locker_14_interior');
   };
@@ -187,10 +183,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     setActiveMonologue(
       "ရရှိပစ္စည်း - [အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂)]။ အခန်း ၁၀၁ ဖြစ်ရပ် မတိုင်မီ ရက်စွဲတပ်ထားသည်။"
     );
-    setRoomBanner?.({
-      text: "အညွှန်းမပါသော မိုက်ခရိုတိပ်ခွေ (၁၉၉၈.၀၈.၁၂) ကို ရရှိခဲ့သည်။",
-      type: 'success',
-    });
   };
 
   const handleTakeKey = async () => {
@@ -226,10 +218,6 @@ export const Locker14InteriorView: React.FC<Locker14InteriorViewProps> = ({
     setActiveMonologue(
       "ရရှိပစ္စည်း - [လှေကားထွက်ပေါက်တံခါးသော့]။ မြေညီထပ် လုံခြုံရေးတံခါးအတွက် 'STAIRWAY EXTR' ဟု ရိုက်နှိပ်ထားသော လေးလံသည့် သံသော့တစ်ချောင်း။"
     );
-    setRoomBanner?.({
-      text: "'STAIRWAY EXTR' တံဆိပ်ရိုက်ထားသော လှေကားထွက်ပေါက်တံခါးသော့ကို ရရှိခဲ့သည်။",
-      type: 'success',
-    });
   };
 
   return (

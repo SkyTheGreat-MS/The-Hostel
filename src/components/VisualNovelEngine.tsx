@@ -1691,10 +1691,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
 
     if (method === 'bobby_pin') {
       sound.playChime(true);
-      setRoomBanner({
-        text: `${selectedCharacter.name} က ကွေးနေသော သံမဏိဆံညှပ်ကို သော့ပေါက်အတွင်း ညင်သာစွာ ထည့်သွင်းလိုက်သည်။ သော့ပင်များ တိတ်ဆိတ်စွာ ညှိမိသွားသည်... ကလစ်သံ။ သော့သည် အသံမထွက်ဘဲ ပွင့်သွားသည်.`,
-        type: 'success',
-      });
+      setActiveMonologue(
+        `${selectedCharacter.name} က ကွေးနေသော သံမဏိဆံညှပ်ကို သော့ပေါက်အတွင်း ညင်သာစွာ ထည့်သွင်းလိုက်သည်။ သော့ပင်များ တိတ်ဆိတ်စွာ ညှိမိသွားသည်... ကလစ်သံ။ သော့သည် အသံမထွက်ဘဲ ပွင့်သွားသည်။`
+      );
       setTimeout(() => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
@@ -1712,10 +1711,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
       setTimeout(() => setIsScreenShaking(false), 700);
       applyDamage(15, 'physical', 'door_smash');
       setDoorSmashed(true);
-      setRoomBanner({
-        text: 'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...',
-        type: 'warn',
-      });
+      setActiveMonologue(
+        'ခေါက်ချုန်းကြီး! ကျွန်းပျဉ်တုံးကြီးက သော့တံကို ပြင်းထန်သော အားဖြင့် ရိုက်ခတ်လိုက်သည်! ကွဲအက်သွားသော သစ်သားများ အော်မြည်ရင်း တံခါးကြီး ဟဖောက်ပွင့်သွားပြီး အဆောင်လမ်းသွယ် ၃၂၆ တစ်လျှောက် ပဲ့တင်ထပ်သွားသည်...'
+      );
       setTimeout(() => {
         setActiveInspectSubScene('main');
         setIsDoorTransitioning(false);
@@ -2951,38 +2949,7 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
             )}
           </div>
 
-          {/* Observation Feedback Toast */}
-          <AnimatePresence>
-            {roomBanner && (
-              <motion.div
-                initial={{ opacity: 0, y: -15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                className="absolute top-24 sm:top-28 left-1/2 -translate-x-1/2 z-40 max-w-xl w-full px-4 pointer-events-auto"
-              >
-                <div
-                  className={`p-3.5 rounded-xl border shadow-2xl flex items-start justify-between gap-3 text-xs font-mono ${
-                    roomBanner.type === 'warn'
-                      ? 'bg-rose-950/95 border-rose-600 text-rose-200'
-                      : roomBanner.type === 'success'
-                      ? 'bg-emerald-950/95 border-emerald-600 text-emerald-200'
-                      : 'bg-[#121815]/95 border-[#2c3d34] text-[#c2d6cc]'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <Sparkles className="w-4 h-4 text-[#6ee7b7] shrink-0 mt-0.5" />
-                    <span className="leading-relaxed">{roomBanner.text}</span>
-                  </div>
-                  <button
-                    onClick={() => setRoomBanner(null)}
-                    className="text-stone-400 hover:text-white cursor-pointer"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
 
           {/* Hotspot & Sub-scene Interaction Layer (Active only during room_escape) */}
           {mode === 'room_escape' && (
@@ -3031,10 +2998,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       addInventoryItem('magnetic_compass');
                       sound.playChime(true);
                       sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
-                        type: 'success',
-                      });
+                      setActiveMonologue(
+                        '— သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်ကို ရရှိခဲ့သည်။ —'
+                      );
                       setIsCompassModalOpen(true);
                     } else {
                       sound.playPaperRustle();
@@ -3122,10 +3088,9 @@ export const VisualNovelEngine: React.FC<VisualNovelEngineProps> = ({ initialCha
                       addInventoryItem('magnetic_compass');
                       sound.playChime(true);
                       sound.playPaperRustle();
-                      setRoomBanner({
-                        text: 'သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! — သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်။',
-                        type: 'success',
-                      });
+                      setActiveMonologue(
+                        '— သံလိုက်အိမ်မြှောင် တွေ့ရှိပြီ! သံချေးတက်နေသော နတ္တာစီထားသည့် သံသေတ္တာငယ်အတွင်း အနားယူနေသော ရှေးဟောင်းကြေးဝါ သံလိုက်အိမ်မြှောင်ကို ရရှိခဲ့သည်။ —'
+                      );
                       setIsCompassModalOpen(true);
                     } else {
                       sound.playPaperRustle();
