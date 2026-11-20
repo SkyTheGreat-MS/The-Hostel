@@ -8,6 +8,7 @@ export interface SceneNavBarProps {
   areaName?: string;           // e.g. "STUDENT LOCKER BAY", "THE OVERLOOK BALCONY", "CARETAKER ARCHIVE"
   areaLabel?: string;          // Direct override for full label, e.g. "PATHWAY 326 • THE OVERLOOK BALCONY"
   showReturn?: boolean;        // Default true
+  rightAction?: React.ReactNode; // Optional scene-specific action (e.g. blueprint toggle)
 }
 
 export const SceneNavBar: React.FC<SceneNavBarProps> = ({
@@ -17,6 +18,7 @@ export const SceneNavBar: React.FC<SceneNavBarProps> = ({
   areaName,
   areaLabel,
   showReturn = true,
+  rightAction,
 }) => {
   // Format return text to standard convention: "← RETURN TO [DESTINATION]"
   const cleanDest = returnDestination
@@ -48,13 +50,18 @@ export const SceneNavBar: React.FC<SceneNavBarProps> = ({
         <div />
       )}
 
-      {/* Right Slot: Unified AreaIndicator */}
-      {fullAreaText && (
-        <div className="flex items-center gap-1.5 px-3.5 py-2 min-h-[36px] rounded-lg bg-[#060b08]/92 border border-[#193828] text-[11px] font-burmese text-[#b1d4c2] shadow-xl pointer-events-auto">
-          <MapPin className="w-3 h-3 text-[#6ea889] shrink-0" />
-          <span className="font-bold tracking-wide text-[#b1d4c2]">
-            {fullAreaText}
-          </span>
+      {/* Right Slot: Optional scene action + Unified AreaIndicator */}
+      {(rightAction || fullAreaText) && (
+        <div className="flex items-center gap-2 pointer-events-auto">
+          {rightAction}
+          {fullAreaText && (
+            <div className="flex items-center gap-1.5 px-3.5 py-2 min-h-[36px] rounded-lg bg-[#060b08]/92 border border-[#193828] text-[11px] font-burmese text-[#b1d4c2] shadow-xl">
+              <MapPin className="w-3 h-3 text-[#6ea889] shrink-0" />
+              <span className="font-bold tracking-wide text-[#b1d4c2]">
+                {fullAreaText}
+              </span>
+            </div>
+          )}
         </div>
       )}
     </div>

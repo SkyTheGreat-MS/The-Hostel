@@ -3593,6 +3593,7 @@ onTuned={() => {
               <GarageSubterraneanView
                 onReturn={() => setPhase3Location('hostel_outer_grounds')}
                 setActiveMonologue={setActiveMonologue}
+                activeCharacterId={selectedCharacter.id}
               />
             )}
 

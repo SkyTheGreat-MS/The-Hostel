@@ -1,13 +1,21 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { RotateCw, AlertTriangle, CheckCircle2, X, Droplets, Waves } from 'lucide-react';
 import { sound } from '../utils/audio';
+import { getCharacterProfile } from '../characterData';
 
 export interface GarageValveMiniGameProps {
   isOpen: boolean;
   onClose: () => void;
   onComplete: () => void;
+  /** Investigator driving the Phase 1 stamina/defense multipliers. */
+  activeCharacterId?: string;
+  /** Phase 1 physical damage dispatcher; falls back to composure while Phase 1 is unmerged. */
+  applyDamage?: (amount: number, type: 'physical' | 'mental', source?: string) => void;
+  setComposure?: (val: number | ((prev: number) => number)) => void;
 }
+
+type ValveCharacterProfile = ReturnType<typeof getCharacterProfile> & { physicalDefense?: number };
 
 /**
  * GarageValveMiniGame
@@ -21,22 +29,68 @@ export interface GarageValveMiniGameProps {
  * - If the player stops pressing for >300ms, the valve begins to slip and progress regresses.
  * - As progress advances, the garage water visually recedes across 5 distinct stages (0-25%, 25-50%, 50-75%, 75-99%, 100%).
  * - At 100%, the valve locks open, the garage is permanently drained, and items become accessible.
+ * - Momentum increment, slip grace window and decay rate are derived from the active investigator.
+ * - Losing all progress after reaching 50% inflicts a 4 HP over-exertion strain.
  */
 export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
   isOpen,
   onClose,
   onComplete,
+  activeCharacterId,
+  applyDamage,
+  setComposure,
 }) => {
   const [progress, setProgress] = useState<number>(0);
   const [valveAngle, setValveAngle] = useState<number>(0);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isDecaying, setIsDecaying] = useState<boolean>(false);
   const [isPressedVisual, setIsPressedVisual] = useState<boolean>(false);
+  const [fatigueFlash, setFatigueFlash] = useState<boolean>(false);
+  const [fatigueStrainText, setFatigueStrainText] = useState<string | null>(null);
 
   const lastPressTimeRef = useRef<number>(Date.now());
   const progressRef = useRef<number>(0);
   const isCompletedRef = useRef<boolean>(false);
   const lastAudioTimeRef = useRef<number>(0);
+  const hasReachedHalfRef = useRef<boolean>(false);
+  const fatigueTriggeredRef = useRef<boolean>(false);
+  const fatigueTimeoutRef = useRef<number | null>(null);
+
+  const character = useMemo<ValveCharacterProfile>(
+    () => getCharacterProfile(activeCharacterId || 'moe_stheinkha'),
+    [activeCharacterId]
+  );
+
+  const valveDynamics = useMemo(() => {
+    const baseIncrement = 4.5;
+    const baseDecayRate = 1.0;
+
+    // Phase 1 exposes physicalDefense. Until that branch is merged, mirror its
+    // investigator matrix here so the garage mini-game already behaves correctly.
+    const physicalDefense =
+      typeof character.physicalDefense === 'number'
+        ? character.physicalDefense
+        : character.id === 'ye_yint_hein'
+          ? 0.75
+          : character.id === 'yin_min_htike'
+            ? 1.15
+            : character.id === 'mona'
+              ? 0.8
+              : character.id === 'may_jewel'
+                ? 0.9
+                : 1.0;
+
+    const staminaMult = physicalDefense <= 0.8 ? 1.3 : physicalDefense >= 1.1 ? 0.8 : 1.0;
+    const incrementPerPress = baseIncrement * (character.id === 'ye_yint_hein' ? 1.25 : 1.0);
+    const decayIntervalMs =
+      character.id === 'ye_yint_hein' ? 450 : character.id === 'yin_min_htike' ? 240 : 300;
+
+    return {
+      incrementPerPress,
+      decayIntervalMs,
+      decayRate: baseDecayRate / staminaMult,
+    };
+  }, [character]);
 
   // Sync refs with state
   progressRef.current = progress;
@@ -50,11 +104,44 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
       setIsCompleted(false);
       setIsDecaying(false);
       setIsPressedVisual(false);
+      setFatigueFlash(false);
+      setFatigueStrainText(null);
+      if (fatigueTimeoutRef.current !== null) {
+        window.clearTimeout(fatigueTimeoutRef.current);
+        fatigueTimeoutRef.current = null;
+      }
       lastPressTimeRef.current = Date.now();
       progressRef.current = 0;
       isCompletedRef.current = false;
+      hasReachedHalfRef.current = false;
+      fatigueTriggeredRef.current = false;
     }
   }, [isOpen]);
+
+  // Over-exertion: -4 HP once the valve slips from 50%+ all the way back to zero.
+  const triggerFatigueStrain = useCallback(() => {
+    if (fatigueTriggeredRef.current) return;
+    fatigueTriggeredRef.current = true;
+
+    setFatigueFlash(true);
+    setFatigueStrainText('လက်ဖဝါးများ သံချေးဖြင့် စုတ်ပြတ်ကာ မောပန်းနွမ်းနယ်သွားသည်');
+
+    if (applyDamage) {
+      applyDamage(4, 'physical', 'garage_valve_overexertion');
+    } else if (setComposure) {
+      // Backwards-compatible bridge until Phase 1 dual vitals land on this branch.
+      setComposure((prev) => Math.max(0, prev - 4));
+    }
+
+    if (fatigueTimeoutRef.current !== null) window.clearTimeout(fatigueTimeoutRef.current);
+    fatigueTimeoutRef.current = window.setTimeout(() => setFatigueFlash(false), 900);
+  }, [applyDamage, setComposure]);
+
+  useEffect(() => {
+    return () => {
+      if (fatigueTimeoutRef.current !== null) window.clearTimeout(fatigueTimeoutRef.current);
+    };
+  }, []);
 
   // Turn Valve Action (triggered by Spacebar or Click)
   const handleTurnValve = useCallback(() => {
@@ -80,13 +167,16 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
     setIsPressedVisual(true);
     setTimeout(() => setIsPressedVisual(false), 90);
 
-    const increment = 4.5;
+    const increment = valveDynamics.incrementPerPress;
     const nextProgress = Math.min(100, progressRef.current + increment);
-    const nextAngle = (valveAngle + 18) % 360;
 
     setProgress(nextProgress);
-    setValveAngle(nextAngle);
+    setValveAngle((prev) => (prev + 18) % 360);
     progressRef.current = nextProgress;
+
+    if (nextProgress >= 50) {
+      hasReachedHalfRef.current = true;
+    }
 
     // Check completion condition
     if (nextProgress >= 100 && !isCompletedRef.current) {
@@ -111,7 +201,7 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         onClose();
       }, 1500);
     }
-  }, [valveAngle, onComplete, onClose]);
+  }, [valveDynamics.incrementPerPress, onComplete, onClose]);
 
   // Regression / Decay Loop (Keep the momentum going)
   useEffect(() => {
@@ -122,14 +212,15 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
       const now = Date.now();
       const elapsedSincePress = now - lastPressTimeRef.current;
-      const gracePeriodMs = 320; // Player has ~320ms between keypresses before regression kicks in
+      // Investigator-dependent grace window: 450ms athlete / 300ms baseline / 240ms archivist.
+      const gracePeriodMs = valveDynamics.decayIntervalMs;
 
       if (elapsedSincePress > gracePeriodMs && progressRef.current > 0) {
         setIsDecaying(true);
 
-        // Decay starts gentle and accelerates if player stays inactive
+        // Decay starts gentle and accelerates if player stays inactive; stamina scales the rate.
         const inactiveSeconds = (elapsedSincePress - gracePeriodMs) / 1000;
-        const decayPerSecond = Math.min(22, 9 + inactiveSeconds * 6);
+        const decayPerSecond = Math.min(22, 9 + inactiveSeconds * 6) * valveDynamics.decayRate;
         const dt = 0.04; // 40ms tick
         const decayAmount = decayPerSecond * dt;
 
@@ -139,13 +230,17 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
 
         // Slightly rotate valve backward to visually represent loss of progress
         setValveAngle((prev) => Math.max(0, prev - decayAmount * 2));
+
+        if (nextProgress <= 0 && hasReachedHalfRef.current) {
+          triggerFatigueStrain();
+        }
       } else {
         setIsDecaying(false);
       }
     }, 40);
 
     return () => clearInterval(decayInterval);
-  }, [isOpen, isCompleted]);
+  }, [isOpen, isCompleted, triggerFatigueStrain, valveDynamics.decayIntervalMs, valveDynamics.decayRate]);
 
   // Exclusive Keyboard Input Handling (Spacebar to turn, Escape to close)
   useEffect(() => {
@@ -235,6 +330,14 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 flex items-center justify-center select-none overflow-hidden"
       >
+        {/* Arterial Crimson border flash on over-exertion */}
+        {fatigueFlash && (
+          <div
+            className="pointer-events-none absolute inset-0 z-40"
+            style={{ border: '3px solid #ba2929', boxShadow: 'inset 0 0 90px rgba(186,41,41,0.45)' }}
+          />
+        )}
+
         {/* Backdrop: Dynamic Cross-Fading Garage Images to Show Live Water Level Receding */}
         <div className="absolute inset-0 bg-black pointer-events-none">
           {/* 1. Drained Garage Background (Gains opacity as progress increases) */}
@@ -291,7 +394,15 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
         </button>
 
         {/* Main Focused Mini-Game Container */}
-        <div className="relative z-20 w-full max-w-xl mx-4 flex flex-col items-center justify-center p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#131a16]/95 via-[#0c120f]/95 to-[#080d0a]/95 border-2 border-[#223329] shadow-[0_20px_70px_rgba(0,0,0,0.9)]">
+        <div
+          className="relative z-20 w-full max-w-xl mx-4 flex flex-col items-center justify-center p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#131a16]/95 via-[#0c120f]/95 to-[#080d0a]/95 border-2 transition-all duration-300"
+          style={{
+            borderColor: fatigueFlash ? '#ba2929' : '#223329',
+            boxShadow: fatigueFlash
+              ? '0 0 0 2px #ba2929, 0 0 45px rgba(186,41,41,0.65)'
+              : '0 20px 70px rgba(0,0,0,0.9)',
+          }}
+        >
           
           {/* Header Bar: Industrial Apparatus Plate */}
           <div className="w-full text-center pb-4 border-b border-[#1c2b22] space-y-1">
@@ -513,6 +624,18 @@ export const GarageValveMiniGame: React.FC<GarageValveMiniGameProps> = ({
               </span>
             )}
           </div>
+
+          {/* Arterial Crimson over-exertion notice */}
+          {fatigueStrainText && (
+            <div className="w-full mt-2 text-center">
+              <span
+                className="font-burmese text-xs leading-[1.75] text-[#fca5a5]"
+                style={{ wordBreak: 'break-word', hyphens: 'none' }}
+              >
+                {fatigueStrainText} [-4 HP]
+              </span>
+            </div>
+          )}
 
           {/* Large Tactile Spacebar Action Button Prompt */}
           <div className="w-full mt-5 pt-4 border-t border-[#193828] flex flex-col sm:flex-row items-center justify-between gap-3">

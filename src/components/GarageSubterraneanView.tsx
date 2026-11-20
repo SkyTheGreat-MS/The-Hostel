@@ -1,23 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { DraftingCompass } from 'lucide-react';
 import { InteractiveHotspot } from './InteractiveHotspot';
 import { SceneNavBar } from './SceneNavBar';
 import { GarageValveMiniGame } from './GarageValveMiniGame';
+import { GarageBlueprintModal } from './GarageBlueprintModal';
 import { sound } from '../utils/audio';
 import { useGameStore } from '../context/GameProgressContext';
 
 export interface GarageSubterraneanViewProps {
   onReturn?: () => void;
   setActiveMonologue: (text: string | null) => void;
+  /** Active investigator from Phase 1; used to scale valve stamina in the mini-game. */
+  activeCharacterId?: string;
 }
+
+type PhysicalDamageDispatcher = (amount: number, type: 'physical' | 'mental', source?: string) => void;
 
 export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
   onReturn,
   setActiveMonologue,
+  activeCharacterId,
 }) => {
-  const { inventory, addToInventory, garageDrained, setGarageDrained, drainGarage, pickupGarageItem } = useGameStore();
+  const store = useGameStore();
+  const { inventory, addToInventory, garageDrained, setGarageDrained, drainGarage, pickupGarageItem, addDiscoveredClue, discoveredClues, setComposure } = store;
+  // Phase 1 exposes applyDamage on the store once the dual-vitals branch is merged.
+  const applyDamage = (store as unknown as { applyDamage?: PhysicalDamageDispatcher }).applyDamage;
 
   const [isDraining, setIsDraining] = useState(false);
   const [isValveGameOpen, setIsValveGameOpen] = useState(false);
+  const [isBlueprintOpen, setIsBlueprintOpen] = useState(false);
+
+  const handleBlueprintInspect = useCallback(() => {
+    if (!discoveredClues.includes('clue_garage_blueprint')) {
+      addDiscoveredClue('clue_garage_blueprint');
+    }
+  }, [addDiscoveredClue, discoveredClues]);
 
   const hasPulley = inventory.includes('iron_pulley');
   const hasMachete = inventory.includes('rusty_machete');
@@ -198,8 +215,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         <InteractiveHotspot
           id="garage_drain_valve"
           name="ရေနုတ်အဆို့ရှင်ဘီး"
-          cursorTooltip={garageDrained ? "ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်" : "ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်"}
-          polygonPoints="42.8,54.1 40.8,62.6 36,66.1 31.3,62.6 29.3,54.1 31.3,45.6 36,42.1 40.8,45.6"
+          cursorTooltip={garageDrained ? "[ပွင့်နေသော အဆို့ရှင်ကို စစ်ဆေးမည်]" : "[ရေနုတ်အဆို့ရှင်ကို လှည့်ဖွင့်မည်]"}
+          polygonPoints="68.5,42.0 78.5,39.0 82.0,48.0 77.0,58.0 68.0,56.0 65.5,48.0"
           onClick={handleDrainValve}
         />
 
@@ -207,8 +224,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         <InteractiveHotspot
           id="garage_bicycles"
           name="၁၉၉၀ ကျောင်းသူစက်ဘီးဟောင်းများ"
-          cursorTooltip="ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်"
-          polygonPoints="25,55 58,55 60,88 23,88"
+          cursorTooltip="[ရေမြုပ်စက်ဘီးများကို စစ်ဆေးမည်]"
+          polygonPoints="28.0,62.0 54.0,58.0 64.0,66.0 60.0,86.0 26.0,84.0 22.0,72.0"
           onClick={handleInspectBicycles}
         />
 
@@ -216,8 +233,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         <InteractiveHotspot
           id="garage_caretaker_log"
           name="အဆောင်မှူး၏ ထိန်းသိမ်းရေးမှတ်တမ်း"
-          cursorTooltip="အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်"
-          polygonPoints="17.9,64.8 15.9,73.3 11.2,76.8 6.4,73.3 4.4,64.8 6.4,56.3 11.2,52.7 15.9,56.3"
+          cursorTooltip="[အဆောင်မှူးမှတ်တမ်းကို ဖတ်ရှုမည်]"
+          polygonPoints="6.0,52.0 22.0,52.0 24.0,68.0 8.0,70.0"
           onClick={handleInspectLog}
         />
 
@@ -226,8 +243,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           <InteractiveHotspot
             id="garage_tool_pulley"
             name="သံသွန်းစက်သီးကြီး"
-            cursorTooltip={garageDrained ? "သံစက်သီးကို ယူမည်" : "ရေမြုပ်နေသော အရာကို ကြည့်မည်"}
-            polygonPoints="17.7,64.6 15.8,73.1 11,76.6 6.3,73.1 4.3,64.6 6.3,56.1 11,52.5 15.8,56.1"
+            cursorTooltip={garageDrained ? "[သံစက်သီးကို ယူမည်]" : "[ရေထဲက သံစက်သီးကို ကြည့်မည်]"}
+            polygonPoints="51.5,18.0 60.0,18.0 61.5,32.0 55.0,36.0 49.5,30.0"
             onClick={handleTakePulley}
           />
         )}
@@ -237,8 +254,8 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
           <InteractiveHotspot
             id="garage_tool_machete"
             name="သံချေးတက် ဓားမကြီး"
-            cursorTooltip={garageDrained ? "သံချေးတက်ဓားမကို ယူမည်" : "ရေမြုပ်နေသော ဓားကို ကြည့်မည်"}
-            polygonPoints="1.4,84 26.3,68.2 30.9,72.1 16,85.2"
+            cursorTooltip={garageDrained ? "[သံချေးတက်ဓားမကို ယူမည်]" : "[ရေထဲက ဓားကို ကြည့်မည်]"}
+            polygonPoints="4.0,78.0 18.0,76.0 22.0,88.0 8.0,92.0"
             onClick={handleTakeMachete}
           />
         )}
@@ -250,6 +267,28 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         returnDestination="အဆောင်ဝင်း (ဝင်း)"
         areaZone="မြေပြင် အပြင်ဘက်ဝင်း"
         areaName="မြေအောက် စက်ဘီးဂိုဒေါင်"
+        rightAction={
+          <button
+            onClick={() => setIsBlueprintOpen(true)}
+            className="group flex items-center gap-2 px-3 py-2 min-h-[36px] rounded-lg bg-[#060b08]/92 hover:bg-[#0b140f] border border-[#193828] hover:border-[#29543e] shadow-2xl transition-all cursor-pointer hover:scale-[1.02] active:scale-95"
+            title="ဂိုဒေါင် မြေအောက် ရေဆင်းမြေပုံ [02]"
+          >
+            <DraftingCompass className="w-3.5 h-3.5 text-[#6ea889] group-hover:text-[#b1d4c2] transition-colors" />
+            <span className="font-burmese text-[11px] leading-[1.75] font-bold tracking-wide text-[#b1d4c2] group-hover:text-[#e0f0e7]">
+              [ ဂိုဒေါင် မြေအောက် ရေဆင်းမြေပုံ ]
+            </span>
+            <span className="hidden sm:inline font-mono text-[9px] tracking-widest text-[#447d60] group-hover:text-[#6ea889]">
+              [02] BLUEPRINT
+            </span>
+          </button>
+        }
+      />
+
+      {/* 1998 Architectural Blueprint Overlay */}
+      <GarageBlueprintModal
+        isOpen={isBlueprintOpen}
+        onClose={() => setIsBlueprintOpen(false)}
+        onInspect={handleBlueprintInspect}
       />
 
       {/* Interactive Water Valve Turning Mini-Game Modal */}
@@ -257,6 +296,9 @@ export const GarageSubterraneanView: React.FC<GarageSubterraneanViewProps> = ({
         isOpen={isValveGameOpen}
         onClose={() => setIsValveGameOpen(false)}
         onComplete={handleValveGameComplete}
+        activeCharacterId={activeCharacterId}
+        applyDamage={applyDamage}
+        setComposure={setComposure}
       />
     </div>
   );
