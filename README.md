@@ -1,4 +1,4 @@
-# The Hostel (Hostel 1998: Spirit Labyrinth)
+# The Hostel (Hostel 1998)
 
 > A 1998 Myanmar Hostel Supernatural Mystery Visual Novel & Point-and-Click Adventure built with **React 19**, **TypeScript**, **Vite**, **Tailwind CSS 4**, and an authoritative **Prolog** declarative logic engine.
 

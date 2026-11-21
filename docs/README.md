@@ -1,6 +1,6 @@
 # The Hostel (Hostel 1998) — Engineering & Feature Roadmap
 
-Welcome to the development documentation for **The Hostel (Hostel 1998: Spirit Labyrinth)**. This guide outlines the project's multi-phase architecture so team members can independently branch, build, and verify their respective features.
+Welcome to the development documentation for **The Hostel (Hostel 1998)**. This guide outlines the project's multi-phase architecture so team members can independently branch, build, and verify their respective features.
 
 ---
 

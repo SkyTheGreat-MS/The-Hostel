@@ -44,7 +44,7 @@ const MainMenuRoute: React.FC = () => {
       </div>
 
       <MainMenu
-        title="THE SPIRIT'S LABYRINTH"
+        title="THE HOSTEL"
         subtitle="A 1998 BURMESE FOLK-HORROR INVESTIGATION"
         footerPrompt="Press Enter to Continue"
         showRain={true}

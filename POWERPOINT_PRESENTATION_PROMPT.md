@@ -1,4 +1,4 @@
-# THE SPIRIT'S LABYRINTH (အဆောင်)
+# THE HOSTEL (အဆောင်)
 ## PowerPoint Presentation Master Prompt & Slide-by-Slide Blueprint
 ### 16-Slide Deck for Academic Defense & Game Industry Project Pitch
 
@@ -16,7 +16,7 @@
 
 ```text
 Create a high-impact, professional 16-slide presentation deck for a project defense and creative game pitch titled:
-"The Spirit's Labyrinth (အဆောင်): A Neuro-Psychological Visual Novel Driven by Declarative Logic".
+"The Hostel (အဆောင်): A Neuro-Psychological Visual Novel Driven by Declarative Logic".
 
 AUDIENCE & PURPOSE:
 Dual target: Academic software engineering defense & creative game industry showcase. Balance deep software engineering (React 19 + TypeScript + Tau-Prolog logic engine) with compelling game design, authentic Burmese Nat folklore, and psychological tension mechanics.
@@ -58,7 +58,7 @@ SLIDE STRUCTURE (16 SLIDES):
 ---
 
 ### SLIDE 1: TITLE SLIDE
-- **Slide Header**: THE SPIRIT'S LABYRINTH
+- **Slide Header**: THE HOSTEL
 - **Burmese Native Title**: (အဆောင် — The Hostel)
 - **Subtitle**: A Neuro-Psychological Visual Novel Driven by Declarative Logic
 - **Presenter / Team**: Senior Capstone / Engineering & Interactive Media Showcase
@@ -72,7 +72,7 @@ SLIDE STRUCTURE (16 SLIDES):
   - **Technology**: React 19, TypeScript, Vite, Tailwind CSS v4, Tau-Prolog Rule Engine
   - **Setting**: Yangon University Campus, August 14, 1998 &mdash; Present Day Seance
 - **Speaker Notes**:
-  > "Good morning/afternoon, esteemed committee and guests. Today, we present *The Spirit's Labyrinth (အဆောင်)*. This project is both a deeply immersive psychological horror visual novel rooted in authentic Burmese animist folklore and a pioneering technical exploration of using declarative Prolog logic to power real-time game state, puzzle validation, and dynamic epistemic dialogue."
+  > "Good morning/afternoon, esteemed committee and guests. Today, we present *The Hostel (အဆောင်)*. This project is both a deeply immersive psychological horror visual novel rooted in authentic Burmese animist folklore and a pioneering technical exploration of using declarative Prolog logic to power real-time game state, puzzle validation, and dynamic epistemic dialogue."
 
 ---
 
@@ -365,7 +365,7 @@ SLIDE STRUCTURE (16 SLIDES):
     - WebAssembly-accelerated Prolog inference for larger rule graphs.
 - **Presenter Contact**: Project Repository & Live Showcase: `github.com/SkyTheGreat-MS/The-Hostel`
 - **Speaker Notes**:
-  > "In conclusion, *The Spirit's Labyrinth* proves that modern web technologies and classical logic programming can unite to create deeply atmospheric, culturally authentic, and mathematically robust interactive experiences. Thank you for your time, and we now welcome your questions."
+  > "In conclusion, *The Hostel* proves that modern web technologies and classical logic programming can unite to create deeply atmospheric, culturally authentic, and mathematically robust interactive experiences. Thank you for your time, and we now welcome your questions."
 
 ---
 
@@ -373,7 +373,7 @@ SLIDE STRUCTURE (16 SLIDES):
 
 | Slide # | Slide Title | Primary Focus Area | Key Architectural / Design Symbol |
 | :--- | :--- | :--- | :--- |
-| **01** | Title & Vision | Introduction, Genre, Identity | `[ THE SPIRIT'S LABYRINTH / အဆောင် ]` |
+| **01** | Title & Vision | Introduction, Genre, Identity | `[ THE HOSTEL / အဆောင် ]` |
 | **02** | Executive Summary: The Vision | Objectives & Core Innovations | Cultural Lore + Prolog Engine + Attrition |
 | **03** | Cultural Lore: The Nat Tradition | Burmese Animism & 1998 Tragedy | Room 4B &bull; August 14, 1998 &bull; Nat Taboos |
 | **04** | Hybrid Gameplay Mechanics | Loop: VN + Escape + Deduction | Dialogue &rarr; Point-and-Click &rarr; Deduction |

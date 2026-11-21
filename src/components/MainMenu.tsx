@@ -42,7 +42,7 @@ export interface MainMenuProps {
 }
 
 export const MainMenu: React.FC<MainMenuProps> = ({
-  title = "THE SPIRIT'S LABYRINTH",
+  title = "THE HOSTEL",
   subtitle = 'A 1998 BURMESE FOLK-HORROR INVESTIGATION',
   backgroundImage = '/assets/main_menu.jpg',
   footerPrompt = 'Press Enter to Continue',
@@ -188,7 +188,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       <div id="menu-background-container" className="absolute inset-0 z-0">
         <img
           src={getAssetBackground(backgroundImage)}
-          alt="The Spirit's Labyrinth Background"
+          alt="The Hostel Background"
           onError={(e) => {
             e.currentTarget.src = DEFAULT_BACKGROUND_JPG;
           }}
@@ -308,7 +308,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({
                 {subtitle}
               </p>
               <span className="text-xs text-amber-500/70 font-burmese leading-[1.75] hidden md:inline">
-                (ဝိညာဉ်ဝင်္ကပါ)
+                (အဆောင်)
               </span>
             </div>
           </div>

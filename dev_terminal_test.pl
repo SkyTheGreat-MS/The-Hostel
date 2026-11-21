@@ -1,6 +1,6 @@
 /** <module> dev_terminal_test.pl
  *
- * Developer & Test Harness: Interactive terminal CLI loop for THE SPIRIT'S LABYRINTH.
+ * Developer & Test Harness: Interactive terminal CLI loop for THE HOSTEL.
  * 
  * NOTE: This CLI harness is preserved strictly for developer testing and headless verification.
  * The primary player-facing experience is the routed web application (MainMenu -> /chapters -> /chapters/1).

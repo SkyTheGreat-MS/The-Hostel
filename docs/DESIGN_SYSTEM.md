@@ -1,5 +1,5 @@
 # 1998 Burmese Folk-Horror Design System
-**Project: The Hostel (Hostel 1998: Spirit Labyrinth)**  
+**Project: The Hostel (Hostel 1998)**  
 **Version: 1.0.0**
 
 ---

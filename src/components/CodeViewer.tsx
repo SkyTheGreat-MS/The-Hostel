@@ -24,7 +24,7 @@ const PROLOG_CODE = `:- module(spirit_labyrinth, [
     used_unverified_claim/2
 ]).
 
-/** <module> Hostel 1998: Spirit Labyrinth
+/** <module> The Hostel (Hostel 1998)
  *
  * A text-based Prolog prototype for a narrative horror game set in a
  * traditional Myanmar university hostel.
